@@ -1,0 +1,15 @@
+<div id="sky" class="sky" aria-hidden="true"></div>
+<div id="app"><main id="main" aria-live="polite"></main></div>
+<nav id="tabs" class="tabs" aria-label="メニュー">
+  <div class="tabs-in">
+    <button class="tab" type="button" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20V8l9-4 9 4v12M9 20v-6h6v6M3 20h18"/></svg>ホーム</button>
+    <button class="tab" type="button" data-tab="review"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h14l-3-3M20 16H6l3 3"/></svg>復習<span class="badge" id="dueBadge" hidden>0</span></button>
+    <button class="tab" type="button" data-tab="record"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM12 8a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM9 18h6"/></svg>記録</button>
+  </div>
+</nav>
+<div id="sheetHost"></div>
+<div id="cine" class="cine" hidden></div>
+<canvas id="fx" hidden aria-hidden="true"></canvas>
+<script>
+(function(){
+'use strict';

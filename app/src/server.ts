@@ -1,5 +1,8 @@
 import "./lib/error-capture";
 
+import APP_HTML from "./babel-flight.html?raw";
+import { applySecurityHeaders } from "./lib/security-headers.server";
+
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 
@@ -39,6 +42,19 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
 
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
+    const url = new URL(request.url);
+    if ((request.method === "GET" || request.method === "HEAD") && (url.pathname === "/" || url.pathname === "/index.html")) {
+      // The whole Babel Flight app is one self-contained page (see babel-flight/README.md).
+      const html = APP_HTML.split("%ORIGIN%").join(url.origin);
+      return applySecurityHeaders(
+        new Response(request.method === "HEAD" ? null : html, {
+          headers: {
+            "content-type": "text/html; charset=utf-8",
+            "cache-control": "public, max-age=300",
+          },
+        }),
+      );
+    }
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);

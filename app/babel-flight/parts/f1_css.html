@@ -1,0 +1,73 @@
+<style>
+/* v4: hero route map, view transitions, shorter cinematics */
+.hero{position:relative;overflow:hidden;margin-top:12px;margin-left:calc(-1 * max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));height:420px;background:#071022;transition:height .5s cubic-bezier(.3,.9,.3,1)}
+.hero.empty{height:230px}
+@media (min-width:560px){.hero{margin-left:0;margin-right:0;border-radius:20px;box-shadow:0 26px 50px -30px rgba(4,10,30,.8)}}
+.hero-in{position:absolute;inset:0;will-change:transform;--hud:1;transform-origin:50% 0}
+.hero .mapcv{position:absolute;left:0;top:0;width:100%;display:block;cursor:pointer;touch-action:manipulation}
+.hud{position:absolute;left:0;right:0;top:0;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:14px max(16px,env(safe-area-inset-left,0px)) 34px;background:linear-gradient(rgba(7,16,34,.9),rgba(7,16,34,0));color:#fff;pointer-events:none;opacity:var(--hud)}
+.hud .lbl{color:#9fb3d6}
+.hud-l{min-width:0}
+.hud-l b{display:block;font-size:27px;letter-spacing:.06em;color:#ffcf26;margin-top:5px;line-height:1.1;overflow-wrap:anywhere}
+.hud-l small{display:block;color:#d6e0f3;font-size:12.5px;margin-top:4px}
+.hud-r{text-align:right;flex:none}
+.hud-r b{display:block;font-size:25px;margin-top:5px}
+.hud-r b small{font-size:13px;color:#9fb3d6}
+.hud-foot{position:absolute;left:0;right:0;bottom:70px;display:flex;justify-content:space-between;gap:8px;padding:0 max(16px,env(safe-area-inset-left,0px));font-size:10.5px;letter-spacing:.04em;color:#9fb3d6;pointer-events:none;opacity:var(--hud);text-shadow:0 1px 6px #071022}
+.hero-langs{position:absolute;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:14px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.hl{position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 4px 8px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(8,18,40,.55);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#fff;overflow:hidden;transition:transform .2s,background .3s,color .3s}
+.hl:active{transform:scale(.96)}
+.hl b{font-size:15px;letter-spacing:.05em}
+.hl small{font-size:10px;opacity:.85;white-space:nowrap}
+.hl::after{content:"";position:absolute;left:22%;right:22%;bottom:0;height:3px;border-radius:3px 3px 0 0;background:var(--dc)}
+.hl[aria-pressed="true"]{background:#fff;color:#0b1626;border-color:#fff}
+.modesw.float{margin-top:12px;box-shadow:0 12px 26px -18px rgba(4,10,30,.5)}
+.flapw{display:inline-flex;flex-wrap:wrap;perspective:300px}
+.flapw span{display:inline-block}
+.flapw.flip span{animation:flapIn .5s cubic-bezier(.3,1.4,.5,1) both;animation-delay:calc(.12s + var(--d) * 40ms);transform-origin:50% 60%}
+@keyframes flapIn{from{transform:rotateX(-90deg);opacity:.15}}
+
+/* view transitions */
+#main.enter-r{animation:enterR .42s cubic-bezier(.2,.8,.2,1)}
+#main.enter-l{animation:enterL .42s cubic-bezier(.2,.8,.2,1)}
+@keyframes enterR{from{opacity:0;transform:translateX(30px)}}
+@keyframes enterL{from{opacity:0;transform:translateX(-30px)}}
+.stop{animation:none}
+.stop.in{animation:rowIn .55s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--k,0) * 45ms)}
+@keyframes rowIn{from{transform:translateX(-18px);opacity:.15}}
+.leg-h.in,.course.in{animation:legIn .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes legIn{from{transform:translateY(12px);opacity:.2}}
+#main>.rv{animation:rvIn .55s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i) * 55ms)}
+#main>.rv:nth-child(n+9){animation-delay:.45s}
+@keyframes rvIn{from{transform:translateY(18px);opacity:.1}}
+.rv .cls-bar i,.rv .bar i,.rv .gbar i{animation:barGrow 1s cubic-bezier(.2,.8,.2,1) .25s both;transform-origin:left}
+@keyframes barGrow{from{transform:scaleX(0)}}
+.slot.got.pop svg{animation:stampIn .5s cubic-bezier(.2,1.3,.4,1) both;animation-delay:calc(.25s + var(--j) * 70ms)}
+@keyframes stampIn{from{transform:scale(1.7) rotate(-20deg);opacity:0}}
+.prof.pop2{animation:rvIn .45s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--j) * 30ms)}
+.due-board{transition:transform .3s}
+.rv .due-board{animation:boardIn .7s cubic-bezier(.3,1.4,.5,1) .15s both}
+@keyframes boardIn{from{transform:rotateX(-80deg);opacity:.2}}
+
+/* shorter cinematics (about one second, no skip needed) */
+.cine-skip{display:none}
+.cine::before,.cine::after{height:7vh;transition:transform .25s}
+.cine.play .cine-sky{animation:skyPan 1.15s ease-out forwards}
+.cine.play .cine-runway{animation:rwOut 1.15s ease-in forwards}
+.cine.play .cine-plane{animation:lift 1.15s cubic-bezier(.55,0,.3,1) forwards}
+.cine.takeoff.play .cine-clouds span{animation:cloudRush .6s ease-in forwards;animation-delay:calc(.45s + var(--k) * .05s)}
+.cine.play .cine-flash{animation:flash 1.15s forwards}
+@keyframes flash{0%,78%{opacity:0}100%{opacity:.85}}
+.c-no{animation:fadeUp .3s .05s forwards}
+.c-city span{animation:letterUp .45s cubic-bezier(.2,.9,.2,1) forwards;animation-delay:calc(.08s + var(--d) * 30ms)}
+.c-sub{animation:fadeUp .35s .3s forwards}
+.c-coord{animation:fadeUp .35s .45s forwards}
+.c-grade{animation:fadeUp .35s .55s forwards}
+.cine.landing.play .cine-bank.l{animation:bankL .95s cubic-bezier(.6,0,.2,1) forwards}
+.cine.landing.play .cine-bank.r{animation:bankR .95s cubic-bezier(.6,0,.2,1) forwards}
+
+@media (prefers-reduced-motion:reduce){
+  .hero{transition:none}.hero-in{transform:none!important}
+  .flapw.flip span,#main.enter-r,#main.enter-l,.stop.in,.leg-h.in,.course.in,#main>.rv,.rv .cls-bar i,.rv .bar i,.rv .gbar i,.slot.got.pop svg,.prof.pop2,.rv .due-board{animation:none!important}
+}
+</style>
