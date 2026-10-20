@@ -6,6 +6,14 @@
 <meta name="description" content="飛行機に乗るように、韓国語・英語・スペイン語・イタリア語を学ぶ。旅行・留学・13職業の会話を問題形式でトレーニング。">
 <link rel="canonical" href="%ORIGIN%/">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="theme-color" content="#e9edf2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#060a12" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Babel Flight">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Babel Flight">
 <meta property="og:title" content="Babel Flight">
@@ -692,6 +700,7 @@ body.dark-ui .sheet{--sc:#ff6b79}
 .photo .pfp{font-size:38px;line-height:1}
 .photo-ed{position:absolute;right:-6px;bottom:-6px;width:22px;height:22px;border-radius:50%;background:var(--signal);color:var(--on-signal);display:grid;place-items:center;box-shadow:0 0 0 2px var(--ink)}
 .photo-ed svg{width:12px;height:12px}
+.id-card input{text-transform:none}
 .icon-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
 .icon-grid button{aspect-ratio:1;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font-size:26px;line-height:1;display:grid;place-items:center;padding:0}
 .icon-grid button svg{width:26px;height:26px}
@@ -703,11 +712,11 @@ body.dark-ui .sheet{--sc:#ff6b79}
 .acct-lead{font-size:13.5px;line-height:1.7}
 .acct-go{margin-top:12px}
 .acct-me{display:flex;align-items:center;gap:12px;margin-top:4px;min-width:0}
-.acct-av{width:46px;height:46px;border-radius:50%;background:var(--bg);color:var(--ink);display:grid;place-items:center;flex:none}
+.acct-av{width:46px;height:46px;border-radius:50%;background:var(--bg);color:var(--ink);display:grid;place-items:center;flex:none;border:0;padding:0;cursor:pointer}
 .acct-av .pfp{font-size:24px;line-height:1}
 .acct-av svg{width:24px;height:24px}
 .acct-id{min-width:0;display:grid}
-.acct-id b{font:700 19px/1.2 var(--f-disp);letter-spacing:.08em;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.acct-id b{font:700 19px/1.2 var(--f-disp);letter-spacing:.06em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .acct-id small{color:var(--ink2);font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .acct-sync{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2);margin:12px 0 10px}
 .acct-sync .dot{width:8px;height:8px;border-radius:50%;background:var(--line);flex:none}
@@ -741,6 +750,11 @@ body.dark-ui .sheet{--sc:#ff6b79}
 .seg.two{grid-template-columns:repeat(2,1fr);margin-top:0}
 .danger-go{background:var(--bad);color:#fff}
 @media (prefers-reduced-motion:reduce){.acct-sync .dot.sync{animation:none}}
+.acct-edit{flex:none;margin-left:auto;padding:8px 11px;font-size:12.5px}
+.pwa-how{width:100%;margin-top:12px}
+.pwa-steps{margin:0;padding-left:1.4em;display:grid;gap:8px;font-size:14px;line-height:1.6}
+.pwa-steps b{font-weight:700}
+.pwa-note{font-size:12.5px;line-height:1.7;padding:10px 12px;border-radius:10px;background:var(--bg)}
 /* Higgsfield adds a fixed "Made in Higgsfield" badge (bottom right). Keep it clear of the tab bar and the sheets. */
 body:has(#tabs:not([hidden])) #hf-watermark{bottom:calc(74px + env(safe-area-inset-bottom,0px)) !important}
 body:has(#hf-watermark) .sheet{padding-bottom:calc(54px + env(safe-area-inset-bottom,0px))}
@@ -1811,6 +1825,7 @@ function recordHTML(){
      '<div class="cls">'+cur[0]+' クラス'+(p?' ・ '+esc(p.jp)+'志望':'')+'</div><div class="cls-bar"><i style="width:'+pct+'%"></i></div>'+
      '<div class="lbl" style="margin-top:6px">'+(nx?'次の「'+nx[0]+'」まで '+fmt(nx[2]-save.miles)+' マイル':'最高クラスに到達')+'</div></div></section>';
   if(typeof acctCardHTML==='function')h+=acctCardHTML();
+  if(typeof pwaCardHTML==='function')h+=pwaCardHTML();
   h+='<div class="kpis">'+
      [['マイル',fmt(save.miles)],['レッスン',fmt(save.flights)],['連続日数',streakNow()+'日'],['学習したフレーズ',fmt(totalLearned())],['定着したフレーズ',fmt(totalMastered())],['スタンプ',stamps]].map(function(k){
        return '<div class="kpi"><span class="lbl">'+k[0]+'</span><div class="v">'+k[1]+'</div></div>';}).join('')+'</div>';
@@ -3125,6 +3140,11 @@ function acctGoogle(del){
 document.addEventListener('submit',function(e){
   var f=e.target;if(!f||f.id!=='acctForm')return;
   e.preventDefault();
+  if(f.getAttribute('data-mode')==='name'){
+    var nm=(($('acName')||{}).value||'').replace(/[\u0000-\u001f\u007f]/g,'').trim();
+    if(Array.from(nm).length>14){acctErr('14文字までにしてね。');return;}
+    save.name=nm||'PASSENGER';store();closeSheet();render();return;
+  }
   var fb=ACCT.fb;if(!fb||ACCT.busy)return;
   var mode=f.getAttribute('data-mode'),F=fb.F;
   var em=(($('acEmail')||{}).value||'').trim(),pw=($('acPass')||{}).value||'',pw2=($('acPass2')||{}).value||'';
@@ -3163,7 +3183,8 @@ function acctCardHTML(){
   }else{
     var hint=acctHint();
     h+=(ACCT.me.provider==='google.com'?'Google':'メール')+'でログイン中</span></div>'+
-       '<div class="acct-me"><span class="acct-av">'+avatarHTML()+'</span><div class="acct-id"><b>'+esc(save.name)+'</b><small>'+esc(hint.email||'')+'</small></div></div>'+
+       '<div class="acct-me"><button class="acct-av" type="button" data-icon-open aria-label="アイコンを変える">'+avatarHTML()+'</button><div class="acct-id"><b>'+esc(save.name)+'</b><small>'+esc(hint.email||'')+'</small></div>'+
+       '<button class="ghost acct-edit" type="button" data-acct-name>名前を変える</button></div>'+
        '<p class="acct-sync" id="acctStat" role="status">'+acctStatusText()+'</p>'+
        '<div class="row2"><button class="ghost" type="button" data-acct-sync>今すぐ同期</button><button class="ghost" type="button" data-acct-logout>ログアウト</button></div>'+
        '<button class="acct-del" type="button" data-acct-delete>アカウントを削除</button>';
@@ -3200,6 +3221,12 @@ function acctSheet(mode,note){
        '<label class="fld"><span>メールアドレス</span><input id="acEmail" type="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" value="'+esc(hint.email||'')+'"></label>'+
        '<p class="acct-err" id="acErr" role="alert"></p><button class="go" type="submit" data-needs-fb'+nf+'>リンクを送る</button></form>'+
        '<button class="acct-link" type="button" data-acct-email="login">ログインに戻る</button>';
+  }else if(mode==='name'){
+    var cur=save.name==='PASSENGER'?'':save.name;
+    h+='<h3>名前を変える</h3><p class="dim acct-lead">記録画面のIDカードに出る名前です。ログインしているほかの端末にも同期されます。</p>'+
+       '<form id="acctForm" class="acct-form" data-mode="name" novalidate>'+
+       '<label class="fld"><span>名前(14文字まで)</span><input id="acName" maxlength="14" autocomplete="nickname" spellcheck="false" placeholder="PASSENGER" value="'+esc(cur)+'"></label>'+
+       '<p class="acct-err" id="acErr" role="alert"></p><button class="go" type="submit">保存する</button></form>';
   }else{
     var g=ACCT.me&&ACCT.me.provider==='google.com';
     h+='<h3>アカウントを削除</h3><p class="dim acct-lead">サーバーにある学習記録とアカウントが消えて、元に戻せません。この端末に残っている記録はそのままです。確認のため、もう一度ログインしてね。</p>';
@@ -3209,10 +3236,10 @@ function acctSheet(mode,note){
        '<label class="fld"><span>パスワード</span><input id="acPass" type="password" autocomplete="current-password"></label>'+
        '<p class="acct-err" id="acErr" role="alert"></p><button class="go danger-go" type="submit" data-needs-fb'+nf+'>削除する</button></form>';
   }
-  h+='<p class="acct-note" id="acNote" role="status">'+esc(note||(ACCT.fb?'':'ログインの準備中…'))+'</p>'+
+  h+='<p class="acct-note" id="acNote" role="status">'+esc(note||(ACCT.fb||mode==='name'?'':'ログインの準備中…'))+'</p>'+
      '<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
   $('sheetHost').innerHTML=h;
-  if(!ACCT.fb){
+  if(!ACCT.fb&&mode!=='name'){
     fbLoad().then(function(){
       var s=document.querySelector('.acct-sheet');if(!s||ACCT.busy)return;
       Array.prototype.forEach.call(s.querySelectorAll('[data-needs-fb]'),function(b){b.disabled=false;});
@@ -3231,6 +3258,10 @@ document.addEventListener('click',function(e){
   if(t.hasAttribute('data-acct-logout')){acctLogout();return;}
   if(t.hasAttribute('data-acct-sync')){acctPull();return;}
   if(t.hasAttribute('data-acct-delete')){acctSheet('delete');return;}
+  if(t.hasAttribute('data-acct-name')){acctSheet('name');return;}
+});
+document.addEventListener('input',function(e){
+  if(e.target&&e.target.id==='pname'){var b=document.querySelector('.acct-id b');if(b)b.textContent=(e.target.value||'').slice(0,14)||'PASSENGER';}
 });
 function acctBoot(){
   if(!ACCT.on)return;
@@ -3249,6 +3280,47 @@ function acctBoot(){
   }).catch(function(){});
 }
 setTimeout(acctBoot,0);
+/* ================= INSTALLABLE APP (PWA, standalone site only) =================
+   Registers the service worker (so the app opens offline) and offers "add to home screen":
+   Chrome/Edge/Android get the install prompt, iPhone/iPad get step-by-step instructions. */
+var PWA={on:false,prompt:null};
+try{PWA.on=location.protocol==='https:'&&/(^|\.)higgsfield\.(app|ai)$/.test(location.hostname)&&!window.claude&&('serviceWorker' in navigator);}catch(e){}
+function pwaStandalone(){try{return window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;}catch(e){return false;}}
+function pwaIOS(){var ua=navigator.userAgent||'';return /iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1);}
+if(PWA.on){
+  var pwaReg=function(){try{navigator.serviceWorker.register('/sw.js').catch(function(){});}catch(e){}};
+  if(document.readyState==='complete')pwaReg();else window.addEventListener('load',pwaReg);
+  window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();PWA.prompt=e;if(view==='record')render();});
+  window.addEventListener('appinstalled',function(){PWA.prompt=null;if(view==='record')render();});
+}
+function pwaCardHTML(){
+  if(!PWA.on||pwaStandalone())return '';
+  return '<section class="card pwa"><div class="card-h"><h2>App</h2><span class="lbl">無料</span></div>'+
+    '<p class="dim acct-lead">ホーム画面に追加すると、アプリみたいに全画面で開けて、電波がないところでも練習できるよ。</p>'+
+    (PWA.prompt?'<button class="go acct-go" type="button" data-pwa-install>ホーム画面に追加</button>'
+               :'<button class="ghost pwa-how" type="button" data-pwa-how>追加のしかたを見る</button>')+'</section>';
+}
+function pwaHowSheet(){
+  var ios=pwaIOS();
+  $('sheetHost').innerHTML='<div class="sheet" role="dialog" aria-label="ホーム画面に追加"><div class="sheet-in"><h3>ホーム画面に追加</h3><ol class="pwa-steps">'+
+    (ios?'<li><b>Safari</b>でこのページを開く(ほかのアプリの中で開いているときは「Safariで開く」)</li>'+
+         '<li><b>共有ボタン</b>(□に↑のマーク)を押す。見つからないときは「…」メニューの中にあるよ</li>'+
+         '<li><b>「ホーム画面に追加」</b>→<b>「追加」</b></li>'
+        :'<li><b>Chrome</b>か<b>Edge</b>でこのページを開く</li>'+
+         '<li>右上のメニュー(⋮)を開く</li>'+
+         '<li><b>「ホーム画面に追加」</b>か<b>「アプリをインストール」</b>を選ぶ</li>')+
+    '</ol><p class="dim pwa-note">'+(ios?'iPhoneでは、ホーム画面から開いたアプリとSafariで記録が別々に保存されるよ。アカウントにログインしておけば、どちらでも同じ記録を使えます。'
+                                     :'ホーム画面から開いても、この端末の記録はそのまま使えます。')+'</p>'+
+    '<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
+}
+document.addEventListener('click',function(e){
+  var t=e.target&&e.target.closest&&e.target.closest('button');if(!t)return;
+  if(t.hasAttribute('data-pwa-how')){pwaHowSheet();return;}
+  if(t.hasAttribute('data-pwa-install')&&PWA.prompt){
+    var p=PWA.prompt;PWA.prompt=null;
+    try{p.prompt();p.userChoice.then(function(){if(view==='record')render();},function(){});}catch(x){}
+  }
+});
 /* ================= EVENTS + BOOT ================= */
 function go(v){view=v;confirmReset=false;render();window.scrollTo(0,0);}
 document.addEventListener('click',function(e){
@@ -3345,7 +3417,7 @@ document.addEventListener('click',function(e){
   if(a('data-abort-yes')){leaveFlight();return;}
 });
 document.addEventListener('input',function(e){
-  if(e.target&&e.target.id==='pname'){save.name=(e.target.value||'').toUpperCase().slice(0,14)||'PASSENGER';store();}
+  if(e.target&&e.target.id==='pname'){save.name=(e.target.value||'').slice(0,14)||'PASSENGER';store();}
 });
 document.addEventListener('keydown',function(e){
   var id=e.target&&e.target.id;

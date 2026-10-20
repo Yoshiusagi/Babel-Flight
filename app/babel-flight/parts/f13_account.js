@@ -253,6 +253,11 @@ function acctGoogle(del){
 document.addEventListener('submit',function(e){
   var f=e.target;if(!f||f.id!=='acctForm')return;
   e.preventDefault();
+  if(f.getAttribute('data-mode')==='name'){
+    var nm=(($('acName')||{}).value||'').replace(/[\u0000-\u001f\u007f]/g,'').trim();
+    if(Array.from(nm).length>14){acctErr('14文字までにしてね。');return;}
+    save.name=nm||'PASSENGER';store();closeSheet();render();return;
+  }
   var fb=ACCT.fb;if(!fb||ACCT.busy)return;
   var mode=f.getAttribute('data-mode'),F=fb.F;
   var em=(($('acEmail')||{}).value||'').trim(),pw=($('acPass')||{}).value||'',pw2=($('acPass2')||{}).value||'';
@@ -291,7 +296,8 @@ function acctCardHTML(){
   }else{
     var hint=acctHint();
     h+=(ACCT.me.provider==='google.com'?'Google':'メール')+'でログイン中</span></div>'+
-       '<div class="acct-me"><span class="acct-av">'+avatarHTML()+'</span><div class="acct-id"><b>'+esc(save.name)+'</b><small>'+esc(hint.email||'')+'</small></div></div>'+
+       '<div class="acct-me"><button class="acct-av" type="button" data-icon-open aria-label="アイコンを変える">'+avatarHTML()+'</button><div class="acct-id"><b>'+esc(save.name)+'</b><small>'+esc(hint.email||'')+'</small></div>'+
+       '<button class="ghost acct-edit" type="button" data-acct-name>名前を変える</button></div>'+
        '<p class="acct-sync" id="acctStat" role="status">'+acctStatusText()+'</p>'+
        '<div class="row2"><button class="ghost" type="button" data-acct-sync>今すぐ同期</button><button class="ghost" type="button" data-acct-logout>ログアウト</button></div>'+
        '<button class="acct-del" type="button" data-acct-delete>アカウントを削除</button>';
@@ -328,6 +334,12 @@ function acctSheet(mode,note){
        '<label class="fld"><span>メールアドレス</span><input id="acEmail" type="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" value="'+esc(hint.email||'')+'"></label>'+
        '<p class="acct-err" id="acErr" role="alert"></p><button class="go" type="submit" data-needs-fb'+nf+'>リンクを送る</button></form>'+
        '<button class="acct-link" type="button" data-acct-email="login">ログインに戻る</button>';
+  }else if(mode==='name'){
+    var cur=save.name==='PASSENGER'?'':save.name;
+    h+='<h3>名前を変える</h3><p class="dim acct-lead">記録画面のIDカードに出る名前です。ログインしているほかの端末にも同期されます。</p>'+
+       '<form id="acctForm" class="acct-form" data-mode="name" novalidate>'+
+       '<label class="fld"><span>名前(14文字まで)</span><input id="acName" maxlength="14" autocomplete="nickname" spellcheck="false" placeholder="PASSENGER" value="'+esc(cur)+'"></label>'+
+       '<p class="acct-err" id="acErr" role="alert"></p><button class="go" type="submit">保存する</button></form>';
   }else{
     var g=ACCT.me&&ACCT.me.provider==='google.com';
     h+='<h3>アカウントを削除</h3><p class="dim acct-lead">サーバーにある学習記録とアカウントが消えて、元に戻せません。この端末に残っている記録はそのままです。確認のため、もう一度ログインしてね。</p>';
@@ -337,10 +349,10 @@ function acctSheet(mode,note){
        '<label class="fld"><span>パスワード</span><input id="acPass" type="password" autocomplete="current-password"></label>'+
        '<p class="acct-err" id="acErr" role="alert"></p><button class="go danger-go" type="submit" data-needs-fb'+nf+'>削除する</button></form>';
   }
-  h+='<p class="acct-note" id="acNote" role="status">'+esc(note||(ACCT.fb?'':'ログインの準備中…'))+'</p>'+
+  h+='<p class="acct-note" id="acNote" role="status">'+esc(note||(ACCT.fb||mode==='name'?'':'ログインの準備中…'))+'</p>'+
      '<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
   $('sheetHost').innerHTML=h;
-  if(!ACCT.fb){
+  if(!ACCT.fb&&mode!=='name'){
     fbLoad().then(function(){
       var s=document.querySelector('.acct-sheet');if(!s||ACCT.busy)return;
       Array.prototype.forEach.call(s.querySelectorAll('[data-needs-fb]'),function(b){b.disabled=false;});
@@ -359,6 +371,10 @@ document.addEventListener('click',function(e){
   if(t.hasAttribute('data-acct-logout')){acctLogout();return;}
   if(t.hasAttribute('data-acct-sync')){acctPull();return;}
   if(t.hasAttribute('data-acct-delete')){acctSheet('delete');return;}
+  if(t.hasAttribute('data-acct-name')){acctSheet('name');return;}
+});
+document.addEventListener('input',function(e){
+  if(e.target&&e.target.id==='pname'){var b=document.querySelector('.acct-id b');if(b)b.textContent=(e.target.value||'').slice(0,14)||'PASSENGER';}
 });
 function acctBoot(){
   if(!ACCT.on)return;

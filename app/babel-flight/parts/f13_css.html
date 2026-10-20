@@ -3,11 +3,11 @@
 .acct-lead{font-size:13.5px;line-height:1.7}
 .acct-go{margin-top:12px}
 .acct-me{display:flex;align-items:center;gap:12px;margin-top:4px;min-width:0}
-.acct-av{width:46px;height:46px;border-radius:50%;background:var(--bg);color:var(--ink);display:grid;place-items:center;flex:none}
+.acct-av{width:46px;height:46px;border-radius:50%;background:var(--bg);color:var(--ink);display:grid;place-items:center;flex:none;border:0;padding:0;cursor:pointer}
 .acct-av .pfp{font-size:24px;line-height:1}
 .acct-av svg{width:24px;height:24px}
 .acct-id{min-width:0;display:grid}
-.acct-id b{font:700 19px/1.2 var(--f-disp);letter-spacing:.08em;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.acct-id b{font:700 19px/1.2 var(--f-disp);letter-spacing:.06em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .acct-id small{color:var(--ink2);font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .acct-sync{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2);margin:12px 0 10px}
 .acct-sync .dot{width:8px;height:8px;border-radius:50%;background:var(--line);flex:none}
@@ -41,6 +41,11 @@
 .seg.two{grid-template-columns:repeat(2,1fr);margin-top:0}
 .danger-go{background:var(--bad);color:#fff}
 @media (prefers-reduced-motion:reduce){.acct-sync .dot.sync{animation:none}}
+.acct-edit{flex:none;margin-left:auto;padding:8px 11px;font-size:12.5px}
+.pwa-how{width:100%;margin-top:12px}
+.pwa-steps{margin:0;padding-left:1.4em;display:grid;gap:8px;font-size:14px;line-height:1.6}
+.pwa-steps b{font-weight:700}
+.pwa-note{font-size:12.5px;line-height:1.7;padding:10px 12px;border-radius:10px;background:var(--bg)}
 /* Higgsfield adds a fixed "Made in Higgsfield" badge (bottom right). Keep it clear of the tab bar and the sheets. */
 body:has(#tabs:not([hidden])) #hf-watermark{bottom:calc(74px + env(safe-area-inset-bottom,0px)) !important}
 body:has(#hf-watermark) .sheet{padding-bottom:calc(54px + env(safe-area-inset-bottom,0px))}

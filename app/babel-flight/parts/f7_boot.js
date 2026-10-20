@@ -94,7 +94,7 @@ document.addEventListener('click',function(e){
   if(a('data-abort-yes')){leaveFlight();return;}
 });
 document.addEventListener('input',function(e){
-  if(e.target&&e.target.id==='pname'){save.name=(e.target.value||'').toUpperCase().slice(0,14)||'PASSENGER';store();}
+  if(e.target&&e.target.id==='pname'){save.name=(e.target.value||'').slice(0,14)||'PASSENGER';store();}
 });
 document.addEventListener('keydown',function(e){
   var id=e.target&&e.target.id;

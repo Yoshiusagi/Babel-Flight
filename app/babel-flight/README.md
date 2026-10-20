@@ -24,3 +24,10 @@ through Firebase Authentication and sync the save between devices. The Firebase 
 `src/lib/account.server.ts` (+ `firebase-token.server.ts`), schema `migrations/0003_accounts.sql`,
 privacy policy `src/privacy.html`. The profile icon on the ID card (`ICONS` in `parts/e4_core.js`) is shared
 with the Claude version.
+
+## Installable app (PWA)
+
+`parts/f14_pwa.js` (standalone site only) registers `public/sw.js` (network-first app page, offline fallback,
+cached icons/fonts; APIs never cached) and shows an "App" card on the record screen with install steps.
+`public/manifest.webmanifest` + `public/icons/*` (rendered from the favicon plane). Bump `CORE_CACHE` in
+`sw.js` when the cached file list changes.

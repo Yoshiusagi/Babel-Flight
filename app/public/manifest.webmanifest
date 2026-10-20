@@ -1,0 +1,17 @@
+{
+  "name": "Babel Flight",
+  "short_name": "Babel Flight",
+  "description": "飛行機に乗るように、韓国語・英語・スペイン語・イタリア語を学ぶ語学アプリ",
+  "lang": "ja",
+  "id": "/",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0b1626",
+  "theme_color": "#e9edf2",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

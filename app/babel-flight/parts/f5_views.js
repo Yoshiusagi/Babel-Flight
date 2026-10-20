@@ -98,6 +98,7 @@ function recordHTML(){
      '<div class="cls">'+cur[0]+' クラス'+(p?' ・ '+esc(p.jp)+'志望':'')+'</div><div class="cls-bar"><i style="width:'+pct+'%"></i></div>'+
      '<div class="lbl" style="margin-top:6px">'+(nx?'次の「'+nx[0]+'」まで '+fmt(nx[2]-save.miles)+' マイル':'最高クラスに到達')+'</div></div></section>';
   if(typeof acctCardHTML==='function')h+=acctCardHTML();
+  if(typeof pwaCardHTML==='function')h+=pwaCardHTML();
   h+='<div class="kpis">'+
      [['マイル',fmt(save.miles)],['レッスン',fmt(save.flights)],['連続日数',streakNow()+'日'],['学習したフレーズ',fmt(totalLearned())],['定着したフレーズ',fmt(totalMastered())],['スタンプ',stamps]].map(function(k){
        return '<div class="kpi"><span class="lbl">'+k[0]+'</span><div class="v">'+k[1]+'</div></div>';}).join('')+'</div>';
