@@ -3,6 +3,7 @@ p1_head.html
 c1b_css.html
 e1_css.html
 f1_css.html
+f13_css.html
 @HEADEND
 e2_body.html
 p3a_data.js
@@ -25,5 +26,6 @@ f10_fx.js
 f11_anim.js
 c8_ai.js
 f12_track.js
+f13_account.js
 f7_boot.js
 @END

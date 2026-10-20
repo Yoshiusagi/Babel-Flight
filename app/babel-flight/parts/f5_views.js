@@ -93,10 +93,11 @@ function recordHTML(){
   var rk=rankIdx(save.miles),nx=RANKS[rk+1],cur=RANKS[rk],p=profById(save.prof);
   var pct=nx?clamp((save.miles-cur[2])/(nx[2]-cur[2]),0,1)*100:100,h=topBar('記録'),stamps=0;
   ORDER.forEach(function(l){ALL_IDS[l].forEach(function(uid){if(unitRec(l,uid).n>0)stamps++;});});
-  h+='<section class="id-card"><div class="photo">'+planeIcon()+'</div><div style="min-width:0"><span class="lbl">名前</span>'+
+  h+='<section class="id-card"><button class="photo" type="button" data-icon-open aria-label="アイコンを変える">'+avatarHTML()+'<i class="photo-ed" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></i></button><div style="min-width:0"><span class="lbl">名前</span>'+
      '<input id="pname" maxlength="14" value="'+esc(save.name)+'" aria-label="名前" autocomplete="off" spellcheck="false">'+
      '<div class="cls">'+cur[0]+' クラス'+(p?' ・ '+esc(p.jp)+'志望':'')+'</div><div class="cls-bar"><i style="width:'+pct+'%"></i></div>'+
      '<div class="lbl" style="margin-top:6px">'+(nx?'次の「'+nx[0]+'」まで '+fmt(nx[2]-save.miles)+' マイル':'最高クラスに到達')+'</div></div></section>';
+  if(typeof acctCardHTML==='function')h+=acctCardHTML();
   h+='<div class="kpis">'+
      [['マイル',fmt(save.miles)],['レッスン',fmt(save.flights)],['連続日数',streakNow()+'日'],['学習したフレーズ',fmt(totalLearned())],['定着したフレーズ',fmt(totalMastered())],['スタンプ',stamps]].map(function(k){
        return '<div class="kpi"><span class="lbl">'+k[0]+'</span><div class="v">'+k[1]+'</div></div>';}).join('')+'</div>';
@@ -137,11 +138,17 @@ function pickerHTML(){
   return '<div class="fl-top"><button class="x" type="button" data-picker-close aria-label="戻る">'+closeIcon()+'</button><div class="fl-id"><span class="lbl">職業コース</span><b>どんな仕事で活躍したい？</b></div></div>'+
     '<p class="dim lead">選んだ職業の専門会話が、ホームのロードマップに追加されます。4言語すべてに対応しています。</p>'+profGrid(save.prof,'data-pick');
 }
+function openIconSheet(){
+  var cur=save.icon||'';
+  $('sheetHost').innerHTML='<div class="sheet" role="dialog" aria-label="アイコンを選ぶ"><div class="sheet-in"><h3>アイコンを選ぶ</h3><div class="icon-grid">'+
+    [['','','標準(飛行機)']].concat(ICONS).map(function(x){return '<button type="button" data-icon-set="'+x[0]+'" aria-pressed="'+(cur===x[0])+'" aria-label="'+x[2]+'">'+avatarHTML(x[0])+'</button>';}).join('')+
+    '</div><button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
+}
 function onboardHTML(){
   var D=obDraft,h='<div class="ob"><div class="ob-dots" aria-label="ステップ '+(obStep+1)+' / 4">'+[0,1,2,3].map(function(i){return '<i class="'+(i<=obStep?'on':'')+'"></i>';}).join('')+'</div>';
   if(obStep===0){
     h+='<div class="brand ob-brand">'+planeIcon()+'Babel<b>Flight</b></div><h1 class="ob-h">日本から世界へ。<br>仕事で使う言葉を、フライト形式で。</h1>'+
-       '<p class="dim lead">はじめに4つだけ質問させてね。あなたに合わせて学ぶ内容を組み立てます。</p><h2 class="ob-q">どの言語を学ぶ？</h2><div class="lang-grid">'+
+       '<p class="dim lead">はじめに4つだけ質問させてね。あなたに合わせて学ぶ内容を組み立てます。</p>'+(typeof acctObHTML==='function'?acctObHTML():'')+'<h2 class="ob-q">どの言語を学ぶ？</h2><div class="lang-grid">'+
        ORDER.map(function(k){var LG=LANGS[k];return '<button class="langc" type="button" data-ob-lang="'+k+'" style="--dc:var(--c-'+k+')" aria-pressed="'+(D.lang===k)+'"><span class="code">'+LG.code+'</span><b>'+esc(LG.name)+'</b><small>'+esc(LG.native)+' ・ '+esc(LG.city)+'行き</small></button>';}).join('')+'</div>';
   }else if(obStep===1){
     h+='<h2 class="ob-q">どんな仕事で活躍したい？</h2><p class="dim lead">選んだ職業の専門会話を、基本の会話にプラスして学べます。</p>'+profGrid(D.prof,'data-ob-prof');

@@ -24,6 +24,9 @@ document.addEventListener('click',function(e){
   if(a('data-picker')){pickerBack=(view==='record'?'record':'home');go('picker');return;}
   if(a('data-picker-close')){go(pickerBack);return;}
   if(a('data-pick')){save.prof=g('data-pick');if(save.prof&&pickerBack==='home')save.mode='job';store();go(pickerBack);return;}
+  /* profile icon */
+  if(a('data-icon-open')){openIconSheet();return;}
+  if(a('data-icon-set')){save.icon=g('data-icon-set');store();closeSheet();render();return;}
   /* settings */
   if(a('data-level')){save.level=g('data-level');store();render();return;}
   if(a('data-goal')){save.goal=parseInt(g('data-goal'),10)||2;store();render();return;}

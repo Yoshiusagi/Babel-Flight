@@ -16,6 +16,21 @@ import type { D1Database } from "@cloudflare/workers-types";
 
 import STATS_HTML from "../stats.html?raw";
 import { bindings } from "./bindings.server";
+import {
+  encoder,
+  fromHex,
+  isSameOrigin,
+  json,
+  noContent,
+  num,
+  randomHex,
+  readCookie,
+  readJsonBody,
+  sha256Hex,
+  timingSafeEqualHex,
+  toHex,
+  type Row,
+} from "./http.server";
 
 const LANGS = new Set(["ko", "en", "es", "it"]);
 const MODES = new Set(["daily", "job"]);
@@ -34,7 +49,6 @@ const MAX_BODY = 2048;
 const JST_MS = 9 * 3_600_000;
 const DAY_MS = 86_400_000;
 
-type Row = Record<string, unknown>;
 type Range = "30d" | "12m" | "all";
 type Buckets = { len: number; start: string; keys: string[]; unit: "day" | "month" | "year" };
 
@@ -42,77 +56,11 @@ function jstDay(ms: number): string {
   return new Date(ms + JST_MS).toISOString().slice(0, 10);
 }
 
-function num(v: unknown): number {
-  const n = Number(v);
-  return Number.isFinite(n) ? n : 0;
-}
-
-function json(data: unknown, status = 200, headers: Record<string, string> = {}): Response {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      "content-type": "application/json; charset=utf-8",
-      "cache-control": "no-store",
-      ...headers,
-    },
-  });
-}
-
-function noContent(): Response {
-  return new Response(null, { status: 204, headers: { "cache-control": "no-store" } });
-}
-
-// Browsers send Sec-Fetch-Site on every fetch; older ones fall back to Origin.
-function isSameOrigin(request: Request, url: URL): boolean {
-  const site = request.headers.get("sec-fetch-site");
-  if (site) return site === "same-origin";
-  const origin = request.headers.get("origin");
-  if (!origin) return false;
-  try {
-    return new URL(origin).host === url.host;
-  } catch {
-    return false;
-  }
-}
-
-async function readBody(request: Request): Promise<Row | null> {
-  if (num(request.headers.get("content-length")) > MAX_BODY) return null;
-  const text = await request.text();
-  if (text.length > MAX_BODY) return null;
-  try {
-    const value: unknown = JSON.parse(text);
-    return value && typeof value === "object" && !Array.isArray(value) ? (value as Row) : null;
-  } catch {
-    return null;
-  }
+function readBody(request: Request): Promise<Row | null> {
+  return readJsonBody(request, MAX_BODY);
 }
 
 /* ---------- crypto helpers ---------- */
-
-const encoder = new TextEncoder();
-
-function toHex(buf: ArrayBuffer | Uint8Array): string {
-  const bytes = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
-  let out = "";
-  for (const b of bytes) out += b.toString(16).padStart(2, "0");
-  return out;
-}
-
-function fromHex(hex: string) {
-  const out = new Uint8Array(hex.length >> 1);
-  for (let i = 0; i < out.length; i++) out[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16);
-  return out;
-}
-
-function randomHex(bytes: number): string {
-  const a = new Uint8Array(bytes);
-  crypto.getRandomValues(a);
-  return toHex(a);
-}
-
-async function sha256Hex(text: string): Promise<string> {
-  return toHex(await crypto.subtle.digest("SHA-256", encoder.encode(text)));
-}
 
 async function pbkdf2Hex(pass: string, saltHex: string, iterations: number): Promise<string> {
   const key = await crypto.subtle.importKey("raw", encoder.encode(pass), "PBKDF2", false, ["deriveBits"]);
@@ -124,30 +72,7 @@ async function pbkdf2Hex(pass: string, saltHex: string, iterations: number): Pro
   return toHex(bits);
 }
 
-function timingSafeEqualHex(a: string, b: string): boolean {
-  const x = encoder.encode(a);
-  const y = encoder.encode(b);
-  if (x.byteLength !== y.byteLength) return false;
-  const subtle = crypto.subtle as unknown as {
-    timingSafeEqual?: (p: ArrayBufferView, q: ArrayBufferView) => boolean;
-  };
-  if (typeof subtle.timingSafeEqual === "function") return subtle.timingSafeEqual(x, y);
-  let diff = 0;
-  for (let i = 0; i < x.length; i++) diff |= (x[i] ?? 0) ^ (y[i] ?? 0);
-  return diff === 0;
-}
-
 /* ---------- session ---------- */
-
-function readCookie(request: Request, name: string): string | null {
-  const header = request.headers.get("cookie");
-  if (!header) return null;
-  for (const part of header.split(";")) {
-    const i = part.indexOf("=");
-    if (i > 0 && part.slice(0, i).trim() === name) return part.slice(i + 1).trim();
-  }
-  return null;
-}
 
 function sessionCookie(token: string, maxAgeSeconds: number): string {
   return `${COOKIE}=${token}; Path=/api/stats; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAgeSeconds}`;

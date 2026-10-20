@@ -16,6 +16,11 @@ function seeded(seed){var a=seed>>>0;return function(){a=(a+0x6D2B79F5)|0;var t=
 /* ================= ICONS ================= */
 var PLANE_D='M14 0C14 -1.5 10 -2.2 4 -2.2L-3 -12.5L-7 -12.5L-4 -2.2L-11 -2.2L-15 -6L-18 -6L-16 -1.6L-18 0L-16 1.6L-18 6L-15 6L-11 2.2L-4 2.2L-7 12.5L-3 12.5L4 2.2C10 2.2 14 1.5 14 0Z';
 function planeIcon(){return '<svg viewBox="-20 -14 36 28" aria-hidden="true"><path d="'+PLANE_D+'" fill="currentColor"/></svg>';}
+/* profile icons (record screen ID card); '' = the default plane */
+var ICONS=[['pilot','🧑‍✈️','パイロット'],['globe','🌏','地球'],['bag','🧳','スーツケース'],['map','🗺️','地図'],['music','🎧','音楽'],
+  ['book','📚','本'],['sakura','🌸','さくら'],['bike','🚲','自転車'],['penguin','🐧','ペンギン'],['fox','🦊','キツネ'],['star','⭐','星']];
+var ICON_MAP={};ICONS.forEach(function(x){ICON_MAP[x[0]]=x;});
+function avatarHTML(id){var ic=ICON_MAP[id===undefined?save.icon:id];return ic?'<span class="pfp" role="img" aria-label="'+ic[2]+'">'+ic[1]+'</span>':planeIcon();}
 function starIcon(on){return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6L2.5 9.4l6.6-.8z" fill="'+(on?'var(--signal)':'none')+'" stroke="'+(on?'#b88a00':'var(--line)')+'" stroke-width="1.6" stroke-linejoin="round"/></svg>';}
 function closeIcon(){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>';}
 function speakerIcon(){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4zM15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>';}
@@ -29,7 +34,7 @@ function barcodeSVG(seed){
 var KEY='babelflight.save.v1';
 var OLD_ORDER=['checkin','inflight','immigration','hotel','restaurant','city','atc1','atc2'];
 function blankProg(){var p={};ORDER.forEach(function(k){p[k]={items:{},units:{}};});return p;}
-function defaults(){return {v:2,t:0,name:'PASSENGER',lang:'ko',prof:'',level:'mid',goal:2,onboarded:false,theme:'auto',sound:true,mode:'daily',amb:false,tap:true,pos:{},
+function defaults(){return {v:2,t:0,name:'PASSENGER',icon:'',rz:0,lang:'ko',prof:'',level:'mid',goal:2,onboarded:false,theme:'auto',sound:true,mode:'daily',amb:false,tap:true,pos:{},
   miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,daily:{d:'',n:0},prog:blankProg()};}
 function mergeSave(raw){
   var d=defaults();
@@ -54,6 +59,8 @@ function mergeSave(raw){
   if(['beg','mid','adv'].indexOf(d.level)<0)d.level='mid';
   d.goal=clamp(parseInt(d.goal,10)||2,1,5);
   if(d.mode!=='job')d.mode='daily';
+  if(typeof d.icon!=='string'||!ICON_MAP[d.icon])d.icon='';
+  d.rz=+d.rz||0;
   return d;
 }
 function loadLocal(){try{return mergeSave(JSON.parse(localStorage.getItem(KEY)||'null'));}catch(e){return defaults();}}
