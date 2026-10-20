@@ -29,5 +29,7 @@ with the Claude version.
 
 `parts/f14_pwa.js` (standalone site only) registers `public/sw.js` (network-first app page, offline fallback,
 cached icons/fonts; APIs never cached) and shows an "App" card on the record screen with install steps.
-`public/manifest.webmanifest` + `public/icons/*` (rendered from the favicon plane). Bump `CORE_CACHE` in
+`public/manifest.webmanifest` + `public/icons/app-*` (sunset app icon); the owner's `/stats` page has its own
+`public/stats.webmanifest` + `public/icons/tower-*` (control tower). Icons are rendered by a small Playwright script
+(see the commit that added them); `public/favicon.svg` matches the app icon. Bump `CORE_CACHE` in
 `sw.js` when the cached file list changes.

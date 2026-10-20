@@ -1,9 +1,9 @@
 /* Babel Flight service worker: lets the installed app open without a connection.
    The app page: network first (always fresh when online), last copy when offline.
    Icons and fonts: cache first. APIs, sign-in and /stats: never cached. */
-const CORE_CACHE = 'bf-core-v1';
+const CORE_CACHE = 'bf-core-v2';
 const FONT_CACHE = 'bf-fonts-v1';
-const CORE = ['/', '/favicon.svg', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png', '/icons/apple-touch-icon.png'];
+const CORE = ['/', '/favicon.svg', '/manifest.webmanifest', '/icons/app-192.png', '/icons/app-512.png', '/icons/app-touch-180.png'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CORE_CACHE).then((c) => c.addAll(CORE)).then(() => self.skipWaiting()));

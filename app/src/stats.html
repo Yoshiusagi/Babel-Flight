@@ -6,7 +6,14 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="same-origin">
 <title>Babel Flight 管制塔</title>
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/icons/tower.svg" type="image/svg+xml">
+<link rel="manifest" href="/stats.webmanifest">
+<link rel="apple-touch-icon" href="/icons/tower-touch-180.png">
+<meta name="theme-color" content="#ffcf26">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="管制塔">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=B612+Mono:wght@400;700&family=IBM+Plex+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
@@ -204,7 +211,7 @@ tbody th{font-weight:500}
 <body>
 <div id="app">
   <header class="top">
-    <a class="brand" href="/" aria-label="Babel Flight のアプリを開く"><img src="/favicon.svg" alt="" width="34" height="34"><span><b>Babel Flight</b><small>管制塔 ・ CONTROL TOWER</small></span></a>
+    <a class="brand" href="/" aria-label="Babel Flight のアプリを開く"><img src="/icons/tower.svg" alt="" width="34" height="34"><span><b>Babel Flight</b><small>管制塔 ・ CONTROL TOWER</small></span></a>
     <button id="logout" class="ghost" type="button" hidden>ログアウト</button>
   </header>
   <main id="main"><p class="loading">読み込み中…</p></main>
@@ -285,7 +292,7 @@ function gate(title,lead,fields,btnText,submit,note){
   show.addEventListener('change',function(){fields.forEach(function(f){f.input.type=show.checked?'text':'password';});});
   var btn=h('button',{class:'go',type:'submit',text:btnText});
   var form=h('form',{class:'gate card rv'},
-    [h('img',{class:'gate-ic',src:'/favicon.svg',alt:'',width:'48',height:'48'}),h('h1',{text:title}),h('p',{class:'lead',text:lead})]
+    [h('img',{class:'gate-ic',src:'/icons/tower.svg',alt:'',width:'48',height:'48'}),h('h1',{text:title}),h('p',{class:'lead',text:lead})]
     .concat(fields.map(function(f){return f.wrap;}))
     .concat([h('label',{class:'chk',for:'showpw'},[show,h('span',{text:'合言葉を表示する'})]),err,btn]));
   form.noValidate=true;
@@ -626,6 +633,7 @@ window.addEventListener('resize',function(){
 });
 
 /* ---------- boot ---------- */
+try{if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(function(){});}catch(e){}
 api('/api/stats/state').then(function(j){
   if(j._s===503){msg('データベースを準備しています。数分たってから開き直してね。');return;}
   if(j._s!==200){msg('うまく読み込めませんでした。開き直してみてね。');return;}

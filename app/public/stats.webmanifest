@@ -1,0 +1,32 @@
+{
+  "name": "Babel Flight 管制塔",
+  "short_name": "管制塔",
+  "description": "Babel Flight の利用状況(オーナー専用)",
+  "lang": "ja",
+  "id": "/stats",
+  "start_url": "/stats",
+  "scope": "/stats",
+  "display": "standalone",
+  "background_color": "#ffcf26",
+  "theme_color": "#ffcf26",
+  "icons": [
+    {
+      "src": "/icons/tower-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/tower-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/tower-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
