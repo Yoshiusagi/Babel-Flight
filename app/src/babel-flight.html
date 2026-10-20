@@ -3078,6 +3078,7 @@ function acctPull(){
 }
 document.addEventListener('visibilitychange',function(){if(!document.hidden)acctPull();});
 window.addEventListener('online',acctPull);
+window.addEventListener('online',function(){if(!ACCT.cfg)acctBoot();});
 /* a progress reset while signed in replaces the account copy too */
 document.addEventListener('click',function(e){
   var b=e.target&&e.target.closest&&e.target.closest('[data-reset-yes]');
