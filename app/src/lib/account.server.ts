@@ -33,8 +33,15 @@ const RECENT_SIGN_IN_S = 600;
 
 type Session = { uid: string; token: string; tokenHash: string; expires: number };
 
-function sessionCookie(token: string, maxAgeSeconds: number): string {
-  return `${COOKIE}=${token}; Path=/api/account; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAgeSeconds}`;
+function sessionCookie(token: string, maxAgeSeconds: number, path = "/api"): string {
+  return `${COOKIE}=${token}; Path=${path}; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAgeSeconds}`;
+}
+
+/** Expires the session cookie, including the narrower /api/account one issued before AI routes existed. */
+function withClearedCookies(res: Response): Response {
+  res.headers.append("set-cookie", sessionCookie("", 0));
+  res.headers.append("set-cookie", sessionCookie("", 0, "/api/account"));
+  return res;
 }
 
 async function currentSession(request: Request, db: D1Database): Promise<Session | null> {
@@ -72,7 +79,13 @@ async function claimsFrom(body: Row | null, projectId: string): Promise<Firebase
 }
 
 function signedOut(): Response {
-  return json({ ok: false, error: "signed_out" }, 401, { "set-cookie": sessionCookie("", 0) });
+  return withClearedCookies(json({ ok: false, error: "signed_out" }, 401));
+}
+
+/** The signed-in account's uid, or null. Used by the AI routes. */
+export async function accountUid(request: Request, db: D1Database): Promise<string | null> {
+  const session = await currentSession(request, db);
+  return session ? session.uid : null;
 }
 
 /* ---------- handlers ---------- */
@@ -110,20 +123,17 @@ async function handleMe(request: Request, db: D1Database): Promise<Response> {
     await db.prepare("DELETE FROM bf_acct_sessions WHERE token_hash = ?").bind(session.tokenHash).run();
     return signedOut();
   }
-  const headers: Record<string, string> = {};
   const now = Date.now();
+  let expires = session.expires;
   // Sliding session: an account that keeps being used stays signed in.
   if (session.expires - now < SESSION_MS - SESSION_EXTEND_AFTER_MS) {
-    await db
-      .prepare("UPDATE bf_acct_sessions SET expires = ? WHERE token_hash = ?")
-      .bind(now + SESSION_MS, session.tokenHash)
-      .run();
-    headers["set-cookie"] = sessionCookie(session.token, SESSION_MS / 1000);
+    expires = now + SESSION_MS;
+    await db.prepare("UPDATE bf_acct_sessions SET expires = ? WHERE token_hash = ?").bind(expires, session.tokenHash).run();
   }
   return json(
     { ok: true, uid: session.uid, provider: String(user.provider), createdAt: num(user.created_at) },
     200,
-    headers,
+    { "set-cookie": sessionCookie(session.token, Math.max(1, Math.floor((expires - now) / 1000))) },
   );
 }
 
@@ -193,7 +203,7 @@ async function handleLogout(request: Request, db: D1Database): Promise<Response>
   if (token && TOKEN_RE.test(token)) {
     await db.prepare("DELETE FROM bf_acct_sessions WHERE token_hash = ?").bind(await sha256Hex(token)).run();
   }
-  return json({ ok: true }, 200, { "set-cookie": sessionCookie("", 0) });
+  return withClearedCookies(json({ ok: true }));
 }
 
 async function handleDelete(request: Request, db: D1Database, projectId: string): Promise<Response> {
@@ -207,8 +217,9 @@ async function handleDelete(request: Request, db: D1Database, projectId: string)
     db.prepare("DELETE FROM bf_saves WHERE uid = ?").bind(session.uid),
     db.prepare("DELETE FROM bf_acct_sessions WHERE uid = ?").bind(session.uid),
     db.prepare("DELETE FROM bf_users WHERE uid = ?").bind(session.uid),
+    db.prepare("DELETE FROM bf_ai_usage WHERE uid = ?").bind(session.uid),
   ]);
-  return json({ ok: true }, 200, { "set-cookie": sessionCookie("", 0) });
+  return withClearedCookies(json({ ok: true }));
 }
 
 /* ---------- dispatcher ---------- */

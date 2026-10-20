@@ -92,7 +92,7 @@ function atcHTML(){
   if(!ATC.sc){
     h+='<p class="dim lead">あなたは「Babel 201」便のパイロット。管制官役のAIと英語で交信しよう。返答ごとに採点とお手本が出ます。</p><div class="opt-list">'+
       ATC_SC.map(function(s,i){return '<button class="choice" type="button" data-atc-sc="'+i+'"><b>'+esc(s.jp)+'</b><small>'+esc(s.sub)+'</small></button>';}).join('')+'</div>'+
-      '<p class="dim hint">AIが答えるたびに、Claudeの利用枠を少し使います。はじめての時は許可の確認が出ます。</p>';
+      '<p class="dim hint">'+(typeof atcNoteText==='function'?atcNoteText():'AIが答えるたびに、Claudeの利用枠を少し使います。はじめての時は許可の確認が出ます。')+'</p>';
     return h;
   }
   h+='<div class="card sit"><span class="lbl">状況</span><p>'+esc(ATC.sc.sit)+'</p><p class="mono" style="font-size:12.5px;margin-top:6px">コールサイン: Babel 201</p></div>';

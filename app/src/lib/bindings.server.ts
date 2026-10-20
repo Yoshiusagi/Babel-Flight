@@ -23,6 +23,8 @@ type AppEnv = {
   // .fetch(). See skills/containers.md.
   CONTAINER?: DurableObjectNamespace;
   HF_ENV?: string;
+  // Website secret (set in Higgsfield website settings): Claude API key for the AI features.
+  ANTHROPIC_API_KEY?: string;
   APP_SLUG?: string;
 };
 

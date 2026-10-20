@@ -28,5 +28,6 @@ c8_ai.js
 f12_track.js
 f13_account.js
 f14_pwa.js
+f15_ai.js
 f7_boot.js
 @END
