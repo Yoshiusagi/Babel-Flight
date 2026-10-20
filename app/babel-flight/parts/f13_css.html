@@ -41,4 +41,8 @@
 .seg.two{grid-template-columns:repeat(2,1fr);margin-top:0}
 .danger-go{background:var(--bad);color:#fff}
 @media (prefers-reduced-motion:reduce){.acct-sync .dot.sync{animation:none}}
+/* Higgsfield adds a fixed "Made in Higgsfield" badge (bottom right). Keep it clear of the tab bar and the sheets. */
+body:has(#tabs:not([hidden])) #hf-watermark{bottom:calc(74px + env(safe-area-inset-bottom,0px)) !important}
+body:has(#hf-watermark) .sheet{padding-bottom:calc(54px + env(safe-area-inset-bottom,0px))}
+body:has(#sheetHost .sheet) #hf-watermark{bottom:calc(12px + env(safe-area-inset-bottom,0px)) !important}
 </style>
