@@ -2,6 +2,7 @@ import "./lib/error-capture";
 
 import APP_HTML from "./babel-flight.html?raw";
 import { applySecurityHeaders } from "./lib/security-headers.server";
+import { handleAnalytics } from "./lib/analytics.server";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
@@ -55,6 +56,9 @@ export default {
         }),
       );
     }
+    // Anonymous usage counting + the owner-only /stats dashboard (see lib/analytics.server.ts).
+    const analytics = await handleAnalytics(request, url);
+    if (analytics) return applySecurityHeaders(analytics);
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);

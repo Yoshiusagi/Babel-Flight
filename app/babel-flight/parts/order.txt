@@ -24,5 +24,6 @@ e9_scene.js
 f10_fx.js
 f11_anim.js
 c8_ai.js
+f12_track.js
 f7_boot.js
 @END
