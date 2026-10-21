@@ -70,8 +70,12 @@ PJ('crew-safe','安全のご案内','SAFETY',
   es:[["Las mascarillas de oxígeno caerán automáticamente.","ラス マスカリジャス デ オクシヘノ カエラン アウトマティカメンテ",""],["Tire de la mascarilla con fuerza.","ティレ デ ラ マスカリジャ コン フエルサ","「tirar de 〜」=〜を引っぱる。"],["Póngase su mascarilla antes de ayudar a otros.","ポンガセ ス マスカリジャ アンテス デ アユダル ア オトロス","子ども連れでも、まず自分のマスクから。安全案内の大事なルールです。"],["El chaleco salvavidas está debajo de su asiento.","エル チャレコ サルバビダス エスタ デバホ デ ス アシエント","salvavidas=命を救うもの。"],["No lo infle dentro del avión.","ノ ロ インフレ デントロ デル アビオン",""],["¡Agáchense! ¡Cabeza abajo!","アガチェンセ カベサ アバホ","緊急着陸の直前に叫ぶ合図です。"],["¡Dejen el equipaje!","デヘン エル エキパヘ",""],["Localice la salida más cercana.","ロカリセ ラ サリダ マス セルカナ",""]],
   it:[["Le maschere dell'ossigeno scenderanno dall'alto.","レ マスケレ デッロッシージェノ シェンデランノ ダッラルト",""],["Tiri la maschera verso di sé.","ティーリ ラ マスケラ ヴェルソ ディ セ",""],["Indossi la sua maschera prima di aiutare gli altri.","インドッスィ ラ スア マスケラ プリーマ ディ アイウターレ リ アルトリ","子ども連れでも、まず自分のマスクから。安全案内の大事なルールです。"],["Il giubbotto di salvataggio è sotto il suo sedile.","イル ジュッボット ディ サルヴァタッジョ エ ソット イル スオ セディーレ",""],["Non lo gonfi all'interno dell'aereo.","ノン ロ ゴンフィ アッリンテルノ デッラエーレオ",""],["Giù la testa! State giù!","ジュ ラ テスタ スターテ ジュ","緊急着陸の直前に叫ぶ合図です。"],["Lasciate i bagagli!","ラッシャーテ イ バガッリ",""],["Individui l'uscita più vicina.","インディヴィードゥイ ルシータ ピウ ヴィチーナ",""]]});
 
-/* ---- register: 留学生 becomes a course in 職業モード (shares progress with 日常会話モードの「留学」) ---- */
-PROF.push({id:'study',code:'STU',jp:'留学生',en:'STUDY ABROAD',units:{ko:[],en:[],es:[],it:[]}});
-profMore('study',STUDY_IDS.concat(['s-lang','s-hist','s-arts','s-pe','s-it','s-life']));
+/* ---- register: the 留学モード units (track 'study'; progress shared with the school scenes and terms) ---- */
+var STUDY_TALK=['sc-class','sc-teacher','sc-home','s-life'],STUDY_SUBJ=['math','sci','soc','s-lang','s-hist','s-arts','s-pe','s-it'];
+var STUDY_ALL=STUDY_TALK.concat(STUDY_SUBJ);
+ORDER.forEach(function(l){
+  STUDY_ALL.forEach(function(uid){var u=PU[l][uid];if(u&&!UNITS[l][uid])UNITS[l][uid]={id:uid,items:u.items,track:'study'};});
+  ALL_IDS[l]=Object.keys(UNITS[l]);
+});
 profMore('pilot',{ko:['pilot-cock'],es:['pilot-cock'],it:['pilot-cock']});
 profMore('crew',['crew-svc','crew-safe']);

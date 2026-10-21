@@ -55,10 +55,11 @@ function mergeSave(raw){
     d.prog[k].items=items;d.prog[k].units=p.units||{};
   });
   if(ORDER.indexOf(d.lang)<0)d.lang='ko';
+  if(d.prof==='study'){d.prof='';if(d.mode==='job'){d.mode='study';ORDER.forEach(function(l){if(typeof d.pos[l+'-job']==='number')d.pos[l+'-study']=d.pos[l+'-job'];});}}
   if(d.prof&&!profById(d.prof))d.prof='';
   if(['beg','mid','adv'].indexOf(d.level)<0)d.level='mid';
   d.goal=clamp(parseInt(d.goal,10)||2,1,5);
-  if(d.mode!=='job')d.mode='daily';
+  if(d.mode!=='job'&&d.mode!=='study')d.mode='daily';
   if(typeof d.icon!=='string'||!ICON_MAP[d.icon])d.icon='';
   d.rz=+d.rz||0;
   /* miles per day (for the 6-month status); older saves start with their total as of today */
@@ -153,13 +154,19 @@ function pathSections(lang){
   if(save.mode==='job'){
     var p=profById(save.prof);
     if(!p)return [];
-    return [{key:p.id,title:p.id==='study'?'留学先の学校で':p.jp+'の専門会話',sub:p.id==='study'?'STUDY ABROAD ・ 学校の会話と教科の用語':p.en+' ・ 仕事で使う会話',ids:p.units[lang].slice(),prof:p}];
+    return [{key:p.id,title:p.jp+'の専門会話',sub:p.en+' ・ 仕事で使う会話',ids:p.units[lang].slice(),prof:p}];
+  }
+  if(save.mode==='study'){
+    var has=function(ids){return ids.filter(function(u){return !!UNITS[lang][u];});};
+    return [
+      {key:'study-talk',title:'留学先の学校で話す',sub:'自己紹介・先生への質問・ホームステイ・学校生活',ids:has(STUDY_TALK)},
+      {key:'study-subj',title:'授業の用語',sub:'数学・理科・社会・国語・歴史・音楽・体育・情報',ids:has(STUDY_SUBJ)}
+    ];
   }
   return [
     {key:'basic',title:'基本の日常会話',sub:'あいさつ・自己紹介・数字・気持ち',ids:DAILY_IDS.slice()},
     {key:'travel',title:'旅行フレーズ',sub:'空港・機内・入国・ホテル・街',ids:LANGS[lang].units.map(function(u){return u.id;})},
-    {key:'scenes',title:'旅行の場面で話す',sub:'入国審査からトラブルまで、会話で練習',ids:TRAVEL_SC.slice()},
-    {key:'study',title:'留学',sub:'学校での会話と、数学・理科・社会の用語',ids:STUDY_IDS.slice()}
+    {key:'scenes',title:'旅行の場面で話す',sub:'入国審査からトラブルまで、会話で練習',ids:TRAVEL_SC.slice()}
   ].concat(lang==='en'&&UNITS.en.usuk?[{key:'usuk',title:'アメリカ英語とイギリス英語',sub:'同じ意味でも、国によって言い方やつづりが変わる',ids:['usuk']}]:[]);
 }
 function pathIds(lang){var a=[];pathSections(lang).forEach(function(s){a=a.concat(s.ids);});return a;}

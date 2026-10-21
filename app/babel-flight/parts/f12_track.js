@@ -19,7 +19,7 @@ var TRK=(function(){
   }
   function send(o){
     if(!on)return;
-    o.vid=vid;o.mode=save.mode==='job'?'job':'daily';if(!LANGS[o.lang])o.lang=save.lang;
+    o.vid=vid;o.mode=save.mode==='job'||save.mode==='study'?save.mode:'daily';if(!LANGS[o.lang])o.lang=save.lang;
     try{fetch('/api/hit',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(o),keepalive:true,credentials:'same-origin'}).catch(function(){});}catch(e){}
   }
   /* a "visit" = first activity after 30 min of nothing in this tab */

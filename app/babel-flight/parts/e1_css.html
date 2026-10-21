@@ -23,13 +23,14 @@ body.dark-ui #sky{display:none}
 .ambtn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 
 /* mode switch */
-.modesw{position:relative;display:grid;grid-template-columns:1fr 1fr;margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px}
+.modesw{position:relative;display:grid;grid-template-columns:1fr 1fr 1fr;margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px}
 .modesw button{position:relative;z-index:1;border:0;background:transparent;padding:10px 6px;border-radius:10px;display:flex;flex-direction:column;align-items:center;gap:2px;transition:color .3s}
-.modesw button b{font-size:14.5px}
+.modesw button b{font-size:13.5px;white-space:nowrap;letter-spacing:-.01em}
 .modesw button small{font-size:11px;opacity:.75}
 .modesw button[aria-pressed="true"]{color:var(--bg)}
-.modesw-ind{position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:10px;background:var(--ink);transition:transform .45s cubic-bezier(.3,1.35,.5,1)}
+.modesw-ind{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px) / 3);border-radius:10px;background:var(--ink);transition:transform .45s cubic-bezier(.3,1.35,.5,1)}
 .modesw-ind.job{transform:translateX(100%)}
+.modesw-ind.study{transform:translateX(200%)}
 
 /* route map */
 .mapcard{margin-top:14px;border-radius:16px;overflow:hidden;background:#081125;color:#e8eefb;box-shadow:0 22px 44px -26px rgba(4,10,30,.75),inset 0 0 0 1px rgba(255,255,255,.06)}

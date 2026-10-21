@@ -444,13 +444,14 @@ body.dark-ui #sky{display:none}
 .ambtn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 
 /* mode switch */
-.modesw{position:relative;display:grid;grid-template-columns:1fr 1fr;margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px}
+.modesw{position:relative;display:grid;grid-template-columns:1fr 1fr 1fr;margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px}
 .modesw button{position:relative;z-index:1;border:0;background:transparent;padding:10px 6px;border-radius:10px;display:flex;flex-direction:column;align-items:center;gap:2px;transition:color .3s}
-.modesw button b{font-size:14.5px}
+.modesw button b{font-size:13.5px;white-space:nowrap;letter-spacing:-.01em}
 .modesw button small{font-size:11px;opacity:.75}
 .modesw button[aria-pressed="true"]{color:var(--bg)}
-.modesw-ind{position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:10px;background:var(--ink);transition:transform .45s cubic-bezier(.3,1.35,.5,1)}
+.modesw-ind{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px) / 3);border-radius:10px;background:var(--ink);transition:transform .45s cubic-bezier(.3,1.35,.5,1)}
 .modesw-ind.job{transform:translateX(100%)}
+.modesw-ind.study{transform:translateX(200%)}
 
 /* route map */
 .mapcard{margin-top:14px;border-radius:16px;overflow:hidden;background:#081125;color:#e8eefb;box-shadow:0 22px 44px -26px rgba(4,10,30,.75),inset 0 0 0 1px rgba(255,255,255,.06)}
@@ -1614,9 +1615,13 @@ PJ('crew-safe','安全のご案内','SAFETY',
   es:[["Las mascarillas de oxígeno caerán automáticamente.","ラス マスカリジャス デ オクシヘノ カエラン アウトマティカメンテ",""],["Tire de la mascarilla con fuerza.","ティレ デ ラ マスカリジャ コン フエルサ","「tirar de 〜」=〜を引っぱる。"],["Póngase su mascarilla antes de ayudar a otros.","ポンガセ ス マスカリジャ アンテス デ アユダル ア オトロス","子ども連れでも、まず自分のマスクから。安全案内の大事なルールです。"],["El chaleco salvavidas está debajo de su asiento.","エル チャレコ サルバビダス エスタ デバホ デ ス アシエント","salvavidas=命を救うもの。"],["No lo infle dentro del avión.","ノ ロ インフレ デントロ デル アビオン",""],["¡Agáchense! ¡Cabeza abajo!","アガチェンセ カベサ アバホ","緊急着陸の直前に叫ぶ合図です。"],["¡Dejen el equipaje!","デヘン エル エキパヘ",""],["Localice la salida más cercana.","ロカリセ ラ サリダ マス セルカナ",""]],
   it:[["Le maschere dell'ossigeno scenderanno dall'alto.","レ マスケレ デッロッシージェノ シェンデランノ ダッラルト",""],["Tiri la maschera verso di sé.","ティーリ ラ マスケラ ヴェルソ ディ セ",""],["Indossi la sua maschera prima di aiutare gli altri.","インドッスィ ラ スア マスケラ プリーマ ディ アイウターレ リ アルトリ","子ども連れでも、まず自分のマスクから。安全案内の大事なルールです。"],["Il giubbotto di salvataggio è sotto il suo sedile.","イル ジュッボット ディ サルヴァタッジョ エ ソット イル スオ セディーレ",""],["Non lo gonfi all'interno dell'aereo.","ノン ロ ゴンフィ アッリンテルノ デッラエーレオ",""],["Giù la testa! State giù!","ジュ ラ テスタ スターテ ジュ","緊急着陸の直前に叫ぶ合図です。"],["Lasciate i bagagli!","ラッシャーテ イ バガッリ",""],["Individui l'uscita più vicina.","インディヴィードゥイ ルシータ ピウ ヴィチーナ",""]]});
 
-/* ---- register: 留学生 becomes a course in 職業モード (shares progress with 日常会話モードの「留学」) ---- */
-PROF.push({id:'study',code:'STU',jp:'留学生',en:'STUDY ABROAD',units:{ko:[],en:[],es:[],it:[]}});
-profMore('study',STUDY_IDS.concat(['s-lang','s-hist','s-arts','s-pe','s-it','s-life']));
+/* ---- register: the 留学モード units (track 'study'; progress shared with the school scenes and terms) ---- */
+var STUDY_TALK=['sc-class','sc-teacher','sc-home','s-life'],STUDY_SUBJ=['math','sci','soc','s-lang','s-hist','s-arts','s-pe','s-it'];
+var STUDY_ALL=STUDY_TALK.concat(STUDY_SUBJ);
+ORDER.forEach(function(l){
+  STUDY_ALL.forEach(function(uid){var u=PU[l][uid];if(u&&!UNITS[l][uid])UNITS[l][uid]={id:uid,items:u.items,track:'study'};});
+  ALL_IDS[l]=Object.keys(UNITS[l]);
+});
 profMore('pilot',{ko:['pilot-cock'],es:['pilot-cock'],it:['pilot-cock']});
 profMore('crew',['crew-svc','crew-safe']);
 /* ================= MORE PROFESSION UNITS (2): medical ================= */
@@ -1823,10 +1828,11 @@ function mergeSave(raw){
     d.prog[k].items=items;d.prog[k].units=p.units||{};
   });
   if(ORDER.indexOf(d.lang)<0)d.lang='ko';
+  if(d.prof==='study'){d.prof='';if(d.mode==='job'){d.mode='study';ORDER.forEach(function(l){if(typeof d.pos[l+'-job']==='number')d.pos[l+'-study']=d.pos[l+'-job'];});}}
   if(d.prof&&!profById(d.prof))d.prof='';
   if(['beg','mid','adv'].indexOf(d.level)<0)d.level='mid';
   d.goal=clamp(parseInt(d.goal,10)||2,1,5);
-  if(d.mode!=='job')d.mode='daily';
+  if(d.mode!=='job'&&d.mode!=='study')d.mode='daily';
   if(typeof d.icon!=='string'||!ICON_MAP[d.icon])d.icon='';
   d.rz=+d.rz||0;
   /* miles per day (for the 6-month status); older saves start with their total as of today */
@@ -1921,13 +1927,19 @@ function pathSections(lang){
   if(save.mode==='job'){
     var p=profById(save.prof);
     if(!p)return [];
-    return [{key:p.id,title:p.id==='study'?'留学先の学校で':p.jp+'の専門会話',sub:p.id==='study'?'STUDY ABROAD ・ 学校の会話と教科の用語':p.en+' ・ 仕事で使う会話',ids:p.units[lang].slice(),prof:p}];
+    return [{key:p.id,title:p.jp+'の専門会話',sub:p.en+' ・ 仕事で使う会話',ids:p.units[lang].slice(),prof:p}];
+  }
+  if(save.mode==='study'){
+    var has=function(ids){return ids.filter(function(u){return !!UNITS[lang][u];});};
+    return [
+      {key:'study-talk',title:'留学先の学校で話す',sub:'自己紹介・先生への質問・ホームステイ・学校生活',ids:has(STUDY_TALK)},
+      {key:'study-subj',title:'授業の用語',sub:'数学・理科・社会・国語・歴史・音楽・体育・情報',ids:has(STUDY_SUBJ)}
+    ];
   }
   return [
     {key:'basic',title:'基本の日常会話',sub:'あいさつ・自己紹介・数字・気持ち',ids:DAILY_IDS.slice()},
     {key:'travel',title:'旅行フレーズ',sub:'空港・機内・入国・ホテル・街',ids:LANGS[lang].units.map(function(u){return u.id;})},
-    {key:'scenes',title:'旅行の場面で話す',sub:'入国審査からトラブルまで、会話で練習',ids:TRAVEL_SC.slice()},
-    {key:'study',title:'留学',sub:'学校での会話と、数学・理科・社会の用語',ids:STUDY_IDS.slice()}
+    {key:'scenes',title:'旅行の場面で話す',sub:'入国審査からトラブルまで、会話で練習',ids:TRAVEL_SC.slice()}
   ].concat(lang==='en'&&UNITS.en.usuk?[{key:'usuk',title:'アメリカ英語とイギリス英語',sub:'同じ意味でも、国によって言い方やつづりが変わる',ids:['usuk']}]:[]);
 }
 function pathIds(lang){var a=[];pathSections(lang).forEach(function(s){a=a.concat(s.ids);});return a;}
@@ -2244,7 +2256,7 @@ function recordHTML(){
 }
 var LEVEL_HINT={beg:'読み方のヒントつき。入力問題は出ません。基本の会話から始めます。',mid:'標準。並べ替えや入力問題も出ます。',adv:'入力問題が多め。職業コースが先に表示されます。'};
 function pathIdsFor(l){
-  var ids=DAILY_IDS.concat(LANGS[l].units.map(function(u){return u.id;}),TRAVEL_SC,STUDY_IDS,UNITS[l].usuk?['usuk']:[]),p=profById(save.prof);
+  var ids=DAILY_IDS.concat(LANGS[l].units.map(function(u){return u.id;}),TRAVEL_SC,STUDY_ALL,UNITS[l].usuk?['usuk']:[]),p=profById(save.prof);
   if(p)ids=ids.concat(p.units[l]);
   ALL_IDS[l].forEach(function(uid){if(ids.indexOf(uid)<0&&unitRec(l,uid).n>0)ids.push(uid);});
   return ids;
@@ -2298,7 +2310,7 @@ function render(){
   else if(view==='scene')main.innerHTML=sceneHTML();
   var TABS=['home','review','record'],pi=TABS.indexOf(PREVVIEW),nx=TABS.indexOf(view),cls='enter';
   if(pi>=0&&nx>=0&&pi!==nx)cls=nx>pi?'enter-r':'enter-l';
-  else if(HOME_ANIM==='mode')cls=save.mode==='job'?'enter-r':'enter-l';
+  else if(HOME_ANIM==='mode'){var MO=['daily','job','study'];cls=MO.indexOf(save.mode)>MO.indexOf(MODEPREV)?'enter-r':'enter-l';}
   main.classList.remove('enter','enter-l','enter-r');void main.offsetWidth;main.classList.add(cls);
   PREVVIEW=view;
   if(view==='home'){mapMount();revealRows();}
@@ -2322,8 +2334,9 @@ function cssVar(n){return getComputedStyle(document.documentElement).getProperty
 function flapHTML(t,anim){return '<span class="flapw'+(anim?' flip':'')+'">'+String(t).split('').map(function(ch,i){return '<span style="--d:'+i+'">'+(ch===' '?'&nbsp;':esc(ch))+'</span>';}).join('')+'</span>';}
 function modeSwitch(){
   return '<div class="modesw float" role="group" aria-label="学ぶモード"><span class="modesw-ind '+(MODEPREV||save.mode)+'" aria-hidden="true"></span>'+
-    '<button type="button" data-mode-set="daily" aria-pressed="'+(save.mode==='daily')+'"><b>日常会話モード</b><small>あいさつ・旅行・留学</small></button>'+
-    '<button type="button" data-mode-set="job" aria-pressed="'+(save.mode==='job')+'"><b>職業モード</b><small>13職業＋留学生</small></button></div>';
+    '<button type="button" data-mode-set="daily" aria-pressed="'+(save.mode==='daily')+'"><b>日常会話モード</b><small>あいさつ・旅行</small></button>'+
+    '<button type="button" data-mode-set="job" aria-pressed="'+(save.mode==='job')+'"><b>職業モード</b><small>13職業の会話</small></button>'+
+    '<button type="button" data-mode-set="study" aria-pressed="'+(save.mode==='study')+'"><b>留学モード</b><small>学校と授業</small></button></div>';
 }
 function stopStatus(L,uid,nextId){
   var r=unitRec(L,uid);
@@ -2341,7 +2354,7 @@ function homeHTML(){
   var ids=pathIds(L);
   if(!ids.length){
     h+='<section class="hero empty"><div class="hero-in"><div class="hud"><div class="hud-l"><span class="lbl">'+esc(LG.cityEn)+' ・ '+esc(LG.name)+'</span><b class="mono">職業を選ぼう</b></div></div>'+heroLangs()+'</div></section>'+modeSwitch();
-    h+='<section class="card empty-job"><span class="lbl">職業モード</span><h2 class="jh">まずは職業を選ぼう</h2><p class="dim" style="font-size:13.5px;margin-top:4px">パイロット、医療、IT、美容師など13職業と留学生から選べます。選んだ職業の専門会話が、地図の上に並びます。</p><button class="go" type="button" data-picker>職業を選ぶ</button></section>';
+    h+='<section class="card empty-job"><span class="lbl">職業モード</span><h2 class="jh">まずは職業を選ぼう</h2><p class="dim" style="font-size:13.5px;margin-top:4px">パイロット、医療、IT、美容師など13職業から選べます。選んだ職業の専門会話が、地図の上に並びます。</p><button class="go" type="button" data-picker>職業を選ぶ</button></section>';
     return h;
   }
   var secs=pathSections(L),done=unitsDone(L,ids),total=ids.length,nextId=nextPathUnit(L),ni=Math.max(0,ids.indexOf(nextId));
@@ -2353,7 +2366,7 @@ function homeHTML(){
      heroLangs()+'</div></section>';
   h+=modeSwitch();
   if(save.mode==='job'){
-    h+='<button class="course" type="button" data-picker><span class="ccode">'+p.code+'</span><span class="ctext"><span class="lbl">職業コース</span><b>'+esc(p.jp)+'</b><small>タップして変更 ・ 13職業と留学生から選べます</small></span><span class="chev" aria-hidden="true">›</span></button>';
+    h+='<button class="course" type="button" data-picker><span class="ccode">'+p.code+'</span><span class="ctext"><span class="lbl">職業コース</span><b>'+esc(p.jp)+'</b><small>タップして変更 ・ 13職業から選べます</small></span><span class="chev" aria-hidden="true">›</span></button>';
     if(p.id==='pilot')h+='<button class="course atcbtn" type="button" data-atc><span class="ccode">ATC</span><span class="ctext"><span class="lbl">AIロールプレイ ・ 英語</span><b>AI管制官と交信練習</b><small>羽田空港で、管制官役のAIと無線交信</small></span><span class="chev" aria-hidden="true">›</span></button>';
   }
   var idx=0;
@@ -3464,7 +3477,7 @@ var TRK=(function(){
   }
   function send(o){
     if(!on)return;
-    o.vid=vid;o.mode=save.mode==='job'?'job':'daily';if(!LANGS[o.lang])o.lang=save.lang;
+    o.vid=vid;o.mode=save.mode==='job'||save.mode==='study'?save.mode:'daily';if(!LANGS[o.lang])o.lang=save.lang;
     try{fetch('/api/hit',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(o),keepalive:true,credentials:'same-origin'}).catch(function(){});}catch(e){}
   }
   /* a "visit" = first activity after 30 min of nothing in this tab */

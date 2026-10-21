@@ -25,7 +25,7 @@
   --bg:#e9edf2; --surface:#ffffff; --surface2:#f2f5f9;
   --ink:#0b1626; --ink2:#46586d; --muted:#5f6e80; --line:#cbd5e0;
   --grid:#e6ebf1; --axis:#b4c0ce; --hl:rgba(11,22,38,.06);
-  --s1:#2a78d6; --s2:#eb6834;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#b0418e;
   --bad:#cf3342;
   --signal:#ffcf26; --on-signal:#1b1500;
   --board:#080a0f; --flap:#ffd23f; --board-edge:transparent;
@@ -40,7 +40,7 @@
     --bg:#060a12; --surface:#101828; --surface2:#16213a;
     --ink:#e8eefb; --ink2:#9aabc6; --muted:#8a9bb6; --line:#243350;
     --grid:#1c2740; --axis:#33425f; --hl:rgba(255,255,255,.06);
-    --s1:#3987e5; --s2:#d95926;
+    --s1:#3987e5; --s2:#d95926; --s3:#c4559f;
     --bad:#ff7b86;
     --edge:rgba(255,255,255,.05); --shadow:rgba(0,0,0,.6); --board-edge:rgba(255,255,255,.1);
   }
@@ -50,7 +50,7 @@
   --bg:#060a12; --surface:#101828; --surface2:#16213a;
   --ink:#e8eefb; --ink2:#9aabc6; --muted:#8a9bb6; --line:#243350;
   --grid:#1c2740; --axis:#33425f; --hl:rgba(255,255,255,.06);
-  --s1:#3987e5; --s2:#d95926;
+  --s1:#3987e5; --s2:#d95926; --s3:#c4559f;
   --bad:#ff7b86;
   --edge:rgba(255,255,255,.05); --shadow:rgba(0,0,0,.6); --board-edge:rgba(255,255,255,.1);
 }
@@ -225,7 +225,7 @@ var ST={range:'30d',data:null,anim:true,lastW:0};
 var D={};
 var reduce=false;try{reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}
 var LANG_JP={ko:'韓国語',en:'英語',es:'スペイン語',it:'イタリア語'},LANG_ORDER=['ko','en','es','it'];
-var MODE_JP={daily:'日常会話モード',job:'職業モード'},MODE_ORDER=['daily','job'];
+var MODE_JP={daily:'日常会話モード',job:'職業モード',study:'留学モード'},MODE_ORDER=['daily','job','study'],MODE_COLOR=['--s1','--s2','--s3'];
 var RANGE_SUB={'30d':'直近30日 ・ 1日ごと','12m':'直近12か月 ・ 1か月ごと','all':'1年ごと'};
 var RANGE_SHORT={'30d':'直近30日','12m':'直近12か月','all':'全期間'};
 var WD='日月火水木金土';
@@ -606,10 +606,12 @@ function renderLangs(){
 function renderModes(){
   var d=ST.data,f=D.modes,map={};
   d.modes.forEach(function(r){map[r.k]=r;});
-  var rows=MODE_ORDER.map(function(k,i){var r=map[k]||{n:0,u:0};return {k:k,name:MODE_JP[k],n:r.n,u:r.u,color:i?'--s2':'--s1'};});
-  var total=rows[0].n+rows[1].n;
+  var rows=MODE_ORDER.map(function(k,i){var r=map[k]||{n:0,u:0};return {k:k,name:MODE_JP[k],n:r.n,u:r.u,color:MODE_COLOR[i]};});
+  var total=rows.reduce(function(a,r){return a+r.n;},0);
   f.sub.textContent='始めたレッスンの回数 ・ '+RANGE_SHORT[d.range];
-  var p0=total?Math.round(rows[0].n/total*100):0,pct=[p0,total?100-p0:0];
+  /* rounded shares that still add up to 100 (the remainder goes to the biggest mode) */
+  var pct=rows.map(function(r){return total?Math.round(r.n/total*100):0;});
+  if(total){var big=0;rows.forEach(function(r,i){if(r.n>rows[big].n)big=i;});pct[big]+=100-pct.reduce(function(a,b){return a+b;},0);}
   table(f,['モード','レッスン','割合','ユーザー'],rows.map(function(r,i){return [r.name,fmt(r.n)+'回',pct[i]+'%',fmt(r.u)+'人'];}));
   var box=f.box;box.textContent='';hideTip(f);
   if(!total){box.appendChild(empty('この期間にはまだレッスンがありません。'));return;}

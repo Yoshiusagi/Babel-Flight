@@ -142,7 +142,7 @@ function recordHTML(){
 }
 var LEVEL_HINT={beg:'読み方のヒントつき。入力問題は出ません。基本の会話から始めます。',mid:'標準。並べ替えや入力問題も出ます。',adv:'入力問題が多め。職業コースが先に表示されます。'};
 function pathIdsFor(l){
-  var ids=DAILY_IDS.concat(LANGS[l].units.map(function(u){return u.id;}),TRAVEL_SC,STUDY_IDS,UNITS[l].usuk?['usuk']:[]),p=profById(save.prof);
+  var ids=DAILY_IDS.concat(LANGS[l].units.map(function(u){return u.id;}),TRAVEL_SC,STUDY_ALL,UNITS[l].usuk?['usuk']:[]),p=profById(save.prof);
   if(p)ids=ids.concat(p.units[l]);
   ALL_IDS[l].forEach(function(uid){if(ids.indexOf(uid)<0&&unitRec(l,uid).n>0)ids.push(uid);});
   return ids;
@@ -196,7 +196,7 @@ function render(){
   else if(view==='scene')main.innerHTML=sceneHTML();
   var TABS=['home','review','record'],pi=TABS.indexOf(PREVVIEW),nx=TABS.indexOf(view),cls='enter';
   if(pi>=0&&nx>=0&&pi!==nx)cls=nx>pi?'enter-r':'enter-l';
-  else if(HOME_ANIM==='mode')cls=save.mode==='job'?'enter-r':'enter-l';
+  else if(HOME_ANIM==='mode'){var MO=['daily','job','study'];cls=MO.indexOf(save.mode)>MO.indexOf(MODEPREV)?'enter-r':'enter-l';}
   main.classList.remove('enter','enter-l','enter-r');void main.offsetWidth;main.classList.add(cls);
   PREVVIEW=view;
   if(view==='home'){mapMount();revealRows();}
