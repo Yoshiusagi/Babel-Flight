@@ -17,7 +17,9 @@ function accNote(L,corr,answered){
 function lookAlikes(L){var a=accOf(L);if(a.n<2)return Math.random()<0.5?1:2;return a.a>=0.88?3:a.a>=0.7?(Math.random()<0.5?1:2):0;}
 function skipEligible(L,uid){
   var u=UNITS[L][uid],a=accOf(L);
-  return !!(u&&u.kind!=='scene'&&u.items.length>=SKIP_N&&unitRec(L,uid).n===0&&a.n>=3&&a.a>=0.85);
+  if(!(u&&u.kind!=='scene'&&u.items.length>=SKIP_N))return false;
+  if(typeof entitled==='function'&&entitled())return true; /* test account: always offered */
+  return unitRec(L,uid).n===0&&a.n>=3&&a.a>=0.85;
 }
 function skipBtnHTML(L,uid){
   if(!skipEligible(L,uid))return '';

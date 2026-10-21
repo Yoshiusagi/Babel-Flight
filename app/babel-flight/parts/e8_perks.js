@@ -11,16 +11,26 @@ var PERKS=[
  {lv:5,jp:'金色のIDカード',keep:false}
 ];
 var LOUNGE_N=10,LOUNGE_BONUS=30;
+/* ---- full access: the test account (later also paid plans) gets every feature ----
+   Set from the server after sign-in (f13_account.js). Any future paid feature should check entitled(). */
+var ENT={all:false,plan:''};
+function entitled(){return !!(ENT&&ENT.all);}
+function entSet(e){
+  var all=!!(e&&e.all),changed=all!==ENT.all;
+  ENT={all:all,plan:(e&&typeof e.plan==='string')?e.plan:''};
+  if(changed){if(typeof applyAccent==='function')applyAccent();if(typeof render==='function'&&view!=='flight'&&view!=='atc'&&view!=='scene')render();}
+}
 /* the highest status ever reached (perks you keep) and the status held now (perks while it lasts) */
 function perkEver(){return Math.max(save.stMax||0,statusIdx());}
-function perkHas(lv){var p=null;PERKS.forEach(function(x){if(x.lv===lv)p=x;});return p?(p.keep?perkEver():statusIdx())>=lv:false;}
+function perkHas(lv){if(entitled())return true;var p=null;PERKS.forEach(function(x){if(x.lv===lv)p=x;});return p?(p.keep?perkEver():statusIdx())>=lv:false;}
 function perkNote(lv){var p=null;PERKS.forEach(function(x){if(x.lv===lv)p=x;});return p?' ・ 特典: '+p.jp:'';}
 function perksCardHTML(){
   var now=statusIdx(),ever=perkEver();
   return '<section class="card perks"><div class="card-h"><h2 class="jh">ステータス特典</h2><span class="lbl">いまは '+RANKS[now][0]+'</span></div><ul class="perk-list">'+
     PERKS.map(function(p){
-      var on=p.keep?ever>=p.lv:now>=p.lv,st;
-      if(on)st=p.keep?'使える':'利用中';
+      var on=entitled()||(p.keep?ever>=p.lv:now>=p.lv),st;
+      if(entitled())st='テスト用で解放';
+      else if(on)st=p.keep?'使える':'利用中';
       else if(!p.keep&&ever>=p.lv)st='もう一度'+RANKS[p.lv][0]+'で復活';
       else st=RANKS[p.lv][0]+'で解放';
       return '<li class="'+(on?'on':'off')+'"><span class="perk-lv">'+RANKS[p.lv][0]+'</span><span class="perk-jp">'+esc(p.jp)+'<small>'+(p.keep?'一度もらえばずっと使える':'そのステータスの間だけ')+'</small></span><span class="perk-st">'+(on?'':'<i aria-hidden="true">🔒</i>')+esc(st)+'</span></li>';

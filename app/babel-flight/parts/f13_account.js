@@ -211,14 +211,14 @@ function acctAfterFirebase(user){
   return user.getIdToken().then(function(tok){return acctApi('POST','/api/account/session',{idToken:tok});}).then(function(j){
     if(!j.ok)throw {code:'server',s:j._s,e:j.error};
     var prevUid=acctHint().uid||'';
-    ACCT.me={uid:j.uid,provider:j.provider};ACCT.msg='';
+    ACCT.me={uid:j.uid,provider:j.provider};ACCT.msg='';entSet(j.ent);
     acctSetHint({uid:j.uid,email:user.email||'',provider:j.provider});
     return acctStartSync(!!prevUid&&prevUid!==j.uid);
   });
 }
 function acctDone(){closeSheet();if(view==='record'||view==='onboard')render();}
 function acctSignedOut(msg){
-  ACCT.me=null;ACCT.rev=0;ACCT.state='';ACCT.dirty=false;ACCT.pend=null;
+  ACCT.me=null;ACCT.rev=0;ACCT.state='';ACCT.dirty=false;ACCT.pend=null;entSet(null);
   if(cloud.doc===ACCT_DOC)cloud.doc=null;
   ACCT.msg=msg||'';
   if(view==='record')render();
@@ -392,7 +392,7 @@ function acctBoot(){
     ACCT.cfg=c.firebase;
     return acctApi('GET','/api/account/me').then(function(m){
       if(m.ok){
-        ACCT.me={uid:m.uid,provider:m.provider};
+        ACCT.me={uid:m.uid,provider:m.provider};entSet(m.ent);
         var prev=acctHint().uid||'';
         if(prev!==m.uid){var hh=acctHint();hh.uid=m.uid;acctSetHint(hh);}
         acctStartSync(!!prev&&prev!==m.uid);

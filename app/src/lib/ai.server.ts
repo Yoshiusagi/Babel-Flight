@@ -16,6 +16,7 @@
 import type { D1Database, D1PreparedStatement } from "@cloudflare/workers-types";
 
 import { accountUid } from "./account.server";
+import { fullAccess } from "./entitlements.server";
 import { bindings } from "./bindings.server";
 import { FIREBASE_WEB_CONFIG } from "./firebase-config";
 import { isSameOrigin, json, num, readJsonBody, type Row } from "./http.server";
@@ -28,6 +29,9 @@ const ATC_TURNS_PER_DAY = 60;
 const DRILL_PER_DAY = 10;
 const ATC_MAX_HISTORY = 8;
 const SITE_CALLS_PER_DAY = 3000;
+// Accounts with full access (the test account) have no daily limits; "left" is reported as this number.
+const UNLIMITED = 999;
+const NO_LIMIT = 1_000_000_000;
 const JST_MS = 9 * 3_600_000;
 const LANG_NAMES: Record<string, string> = { ko: "韓国語", en: "英語", es: "スペイン語", it: "イタリア語" };
 const LANG_EN: Record<string, string> = { ko: "Korean", en: "English", es: "Spanish (Spain)", it: "Italian" };
@@ -94,7 +98,8 @@ async function usage(db: D1Database, uid: string, day: string): Promise<Usage> {
   return { ask: num(r?.ask), atcStart: num(r?.atc_start), atcTurn: num(r?.atc_turn), drill: num(r?.drill) };
 }
 
-function leftOf(u: Usage) {
+function leftOf(u: Usage, unlimited = false) {
+  if (unlimited) return { ask: UNLIMITED, atc: UNLIMITED, drill: UNLIMITED };
   return {
     ask: Math.max(0, ASK_PER_DAY - u.ask),
     atc: Math.max(0, ATC_SESSIONS_PER_DAY - u.atcStart),
@@ -111,7 +116,15 @@ async function siteBusy(db: D1Database, day: string): Promise<boolean> {
 }
 
 /** Counts one call if the account is under its limit; returns the new usage row or null. */
-async function reserve(db: D1Database, uid: string, day: string, kind: "ask" | "atc" | "drill", start: boolean): Promise<Usage | null> {
+async function reserve(
+  db: D1Database,
+  uid: string,
+  day: string,
+  kind: "ask" | "atc" | "drill",
+  start: boolean,
+  unlimited = false,
+): Promise<Usage | null> {
+  const lim = (n: number) => (unlimited ? NO_LIMIT : n);
   let stmt: D1PreparedStatement;
   if (kind === "drill") {
     stmt = db
@@ -119,14 +132,14 @@ async function reserve(db: D1Database, uid: string, day: string, kind: "ask" | "
         "INSERT INTO bf_ai_usage (uid, day, drill) VALUES (?, ?, 1) ON CONFLICT(uid, day) DO UPDATE " +
           "SET drill = bf_ai_usage.drill + 1 WHERE bf_ai_usage.drill < ? RETURNING ask, atc_start, atc_turn, drill",
       )
-      .bind(uid, day, DRILL_PER_DAY);
+      .bind(uid, day, lim(DRILL_PER_DAY));
   } else if (kind === "ask") {
     stmt = db
       .prepare(
         "INSERT INTO bf_ai_usage (uid, day, ask) VALUES (?, ?, 1) ON CONFLICT(uid, day) DO UPDATE " +
           "SET ask = bf_ai_usage.ask + 1 WHERE bf_ai_usage.ask < ? RETURNING ask, atc_start, atc_turn, drill",
       )
-      .bind(uid, day, ASK_PER_DAY);
+      .bind(uid, day, lim(ASK_PER_DAY));
   } else if (start) {
     stmt = db
       .prepare(
@@ -134,14 +147,14 @@ async function reserve(db: D1Database, uid: string, day: string, kind: "ask" | "
           "SET atc_start = bf_ai_usage.atc_start + 1, atc_turn = bf_ai_usage.atc_turn + 1 " +
           "WHERE bf_ai_usage.atc_start < ? AND bf_ai_usage.atc_turn < ? RETURNING ask, atc_start, atc_turn, drill",
       )
-      .bind(uid, day, ATC_SESSIONS_PER_DAY, ATC_TURNS_PER_DAY);
+      .bind(uid, day, lim(ATC_SESSIONS_PER_DAY), lim(ATC_TURNS_PER_DAY));
   } else {
     stmt = db
       .prepare(
         "INSERT INTO bf_ai_usage (uid, day, atc_turn) VALUES (?, ?, 1) ON CONFLICT(uid, day) DO UPDATE " +
           "SET atc_turn = bf_ai_usage.atc_turn + 1 WHERE bf_ai_usage.atc_turn < ? RETURNING ask, atc_start, atc_turn, drill",
       )
-      .bind(uid, day, ATC_TURNS_PER_DAY);
+      .bind(uid, day, lim(ATC_TURNS_PER_DAY));
   }
   const r = await stmt.first<Row>();
   return r ? { ask: num(r.ask), atcStart: num(r.atc_start), atcTurn: num(r.atc_turn), drill: num(r.drill) } : null;
@@ -221,7 +234,8 @@ async function handleStatus(request: Request, db: D1Database, enabled: boolean):
   if (!enabled) return json({ enabled: false, signedIn: false });
   const uid = await accountUid(request, db);
   if (!uid) return json({ enabled: true, signedIn: false });
-  return json({ enabled: true, signedIn: true, left: leftOf(await usage(db, uid, jstDay(Date.now()))) });
+  const all = await fullAccess(db, uid);
+  return json({ enabled: true, signedIn: true, unlimited: all, left: leftOf(await usage(db, uid, jstDay(Date.now())), all) });
 }
 
 async function handleAsk(request: Request, db: D1Database, key: string): Promise<Response> {
@@ -239,8 +253,9 @@ async function handleAsk(request: Request, db: D1Database, key: string): Promise
   }
 
   const day = jstDay(Date.now());
-  if (await siteBusy(db, day)) return json({ ok: false, error: "busy" }, 429);
-  const used = await reserve(db, uid, day, "ask", false);
+  const all = await fullAccess(db, uid);
+  if (!all && (await siteBusy(db, day))) return json({ ok: false, error: "busy" }, 429);
+  const used = await reserve(db, uid, day, "ask", false, all);
   if (!used) return json({ ok: false, error: "quota", left: leftOf(await usage(db, uid, day)) }, 429);
 
   const system =
@@ -275,7 +290,7 @@ async function handleAsk(request: Request, db: D1Database, key: string): Promise
     headers: {
       "content-type": "text/plain; charset=utf-8",
       "cache-control": "no-store",
-      "x-ai-left": String(leftOf(used).ask),
+      "x-ai-left": String(leftOf(used, all).ask),
     },
   });
 }
@@ -348,8 +363,9 @@ async function handleAtc(request: Request, db: D1Database, key: string): Promise
 
   const day = jstDay(Date.now());
   const start = history.length === 0;
-  if (await siteBusy(db, day)) return json({ ok: false, error: "busy" }, 429);
-  const used = await reserve(db, uid, day, "atc", start);
+  const all = await fullAccess(db, uid);
+  if (!all && (await siteBusy(db, day))) return json({ ok: false, error: "busy" }, 429);
+  const used = await reserve(db, uid, day, "atc", start, all);
   if (!used) return json({ ok: false, error: "quota", left: leftOf(await usage(db, uid, day)) }, 429);
 
   const messages: { role: "user" | "assistant"; content: string }[] = [];
@@ -391,7 +407,7 @@ async function handleAtc(request: Request, db: D1Database, key: string): Promise
     }
     return json({ ok: false, error: "invalid_json" }, 502);
   }
-  return json({ ok: true, ...reply, left: leftOf(used) });
+  return json({ ok: true, ...reply, left: leftOf(used, all) });
 }
 
 /* ---------- AI example drill ---------- */
@@ -448,8 +464,9 @@ async function handleDrill(request: Request, db: D1Database, key: string): Promi
   }
 
   const day = jstDay(Date.now());
-  if (await siteBusy(db, day)) return json({ ok: false, error: "busy" }, 429);
-  const used = await reserve(db, uid, day, "drill", false);
+  const all = await fullAccess(db, uid);
+  if (!all && (await siteBusy(db, day))) return json({ ok: false, error: "busy" }, 429);
+  const used = await reserve(db, uid, day, "drill", false, all);
   if (!used) return json({ ok: false, error: "quota", left: leftOf(await usage(db, uid, day)) }, 429);
 
   const language = lang === "en" ? `${variant} English` : LANG_EN[lang];
@@ -484,7 +501,7 @@ async function handleDrill(request: Request, db: D1Database, key: string): Promi
     await refund(db, uid, day, "drill", false);
     return json({ ok: false, error: upstreamOk ? "invalid_json" : "upstream" }, 502);
   }
-  return json({ ok: true, qs, left: leftOf(used) });
+  return json({ ok: true, qs, left: leftOf(used, all) });
 }
 
 /* ---------- dispatcher ---------- */

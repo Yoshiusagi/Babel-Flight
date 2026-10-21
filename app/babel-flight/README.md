@@ -33,3 +33,13 @@ cached icons/fonts; APIs never cached) and shows an "App" card on the record scr
 `public/stats.webmanifest` + `public/icons/tower-*` (control tower). Icons are rendered by a small Playwright script
 (see the commit that added them); `public/favicon.svg` matches the app icon. Bump `CORE_CACHE` in
 `sw.js` when the cached file list changes.
+
+## Full access (test account / future paid plans)
+
+`src/lib/entitlements.server.ts` + `migrations/0006_entitlements.sql`. When the owner's test account signs in
+(matched by a salted SHA-256 of its email), it gets plan `all` in `bf_entitlements`, stored by Firebase uid.
+`/api/account/session` and `/api/account/me` return `ent: { plan, all }`; the page keeps it in `ENT`
+(`parts/e8_perks.js`). With `all`: every status perk is open (`perkHas()`), the skip test is always offered,
+and the AI routes skip the daily limits (`left` is reported as 999). Miles and status themselves stay real.
+**Any future paid feature must check `entitled()` in the page and `fullAccess()` on the server**, so the test
+account keeps getting everything automatically.

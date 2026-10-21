@@ -10,7 +10,7 @@
 //   GET  /privacy               privacy policy page
 //   GET  /api/account/config    { enabled, firebase } public web config
 //   POST /api/account/session   { idToken } -> session cookie
-//   GET  /api/account/me        current account or 401
+//   GET  /api/account/me        current account (+ ent: what it may use) or 401
 //   GET  /api/account/save      { rev, t, data }
 //   PUT  /api/account/save      { data, t, baseRev, force? } -> { rev } | 409 with the newer copy
 //   POST /api/account/logout
@@ -19,6 +19,7 @@ import type { D1Database } from "@cloudflare/workers-types";
 
 import PRIVACY_HTML from "../privacy.html?raw";
 import { bindings } from "./bindings.server";
+import { entitlementsOf, grantOnSignIn } from "./entitlements.server";
 import { ALLOWED_PROVIDERS, FIREBASE_WEB_CONFIG } from "./firebase-config";
 import { KeysUnavailableError, verifyFirebaseIdToken, type FirebaseClaims } from "./firebase-token.server";
 import { isSameOrigin, json, num, randomHex, readCookie, readJsonBody, sha256Hex, type Row } from "./http.server";
@@ -104,9 +105,10 @@ async function handleSession(request: Request, db: D1Database, projectId: string
     )
     .bind(claims.uid, claims.provider, now, now)
     .run();
+  await grantOnSignIn(db, claims);
   const token = await newSession(db, claims.uid);
   return json(
-    { ok: true, uid: claims.uid, provider: claims.provider, isNew: !existing },
+    { ok: true, uid: claims.uid, provider: claims.provider, isNew: !existing, ent: await entitlementsOf(db, claims.uid) },
     200,
     { "set-cookie": sessionCookie(token, SESSION_MS / 1000) },
   );
@@ -131,7 +133,13 @@ async function handleMe(request: Request, db: D1Database): Promise<Response> {
     await db.prepare("UPDATE bf_acct_sessions SET expires = ? WHERE token_hash = ?").bind(expires, session.tokenHash).run();
   }
   return json(
-    { ok: true, uid: session.uid, provider: String(user.provider), createdAt: num(user.created_at) },
+    {
+      ok: true,
+      uid: session.uid,
+      provider: String(user.provider),
+      createdAt: num(user.created_at),
+      ent: await entitlementsOf(db, session.uid),
+    },
     200,
     { "set-cookie": sessionCookie(session.token, Math.max(1, Math.floor((expires - now) / 1000))) },
   );
@@ -218,6 +226,7 @@ async function handleDelete(request: Request, db: D1Database, projectId: string)
     db.prepare("DELETE FROM bf_acct_sessions WHERE uid = ?").bind(session.uid),
     db.prepare("DELETE FROM bf_users WHERE uid = ?").bind(session.uid),
     db.prepare("DELETE FROM bf_ai_usage WHERE uid = ?").bind(session.uid),
+    db.prepare("DELETE FROM bf_entitlements WHERE uid = ?").bind(session.uid),
   ]);
   return withClearedCookies(json({ ok: true }));
 }

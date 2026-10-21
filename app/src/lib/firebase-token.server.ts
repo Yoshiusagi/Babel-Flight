@@ -7,7 +7,7 @@ const CLOCK_SKEW_S = 60;
 
 type Jwk = { kid?: string; kty?: string; n?: string; e?: string };
 
-export type FirebaseClaims = { uid: string; provider: string; authTime: number };
+export type FirebaseClaims = { uid: string; provider: string; authTime: number; email: string; emailVerified: boolean };
 
 export class KeysUnavailableError extends Error {}
 
@@ -96,5 +96,6 @@ export async function verifyFirebaseIdToken(
   ) {
     return null;
   }
-  return { uid: sub, provider, authTime };
+  const email = typeof payload.email === "string" ? payload.email.trim().toLowerCase() : "";
+  return { uid: sub, provider, authTime, email, emailVerified: payload.email_verified === true };
 }

@@ -24,6 +24,7 @@ function saiErr(j,kind){
 }
 function saiLeftText(kind){
   var n=SAI.left?SAI.left[kind]:null;
+  if(typeof n==='number'&&n>=999)return 'テスト用アカウント ・ 回数制限なし';
   return typeof n==='number'?'今日はあと'+n+'回':'';
 }
 /* re-draw the screens that show AI status, only when something actually changed */
