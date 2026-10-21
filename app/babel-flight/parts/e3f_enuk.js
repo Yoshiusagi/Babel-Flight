@@ -27,7 +27,9 @@ var EN_UK={
  's-life.0':["timetable","時間割は、イギリスでは timetable、アメリカでは class schedule。"],
  's-life.1':["marks","成績は、イギリスでは marks、アメリカでは grades。"],
  's-life.3':["break","休み時間は、イギリスでは break、アメリカでは recess。"],
- 'crew-safe.3':["Your life jacket is under your seat.","救命胴衣は、イギリスでは life jacket、アメリカでは life vest。"]
+ 'crew-safe.3':["Your life jacket is under your seat.","救命胴衣は、イギリスでは life jacket、アメリカでは life vest。"],
+ 'med-exam.3':["You need to stay in hospital.","イギリスでは in hospital(the なし)、アメリカでは in the hospital。"],
+ 'med-ward.0':["I'm going to put you on a drip.","点滴は、イギリスでは drip、アメリカでは IV。"]
 };
 /* conversation scenes: [field, British text] pairs per turn */
 var SC_UK={
