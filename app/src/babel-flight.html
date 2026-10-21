@@ -701,6 +701,10 @@ body.dark-ui .sheet{--sc:#ff6b79}
 .photo-ed{position:absolute;right:-6px;bottom:-6px;width:22px;height:22px;border-radius:50%;background:var(--signal);color:var(--on-signal);display:grid;place-items:center;box-shadow:0 0 0 2px var(--ink)}
 .photo-ed svg{width:12px;height:12px}
 .id-card input{text-transform:none}
+.id-card .st-sub{margin-top:3px;opacity:.5;font-size:11px}
+.cap-stamp{position:absolute;right:10px;top:8px;width:66px;height:66px;color:#ff6b5a;transform:rotate(-12deg);opacity:.92;pointer-events:none;z-index:1}
+.cap-stamp svg{width:100%;height:100%;display:block}
+.id-card:has(.cap-stamp) input{padding-right:58px}
 .icon-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
 .icon-grid button{aspect-ratio:1;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font-size:26px;line-height:1;display:grid;place-items:center;padding:0}
 .icon-grid button svg{width:26px;height:26px}
@@ -1063,7 +1067,9 @@ var LANGS={
  ]}
 };
 var ORDER=['ko','en','es','it'];
-var RANKS=[['エコノミー','ECONOMY',0],['プレミアムエコノミー','PREMIUM ECONOMY',300],['ビジネス','BUSINESS',900],['ファースト','FIRST',2200],['キャプテン','CAPTAIN',5000]];
+/* status = miles earned in the last 6 months; once earned it is kept for 6 months (class names are kept for paid plans) */
+var RANKS=[['ブロンズ','BRONZE',0],['シルバー','SILVER',1500],['ゴールド','GOLD',4000],['プラチナ','PLATINUM',8000],['ダイヤモンド','DIAMOND',15000],['キャプテン','CAPTAIN',25000]];
+var STATUS_DAYS=182;
 var INTERVALS=[0,1,2,4,8,16,32];
 /* ================= PROFESSION DATA ================= */
 var PU={ko:{},en:{},es:{},it:{}};
@@ -1426,6 +1432,101 @@ function unitKind(L,uid){
   if(u.track==='travel'||u.track==='daily')return 'フレーズ';
   return '専門';
 }
+/* ================= AMERICAN / BRITISH ENGLISH =================
+   One English course; a setting switches the words, spelling and voice between American (default)
+   and British English. Progress is shared. The 「米英の違い」 unit teaches the other variety. */
+var EN_UK={
+ 'checkin.3':["I've got one bag to check in.","「have got」=「持っている」はイギリスでよく使う形。check in a bag=荷物を預ける。"],
+ 'inflight.5':["Where are the toilets?","お手洗いは、イギリスでは toilet(s)、アメリカでは restroom。"],
+ 'immigration.5':["I'm staying at a hotel in the city centre.","街の中心はイギリスでは city centre(つづりも -re)、アメリカでは downtown。"],
+ 'hotel.5':["The air conditioning isn't working.","イギリスでは air conditioning(エアコン設備)と言うことが多いです。"],
+ 'hotel.6':["Could I have an extra towel?","「Can/Could I get 〜?」はアメリカっぽい言い方。イギリスでは「Could I have 〜?」が自然です。"],
+ 'restaurant.4':["Could we have the bill, please?","お会計はイギリスでは bill、アメリカでは check。"],
+ 'city.3':["Where's the nearest chemist?","薬局はイギリスでは chemist、アメリカでは pharmacy。イギリスでも pharmacy は通じます。"],
+ 'num.1':["It's ten pounds.","イギリスのお金はポンド(pound)。£10 と書きます。"],
+ 'num.7':["Could I have a receipt?","イギリスでは「Could I have 〜?」が自然。「Can I get 〜?」はアメリカっぽく聞こえます。"],
+ 'chat.3':["Do you fancy seeing a film?","映画はイギリスでは film、アメリカでは movie。「Do you fancy 〜ing?」は「〜しない？」のイギリスらしい誘い方。"],
+ 'crew.6':["Please put your bag in the overhead locker.","頭上の棚は、イギリスでは overhead locker、アメリカでは overhead bin。"],
+ 'med.0':["What can I do for you today?","イギリスのかかりつけ医(GP)が最初によく言うひと言です。"],
+ 'law.1':["You do not have to say anything.","イギリスの警察が言う「警告(caution)」の最初の一文。アメリカの「黙秘権」の言い方とは違います。"],
+ 'law.5':["You can take legal action.","イギリスでは take legal action(法的手段をとる)がよく使われます。file a lawsuit はアメリカ的。"],
+ 'biz.5':["Would next Tuesday suit you?","「suit」=都合に合う。イギリスのていねいな日程調整の定番です。"],
+ 'beauty.2':["I'll trim your fringe a little.","前髪は、イギリスでは fringe、アメリカでは bangs。"],
+ 'chef.1':["Stir-fry it on a high heat.","火加減は、イギリスでは on a high heat、アメリカでは over high heat。"],
+ 'hosp.2':["Your room is on the fourth floor.","要注意！イギリスでは1階が ground floor なので、日本の5階は fourth floor。アメリカは日本と同じ数え方です。"],
+ 'lab.2':["I'm analysing the data.","つづりの違い: イギリスは -ise(analyse)、アメリカは -ize(analyze)。"],
+ 'sport.1':["What time is training today?","チームの練習は、イギリスでは training、アメリカでは practice。"],
+ 'sport.4':["Let's tighten up our defence in the first half.","つづりの違い: イギリスは defence、アメリカは defense。"],
+ 'sport.7':["Let's win the next match for sure!","試合は、イギリスでは match、アメリカでは game がよく使われます。"]
+};
+/* conversation scenes: [field, British text] pairs per turn */
+var SC_UK={
+ 'sc-imm.3':{a:"At a hotel in the city centre."},
+ 'sc-cafe.2':{p:"Eat in or take away?",a:"Take away, please."},
+ 'sc-cafe.3':{p:"That's twelve pounds, please.",pj:"12ポンドです"},
+ 'sc-rest.3':{a:"No, thank you. Could we have the bill?"},
+ 'sc-card.2':{a:"Is there a cash machine nearby?",aj:"近くにATM(cash machine)はありますか"},
+ 'sc-wc.0':{a:"Excuse me. Where are the toilets?"},
+ 'sc-wc.2':{p:"Straight on, then left. They're next to the lift.",a:"Next to the lift. Got it."},
+ 'sc-wallet.3':{p:"Please fill in this form."},
+ 'sc-booking.2':{p:"We have a twin room for 150 pounds.",pj:"ツインルームが150ポンドで空いています"},
+ 'sc-class.1':{a:"I like playing football."},
+ 'sc-teacher.0':{a:"Excuse me, Mr Brown. Do you have a minute?"}
+};
+/* the other variety: [日本語, American, British, note] */
+var USUK=[
+ ["エレベーターに乗ろう","Let's take the elevator.","Let's take the lift.","エレベーターは、アメリカでは elevator、イギリスでは lift。"],
+ ["アパートに住んでいます","I live in an apartment.","I live in a flat.","集合住宅の部屋は、アメリカでは apartment、イギリスでは flat。"],
+ ["地下鉄で行こう","Let's take the subway.","Let's take the Underground.","地下鉄は、アメリカでは subway、イギリスでは Underground(ロンドンでは the Tube)。イギリスで subway は「地下道」の意味なので注意！"],
+ ["フライドポテトをください","Can I get some fries?","Could I have some chips?","フライドポテトは、アメリカでは fries、イギリスでは chips。ポテトチップスは、アメリカでは chips、イギリスでは crisps。"],
+ ["休暇中です","I'm on vacation.","I'm on holiday.","休暇は、アメリカでは vacation、イギリスでは holiday。"],
+ ["列に並んでください","Please wait in line.","Please join the queue.","列は、アメリカでは line、イギリスでは queue(キュー)。"],
+ ["携帯の充電が切れた","My cell phone is dead.","My mobile is dead.","携帯電話は、アメリカでは cell phone、イギリスでは mobile。"],
+ ["好きな色は何？","What's your favorite color?","What's your favourite colour?","つづりの違い: アメリカは -or(color)、イギリスは -our(colour)。発音は同じです。"]
+];
+UM.usuk={jp:'米英の違い',lat:'US & UK'};
+UNITS.en.usuk={id:'usuk',items:USUK.map(function(x){return {jp:x[0],t:x[1],r:'',n:x[3]};}),track:'daily'};
+ALL_IDS.en=Object.keys(UNITS.en);
+var EN_VAR='';
+function enUK(){return save.enVar==='uk';}
+/* rewrite the English data in place for the chosen variety (cheap; runs before every render) */
+function applyEnVar(){
+  var v=save.enVar==='uk'?'uk':'us';
+  if(v===EN_VAR)return;
+  EN_VAR=v;var uk=v==='uk';
+  LANGS.en.tts=uk?'en-GB':'en-US';
+  LANGS.en.name=uk?'英語(イギリス)':'英語';
+  Object.keys(EN_UK).forEach(function(k){
+    var m=/^(.+)\.(\d+)$/.exec(k),u=UNITS.en[m[1]],it=u&&u.items[+m[2]];if(!it)return;
+    if(!it.us)it.us={t:it.t,n:it.n};
+    var o=EN_UK[k];
+    if(uk){it.t=o[0];it.n=o[1]+' (アメリカ英語では「'+it.us.t+'」)';}
+    else{it.t=it.us.t;it.n=it.us.n+(/イギリス/.test(it.us.n)?'':(it.us.n?' ':'')+'(イギリス英語では「'+o[0]+'」)');}
+  });
+  Object.keys(SC_UK).forEach(function(k){
+    var m=/^(.+)\.(\d+)$/.exec(k),s=SCN.en[m[1]],t=s&&s.turns[+m[2]];if(!t)return;
+    if(!t.us)t.us={p:t.p,pj:t.pj,a:t.a,aj:t.aj};
+    var o=SC_UK[k];
+    ['p','pj','a','aj'].forEach(function(f){t[f]=uk&&o[f]!==undefined?o[f]:t.us[f];});
+  });
+  UM.usuk.jp=uk?'アメリカ英語との違い':'イギリス英語との違い';
+  UNITS.en.usuk.items.forEach(function(it,i){var x=USUK[i];it.t=uk?x[1]:x[2];it.jp=x[0]+(uk?'(アメリカ英語で)':'(イギリス英語で)');});
+}
+function enVoiceNote(){
+  if(!enUK()||!tts.ok||!tts.voices.length)return '';
+  var has=tts.voices.some(function(v){return v.lang&&v.lang.replace('_','-').toLowerCase()==='en-gb';});
+  return has?'':'この端末にはイギリス英語の音声が入っていないので、ほかの英語の音声で読み上げます。';
+}
+function enVarHTML(){
+  var note=enVoiceNote();
+  return '<div class="set-block"><span class="lbl">英語の種類</span>'+seg('data-envar',enUK()?'uk':'us',[['us','アメリカ英語'],['uk','イギリス英語']])+
+    '<p class="dim hint">'+(enUK()?'単語・つづり・音声がイギリス式になります。':'単語・つづり・音声がアメリカ式です。')+' 記録は共通です。'+(note?'<br>'+note:'')+'</p></div>';
+}
+document.addEventListener('click',function(e){
+  var b=e.target&&e.target.closest&&e.target.closest('[data-envar]');if(!b)return;
+  var v=b.getAttribute('data-envar')==='uk'?'uk':'us';if(save.enVar===v)return;
+  save.enVar=v;store();render();
+});
 /* ================= UTILS ================= */
 var $=function(id){return document.getElementById(id);};
 var clamp=function(v,a,b){return v<a?a:v>b?b:v;};
@@ -1463,7 +1564,7 @@ var KEY='babelflight.save.v1';
 var OLD_ORDER=['checkin','inflight','immigration','hotel','restaurant','city','atc1','atc2'];
 function blankProg(){var p={};ORDER.forEach(function(k){p[k]={items:{},units:{}};});return p;}
 function defaults(){return {v:2,t:0,name:'PASSENGER',icon:'',rz:0,lang:'ko',prof:'',level:'mid',goal:2,onboarded:false,theme:'auto',sound:true,mode:'daily',amb:false,tap:true,pos:{},
-  miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,daily:{d:'',n:0},prog:blankProg()};}
+  miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,daily:{d:'',n:0},mh:null,st:null,cap:0,tq:0,enVar:'us',prog:blankProg()};}
 function mergeSave(raw){
   var d=defaults();
   if(!raw||typeof raw!=='object')return d;
@@ -1489,6 +1590,14 @@ function mergeSave(raw){
   if(d.mode!=='job')d.mode='daily';
   if(typeof d.icon!=='string'||!ICON_MAP[d.icon])d.icon='';
   d.rz=+d.rz||0;
+  /* miles per day (for the 6-month status); older saves start with their total as of today */
+  var mh={};
+  if(raw.mh&&typeof raw.mh==='object'){Object.keys(raw.mh).forEach(function(k){var v=+raw.mh[k];if(/^\d{4}-\d\d-\d\d$/.test(k)&&v>0)mh[k]=Math.round(v);});}
+  else if(d.miles>0)mh[dayStr()]=Math.round(+d.miles||0);
+  d.mh=mh;
+  var st=raw.st;d.st=(st&&typeof st==='object'&&st.lv>=0&&st.lv<RANKS.length&&+st.until>0)?{lv:Math.floor(st.lv),until:+st.until}:null;
+  if(d.enVar!=='uk')d.enVar='us';
+  d.cap=+d.cap>0?+d.cap:0;d.tq=+d.tq>0?Math.floor(+d.tq):0;
   return d;
 }
 function loadLocal(){try{return mergeSave(JSON.parse(localStorage.getItem(KEY)||'null'));}catch(e){return defaults();}}
@@ -1572,13 +1681,29 @@ function pathSections(lang){
     {key:'travel',title:'旅行フレーズ',sub:'空港・機内・入国・ホテル・街',ids:LANGS[lang].units.map(function(u){return u.id;})},
     {key:'scenes',title:'旅行の場面で話す',sub:'入国審査からトラブルまで、会話で練習',ids:TRAVEL_SC.slice()},
     {key:'study',title:'留学',sub:'学校での会話と、数学・理科・社会の用語',ids:STUDY_IDS.slice()}
-  ];
+  ].concat(lang==='en'&&UNITS.en.usuk?[{key:'usuk',title:'アメリカ英語とイギリス英語',sub:'同じ意味でも、国によって言い方やつづりが変わる',ids:['usuk']}]:[]);
 }
 function pathIds(lang){var a=[];pathSections(lang).forEach(function(s){a=a.concat(s.ids);});return a;}
 function unitsDone(lang,ids){var n=0;(ids||pathIds(lang)).forEach(function(uid){if(unitRec(lang,uid).n>0)n++;});return n;}
 function streakNow(){return(save.lastDay===dayStr()||save.lastDay===yesterdayStr())?save.streak:0;}
 function todayCount(){return save.daily&&save.daily.d===dayStr()?save.daily.n:0;}
 function rankIdx(m){var r=0;for(var i=0;i<RANKS.length;i++)if(m>=RANKS[i][2])r=i;return r;}
+/* miles earned in the last 6 months (never more than the lifetime total) */
+function milesWindow(now){var from=dayStr(new Date((now||Date.now())-STATUS_DAYS*DAY)),n=0,mh=save.mh||{};Object.keys(mh).forEach(function(k){if(k>from)n+=mh[k]||0;});return Math.min(n,save.miles||0);}
+/* the status shown now: the one kept from the last 6 months, or what the recent miles reach */
+function statusIdx(now){now=now||Date.now();var w=rankIdx(milesWindow(now)),st=save.st;return st&&st.until>now?Math.max(st.lv,w):w;}
+/* after a lesson: record the miles; reaching (or holding) a status keeps it for 6 more months */
+function statusEarn(add){
+  var now=Date.now(),today=dayStr(),from=dayStr(new Date(now-(STATUS_DAYS+14)*DAY));
+  if(!save.mh)save.mh={};
+  save.mh[today]=(save.mh[today]||0)+add;
+  Object.keys(save.mh).forEach(function(k){if(k<from)delete save.mh[k];});
+  var R=rankIdx(milesWindow(now)),cur=save.st&&save.st.until>now?save.st.lv:-1,firstCap=false;
+  if(R>=cur)save.st={lv:R,until:now+STATUS_DAYS*DAY};
+  if(R===RANKS.length-1&&!save.cap){save.cap=now;firstCap=true;}
+  return firstCap;
+}
+function fmtDate(ms){var d=new Date(ms);return d.getFullYear()+'.'+pad2(d.getMonth()+1)+'.'+pad2(d.getDate());}
 function unitIndex(lang,uid){return Math.max(0,ALL_IDS[lang].indexOf(uid));}
 function flightNo(lang,uid){return 'BF'+(ORDER.indexOf(lang)+1)+pad2(unitIndex(lang,uid)+1);}
 function gateNo(lang,uid){return LANGS[lang].letter+(unitIndex(lang,uid)+1);}
@@ -1757,7 +1882,7 @@ function destChips(){
   return h+'</div>';
 }
 function passHTML(L,uid){
-  var LG=LANGS[L],u=UNITS[L][uid],rec=unitRec(L,uid),rk=rankIdx(save.miles),m=Math.round(unitMastery(L,uid)*100);
+  var LG=LANGS[L],u=UNITS[L][uid],rec=unitRec(L,uid),rk=statusIdx(),m=Math.round(unitMastery(L,uid)*100);
   var track=u.track==='travel'?'基本の会話':(profById(u.track)||{}).jp+'コース';
   return '<section class="pass" aria-label="搭乗券"><div class="pass-main"><div class="card-h" style="margin:4px 0 0"><span class="lbl">搭乗券 ・ '+esc(track)+'</span><span class="lbl">'+RANKS[rk][1]+'</span></div>'+
     '<div class="pass-route"><div class="ap">HND<small>東京 羽田</small></div>'+planeIcon()+'<div class="ap">'+LG.code+'<small>'+esc(LG.city)+'</small></div></div>'+
@@ -1794,6 +1919,18 @@ function reviewHTML(){
      '<p>同じ日に何度解いても間隔は伸びません。<b>次の日に思い出せるか</b>が本当のチェックです。</p></section>';
   return h;
 }
+/* permanent stamp for having reached Captain (the status itself lasts 6 months) */
+function capStampHTML(){
+  var d=fmtDate(save.cap);
+  return '<div class="cap-stamp" role="img" aria-label="キャプテン到達スタンプ '+d+'"><svg viewBox="0 0 120 120" aria-hidden="true">'+
+    '<defs><path id="capT" d="M22 60A38 38 0 0 1 98 60"/><path id="capB" d="M14 60A46 46 0 0 0 106 60"/></defs>'+
+    '<g fill="none" stroke="currentColor"><circle cx="60" cy="60" r="56" stroke-width="3.2"/><circle cx="60" cy="60" r="33" stroke-width="1.4"/></g>'+
+    '<g fill="currentColor" font-family="B612 Mono,monospace" font-weight="700" text-anchor="middle">'+
+    '<text font-size="11" letter-spacing="2.6"><textPath href="#capT" startOffset="50%">CAPTAIN</textPath></text>'+
+    '<text font-size="7.5" letter-spacing="1.6"><textPath href="#capB" startOffset="50%">BABEL FLIGHT</textPath></text>'+
+    '<g transform="translate(60 54) scale(.95)"><path d="'+PLANE_D+'"/></g>'+
+    '<text x="60" y="80" font-size="7" letter-spacing=".5">'+d+'</text></g></svg></div>';
+}
 function stampSVG(L,uid,rec,uidSuffix){
   var LG=LANGS[L],lat=unitLat(uid),r=seeded(hash(L+uid))(),rot=Math.round(r*24-12),id='sp'+uidSuffix.replace(/[^a-zA-Z0-9-]/g,''),col='var(--c-'+L+')';
   var dt=stampDate(rec.last).split(' '),round=hash(uid)%2===0;
@@ -1820,13 +1957,16 @@ function seg(attr,cur,list){return '<div class="seg" role="group">'+list.map(fun
 var LEVELS=[['beg','はじめて'],['mid','少しわかる'],['adv','日常会話OK']];
 var GOALS=[[1,'1回'],[2,'2回'],[3,'3回'],[5,'5回']];
 function recordHTML(){
-  var rk=rankIdx(save.miles),nx=RANKS[rk+1],cur=RANKS[rk],p=profById(save.prof);
-  var pct=nx?clamp((save.miles-cur[2])/(nx[2]-cur[2]),0,1)*100:100,h=topBar('記録'),stamps=0;
+  var now=Date.now(),win=milesWindow(now),rk=statusIdx(now),nx=RANKS[rk+1],cur=RANKS[rk],p=profById(save.prof);
+  var kept=!!(save.st&&save.st.until>now&&save.st.lv===rk&&rk>0);
+  var pct=nx?clamp((win-cur[2])/(nx[2]-cur[2]),0,1)*100:100,h=topBar('記録'),stamps=0;
   ORDER.forEach(function(l){ALL_IDS[l].forEach(function(uid){if(unitRec(l,uid).n>0)stamps++;});});
   h+='<section class="id-card"><button class="photo" type="button" data-icon-open aria-label="アイコンを変える">'+avatarHTML()+'<i class="photo-ed" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></i></button><div style="min-width:0"><span class="lbl">名前</span>'+
      '<input id="pname" maxlength="14" value="'+esc(save.name)+'" aria-label="名前" autocomplete="off" spellcheck="false">'+
-     '<div class="cls">'+cur[0]+' クラス'+(p?' ・ '+esc(p.jp)+'志望':'')+'</div><div class="cls-bar"><i style="width:'+pct+'%"></i></div>'+
-     '<div class="lbl" style="margin-top:6px">'+(nx?'次の「'+nx[0]+'」まで '+fmt(nx[2]-save.miles)+' マイル':'最高クラスに到達')+'</div></div></section>';
+     '<div class="cls">'+cur[0]+' ステータス'+(p?' ・ '+esc(p.jp)+'志望':'')+'</div><div class="cls-bar"><i style="width:'+pct+'%"></i></div>'+
+     '<div class="lbl" style="margin-top:6px">'+(nx?'次の「'+nx[0]+'」まで '+fmt(Math.max(0,nx[2]-win))+' マイル':'最高ステータスに到達')+'</div>'+
+     '<div class="lbl st-sub">直近6ヶ月 '+fmt(win)+' マイル'+(kept?' ・ '+fmtDate(save.st.until)+' まで有効':'')+'</div></div>'+
+     (save.cap?capStampHTML():'')+'</section>';
   if(typeof acctCardHTML==='function')h+=acctCardHTML();
   if(typeof pwaCardHTML==='function')h+=pwaCardHTML();
   h+='<div class="kpis">'+
@@ -1845,6 +1985,7 @@ function recordHTML(){
   h+='<section class="card"><div class="card-h"><h2 class="jh">学習の設定</h2></div>'+
      '<div class="set-row"><span>職業コース<br><b>'+(p?esc(p.jp):'未設定')+'</b></span><button class="ghost" type="button" data-picker>変更</button></div>'+
      '<div class="set-block"><span class="lbl">今のレベル</span>'+seg('data-level',save.level,LEVELS)+'<p class="dim hint">'+LEVEL_HINT[save.level]+'</p></div>'+
+     (typeof enVarHTML==='function'?enVarHTML():'')+
      '<div class="set-block"><span class="lbl">1日の目標(レッスン数)</span>'+seg('data-goal',save.goal,GOALS)+'</div>'+
      '<div class="set-block"><span class="lbl">表示</span>'+seg('data-theme-set',save.theme,[['auto','自動'],['light','ライト'],['dark','ダーク']])+'</div>'+
      '<div class="set-row"><span>効果音</span><button class="ghost" type="button" data-toggle-sound aria-pressed="'+save.sound+'">'+(save.sound?'ON':'OFF')+'</button></div>'+
@@ -1855,7 +1996,7 @@ function recordHTML(){
 }
 var LEVEL_HINT={beg:'読み方のヒントつき。入力問題は出ません。基本の会話から始めます。',mid:'標準。並べ替えや入力問題も出ます。',adv:'入力問題が多め。職業コースが先に表示されます。'};
 function pathIdsFor(l){
-  var ids=DAILY_IDS.concat(LANGS[l].units.map(function(u){return u.id;}),TRAVEL_SC,STUDY_IDS),p=profById(save.prof);
+  var ids=DAILY_IDS.concat(LANGS[l].units.map(function(u){return u.id;}),TRAVEL_SC,STUDY_IDS,UNITS[l].usuk?['usuk']:[]),p=profById(save.prof);
   if(p)ids=ids.concat(p.units[l]);
   ALL_IDS[l].forEach(function(uid){if(ids.indexOf(uid)<0&&unitRec(l,uid).n>0)ids.push(uid);});
   return ids;
@@ -1895,6 +2036,7 @@ function onboardHTML(){
   return h;
 }
 function render(){
+  if(typeof applyEnVar==='function')applyEnVar();
   var main=$('main'),L=save.lang;
   rootEl.style.setProperty('--lc','var(--c-'+(view==='onboard'&&obDraft?obDraft.lang:L)+')');
   var showTabs=(view==='home'||view==='review'||view==='record');
@@ -2356,9 +2498,19 @@ function startMode(kind){
   startFlight({mode:kind,lang:L,items:items});
 }
 /* ================= LESSON END (shared by phrase lessons and scenes) ================= */
-function nextPathUnit(L){
+function nextPathUnit(L,cur){
   var ids=pathIds(L),i,best=null,bd=0;
   if(!ids.length)return null;
+  /* stay in the same group: the next unit not flown yet (入国審査 → カフェ), then the next group */
+  var secs=pathSections(L);
+  for(var s=0;cur&&s<secs.length;s++){
+    var g=secs[s].ids,k=g.indexOf(cur),j;
+    if(k<0)continue;
+    for(j=1;j<g.length;j++){var u=g[(k+j)%g.length];if(unitRec(L,u).n===0)return u;}
+    if(k+1<g.length)return g[k+1];
+    for(j=1;j<secs.length;j++){var g2=secs[(s+j)%secs.length].ids;for(i=0;i<g2.length;i++)if(unitRec(L,g2[i]).n===0)return g2[i];}
+    break;
+  }
   for(i=0;i<ids.length;i++)if(unitRec(L,ids[i]).n===0)return ids[i];
   for(i=0;i<ids.length;i++){var d=unitDue(L,ids[i]);if(d>bd){bd=d;best=ids[i];}}
   return best||ids[0];
@@ -2379,10 +2531,10 @@ function land(){
   var mist=F.mist,stars=mist===0?3:mist<=2?2:1;
   var grade=mist===0?['完璧な着陸','PERFECT LANDING','ミスなし！バターのようになめらか']:mist<=2?['なめらかな着陸','SMOOTH LANDING','いい調子。この感覚で続けよう']:mist<=5?['しっかり着陸','FIRM LANDING','間違えたフレーズは復習に回るよ']:['ちょっと揺れた着陸','HARD LANDING','大丈夫。間違えた分だけ記憶に残りやすいよ'];
   var wrong=keys.filter(function(k){return F.wrong[k];}).slice(0,5).map(function(k){var it=uniq[k];return UNITS[L][it.uid].items[it.i];});
-  completeLesson({L:L,uid:F.uid,mode:F.mode==='unit'?'unit':F.mode,stars:stars,corr:F.corr,grade:grade,wrong:wrong,wrongTitle:'間違えたフレーズ',wrongNote:'弱点コースに追加'});
+  completeLesson({L:L,uid:F.uid,mode:F.mode==='unit'?'unit':F.mode,stars:stars,corr:F.corr,answered:F.corr+F.mist,grade:grade,wrong:wrong,wrongTitle:'間違えたフレーズ',wrongNote:'弱点コースに追加'});
 }
 function completeLesson(o){
-  var L=o.L,LG=LANGS[L],today=dayStr(),P=save.prog[L],rankBefore=rankIdx(save.miles),unitMode=(o.mode==='unit'||o.mode==='scene');
+  var L=o.L,LG=LANGS[L],today=dayStr(),P=save.prog[L],rankBefore=statusIdx(),unitMode=(o.mode==='unit'||o.mode==='scene');
   if(!save.daily||save.daily.d!==today)save.daily={d:today,n:0};
   save.daily.n++;
   var goalJust=save.daily.n===save.goal;
@@ -2406,8 +2558,10 @@ function completeLesson(o){
     save.lastDay=today;save.bestStreak=Math.max(save.bestStreak||0,save.streak);
   }
   save.miles+=miles;save.flights++;
+  save.tq=(save.tq||0)+(o.answered||0);
+  var firstCap=statusEarn(miles);
   store();
-  var rankAfter=rankIdx(save.miles),gpct=clamp(save.daily.n/save.goal,0,1)*100;
+  var rankAfter=statusIdx(),gpct=clamp(save.daily.n/save.goal,0,1)*100;
   var c=ix>=0?cityFor(L,ix):[LG.cityEn,LG.city,0,0];
   var h='<div class="land"><span class="lbl">'+(unitMode?flightNo(L,o.uid)+' ・ '+esc(c[0])+' に到着':'おつかれさま！')+'</span>';
   if(unitMode)h+='<div class="stamp-wrap slam">'+stampSVG(L,o.uid,rec,'-land')+'</div>';
@@ -2417,13 +2571,14 @@ function completeLesson(o){
      (save.daily.n>=save.goal?'<div class="gdone">'+(goalJust?'今日の目標を達成しました！':'目標達成ずみ。おかわりフライト中')+'</div>':'')+'</div>';
   h+='<div class="receipt" aria-label="獲得マイルの明細">'+lines.map(function(x){return '<div class="ln"><span>'+esc(x[0])+'</span><span>+'+x[1]+'</span></div>';}).join('')+
      '<div class="ln tot"><span>獲得マイル</span><span>+'+miles+' mi</span></div></div>';
-  if(rankAfter>rankBefore)h+='<div class="up-note">クラスアップ！ '+RANKS[rankAfter][0]+'になりました</div>';
+  if(firstCap)h+='<div class="up-note">キャプテンに到達！ 記念のキャプテンスタンプをもらいました(ずっと残ります)</div>';
+  else if(rankAfter>rankBefore)h+='<div class="up-note">ステータスアップ！ '+RANKS[rankAfter][0]+'になりました(6ヶ月有効)</div>';
   if(o.wrong&&o.wrong.length){
     h+='<div class="card" style="text-align:left"><div class="card-h"><h2 class="jh">'+esc(o.wrongTitle)+'</h2><span class="lbl">'+esc(o.wrongNote)+'</span></div>'+
        o.wrong.map(function(d){return '<p style="font-size:14px;margin-top:6px"><b class="'+(L==='ko'?'ko':'')+'">'+esc(d.t)+'</b><br><span class="dim" style="font-size:12.5px">'+esc(d.jp)+'</span></p>';}).join('')+'</div>';
   }
   h+='<div class="acts">';
-  if(unitMode){var nu=nextPathUnit(L);if(nu)h+='<button class="go" type="button" data-next-lesson="'+esc(nu)+'">次のレッスンへ<small>'+esc(unitTitle(nu))+' ・ 地図で飛行機が進みます</small></button>';}
+  if(unitMode){var nu=nextPathUnit(L,o.uid);if(nu)h+='<button class="go" type="button" data-next-lesson="'+esc(nu)+'">次のレッスンへ<small>'+esc(unitTitle(nu))+' ・ 地図で飛行機が進みます</small></button>';}
   h+='<button class="ghost" type="button" data-home>ホームに戻る(地図を見る)</button></div></div>';
   view='land';F=null;board=null;closeSheet();$('tabs').hidden=true;
   try{speechSynthesis.cancel();}catch(e){}
@@ -2554,7 +2709,7 @@ function sceneFinish(){
   var grade=ratio>=0.9?['完璧な通話','PERFECT CALL','最後までスムーズに話せたね']:ratio>=0.6?['いい感じの通話','GOOD CALL','ほぼ通じてるよ。△のところをもう一回']:['また話してみよう','KEEP TALKING','お手本を聞いて、もう一度チャレンジしよう'];
   var wrong=[];S.u.turns.forEach(function(t,i){if(S.grades[i]<2)wrong.push({t:t.a,jp:t.aj});});
   var L=S.lang,uid=S.uid;SCX=null;document.body.classList.remove('dark-ui');
-  completeLesson({L:L,uid:uid,mode:'scene',stars:stars,corr:S.grades.filter(function(g){return g===2;}).length,corrLabel:'◎',grade:grade,wrong:wrong.slice(0,4),wrongTitle:'もう一度言いたいフレーズ',wrongNote:'次はここを意識'});
+  completeLesson({L:L,uid:uid,mode:'scene',stars:stars,answered:S.grades.length,corr:S.grades.filter(function(g){return g===2;}).length,corrLabel:'◎',grade:grade,wrong:wrong.slice(0,4),wrongTitle:'もう一度言いたいフレーズ',wrongNote:'次はここを意識'});
 }
 function sceneQuit(){
   if(SCX){clearInterval(SCX.timer);var back=SCX.back;SCX=null;try{speechSynthesis.cancel();}catch(e){}document.body.classList.remove('dark-ui');closeSheet();view=back;render();window.scrollTo(0,0);}
@@ -2977,6 +3132,11 @@ function unionSave(a,b){
   var od=older.daily||{d:'',n:0};
   if((od.d||'')>(out.daily.d||''))out.daily={d:od.d,n:od.n||0};
   else if(od.d===out.daily.d)out.daily.n=Math.max(out.daily.n||0,od.n||0);
+  out.tq=Math.max(a.tq||0,b.tq||0);
+  out.cap=(a.cap&&b.cap)?Math.min(a.cap,b.cap):(a.cap||b.cap||0);
+  var mh={};[a.mh||{},b.mh||{}].forEach(function(m){Object.keys(m).forEach(function(k){if(!(mh[k]>=m[k]))mh[k]=m[k];});});out.mh=mh;
+  out.st=(function(x,y){if(!x)return y||null;if(!y)return x;var now=Date.now(),xv=x.until>now,yv=y.until>now;
+    if(xv&&yv)return x.lv!==y.lv?(x.lv>y.lv?x:y):(x.until>=y.until?x:y);if(xv!==yv)return xv?x:y;return x.until>=y.until?x:y;})(a.st,b.st);
   var op=older.pos||{};if(!out.pos)out.pos={};
   Object.keys(op).forEach(function(k){if(typeof op[k]==='number'&&!(out.pos[k]>=op[k]))out.pos[k]=op[k];});
   ORDER.forEach(function(L){

@@ -87,6 +87,11 @@ function unionSave(a,b){
   var od=older.daily||{d:'',n:0};
   if((od.d||'')>(out.daily.d||''))out.daily={d:od.d,n:od.n||0};
   else if(od.d===out.daily.d)out.daily.n=Math.max(out.daily.n||0,od.n||0);
+  out.tq=Math.max(a.tq||0,b.tq||0);
+  out.cap=(a.cap&&b.cap)?Math.min(a.cap,b.cap):(a.cap||b.cap||0);
+  var mh={};[a.mh||{},b.mh||{}].forEach(function(m){Object.keys(m).forEach(function(k){if(!(mh[k]>=m[k]))mh[k]=m[k];});});out.mh=mh;
+  out.st=(function(x,y){if(!x)return y||null;if(!y)return x;var now=Date.now(),xv=x.until>now,yv=y.until>now;
+    if(xv&&yv)return x.lv!==y.lv?(x.lv>y.lv?x:y):(x.until>=y.until?x:y);if(xv!==yv)return xv?x:y;return x.until>=y.until?x:y;})(a.st,b.st);
   var op=older.pos||{};if(!out.pos)out.pos={};
   Object.keys(op).forEach(function(k){if(typeof op[k]==='number'&&!(out.pos[k]>=op[k]))out.pos[k]=op[k];});
   ORDER.forEach(function(L){

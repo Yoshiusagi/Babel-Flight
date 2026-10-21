@@ -27,7 +27,7 @@ function destChips(){
   return h+'</div>';
 }
 function passHTML(L,uid){
-  var LG=LANGS[L],u=UNITS[L][uid],rec=unitRec(L,uid),rk=rankIdx(save.miles),m=Math.round(unitMastery(L,uid)*100);
+  var LG=LANGS[L],u=UNITS[L][uid],rec=unitRec(L,uid),rk=statusIdx(),m=Math.round(unitMastery(L,uid)*100);
   var track=u.track==='travel'?'基本の会話':(profById(u.track)||{}).jp+'コース';
   return '<section class="pass" aria-label="搭乗券"><div class="pass-main"><div class="card-h" style="margin:4px 0 0"><span class="lbl">搭乗券 ・ '+esc(track)+'</span><span class="lbl">'+RANKS[rk][1]+'</span></div>'+
     '<div class="pass-route"><div class="ap">HND<small>東京 羽田</small></div>'+planeIcon()+'<div class="ap">'+LG.code+'<small>'+esc(LG.city)+'</small></div></div>'+
@@ -64,6 +64,18 @@ function reviewHTML(){
      '<p>同じ日に何度解いても間隔は伸びません。<b>次の日に思い出せるか</b>が本当のチェックです。</p></section>';
   return h;
 }
+/* permanent stamp for having reached Captain (the status itself lasts 6 months) */
+function capStampHTML(){
+  var d=fmtDate(save.cap);
+  return '<div class="cap-stamp" role="img" aria-label="キャプテン到達スタンプ '+d+'"><svg viewBox="0 0 120 120" aria-hidden="true">'+
+    '<defs><path id="capT" d="M22 60A38 38 0 0 1 98 60"/><path id="capB" d="M14 60A46 46 0 0 0 106 60"/></defs>'+
+    '<g fill="none" stroke="currentColor"><circle cx="60" cy="60" r="56" stroke-width="3.2"/><circle cx="60" cy="60" r="33" stroke-width="1.4"/></g>'+
+    '<g fill="currentColor" font-family="B612 Mono,monospace" font-weight="700" text-anchor="middle">'+
+    '<text font-size="11" letter-spacing="2.6"><textPath href="#capT" startOffset="50%">CAPTAIN</textPath></text>'+
+    '<text font-size="7.5" letter-spacing="1.6"><textPath href="#capB" startOffset="50%">BABEL FLIGHT</textPath></text>'+
+    '<g transform="translate(60 54) scale(.95)"><path d="'+PLANE_D+'"/></g>'+
+    '<text x="60" y="80" font-size="7" letter-spacing=".5">'+d+'</text></g></svg></div>';
+}
 function stampSVG(L,uid,rec,uidSuffix){
   var LG=LANGS[L],lat=unitLat(uid),r=seeded(hash(L+uid))(),rot=Math.round(r*24-12),id='sp'+uidSuffix.replace(/[^a-zA-Z0-9-]/g,''),col='var(--c-'+L+')';
   var dt=stampDate(rec.last).split(' '),round=hash(uid)%2===0;
@@ -90,13 +102,16 @@ function seg(attr,cur,list){return '<div class="seg" role="group">'+list.map(fun
 var LEVELS=[['beg','はじめて'],['mid','少しわかる'],['adv','日常会話OK']];
 var GOALS=[[1,'1回'],[2,'2回'],[3,'3回'],[5,'5回']];
 function recordHTML(){
-  var rk=rankIdx(save.miles),nx=RANKS[rk+1],cur=RANKS[rk],p=profById(save.prof);
-  var pct=nx?clamp((save.miles-cur[2])/(nx[2]-cur[2]),0,1)*100:100,h=topBar('記録'),stamps=0;
+  var now=Date.now(),win=milesWindow(now),rk=statusIdx(now),nx=RANKS[rk+1],cur=RANKS[rk],p=profById(save.prof);
+  var kept=!!(save.st&&save.st.until>now&&save.st.lv===rk&&rk>0);
+  var pct=nx?clamp((win-cur[2])/(nx[2]-cur[2]),0,1)*100:100,h=topBar('記録'),stamps=0;
   ORDER.forEach(function(l){ALL_IDS[l].forEach(function(uid){if(unitRec(l,uid).n>0)stamps++;});});
   h+='<section class="id-card"><button class="photo" type="button" data-icon-open aria-label="アイコンを変える">'+avatarHTML()+'<i class="photo-ed" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></i></button><div style="min-width:0"><span class="lbl">名前</span>'+
      '<input id="pname" maxlength="14" value="'+esc(save.name)+'" aria-label="名前" autocomplete="off" spellcheck="false">'+
-     '<div class="cls">'+cur[0]+' クラス'+(p?' ・ '+esc(p.jp)+'志望':'')+'</div><div class="cls-bar"><i style="width:'+pct+'%"></i></div>'+
-     '<div class="lbl" style="margin-top:6px">'+(nx?'次の「'+nx[0]+'」まで '+fmt(nx[2]-save.miles)+' マイル':'最高クラスに到達')+'</div></div></section>';
+     '<div class="cls">'+cur[0]+' ステータス'+(p?' ・ '+esc(p.jp)+'志望':'')+'</div><div class="cls-bar"><i style="width:'+pct+'%"></i></div>'+
+     '<div class="lbl" style="margin-top:6px">'+(nx?'次の「'+nx[0]+'」まで '+fmt(Math.max(0,nx[2]-win))+' マイル':'最高ステータスに到達')+'</div>'+
+     '<div class="lbl st-sub">直近6ヶ月 '+fmt(win)+' マイル'+(kept?' ・ '+fmtDate(save.st.until)+' まで有効':'')+'</div></div>'+
+     (save.cap?capStampHTML():'')+'</section>';
   if(typeof acctCardHTML==='function')h+=acctCardHTML();
   if(typeof pwaCardHTML==='function')h+=pwaCardHTML();
   h+='<div class="kpis">'+
@@ -115,6 +130,7 @@ function recordHTML(){
   h+='<section class="card"><div class="card-h"><h2 class="jh">学習の設定</h2></div>'+
      '<div class="set-row"><span>職業コース<br><b>'+(p?esc(p.jp):'未設定')+'</b></span><button class="ghost" type="button" data-picker>変更</button></div>'+
      '<div class="set-block"><span class="lbl">今のレベル</span>'+seg('data-level',save.level,LEVELS)+'<p class="dim hint">'+LEVEL_HINT[save.level]+'</p></div>'+
+     (typeof enVarHTML==='function'?enVarHTML():'')+
      '<div class="set-block"><span class="lbl">1日の目標(レッスン数)</span>'+seg('data-goal',save.goal,GOALS)+'</div>'+
      '<div class="set-block"><span class="lbl">表示</span>'+seg('data-theme-set',save.theme,[['auto','自動'],['light','ライト'],['dark','ダーク']])+'</div>'+
      '<div class="set-row"><span>効果音</span><button class="ghost" type="button" data-toggle-sound aria-pressed="'+save.sound+'">'+(save.sound?'ON':'OFF')+'</button></div>'+
@@ -125,7 +141,7 @@ function recordHTML(){
 }
 var LEVEL_HINT={beg:'読み方のヒントつき。入力問題は出ません。基本の会話から始めます。',mid:'標準。並べ替えや入力問題も出ます。',adv:'入力問題が多め。職業コースが先に表示されます。'};
 function pathIdsFor(l){
-  var ids=DAILY_IDS.concat(LANGS[l].units.map(function(u){return u.id;}),TRAVEL_SC,STUDY_IDS),p=profById(save.prof);
+  var ids=DAILY_IDS.concat(LANGS[l].units.map(function(u){return u.id;}),TRAVEL_SC,STUDY_IDS,UNITS[l].usuk?['usuk']:[]),p=profById(save.prof);
   if(p)ids=ids.concat(p.units[l]);
   ALL_IDS[l].forEach(function(uid){if(ids.indexOf(uid)<0&&unitRec(l,uid).n>0)ids.push(uid);});
   return ids;
@@ -165,6 +181,7 @@ function onboardHTML(){
   return h;
 }
 function render(){
+  if(typeof applyEnVar==='function')applyEnVar();
   var main=$('main'),L=save.lang;
   rootEl.style.setProperty('--lc','var(--c-'+(view==='onboard'&&obDraft?obDraft.lang:L)+')');
   var showTabs=(view==='home'||view==='review'||view==='record');

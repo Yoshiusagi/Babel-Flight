@@ -119,7 +119,7 @@ function sceneFinish(){
   var grade=ratio>=0.9?['完璧な通話','PERFECT CALL','最後までスムーズに話せたね']:ratio>=0.6?['いい感じの通話','GOOD CALL','ほぼ通じてるよ。△のところをもう一回']:['また話してみよう','KEEP TALKING','お手本を聞いて、もう一度チャレンジしよう'];
   var wrong=[];S.u.turns.forEach(function(t,i){if(S.grades[i]<2)wrong.push({t:t.a,jp:t.aj});});
   var L=S.lang,uid=S.uid;SCX=null;document.body.classList.remove('dark-ui');
-  completeLesson({L:L,uid:uid,mode:'scene',stars:stars,corr:S.grades.filter(function(g){return g===2;}).length,corrLabel:'◎',grade:grade,wrong:wrong.slice(0,4),wrongTitle:'もう一度言いたいフレーズ',wrongNote:'次はここを意識'});
+  completeLesson({L:L,uid:uid,mode:'scene',stars:stars,answered:S.grades.length,corr:S.grades.filter(function(g){return g===2;}).length,corrLabel:'◎',grade:grade,wrong:wrong.slice(0,4),wrongTitle:'もう一度言いたいフレーズ',wrongNote:'次はここを意識'});
 }
 function sceneQuit(){
   if(SCX){clearInterval(SCX.timer);var back=SCX.back;SCX=null;try{speechSynthesis.cancel();}catch(e){}document.body.classList.remove('dark-ui');closeSheet();view=back;render();window.scrollTo(0,0);}

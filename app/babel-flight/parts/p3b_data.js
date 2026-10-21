@@ -124,5 +124,7 @@
  ]}
 };
 var ORDER=['ko','en','es','it'];
-var RANKS=[['エコノミー','ECONOMY',0],['プレミアムエコノミー','PREMIUM ECONOMY',300],['ビジネス','BUSINESS',900],['ファースト','FIRST',2200],['キャプテン','CAPTAIN',5000]];
+/* status = miles earned in the last 6 months; once earned it is kept for 6 months (class names are kept for paid plans) */
+var RANKS=[['ブロンズ','BRONZE',0],['シルバー','SILVER',1500],['ゴールド','GOLD',4000],['プラチナ','PLATINUM',8000],['ダイヤモンド','DIAMOND',15000],['キャプテン','CAPTAIN',25000]];
+var STATUS_DAYS=182;
 var INTERVALS=[0,1,2,4,8,16,32];

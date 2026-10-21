@@ -35,7 +35,7 @@ var KEY='babelflight.save.v1';
 var OLD_ORDER=['checkin','inflight','immigration','hotel','restaurant','city','atc1','atc2'];
 function blankProg(){var p={};ORDER.forEach(function(k){p[k]={items:{},units:{}};});return p;}
 function defaults(){return {v:2,t:0,name:'PASSENGER',icon:'',rz:0,lang:'ko',prof:'',level:'mid',goal:2,onboarded:false,theme:'auto',sound:true,mode:'daily',amb:false,tap:true,pos:{},
-  miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,daily:{d:'',n:0},prog:blankProg()};}
+  miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,daily:{d:'',n:0},mh:null,st:null,cap:0,tq:0,enVar:'us',prog:blankProg()};}
 function mergeSave(raw){
   var d=defaults();
   if(!raw||typeof raw!=='object')return d;
@@ -61,6 +61,14 @@ function mergeSave(raw){
   if(d.mode!=='job')d.mode='daily';
   if(typeof d.icon!=='string'||!ICON_MAP[d.icon])d.icon='';
   d.rz=+d.rz||0;
+  /* miles per day (for the 6-month status); older saves start with their total as of today */
+  var mh={};
+  if(raw.mh&&typeof raw.mh==='object'){Object.keys(raw.mh).forEach(function(k){var v=+raw.mh[k];if(/^\d{4}-\d\d-\d\d$/.test(k)&&v>0)mh[k]=Math.round(v);});}
+  else if(d.miles>0)mh[dayStr()]=Math.round(+d.miles||0);
+  d.mh=mh;
+  var st=raw.st;d.st=(st&&typeof st==='object'&&st.lv>=0&&st.lv<RANKS.length&&+st.until>0)?{lv:Math.floor(st.lv),until:+st.until}:null;
+  if(d.enVar!=='uk')d.enVar='us';
+  d.cap=+d.cap>0?+d.cap:0;d.tq=+d.tq>0?Math.floor(+d.tq):0;
   return d;
 }
 function loadLocal(){try{return mergeSave(JSON.parse(localStorage.getItem(KEY)||'null'));}catch(e){return defaults();}}
@@ -144,13 +152,29 @@ function pathSections(lang){
     {key:'travel',title:'旅行フレーズ',sub:'空港・機内・入国・ホテル・街',ids:LANGS[lang].units.map(function(u){return u.id;})},
     {key:'scenes',title:'旅行の場面で話す',sub:'入国審査からトラブルまで、会話で練習',ids:TRAVEL_SC.slice()},
     {key:'study',title:'留学',sub:'学校での会話と、数学・理科・社会の用語',ids:STUDY_IDS.slice()}
-  ];
+  ].concat(lang==='en'&&UNITS.en.usuk?[{key:'usuk',title:'アメリカ英語とイギリス英語',sub:'同じ意味でも、国によって言い方やつづりが変わる',ids:['usuk']}]:[]);
 }
 function pathIds(lang){var a=[];pathSections(lang).forEach(function(s){a=a.concat(s.ids);});return a;}
 function unitsDone(lang,ids){var n=0;(ids||pathIds(lang)).forEach(function(uid){if(unitRec(lang,uid).n>0)n++;});return n;}
 function streakNow(){return(save.lastDay===dayStr()||save.lastDay===yesterdayStr())?save.streak:0;}
 function todayCount(){return save.daily&&save.daily.d===dayStr()?save.daily.n:0;}
 function rankIdx(m){var r=0;for(var i=0;i<RANKS.length;i++)if(m>=RANKS[i][2])r=i;return r;}
+/* miles earned in the last 6 months (never more than the lifetime total) */
+function milesWindow(now){var from=dayStr(new Date((now||Date.now())-STATUS_DAYS*DAY)),n=0,mh=save.mh||{};Object.keys(mh).forEach(function(k){if(k>from)n+=mh[k]||0;});return Math.min(n,save.miles||0);}
+/* the status shown now: the one kept from the last 6 months, or what the recent miles reach */
+function statusIdx(now){now=now||Date.now();var w=rankIdx(milesWindow(now)),st=save.st;return st&&st.until>now?Math.max(st.lv,w):w;}
+/* after a lesson: record the miles; reaching (or holding) a status keeps it for 6 more months */
+function statusEarn(add){
+  var now=Date.now(),today=dayStr(),from=dayStr(new Date(now-(STATUS_DAYS+14)*DAY));
+  if(!save.mh)save.mh={};
+  save.mh[today]=(save.mh[today]||0)+add;
+  Object.keys(save.mh).forEach(function(k){if(k<from)delete save.mh[k];});
+  var R=rankIdx(milesWindow(now)),cur=save.st&&save.st.until>now?save.st.lv:-1,firstCap=false;
+  if(R>=cur)save.st={lv:R,until:now+STATUS_DAYS*DAY};
+  if(R===RANKS.length-1&&!save.cap){save.cap=now;firstCap=true;}
+  return firstCap;
+}
+function fmtDate(ms){var d=new Date(ms);return d.getFullYear()+'.'+pad2(d.getMonth()+1)+'.'+pad2(d.getDate());}
 function unitIndex(lang,uid){return Math.max(0,ALL_IDS[lang].indexOf(uid));}
 function flightNo(lang,uid){return 'BF'+(ORDER.indexOf(lang)+1)+pad2(unitIndex(lang,uid)+1);}
 function gateNo(lang,uid){return LANGS[lang].letter+(unitIndex(lang,uid)+1);}
