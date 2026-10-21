@@ -29,7 +29,10 @@ var EN_UK={
  's-life.3':["break","休み時間は、イギリスでは break、アメリカでは recess。"],
  'crew-safe.3':["Your life jacket is under your seat.","救命胴衣は、イギリスでは life jacket、アメリカでは life vest。"],
  'med-exam.3':["You need to stay in hospital.","イギリスでは in hospital(the なし)、アメリカでは in the hospital。"],
- 'med-ward.0':["I'm going to put you on a drip.","点滴は、イギリスでは drip、アメリカでは IV。"]
+ 'med-ward.0':["I'm going to put you on a drip.","点滴は、イギリスでは drip、アメリカでは IV。"],
+ 'chef-prep.3':["Check the use-by dates.","期限は、イギリスでは use-by date、アメリカでは expiration date。"],
+ 'teach-talk.5':["She seems to find maths a little difficult.","数学は、イギリスでは maths、アメリカでは math。"],
+ 'sport-care.2':["We'll get ready for the next match.","試合は、イギリスでは match、アメリカでは game がよく使われます。"]
 };
 /* conversation scenes: [field, British text] pairs per turn */
 var SC_UK={

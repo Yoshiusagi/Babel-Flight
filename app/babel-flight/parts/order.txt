@@ -20,6 +20,8 @@ e3f_enuk.js
 d4_more1.js
 d5_more2.js
 d6_more3.js
+d7_more4.js
+d8_more5.js
 e4_core.js
 f5_views.js
 f5_home.js
