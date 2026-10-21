@@ -32,6 +32,7 @@ f10_fx.js
 f11_anim.js
 c8_ai.js
 e7_adapt.js
+e8_perks.js
 f12_track.js
 f13_account.js
 f14_pwa.js

@@ -88,6 +88,7 @@ function unionSave(a,b){
   if((od.d||'')>(out.daily.d||''))out.daily={d:od.d,n:od.n||0};
   else if(od.d===out.daily.d)out.daily.n=Math.max(out.daily.n||0,od.n||0);
   out.tq=Math.max(a.tq||0,b.tq||0);
+  out.stMax=Math.max(a.stMax||0,b.stMax||0);
   ORDER.forEach(function(l){var m={};[older.rem&&older.rem[l]||[],out.rem&&out.rem[l]||[]].forEach(function(list){list.forEach(function(r){if(!m[r.u]||r.t>=m[r.u].t)m[r.u]=r;});});
     if(!out.rem)out.rem={};out.rem[l]=Object.keys(m).map(function(k){return m[k];}).sort(function(x,y){return y.t-x.t;}).slice(0,6);});
   out.cap=(a.cap&&b.cap)?Math.min(a.cap,b.cap):(a.cap||b.cap||0);
@@ -121,7 +122,7 @@ function acctMerge(remote,replace){
   var theme=save.theme;
   save=replace?remote:unionSave(save,remote);
   persistLocal();
-  if(save.theme!==theme)applyTheme();
+  applyTheme();
   acctFixView();
   render();
   return true;

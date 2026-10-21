@@ -67,6 +67,7 @@ function completeLesson(o){
   var base=unitMode?20:15,c3=o.corr*3,sp=o.stars*(unitMode?15:10),miles=base+c3+sp;
   var lines=[[o.mode==='scene'?'通話完了':'レッスン完了',base],[(o.corrLabel||'正解')+' × '+o.corr,c3],['着陸評価 ★'+o.stars,sp]];
   if(goalJust){miles+=20;lines.push(['今日の目標達成',20]);}
+  if(o.mode==='lounge'){miles+=LOUNGE_BONUS;lines.push(['ラウンジボーナス',LOUNGE_BONUS]);}
   var rec=null,ix=-1;
   if(unitMode){
     rec=P.units[o.uid]||{n:0,stars:0,last:''};
@@ -103,7 +104,7 @@ function completeLesson(o){
   h+='<div class="receipt" aria-label="獲得マイルの明細">'+lines.map(function(x){return '<div class="ln"><span>'+esc(x[0])+'</span><span>+'+x[1]+'</span></div>';}).join('')+
      '<div class="ln tot"><span>獲得マイル</span><span>+'+miles+' mi</span></div></div>';
   if(firstCap)h+='<div class="up-note">キャプテンに到達！ 記念のキャプテンスタンプをもらいました(ずっと残ります)</div>';
-  else if(rankAfter>rankBefore)h+='<div class="up-note">ステータスアップ！ '+RANKS[rankAfter][0]+'になりました(6ヶ月有効)</div>';
+  else if(rankAfter>rankBefore)h+='<div class="up-note">ステータスアップ！ '+RANKS[rankAfter][0]+'になりました(6ヶ月有効)'+(typeof perkNote==='function'?perkNote(rankAfter):'')+'</div>';
   if(remAdded)h+='<div class="up-note rem-note">苦手が多かったので「補習フライト」を追加しました(苦手 '+remAdded+'フレーズ)</div>';
   if(o.wrong&&o.wrong.length){
     h+='<div class="card" style="text-align:left"><div class="card-h"><h2 class="jh">'+esc(o.wrongTitle)+'</h2><span class="lbl">'+esc(o.wrongNote)+'</span></div>'+

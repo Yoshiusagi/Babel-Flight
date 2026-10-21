@@ -29,7 +29,7 @@ function destChips(){
 function passHTML(L,uid){
   var LG=LANGS[L],u=UNITS[L][uid],rec=unitRec(L,uid),rk=statusIdx(),m=Math.round(unitMastery(L,uid)*100);
   var tp=profById(u.track),track=tp?tp.jp+'コース':({travel:'旅行フレーズ',daily:'日常会話',study:'留学'}[u.track]||'基本の会話');
-  return '<section class="pass" aria-label="搭乗券"><div class="pass-main"><div class="card-h" style="margin:4px 0 0"><span class="lbl">搭乗券 ・ '+esc(track)+'</span><span class="lbl">'+RANKS[rk][1]+'</span></div>'+
+  return '<section class="pass'+(rk>=4?' diamond':'')+'" aria-label="搭乗券"><div class="pass-main"><div class="card-h" style="margin:4px 0 0"><span class="lbl">搭乗券 ・ '+esc(track)+'</span><span class="lbl">'+RANKS[rk][1]+'</span></div>'+
     '<div class="pass-route"><div class="ap">HND<small>東京 羽田</small></div>'+planeIcon()+'<div class="ap">'+LG.code+'<small>'+esc(LG.city)+'</small></div></div>'+
     '<div class="pass-title">'+esc(unitTitle(uid))+'</div><div class="lbl" style="margin-top:4px">'+esc(unitLat(uid))+(rec.n>0?'  ・  '+rec.n+'回クリア':'')+'</div>'+
     '<div class="pass-grid"><div><span class="lbl">便名</span><div class="v">'+flightNo(L,uid)+'</div></div>'+
@@ -48,6 +48,7 @@ function reviewHTML(){
   else h+='まだ学習したフレーズがありません。ホームから1レッスンやってみよう。';
   h+='</p></div></div><button class="go" type="button" data-mode="review"'+(due.length?'':' disabled')+'>復習をはじめる<small>'+(due.length?Math.min(10,due.length)+'問':'復習するものはありません')+'</small></button></section>';
   h+=remCardHTML(L);
+  if(typeof loungeCardHTML==='function')h+=loungeCardHTML(L);
   h+='<div class="mode-grid">';
   h+='<section class="card mode"><span class="lbl">WEAK POINTS</span><h2 class="jh">弱点コース</h2><p class="dim">間違えたことのあるフレーズを、間違えた回数が多い順に出します。2回続けて正解すると卒業。</p><div class="mcount mono">'+weak.length+'<small> フレーズ</small></div><button class="go sm" type="button" data-mode="weak"'+(weak.length?'':' disabled')+'>はじめる</button></section>';
   var annOK=!!UNITS[L]['pilot-ann']&&ttsAvail(LG.tts);
@@ -107,12 +108,13 @@ function recordHTML(){
   var kept=!!(save.st&&save.st.until>now&&save.st.lv===rk&&rk>0);
   var pct=nx?clamp((win-cur[2])/(nx[2]-cur[2]),0,1)*100:100,h=topBar('記録'),stamps=0;
   ORDER.forEach(function(l){ALL_IDS[l].forEach(function(uid){if(unitRec(l,uid).n>0)stamps++;});});
-  h+='<section class="id-card"><button class="photo" type="button" data-icon-open aria-label="アイコンを変える">'+avatarHTML()+'<i class="photo-ed" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></i></button><div style="min-width:0"><span class="lbl">名前</span>'+
+  h+='<section class="id-card'+(rk>=RANKS.length-1?' gold':'')+'"><button class="photo" type="button" data-icon-open aria-label="アイコンを変える">'+avatarHTML()+'<i class="photo-ed" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></i></button><div style="min-width:0"><span class="lbl">名前</span>'+
      '<input id="pname" maxlength="14" value="'+esc(save.name)+'" aria-label="名前" autocomplete="off" spellcheck="false">'+
      '<div class="cls">'+cur[0]+' ステータス'+(p?' ・ '+esc(p.jp)+'志望':'')+'</div><div class="cls-bar"><i style="width:'+pct+'%"></i></div>'+
      '<div class="lbl" style="margin-top:6px">'+(nx?'次の「'+nx[0]+'」まで '+fmt(Math.max(0,nx[2]-win))+' マイル':'最高ステータスに到達')+'</div>'+
      '<div class="lbl st-sub">直近6ヶ月 '+fmt(win)+' マイル'+(kept?' ・ '+fmtDate(save.st.until)+' まで有効':'')+'</div></div>'+
      (save.cap?capStampHTML():'')+'</section>';
+  if(typeof perksCardHTML==='function')h+=perksCardHTML();
   if(typeof acctCardHTML==='function')h+=acctCardHTML();
   if(typeof pwaCardHTML==='function')h+=pwaCardHTML();
   h+='<div class="kpis">'+
@@ -134,6 +136,7 @@ function recordHTML(){
      (typeof enVarHTML==='function'?enVarHTML():'')+
      '<div class="set-block"><span class="lbl">1日の目標(レッスン数)</span>'+seg('data-goal',save.goal,GOALS)+'</div>'+
      '<div class="set-block"><span class="lbl">表示</span>'+seg('data-theme-set',save.theme,[['auto','自動'],['light','ライト'],['dark','ダーク']])+'</div>'+
+     (typeof accentHTML==='function'?accentHTML():'')+
      '<div class="set-row"><span>効果音</span><button class="ghost" type="button" data-toggle-sound aria-pressed="'+save.sound+'">'+(save.sound?'ON':'OFF')+'</button></div>'+
      '<div class="set-row"><span>タップ音</span><button class="ghost" type="button" data-toggle-tap aria-pressed="'+save.tap+'">'+(save.tap?'ON':'OFF')+'</button></div>'+
      '<div class="set-row"><span class="dim" style="font-size:13px">進捗は'+(cloud.doc?'アカウントに保存されています':'この端末のブラウザに保存されます')+'</span>'+
@@ -157,10 +160,12 @@ function pickerHTML(){
     '<p class="dim lead">選んだ職業の専門会話が、ホームのロードマップに追加されます。4言語すべてに対応しています。</p>'+profGrid(save.prof,'data-pick');
 }
 function openIconSheet(){
-  var cur=save.icon||'';
+  var cur=save.icon||'',anyLk=false;
   $('sheetHost').innerHTML='<div class="sheet" role="dialog" aria-label="アイコンを選ぶ"><div class="sheet-in"><h3>アイコンを選ぶ</h3><div class="icon-grid">'+
-    [['','','標準(飛行機)']].concat(ICONS).map(function(x){return '<button type="button" data-icon-set="'+x[0]+'" aria-pressed="'+(cur===x[0])+'" aria-label="'+x[2]+'">'+avatarHTML(x[0])+'</button>';}).join('')+
-    '</div><button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
+    [['','','標準(飛行機)']].concat(ICONS).map(function(x){
+      var lk=!!x[3]&&!(typeof perkHas==='function'&&perkHas(x[3]));if(lk)anyLk=true;
+      return '<button type="button" data-icon-set="'+x[0]+'" aria-pressed="'+(cur===x[0])+'" aria-label="'+x[2]+(lk?'(シルバーで解放)':'')+'"'+(lk?' class="locked" disabled':'')+'>'+avatarHTML(x[0])+(lk?'<i class="lock" aria-hidden="true">🔒</i>':'')+'</button>';}).join('')+
+    '</div>'+(anyLk?'<p class="dim hint">🔒のアイコンは、シルバーになると使えます(一度なればずっと使えます)。</p>':'')+'<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
 }
 function onboardHTML(){
   var D=obDraft,h='<div class="ob"><div class="ob-dots" aria-label="ステップ '+(obStep+1)+' / 4">'+[0,1,2,3].map(function(i){return '<i class="'+(i<=obStep?'on':'')+'"></i>';}).join('')+'</div>';

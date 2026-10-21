@@ -703,6 +703,31 @@ body.dark-ui .sheet{--sc:#ff6b79}
 .photo-ed svg{width:12px;height:12px}
 .id-card input{text-transform:none}
 .id-card .st-sub{margin-top:3px;opacity:.5;font-size:11px}
+:root[data-accent="sky"]{--signal:#6cc3ff}:root[data-accent="mint"]{--signal:#4fd6a5}:root[data-accent="coral"]{--signal:#ff9478}:root[data-accent="lavender"]{--signal:#b9a4ff}
+.perk-list{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
+.perk-list li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;font-size:13.5px;padding:8px 10px;border-radius:10px;background:var(--surface2)}
+.perk-list li.off{opacity:.6}
+.perk-lv{font:700 11px var(--f-mono);letter-spacing:.04em;padding:3px 7px;border-radius:6px;background:var(--ink);color:var(--bg);white-space:nowrap}
+.perk-jp small{display:block;font-size:11px;color:var(--ink2)}
+.perk-st{font-size:12px;font-weight:700;white-space:nowrap;text-align:right}.perk-st i{font-style:normal;margin-right:2px}
+.perk-list li.on .perk-st{color:var(--good)}
+.perk-lock i{font-style:normal}
+.accents{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:6px}
+.accents button{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 2px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--ink)}
+.accents button i{width:22px;height:22px;border-radius:50%;display:block;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+.accents button small{font-size:10px;color:var(--ink2);white-space:nowrap}
+.accents button[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--signal)}
+.icon-grid button.locked{opacity:.4;position:relative;cursor:not-allowed}
+.icon-grid button .lock{position:absolute;right:2px;bottom:0;font-size:12px;font-style:normal}
+.id-card.gold{background:linear-gradient(135deg,#fff1b8 0%,#f2c94c 38%,#d9a520 68%,#f7dc7e 100%);color:#2a1d00}
+.id-card.gold::after{border-color:rgba(255,255,255,.35)}
+.id-card.gold .lbl{color:#2a1d00}.id-card.gold .cls{color:#6b3f00}
+.id-card.gold input{color:#2a1d00;border-bottom-color:rgba(42,29,0,.35)}
+.id-card.gold .cls-bar{background:rgba(42,29,0,.18)}.id-card.gold .cls-bar i{background:#2a1d00}
+.pass.diamond .pass-main{background:linear-gradient(115deg,var(--surface) 0%,color-mix(in srgb,#8fd3ff 24%,var(--surface)) 38%,color-mix(in srgb,#d2b4ff 24%,var(--surface)) 66%,var(--surface) 100%)}
+.pass.diamond .pass-main::before{background:linear-gradient(90deg,#8fd3ff,#d2b4ff,#ffd6e8)}
+.lounge{background:linear-gradient(140deg,var(--surface) 50%,color-mix(in srgb,#9aa8c4 28%,var(--surface)))}
+.lounge.off{opacity:.72}.lounge .dim i{font-style:normal}
 .cloze{margin-top:10px;font-size:19px;line-height:1.7;font-weight:600;background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:12px 14px}
 .cloze .blank{display:inline-block;min-width:4.2em;border-bottom:3px solid var(--signal);margin:0 2px;vertical-align:baseline}
 .skip-go,.ai-drill{margin-top:8px;width:100%}
@@ -1791,7 +1816,9 @@ var PLANE_D='M14 0C14 -1.5 10 -2.2 4 -2.2L-3 -12.5L-7 -12.5L-4 -2.2L-11 -2.2L-15
 function planeIcon(){return '<svg viewBox="-20 -14 36 28" aria-hidden="true"><path d="'+PLANE_D+'" fill="currentColor"/></svg>';}
 /* profile icons (record screen ID card); '' = the default plane */
 var ICONS=[['pilot','🧑‍✈️','パイロット'],['globe','🌏','地球'],['bag','🧳','スーツケース'],['map','🗺️','地図'],['music','🎧','音楽'],
-  ['book','📚','本'],['sakura','🌸','さくら'],['bike','🚲','自転車'],['penguin','🐧','ペンギン'],['fox','🦊','キツネ'],['star','⭐','星']];
+  ['book','📚','本'],['sakura','🌸','さくら'],['bike','🚲','自転車'],['penguin','🐧','ペンギン'],['fox','🦊','キツネ'],['star','⭐','星'],
+  /* silver status perk (kept once unlocked) */
+  ['takeoff','🛫','離陸',1],['landing','🛬','着陸',1],['smallplane','🛩️','小型機',1],['heli','🚁','ヘリコプター',1],['compass','🧭','コンパス',1],['rocket','🚀','ロケット',1]];
 var ICON_MAP={};ICONS.forEach(function(x){ICON_MAP[x[0]]=x;});
 function avatarHTML(id){var ic=ICON_MAP[id===undefined?save.icon:id];return ic?'<span class="pfp" role="img" aria-label="'+ic[2]+'">'+ic[1]+'</span>':planeIcon();}
 function starIcon(on){return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6L2.5 9.4l6.6-.8z" fill="'+(on?'var(--signal)':'none')+'" stroke="'+(on?'#b88a00':'var(--line)')+'" stroke-width="1.6" stroke-linejoin="round"/></svg>';}
@@ -1808,7 +1835,7 @@ var KEY='babelflight.save.v1';
 var OLD_ORDER=['checkin','inflight','immigration','hotel','restaurant','city','atc1','atc2'];
 function blankProg(){var p={};ORDER.forEach(function(k){p[k]={items:{},units:{}};});return p;}
 function defaults(){return {v:2,t:0,name:'PASSENGER',icon:'',rz:0,lang:'ko',prof:'',level:'mid',goal:2,onboarded:false,theme:'auto',sound:true,mode:'daily',amb:false,tap:true,pos:{},
-  miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,daily:{d:'',n:0},mh:null,st:null,cap:0,tq:0,enVar:'us',acc:{},rem:{},prog:blankProg()};}
+  miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,daily:{d:'',n:0},mh:null,st:null,cap:0,tq:0,enVar:'us',acc:{},rem:{},stMax:0,accent:'',prog:blankProg()};}
 function mergeSave(raw){
   var d=defaults();
   if(!raw||typeof raw!=='object')return d;
@@ -1850,6 +1877,8 @@ function mergeSave(raw){
       return {u:x.u,k:x.k.filter(function(k){return typeof k==='string'&&/^.+\.\d+$/.test(k);}).slice(0,8),t:+x.t||0};}).filter(function(x){return x.k.length;});
   });
   d.acc=acc;d.rem=rem;
+  d.stMax=Math.max(0,Math.min(RANKS.length-1,Math.floor(+d.stMax||0)));
+  if(typeof d.accent!=='string'||!/^[a-z]{0,10}$/.test(d.accent))d.accent='';
   d.cap=+d.cap>0?+d.cap:0;d.tq=+d.tq>0?Math.floor(+d.tq):0;
   return d;
 }
@@ -1959,6 +1988,7 @@ function statusEarn(add){
   Object.keys(save.mh).forEach(function(k){if(k<from)delete save.mh[k];});
   var R=rankIdx(milesWindow(now)),cur=save.st&&save.st.until>now?save.st.lv:-1,firstCap=false;
   if(R>=cur)save.st={lv:R,until:now+STATUS_DAYS*DAY};
+  save.stMax=Math.max(save.stMax||0,statusIdx(now));
   if(R===RANKS.length-1&&!save.cap){save.cap=now;firstCap=true;}
   return firstCap;
 }
@@ -1978,6 +2008,7 @@ function applyTheme(){
   if(t==='light'||t==='dark')rootEl.setAttribute('data-theme',t);
   else if(origTheme)rootEl.setAttribute('data-theme',origTheme);
   else rootEl.removeAttribute('data-theme');
+  if(typeof applyAccent==='function')applyAccent();
 }
 
 /* ================= AUDIO + SPEECH ================= */
@@ -2143,7 +2174,7 @@ function destChips(){
 function passHTML(L,uid){
   var LG=LANGS[L],u=UNITS[L][uid],rec=unitRec(L,uid),rk=statusIdx(),m=Math.round(unitMastery(L,uid)*100);
   var tp=profById(u.track),track=tp?tp.jp+'コース':({travel:'旅行フレーズ',daily:'日常会話',study:'留学'}[u.track]||'基本の会話');
-  return '<section class="pass" aria-label="搭乗券"><div class="pass-main"><div class="card-h" style="margin:4px 0 0"><span class="lbl">搭乗券 ・ '+esc(track)+'</span><span class="lbl">'+RANKS[rk][1]+'</span></div>'+
+  return '<section class="pass'+(rk>=4?' diamond':'')+'" aria-label="搭乗券"><div class="pass-main"><div class="card-h" style="margin:4px 0 0"><span class="lbl">搭乗券 ・ '+esc(track)+'</span><span class="lbl">'+RANKS[rk][1]+'</span></div>'+
     '<div class="pass-route"><div class="ap">HND<small>東京 羽田</small></div>'+planeIcon()+'<div class="ap">'+LG.code+'<small>'+esc(LG.city)+'</small></div></div>'+
     '<div class="pass-title">'+esc(unitTitle(uid))+'</div><div class="lbl" style="margin-top:4px">'+esc(unitLat(uid))+(rec.n>0?'  ・  '+rec.n+'回クリア':'')+'</div>'+
     '<div class="pass-grid"><div><span class="lbl">便名</span><div class="v">'+flightNo(L,uid)+'</div></div>'+
@@ -2162,6 +2193,7 @@ function reviewHTML(){
   else h+='まだ学習したフレーズがありません。ホームから1レッスンやってみよう。';
   h+='</p></div></div><button class="go" type="button" data-mode="review"'+(due.length?'':' disabled')+'>復習をはじめる<small>'+(due.length?Math.min(10,due.length)+'問':'復習するものはありません')+'</small></button></section>';
   h+=remCardHTML(L);
+  if(typeof loungeCardHTML==='function')h+=loungeCardHTML(L);
   h+='<div class="mode-grid">';
   h+='<section class="card mode"><span class="lbl">WEAK POINTS</span><h2 class="jh">弱点コース</h2><p class="dim">間違えたことのあるフレーズを、間違えた回数が多い順に出します。2回続けて正解すると卒業。</p><div class="mcount mono">'+weak.length+'<small> フレーズ</small></div><button class="go sm" type="button" data-mode="weak"'+(weak.length?'':' disabled')+'>はじめる</button></section>';
   var annOK=!!UNITS[L]['pilot-ann']&&ttsAvail(LG.tts);
@@ -2221,12 +2253,13 @@ function recordHTML(){
   var kept=!!(save.st&&save.st.until>now&&save.st.lv===rk&&rk>0);
   var pct=nx?clamp((win-cur[2])/(nx[2]-cur[2]),0,1)*100:100,h=topBar('記録'),stamps=0;
   ORDER.forEach(function(l){ALL_IDS[l].forEach(function(uid){if(unitRec(l,uid).n>0)stamps++;});});
-  h+='<section class="id-card"><button class="photo" type="button" data-icon-open aria-label="アイコンを変える">'+avatarHTML()+'<i class="photo-ed" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></i></button><div style="min-width:0"><span class="lbl">名前</span>'+
+  h+='<section class="id-card'+(rk>=RANKS.length-1?' gold':'')+'"><button class="photo" type="button" data-icon-open aria-label="アイコンを変える">'+avatarHTML()+'<i class="photo-ed" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></i></button><div style="min-width:0"><span class="lbl">名前</span>'+
      '<input id="pname" maxlength="14" value="'+esc(save.name)+'" aria-label="名前" autocomplete="off" spellcheck="false">'+
      '<div class="cls">'+cur[0]+' ステータス'+(p?' ・ '+esc(p.jp)+'志望':'')+'</div><div class="cls-bar"><i style="width:'+pct+'%"></i></div>'+
      '<div class="lbl" style="margin-top:6px">'+(nx?'次の「'+nx[0]+'」まで '+fmt(Math.max(0,nx[2]-win))+' マイル':'最高ステータスに到達')+'</div>'+
      '<div class="lbl st-sub">直近6ヶ月 '+fmt(win)+' マイル'+(kept?' ・ '+fmtDate(save.st.until)+' まで有効':'')+'</div></div>'+
      (save.cap?capStampHTML():'')+'</section>';
+  if(typeof perksCardHTML==='function')h+=perksCardHTML();
   if(typeof acctCardHTML==='function')h+=acctCardHTML();
   if(typeof pwaCardHTML==='function')h+=pwaCardHTML();
   h+='<div class="kpis">'+
@@ -2248,6 +2281,7 @@ function recordHTML(){
      (typeof enVarHTML==='function'?enVarHTML():'')+
      '<div class="set-block"><span class="lbl">1日の目標(レッスン数)</span>'+seg('data-goal',save.goal,GOALS)+'</div>'+
      '<div class="set-block"><span class="lbl">表示</span>'+seg('data-theme-set',save.theme,[['auto','自動'],['light','ライト'],['dark','ダーク']])+'</div>'+
+     (typeof accentHTML==='function'?accentHTML():'')+
      '<div class="set-row"><span>効果音</span><button class="ghost" type="button" data-toggle-sound aria-pressed="'+save.sound+'">'+(save.sound?'ON':'OFF')+'</button></div>'+
      '<div class="set-row"><span>タップ音</span><button class="ghost" type="button" data-toggle-tap aria-pressed="'+save.tap+'">'+(save.tap?'ON':'OFF')+'</button></div>'+
      '<div class="set-row"><span class="dim" style="font-size:13px">進捗は'+(cloud.doc?'アカウントに保存されています':'この端末のブラウザに保存されます')+'</span>'+
@@ -2271,10 +2305,12 @@ function pickerHTML(){
     '<p class="dim lead">選んだ職業の専門会話が、ホームのロードマップに追加されます。4言語すべてに対応しています。</p>'+profGrid(save.prof,'data-pick');
 }
 function openIconSheet(){
-  var cur=save.icon||'';
+  var cur=save.icon||'',anyLk=false;
   $('sheetHost').innerHTML='<div class="sheet" role="dialog" aria-label="アイコンを選ぶ"><div class="sheet-in"><h3>アイコンを選ぶ</h3><div class="icon-grid">'+
-    [['','','標準(飛行機)']].concat(ICONS).map(function(x){return '<button type="button" data-icon-set="'+x[0]+'" aria-pressed="'+(cur===x[0])+'" aria-label="'+x[2]+'">'+avatarHTML(x[0])+'</button>';}).join('')+
-    '</div><button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
+    [['','','標準(飛行機)']].concat(ICONS).map(function(x){
+      var lk=!!x[3]&&!(typeof perkHas==='function'&&perkHas(x[3]));if(lk)anyLk=true;
+      return '<button type="button" data-icon-set="'+x[0]+'" aria-pressed="'+(cur===x[0])+'" aria-label="'+x[2]+(lk?'(シルバーで解放)':'')+'"'+(lk?' class="locked" disabled':'')+'>'+avatarHTML(x[0])+(lk?'<i class="lock" aria-hidden="true">🔒</i>':'')+'</button>';}).join('')+
+    '</div>'+(anyLk?'<p class="dim hint">🔒のアイコンは、シルバーになると使えます(一度なればずっと使えます)。</p>':'')+'<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
 }
 function onboardHTML(){
   var D=obDraft,h='<div class="ob"><div class="ob-dots" aria-label="ステップ '+(obStep+1)+' / 4">'+[0,1,2,3].map(function(i){return '<i class="'+(i<=obStep?'on':'')+'"></i>';}).join('')+'</div>';
@@ -2559,7 +2595,7 @@ function round2Kind(it,n){
   var order=ROUND2[save.level]||ROUND2.mid,k=order[n%4];
   return canDo(k,it)?k:firstOK(['j2t','build','listen'],it);
 }
-var MODE_TITLE={review:'復習',free:'自由練習',weak:'弱点コース',ann:'リスニング特訓',skip:'飛び級テスト',rem:'補習フライト',ai:'AIの例文練習'};
+var MODE_TITLE={review:'復習',free:'自由練習',weak:'弱点コース',ann:'リスニング特訓',skip:'飛び級テスト',rem:'補習フライト',ai:'AIの例文練習',lounge:'プラチナラウンジ'};
 function startFlight(opts){
   var items=opts.items,q=[];
   F={mode:opts.mode,lang:opts.lang,uid:opts.uid,items:items,queue:q,idx:0,mist:0,corr:0,wrong:{},retry:{},cur:null,answered:false,
@@ -2567,7 +2603,7 @@ function startFlight(opts){
   if(opts.mode==='unit'){
     shuffle(items).forEach(function(it){q.push({k:'t2j',it:it,w:1});});
     shuffle(items).forEach(function(it,n){q.push({k:round2Kind(it,n),it:it,w:1});});
-  }else if(opts.mode==='skip'){
+  }else if(opts.mode==='skip'||opts.mode==='lounge'){
     /* harder forms only: no "choose the meaning" warm-up */
     var sk=['cloze','j2t','build','type','listen','j2t'];
     items.forEach(function(it,n){var k=sk[n%sk.length];q.push({k:canDo(k,it)?k:firstOK(['j2t','build','listen'],it),it:it,w:1});});
@@ -2849,6 +2885,7 @@ function completeLesson(o){
   var base=unitMode?20:15,c3=o.corr*3,sp=o.stars*(unitMode?15:10),miles=base+c3+sp;
   var lines=[[o.mode==='scene'?'通話完了':'レッスン完了',base],[(o.corrLabel||'正解')+' × '+o.corr,c3],['着陸評価 ★'+o.stars,sp]];
   if(goalJust){miles+=20;lines.push(['今日の目標達成',20]);}
+  if(o.mode==='lounge'){miles+=LOUNGE_BONUS;lines.push(['ラウンジボーナス',LOUNGE_BONUS]);}
   var rec=null,ix=-1;
   if(unitMode){
     rec=P.units[o.uid]||{n:0,stars:0,last:''};
@@ -2885,7 +2922,7 @@ function completeLesson(o){
   h+='<div class="receipt" aria-label="獲得マイルの明細">'+lines.map(function(x){return '<div class="ln"><span>'+esc(x[0])+'</span><span>+'+x[1]+'</span></div>';}).join('')+
      '<div class="ln tot"><span>獲得マイル</span><span>+'+miles+' mi</span></div></div>';
   if(firstCap)h+='<div class="up-note">キャプテンに到達！ 記念のキャプテンスタンプをもらいました(ずっと残ります)</div>';
-  else if(rankAfter>rankBefore)h+='<div class="up-note">ステータスアップ！ '+RANKS[rankAfter][0]+'になりました(6ヶ月有効)</div>';
+  else if(rankAfter>rankBefore)h+='<div class="up-note">ステータスアップ！ '+RANKS[rankAfter][0]+'になりました(6ヶ月有効)'+(typeof perkNote==='function'?perkNote(rankAfter):'')+'</div>';
   if(remAdded)h+='<div class="up-note rem-note">苦手が多かったので「補習フライト」を追加しました(苦手 '+remAdded+'フレーズ)</div>';
   if(o.wrong&&o.wrong.length){
     h+='<div class="card" style="text-align:left"><div class="card-h"><h2 class="jh">'+esc(o.wrongTitle)+'</h2><span class="lbl">'+esc(o.wrongNote)+'</span></div>'+
@@ -3456,6 +3493,61 @@ document.addEventListener('click',function(e){
   if(t.hasAttribute('data-ai-drill')){aiDrillStart();return;}
   if(t.hasAttribute('data-ai-drill-close')){if(AID.ctl){try{AID.ctl.abort();}catch(x){}}AID.busy=false;AID.ctl=null;closeSheet();return;}
 });
+/* ================= STATUS PERKS =================
+   Things you get to keep once unlocked: Silver = more profile icons, Gold = theme colours.
+   Things that last only while you hold the status: Platinum = the lounge (harder bonus lesson),
+   Diamond = a special boarding pass, Captain = a gold ID card. */
+var ACCENTS=[['','#ffcf26','サンシャイン'],['sky','#6cc3ff','スカイ'],['mint','#4fd6a5','ミント'],['coral','#ff9478','サンセット'],['lavender','#b9a4ff','トワイライト']];
+var PERKS=[
+ {lv:1,jp:'アイコンが6つ増える',keep:true},
+ {lv:2,jp:'テーマカラーを選べる',keep:true},
+ {lv:3,jp:'ラウンジ(上級のボーナスレッスン)',keep:false},
+ {lv:4,jp:'特別デザインの搭乗券',keep:false},
+ {lv:5,jp:'金色のIDカード',keep:false}
+];
+var LOUNGE_N=10,LOUNGE_BONUS=30;
+/* the highest status ever reached (perks you keep) and the status held now (perks while it lasts) */
+function perkEver(){return Math.max(save.stMax||0,statusIdx());}
+function perkHas(lv){var p=null;PERKS.forEach(function(x){if(x.lv===lv)p=x;});return p?(p.keep?perkEver():statusIdx())>=lv:false;}
+function perkNote(lv){var p=null;PERKS.forEach(function(x){if(x.lv===lv)p=x;});return p?' ・ 特典: '+p.jp:'';}
+function perksCardHTML(){
+  var now=statusIdx(),ever=perkEver();
+  return '<section class="card perks"><div class="card-h"><h2 class="jh">ステータス特典</h2><span class="lbl">いまは '+RANKS[now][0]+'</span></div><ul class="perk-list">'+
+    PERKS.map(function(p){
+      var on=p.keep?ever>=p.lv:now>=p.lv,st;
+      if(on)st=p.keep?'使える':'利用中';
+      else if(!p.keep&&ever>=p.lv)st='もう一度'+RANKS[p.lv][0]+'で復活';
+      else st=RANKS[p.lv][0]+'で解放';
+      return '<li class="'+(on?'on':'off')+'"><span class="perk-lv">'+RANKS[p.lv][0]+'</span><span class="perk-jp">'+esc(p.jp)+'<small>'+(p.keep?'一度もらえばずっと使える':'そのステータスの間だけ')+'</small></span><span class="perk-st">'+(on?'':'<i aria-hidden="true">🔒</i>')+esc(st)+'</span></li>';
+    }).join('')+'</ul></section>';
+}
+/* ---- Gold: theme colour ---- */
+function accentOK(id){for(var i=0;i<ACCENTS.length;i++)if(ACCENTS[i][0]===id)return true;return false;}
+function applyAccent(){var a=accentOK(save.accent)&&perkHas(2)?save.accent:'';if(a)rootEl.setAttribute('data-accent',a);else rootEl.removeAttribute('data-accent');}
+function accentHTML(){
+  var cur=accentOK(save.accent)?save.accent:'';
+  if(!perkHas(2))return '<div class="set-block"><span class="lbl">テーマカラー</span><p class="dim hint perk-lock"><i aria-hidden="true">🔒</i> ゴールドになると選べるようになります(一度なればずっと使えます)。</p></div>';
+  return '<div class="set-block"><span class="lbl">テーマカラー ・ ゴールド特典</span><div class="accents" role="group" aria-label="テーマカラー">'+
+    ACCENTS.map(function(a){return '<button type="button" data-accent="'+a[0]+'" aria-pressed="'+(cur===a[0])+'" aria-label="'+a[2]+'"><i style="background:'+a[1]+'"></i><small>'+a[2]+'</small></button>';}).join('')+'</div></div>';
+}
+/* ---- Platinum: the lounge ---- */
+function loungeCardHTML(L){
+  var learned=learnedList(L).length;
+  if(!perkHas(3))return '<section class="card mode lounge off"><span class="lbl">PLATINUM LOUNGE</span><h2 class="jh">プラチナラウンジ</h2><p class="dim"><i aria-hidden="true">🔒</i> プラチナ以上のステータスの間だけ入れる、上級のボーナスレッスン。入力・並べ替え・聞き取りの問題だけで'+LOUNGE_N+'問、ボーナス+'+LOUNGE_BONUS+'マイル。</p></section>';
+  return '<section class="card mode lounge"><span class="lbl">PLATINUM LOUNGE ・ '+RANKS[statusIdx()][0]+'特典</span><h2 class="jh">プラチナラウンジ</h2><p class="dim">学習ずみのフレーズから、入力・並べ替え・聞き取りなど難しい形だけで'+LOUNGE_N+'問。クリアでボーナス+'+LOUNGE_BONUS+'マイル。</p>'+
+    '<button class="go sm" type="button" data-lounge'+(learned?'':' disabled')+'>ラウンジに入る<small>'+(learned?LOUNGE_N+'問':'まず1レッスンやってみよう')+'</small></button></section>';
+}
+function startLounge(){
+  if(!perkHas(3))return;
+  var L=save.lang,items=shuffle(learnedList(L)).slice(0,LOUNGE_N);
+  if(!items.length)return;
+  startFlight({mode:'lounge',lang:L,items:items});
+}
+document.addEventListener('click',function(e){
+  var t=e.target&&e.target.closest&&e.target.closest('button');if(!t)return;
+  if(t.hasAttribute('data-accent')){var a=t.getAttribute('data-accent');if(!perkHas(2)||!accentOK(a))return;save.accent=a;store();applyAccent();render();return;}
+  if(t.hasAttribute('data-lounge')){startLounge();return;}
+});
 /* ================= ANONYMOUS USAGE COUNT (standalone site only) =================
    Feeds the owner's /stats page. Sends only a random per-browser id plus the language / mode
    in use; no names, answers or progress. Runs only on the Higgsfield site (never inside Claude). */
@@ -3597,6 +3689,7 @@ function unionSave(a,b){
   if((od.d||'')>(out.daily.d||''))out.daily={d:od.d,n:od.n||0};
   else if(od.d===out.daily.d)out.daily.n=Math.max(out.daily.n||0,od.n||0);
   out.tq=Math.max(a.tq||0,b.tq||0);
+  out.stMax=Math.max(a.stMax||0,b.stMax||0);
   ORDER.forEach(function(l){var m={};[older.rem&&older.rem[l]||[],out.rem&&out.rem[l]||[]].forEach(function(list){list.forEach(function(r){if(!m[r.u]||r.t>=m[r.u].t)m[r.u]=r;});});
     if(!out.rem)out.rem={};out.rem[l]=Object.keys(m).map(function(k){return m[k];}).sort(function(x,y){return y.t-x.t;}).slice(0,6);});
   out.cap=(a.cap&&b.cap)?Math.min(a.cap,b.cap):(a.cap||b.cap||0);
@@ -3630,7 +3723,7 @@ function acctMerge(remote,replace){
   var theme=save.theme;
   save=replace?remote:unionSave(save,remote);
   persistLocal();
-  if(save.theme!==theme)applyTheme();
+  applyTheme();
   acctFixView();
   render();
   return true;

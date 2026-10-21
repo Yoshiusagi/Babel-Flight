@@ -18,7 +18,9 @@ var PLANE_D='M14 0C14 -1.5 10 -2.2 4 -2.2L-3 -12.5L-7 -12.5L-4 -2.2L-11 -2.2L-15
 function planeIcon(){return '<svg viewBox="-20 -14 36 28" aria-hidden="true"><path d="'+PLANE_D+'" fill="currentColor"/></svg>';}
 /* profile icons (record screen ID card); '' = the default plane */
 var ICONS=[['pilot','🧑‍✈️','パイロット'],['globe','🌏','地球'],['bag','🧳','スーツケース'],['map','🗺️','地図'],['music','🎧','音楽'],
-  ['book','📚','本'],['sakura','🌸','さくら'],['bike','🚲','自転車'],['penguin','🐧','ペンギン'],['fox','🦊','キツネ'],['star','⭐','星']];
+  ['book','📚','本'],['sakura','🌸','さくら'],['bike','🚲','自転車'],['penguin','🐧','ペンギン'],['fox','🦊','キツネ'],['star','⭐','星'],
+  /* silver status perk (kept once unlocked) */
+  ['takeoff','🛫','離陸',1],['landing','🛬','着陸',1],['smallplane','🛩️','小型機',1],['heli','🚁','ヘリコプター',1],['compass','🧭','コンパス',1],['rocket','🚀','ロケット',1]];
 var ICON_MAP={};ICONS.forEach(function(x){ICON_MAP[x[0]]=x;});
 function avatarHTML(id){var ic=ICON_MAP[id===undefined?save.icon:id];return ic?'<span class="pfp" role="img" aria-label="'+ic[2]+'">'+ic[1]+'</span>':planeIcon();}
 function starIcon(on){return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6L2.5 9.4l6.6-.8z" fill="'+(on?'var(--signal)':'none')+'" stroke="'+(on?'#b88a00':'var(--line)')+'" stroke-width="1.6" stroke-linejoin="round"/></svg>';}
@@ -35,7 +37,7 @@ var KEY='babelflight.save.v1';
 var OLD_ORDER=['checkin','inflight','immigration','hotel','restaurant','city','atc1','atc2'];
 function blankProg(){var p={};ORDER.forEach(function(k){p[k]={items:{},units:{}};});return p;}
 function defaults(){return {v:2,t:0,name:'PASSENGER',icon:'',rz:0,lang:'ko',prof:'',level:'mid',goal:2,onboarded:false,theme:'auto',sound:true,mode:'daily',amb:false,tap:true,pos:{},
-  miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,daily:{d:'',n:0},mh:null,st:null,cap:0,tq:0,enVar:'us',acc:{},rem:{},prog:blankProg()};}
+  miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,daily:{d:'',n:0},mh:null,st:null,cap:0,tq:0,enVar:'us',acc:{},rem:{},stMax:0,accent:'',prog:blankProg()};}
 function mergeSave(raw){
   var d=defaults();
   if(!raw||typeof raw!=='object')return d;
@@ -77,6 +79,8 @@ function mergeSave(raw){
       return {u:x.u,k:x.k.filter(function(k){return typeof k==='string'&&/^.+\.\d+$/.test(k);}).slice(0,8),t:+x.t||0};}).filter(function(x){return x.k.length;});
   });
   d.acc=acc;d.rem=rem;
+  d.stMax=Math.max(0,Math.min(RANKS.length-1,Math.floor(+d.stMax||0)));
+  if(typeof d.accent!=='string'||!/^[a-z]{0,10}$/.test(d.accent))d.accent='';
   d.cap=+d.cap>0?+d.cap:0;d.tq=+d.tq>0?Math.floor(+d.tq):0;
   return d;
 }
@@ -186,6 +190,7 @@ function statusEarn(add){
   Object.keys(save.mh).forEach(function(k){if(k<from)delete save.mh[k];});
   var R=rankIdx(milesWindow(now)),cur=save.st&&save.st.until>now?save.st.lv:-1,firstCap=false;
   if(R>=cur)save.st={lv:R,until:now+STATUS_DAYS*DAY};
+  save.stMax=Math.max(save.stMax||0,statusIdx(now));
   if(R===RANKS.length-1&&!save.cap){save.cap=now;firstCap=true;}
   return firstCap;
 }
@@ -205,6 +210,7 @@ function applyTheme(){
   if(t==='light'||t==='dark')rootEl.setAttribute('data-theme',t);
   else if(origTheme)rootEl.setAttribute('data-theme',origTheme);
   else rootEl.removeAttribute('data-theme');
+  if(typeof applyAccent==='function')applyAccent();
 }
 
 /* ================= AUDIO + SPEECH ================= */

@@ -23,7 +23,7 @@ function round2Kind(it,n){
   var order=ROUND2[save.level]||ROUND2.mid,k=order[n%4];
   return canDo(k,it)?k:firstOK(['j2t','build','listen'],it);
 }
-var MODE_TITLE={review:'復習',free:'自由練習',weak:'弱点コース',ann:'リスニング特訓',skip:'飛び級テスト',rem:'補習フライト',ai:'AIの例文練習'};
+var MODE_TITLE={review:'復習',free:'自由練習',weak:'弱点コース',ann:'リスニング特訓',skip:'飛び級テスト',rem:'補習フライト',ai:'AIの例文練習',lounge:'プラチナラウンジ'};
 function startFlight(opts){
   var items=opts.items,q=[];
   F={mode:opts.mode,lang:opts.lang,uid:opts.uid,items:items,queue:q,idx:0,mist:0,corr:0,wrong:{},retry:{},cur:null,answered:false,
@@ -31,7 +31,7 @@ function startFlight(opts){
   if(opts.mode==='unit'){
     shuffle(items).forEach(function(it){q.push({k:'t2j',it:it,w:1});});
     shuffle(items).forEach(function(it,n){q.push({k:round2Kind(it,n),it:it,w:1});});
-  }else if(opts.mode==='skip'){
+  }else if(opts.mode==='skip'||opts.mode==='lounge'){
     /* harder forms only: no "choose the meaning" warm-up */
     var sk=['cloze','j2t','build','type','listen','j2t'];
     items.forEach(function(it,n){var k=sk[n%sk.length];q.push({k:canDo(k,it)?k:firstOK(['j2t','build','listen'],it),it:it,w:1});});
