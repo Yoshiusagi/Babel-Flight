@@ -8,6 +8,9 @@ on:
 
 jobs:
   validate:
+    # The arc-runners-frontend runner only exists on Higgsfield's side; skip on
+    # the public GitHub copy so pushes there don't sit queued or fail.
+    if: github.repository_owner != 'Yoshiusagi'
     runs-on: arc-runners-frontend
     name: Validate template
     # The app project lives in app/ (ci/ holds the deploy config, AGENTS.md +
