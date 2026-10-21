@@ -702,6 +702,12 @@ body.dark-ui .sheet{--sc:#ff6b79}
 .photo-ed svg{width:12px;height:12px}
 .id-card input{text-transform:none}
 .id-card .st-sub{margin-top:3px;opacity:.5;font-size:11px}
+.cloze{margin-top:10px;font-size:19px;line-height:1.7;font-weight:600;background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:12px 14px}
+.cloze .blank{display:inline-block;min-width:4.2em;border-bottom:3px solid var(--signal);margin:0 2px;vertical-align:baseline}
+.skip-go,.ai-drill{margin-top:8px;width:100%}
+.skip-go small,.ai-drill small{display:block;font-size:11.5px;font-weight:500;opacity:.75;margin-top:2px}
+.rem-card .rem-go{margin-top:8px}
+.rem-note{background:var(--surface);color:var(--ink);border:1.5px solid var(--signal)}
 .cap-stamp{position:absolute;right:10px;top:8px;width:66px;height:66px;color:#ff6b5a;transform:rotate(-12deg);opacity:.92;pointer-events:none;z-index:1}
 .cap-stamp svg{width:100%;height:100%;display:block}
 .id-card:has(.cap-stamp) input{padding-right:58px}
@@ -1564,7 +1570,7 @@ var KEY='babelflight.save.v1';
 var OLD_ORDER=['checkin','inflight','immigration','hotel','restaurant','city','atc1','atc2'];
 function blankProg(){var p={};ORDER.forEach(function(k){p[k]={items:{},units:{}};});return p;}
 function defaults(){return {v:2,t:0,name:'PASSENGER',icon:'',rz:0,lang:'ko',prof:'',level:'mid',goal:2,onboarded:false,theme:'auto',sound:true,mode:'daily',amb:false,tap:true,pos:{},
-  miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,daily:{d:'',n:0},mh:null,st:null,cap:0,tq:0,enVar:'us',prog:blankProg()};}
+  miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,daily:{d:'',n:0},mh:null,st:null,cap:0,tq:0,enVar:'us',acc:{},rem:{},prog:blankProg()};}
 function mergeSave(raw){
   var d=defaults();
   if(!raw||typeof raw!=='object')return d;
@@ -1597,6 +1603,14 @@ function mergeSave(raw){
   d.mh=mh;
   var st=raw.st;d.st=(st&&typeof st==='object'&&st.lv>=0&&st.lv<RANKS.length&&+st.until>0)?{lv:Math.floor(st.lv),until:+st.until}:null;
   if(d.enVar!=='uk')d.enVar='us';
+  var acc={},rem={};
+  ORDER.forEach(function(l){
+    var a=raw.acc&&raw.acc[l];if(a&&+a.n>0&&+a.a>=0&&+a.a<=1)acc[l]={a:+a.a,n:Math.floor(+a.n)};
+    var r=raw.rem&&raw.rem[l];
+    if(Array.isArray(r))rem[l]=r.filter(function(x){return x&&typeof x.u==='string'&&UNITS[l][x.u]&&Array.isArray(x.k)&&x.k.length;}).slice(0,6).map(function(x){
+      return {u:x.u,k:x.k.filter(function(k){return typeof k==='string'&&/^.+\.\d+$/.test(k);}).slice(0,8),t:+x.t||0};}).filter(function(x){return x.k.length;});
+  });
+  d.acc=acc;d.rem=rem;
   d.cap=+d.cap>0?+d.cap:0;d.tq=+d.tq>0?Math.floor(+d.tq):0;
   return d;
 }
@@ -1883,7 +1897,7 @@ function destChips(){
 }
 function passHTML(L,uid){
   var LG=LANGS[L],u=UNITS[L][uid],rec=unitRec(L,uid),rk=statusIdx(),m=Math.round(unitMastery(L,uid)*100);
-  var track=u.track==='travel'?'基本の会話':(profById(u.track)||{}).jp+'コース';
+  var tp=profById(u.track),track=tp?tp.jp+'コース':({travel:'旅行フレーズ',daily:'日常会話',study:'留学'}[u.track]||'基本の会話');
   return '<section class="pass" aria-label="搭乗券"><div class="pass-main"><div class="card-h" style="margin:4px 0 0"><span class="lbl">搭乗券 ・ '+esc(track)+'</span><span class="lbl">'+RANKS[rk][1]+'</span></div>'+
     '<div class="pass-route"><div class="ap">HND<small>東京 羽田</small></div>'+planeIcon()+'<div class="ap">'+LG.code+'<small>'+esc(LG.city)+'</small></div></div>'+
     '<div class="pass-title">'+esc(unitTitle(uid))+'</div><div class="lbl" style="margin-top:4px">'+esc(unitLat(uid))+(rec.n>0?'  ・  '+rec.n+'回クリア':'')+'</div>'+
@@ -1892,7 +1906,7 @@ function passHTML(L,uid){
     '<div><span class="lbl">問題数</span><div class="v">'+(u.items.length*2)+'問</div></div>'+
     '<div><span class="lbl">定着度</span><div class="v">'+m+'%</div></div></div></div>'+
     '<div class="pass-stub"><div class="stub-row"><div class="barcode">'+barcodeSVG(flightNo(L,uid)+L)+'</div></div>'+
-    '<button class="go" type="button" data-go="'+esc(uid)+'">はじめる<small>約3分 ・ '+u.items.length+'フレーズ ・ 全部問題形式</small></button></div></section>';
+    '<button class="go" type="button" data-go="'+esc(uid)+'">はじめる<small>約3分 ・ '+u.items.length+'フレーズ ・ 全部問題形式</small></button>'+skipBtnHTML(L,uid)+'</div></section>';
 }
 function reviewHTML(){
   var L=save.lang,LG=LANGS[L],due=dueList(L),weak=weakList(L),learned=learnedList(L),nd=nextDueIn(L),h=topBar('復習');
@@ -1902,6 +1916,7 @@ function reviewHTML(){
   else if(learned.length)h+='今は復習するものがありません。次は'+fmtIn(nd)+'です。';
   else h+='まだ学習したフレーズがありません。ホームから1レッスンやってみよう。';
   h+='</p></div></div><button class="go" type="button" data-mode="review"'+(due.length?'':' disabled')+'>復習をはじめる<small>'+(due.length?Math.min(10,due.length)+'問':'復習するものはありません')+'</small></button></section>';
+  h+=remCardHTML(L);
   h+='<div class="mode-grid">';
   h+='<section class="card mode"><span class="lbl">WEAK POINTS</span><h2 class="jh">弱点コース</h2><p class="dim">間違えたことのあるフレーズを、間違えた回数が多い順に出します。2回続けて正解すると卒業。</p><div class="mcount mono">'+weak.length+'<small> フレーズ</small></div><button class="go sm" type="button" data-mode="weak"'+(weak.length?'':' disabled')+'>はじめる</button></section>';
   var annOK=!!UNITS[L]['pilot-ann']&&ttsAvail(LG.tts);
@@ -2284,6 +2299,7 @@ function canDo(kind,it){
   if(kind==='listenjp')return ttsAvail(LG.tts);
   if(kind==='build'){var n=tokensOf(d.t).length;return n>=3&&n<=8;}
   if(kind==='type')return F.lang!=='ko'&&d.t.length<=34&&save.level!=='beg';
+  if(kind==='cloze')return !!clozeKey(d);
   return true;
 }
 function firstOK(list,it,avoid){
@@ -2297,7 +2313,7 @@ function round2Kind(it,n){
   var order=ROUND2[save.level]||ROUND2.mid,k=order[n%4];
   return canDo(k,it)?k:firstOK(['j2t','build','listen'],it);
 }
-var MODE_TITLE={review:'復習',free:'自由練習',weak:'弱点コース',ann:'リスニング特訓'};
+var MODE_TITLE={review:'復習',free:'自由練習',weak:'弱点コース',ann:'リスニング特訓',skip:'飛び級テスト',rem:'補習フライト',ai:'AIの例文練習'};
 function startFlight(opts){
   var items=opts.items,q=[];
   F={mode:opts.mode,lang:opts.lang,uid:opts.uid,items:items,queue:q,idx:0,mist:0,corr:0,wrong:{},retry:{},cur:null,answered:false,
@@ -2305,6 +2321,17 @@ function startFlight(opts){
   if(opts.mode==='unit'){
     shuffle(items).forEach(function(it){q.push({k:'t2j',it:it,w:1});});
     shuffle(items).forEach(function(it,n){q.push({k:round2Kind(it,n),it:it,w:1});});
+  }else if(opts.mode==='skip'){
+    /* harder forms only: no "choose the meaning" warm-up */
+    var sk=['cloze','j2t','build','type','listen','j2t'];
+    items.forEach(function(it,n){var k=sk[n%sk.length];q.push({k:canDo(k,it)?k:firstOK(['j2t','build','listen'],it),it:it,w:1});});
+  }else if(opts.mode==='rem'){
+    /* each weak phrase three times, in three different forms */
+    [['cloze','j2t'],['build','listen','listenjp'],['type','listen','j2t']].forEach(function(round){
+      shuffle(items).forEach(function(it){q.push({k:firstOK(round,it),it:it,w:1});});
+    });
+  }else if(opts.mode==='ai'){
+    items.forEach(function(it,n){var x=opts.qs[n],all=shuffle([x.jp].concat(x.wrong));q.push({k:'aiq',it:it,w:1,opts:all,ci:all.indexOf(x.jp)});});
   }else if(opts.mode==='ann'){
     shuffle(items).forEach(function(it){q.push({k:canDo('listenjp',it)?'listenjp':'t2j',it:it,w:1});});
   }else{
@@ -2313,8 +2340,8 @@ function startFlight(opts){
   }
   q.forEach(function(x){F.wTotal+=x.w;});
   view='flight';
-  var LG=LANGS[F.lang],title=opts.mode==='unit'?unitTitle(opts.uid):MODE_TITLE[opts.mode];
-  var id=opts.mode==='unit'?flightNo(F.lang,opts.uid):'BF'+(ORDER.indexOf(F.lang)+1)+'XX';
+  var LG=LANGS[F.lang],title=opts.mode==='unit'?unitTitle(opts.uid):(opts.mode==='skip'||opts.mode==='rem')?MODE_TITLE[opts.mode]+': '+unitTitle(opts.uid):MODE_TITLE[opts.mode];
+  var id=(opts.mode==='unit'||opts.mode==='skip'||opts.mode==='rem')?flightNo(F.lang,opts.uid):'BF'+(ORDER.indexOf(F.lang)+1)+'XX';
   rootEl.style.setProperty('--lc','var(--c-'+F.lang+')');
   $('tabs').hidden=true;
   $('main').innerHTML=
@@ -2368,7 +2395,7 @@ function optsFor(it,field){
     });
   }
   /* 1-2 look-alikes from the same course keep the level; the rest come from anywhere in the language */
-  take(grpPool(F.lang,UNITS[F.lang][it.uid].track),Math.random()<0.5?1:2,true);
+  take(grpPool(F.lang,UNITS[F.lang][it.uid].track),lookAlikes(F.lang),true);
   take(langPool(F.lang),3,true);
   take(langPool(F.lang),3,false);
   var all=shuffle(picks.concat([d]));
@@ -2393,6 +2420,15 @@ function showStep(){
   if(q.k==='t2j'){
     board.set(d.t);ledSet('? ? ?',beg&&d.r?'読み: '+d.r:'意味を選ぼう');optsFor(q.it,'jp');
     box.innerHTML='<span class="qh">意味はどれ？'+tag+'</span>'+hearBtns()+optsHTML('');
+    if(beg)speak(d.t,LG.tts,false);
+  }else if(q.k==='cloze'){
+    q.ck=q.ck||clozeKey(d);var co=clozeOpts(F.lang,q.ck);F.opts=co.opts;F.optR=[];F.ci=co.ci;
+    board.set('');ledSet(d.jp,'空らんに入る語はどれ？');
+    box.innerHTML='<span class="qh">穴埋め'+tag+'</span><div class="cloze'+koCls()+'">'+clozeHTML(q.ck)+'</div>'+optsHTML(koCls());
+  }else if(q.k==='aiq'){
+    F.opts=q.opts;F.optR=[];F.ci=q.ci;
+    board.set(d.t);ledSet('? ? ?','AIが作った例文。意味はどれ？');
+    box.innerHTML='<span class="qh">AIの例文<span class="newtag">AI</span></span>'+hearBtns()+optsHTML('');
     if(beg)speak(d.t,LG.tts,false);
   }else if(q.k==='j2t'){
     board.set('');ledSet(d.jp,'これを'+LG.name+'で言うと？');optsFor(q.it,'t');
@@ -2428,6 +2464,7 @@ function drawBuild(){
 }
 function normAns(s){return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' ').trim();}
 function pushRetry(q){
+  if(F.mode==='skip'||F.mode==='ai')return;
   var key=ik(q.it.uid,q.it.i);
   if((F.retry[key]||0)>=2)return;
   F.retry[key]=(F.retry[key]||0)+1;
@@ -2519,6 +2556,7 @@ function land(){
   var L=F.lang,now=Date.now(),P=save.prog[L];
   var uniq={},keys=[];
   F.items.forEach(function(it){var k=ik(it.uid,it.i);if(!uniq[k]){uniq[k]=it;keys.push(k);}});
+  if(F.mode==='ai'){landAi();return;}
   keys.forEach(function(k){
     var rec=P.items[k]||{b:0,d:0},w=F.wrong[k]||0,wasDue=rec.b===0||rec.d<=now;
     if(w===0){
@@ -2530,8 +2568,32 @@ function land(){
   });
   var mist=F.mist,stars=mist===0?3:mist<=2?2:1;
   var grade=mist===0?['完璧な着陸','PERFECT LANDING','ミスなし！バターのようになめらか']:mist<=2?['なめらかな着陸','SMOOTH LANDING','いい調子。この感覚で続けよう']:mist<=5?['しっかり着陸','FIRM LANDING','間違えたフレーズは復習に回るよ']:['ちょっと揺れた着陸','HARD LANDING','大丈夫。間違えた分だけ記憶に残りやすいよ'];
-  var wrong=keys.filter(function(k){return F.wrong[k];}).slice(0,5).map(function(k){var it=uniq[k];return UNITS[L][it.uid].items[it.i];});
-  completeLesson({L:L,uid:F.uid,mode:F.mode==='unit'?'unit':F.mode,stars:stars,corr:F.corr,answered:F.corr+F.mist,grade:grade,wrong:wrong,wrongTitle:'間違えたフレーズ',wrongNote:'弱点コースに追加'});
+  var wrongKeys=keys.filter(function(k){return F.wrong[k];});
+  var wrong=wrongKeys.slice(0,5).map(function(k){var it=uniq[k];return UNITS[L][it.uid].items[it.i];});
+  if(F.mode==='skip'){landSkip(L,keys,stars,wrong);return;}
+  if(F.mode==='rem'){
+    var cleared=F.mist<=1;remDone(L,F.uid,cleared?[]:wrongKeys);
+    if(cleared)grade=['補習クリア！','REMEDIAL CLEARED','苦手だったフレーズを卒業。この調子！'];
+  }
+  completeLesson({L:L,uid:F.uid,mode:F.mode==='unit'?'unit':F.mode,stars:stars,corr:F.corr,answered:F.corr+F.mist,wrongKeys:wrongKeys,grade:grade,wrong:wrong,wrongTitle:'間違えたフレーズ',wrongNote:'弱点コースに追加'});
+}
+/* 飛び級テスト: pass = the unit counts as flown; unasked phrases join the review list */
+function landSkip(L,keys,stars,wrong){
+  var pass=F.mist<=SKIP_MAX_MISS,uid=F.uid,P=save.prog[L],now=Date.now();
+  if(pass){
+    UNITS[L][uid].items.forEach(function(x,i){var k=ik(uid,i);if(keys.indexOf(k)<0&&!P.items[k])P.items[k]={b:1,d:now+DAY};});
+    completeLesson({L:L,uid:uid,mode:'unit',stars:Math.max(2,stars),corr:F.corr,answered:F.corr+F.mist,skip:true,
+      grade:['飛び級合格！','SKIP TEST PASSED','このレッスンは合格扱い。どんどん先へ進もう'],wrong:wrong,wrongTitle:'間違えたフレーズ',wrongNote:'弱点コースに追加'});
+  }else{
+    completeLesson({L:L,uid:uid,mode:'skip',stars:1,corr:F.corr,answered:F.corr+F.mist,lessonUid:uid,
+      grade:['今回は普通のレッスンで','NOT THIS TIME','間違えたところがあったので、レッスンで固めよう'],wrong:wrong,wrongTitle:'間違えたフレーズ',wrongNote:'弱点コースに追加'});
+  }
+}
+/* AI example drill: practice only, nothing is added to the phrase records */
+function landAi(){
+  var mist=F.mist,stars=mist===0?3:mist<=1?2:1;
+  completeLesson({L:F.lang,uid:null,mode:'ai',stars:stars,corr:F.corr,answered:F.corr+F.mist,
+    grade:mist===0?['全問正解！','ALL CORRECT','新しい文でも意味がわかった！']:['おつかれさま','PRACTICE DONE','新しい文で使い方をつかもう'],wrong:[],wrongTitle:'',wrongNote:''});
 }
 function completeLesson(o){
   var L=o.L,LG=LANGS[L],today=dayStr(),P=save.prog[L],rankBefore=statusIdx(),unitMode=(o.mode==='unit'||o.mode==='scene');
@@ -2559,6 +2621,11 @@ function completeLesson(o){
   }
   save.miles+=miles;save.flights++;
   save.tq=(save.tq||0)+(o.answered||0);
+  if(o.mode!=='ai')accNote(L,o.corr,o.answered);
+  /* many mistakes in a lesson: add a remedial flight made of those phrases */
+  var remAdded=0;
+  if(o.mode==='unit'&&!o.skip&&o.wrongKeys&&o.wrongKeys.length>=2&&o.answered>0&&o.corr/o.answered<0.75){remAdd(L,o.uid,o.wrongKeys);remAdded=o.wrongKeys.length;}
+  AID.wrong=o.mode==='ai'?null:(o.wrong||[]).slice(0,3);AID.L=L;
   var firstCap=statusEarn(miles);
   store();
   var rankAfter=statusIdx(),gpct=clamp(save.daily.n/save.goal,0,1)*100;
@@ -2573,11 +2640,15 @@ function completeLesson(o){
      '<div class="ln tot"><span>獲得マイル</span><span>+'+miles+' mi</span></div></div>';
   if(firstCap)h+='<div class="up-note">キャプテンに到達！ 記念のキャプテンスタンプをもらいました(ずっと残ります)</div>';
   else if(rankAfter>rankBefore)h+='<div class="up-note">ステータスアップ！ '+RANKS[rankAfter][0]+'になりました(6ヶ月有効)</div>';
+  if(remAdded)h+='<div class="up-note rem-note">苦手が多かったので「補習フライト」を追加しました(苦手 '+remAdded+'フレーズ)</div>';
   if(o.wrong&&o.wrong.length){
     h+='<div class="card" style="text-align:left"><div class="card-h"><h2 class="jh">'+esc(o.wrongTitle)+'</h2><span class="lbl">'+esc(o.wrongNote)+'</span></div>'+
        o.wrong.map(function(d){return '<p style="font-size:14px;margin-top:6px"><b class="'+(L==='ko'?'ko':'')+'">'+esc(d.t)+'</b><br><span class="dim" style="font-size:12.5px">'+esc(d.jp)+'</span></p>';}).join('')+'</div>';
   }
   h+='<div class="acts">';
+  if(remAdded)h+='<button class="go" type="button" data-rem="'+esc(o.uid)+'">補習フライトへ<small>苦手を別の形で練習 ・ 約'+Math.max(1,Math.round(remAdded*0.6))+'分</small></button>';
+  if(o.lessonUid)h+='<button class="go" type="button" data-go="'+esc(o.lessonUid)+'">このレッスンを受ける<small>'+esc(unitTitle(o.lessonUid))+'</small></button>';
+  h+=aiDrillBtnHTML();
   if(unitMode){var nu=nextPathUnit(L,o.uid);if(nu)h+='<button class="go" type="button" data-next-lesson="'+esc(nu)+'">次のレッスンへ<small>'+esc(unitTitle(nu))+' ・ 地図で飛行機が進みます</small></button>';}
   h+='<button class="ghost" type="button" data-home>ホームに戻る(地図を見る)</button></div></div>';
   view='land';F=null;board=null;closeSheet();$('tabs').hidden=true;
@@ -2992,6 +3063,153 @@ function atcSend(){
     if(!AI.ok){view='review';render();}
   });
 }
+/* ================= LEVEL ADJUSTMENT =================
+   Follows each learner's accuracy per language:
+   - 飛び級テスト: learners who keep getting things right can skip a unit with a short, harder test.
+   - 補習フライト: a lesson with many mistakes adds an extra flight built from those phrases,
+     asked in different forms (穴埋め・並べ替え・聞き取り・入力).
+   - Answer choices get closer to the right answer for strong learners, and further for those who struggle.
+   - AIの例文練習: AI writes new example sentences around the phrases that were missed (when AI is available). */
+var SKIP_N=6,SKIP_MAX_MISS=1,REM_MAX=6;
+function accOf(L){var a=save.acc&&save.acc[L];return a&&a.n>0?a:{a:0.75,n:0};}
+function accNote(L,corr,answered){
+  if(!(answered>0))return;
+  if(!save.acc)save.acc={};
+  var r=clamp(corr/answered,0,1),a=save.acc[L];
+  save.acc[L]=a&&a.n>0?{a:Math.round((a.a*0.7+r*0.3)*1000)/1000,n:Math.min(a.n+1,999)}:{a:Math.round(r*1000)/1000,n:1};
+}
+/* how many look-alike choices to mix in: more for strong learners, none for those who struggle */
+function lookAlikes(L){var a=accOf(L);if(a.n<2)return Math.random()<0.5?1:2;return a.a>=0.88?3:a.a>=0.7?(Math.random()<0.5?1:2):0;}
+function skipEligible(L,uid){
+  var u=UNITS[L][uid],a=accOf(L);
+  return !!(u&&u.kind!=='scene'&&u.items.length>=SKIP_N&&unitRec(L,uid).n===0&&a.n>=3&&a.a>=0.85);
+}
+function skipBtnHTML(L,uid){
+  if(!skipEligible(L,uid))return '';
+  return '<button class="ghost skip-go" type="button" data-skip-test="'+esc(uid)+'">飛び級テストに挑戦<small>'+SKIP_N+'問 ・ ミス'+SKIP_MAX_MISS+'つまでなら合格して、このレッスンを飛ばせる</small></button>';
+}
+function startSkipTest(uid){
+  var L=save.lang,u=UNITS[L][uid];if(!u)return;
+  var items=shuffle(u.items.map(function(x,i){return {uid:uid,i:i};})).slice(0,SKIP_N);
+  startFlight({mode:'skip',lang:L,uid:uid,items:items});
+}
+/* ---- remedial flights ---- */
+function remList(L){return (save.rem&&save.rem[L])||[];}
+function remAdd(L,uid,keys){
+  if(!save.rem)save.rem={};
+  var list=remList(L).filter(function(r){return r.u!==uid;});
+  list.unshift({u:uid,k:keys.slice(0,8),t:Date.now()});
+  save.rem[L]=list.slice(0,REM_MAX);
+}
+function remDone(L,uid,stillWrong){
+  if(!save.rem)return;
+  var list=remList(L).map(function(r){return r.u===uid?(stillWrong.length?{u:uid,k:stillWrong.slice(0,8),t:Date.now()}:null):r;}).filter(Boolean);
+  save.rem[L]=list;
+}
+function startRem(L,uid){
+  var r=null;remList(L).forEach(function(x){if(x.u===uid)r=x;});if(!r)return;
+  var items=r.k.map(function(k){var m=/^(.+)\.(\d+)$/.exec(k);return m&&UNITS[L][m[1]]&&UNITS[L][m[1]].items[+m[2]]?{uid:m[1],i:+m[2]}:null;}).filter(Boolean);
+  if(!items.length){remDone(L,uid,[]);store();render();return;}
+  startFlight({mode:'rem',lang:L,uid:uid,items:items});
+}
+function remCardHTML(L){
+  var list=remList(L).filter(function(r){return UNITS[L][r.u];});
+  if(!list.length)return '';
+  return '<section class="card rem-card"><div class="card-h"><h2 class="jh">補習フライト</h2><span class="lbl">苦手を別の形で練習</span></div>'+
+    '<p class="dim" style="font-size:13px;margin-top:4px">間違いが多かったレッスンの苦手フレーズを、穴埋め・並べ替え・聞き取りなど別の形で出します。ミス1つまでで卒業。</p>'+
+    list.map(function(r){return '<button class="choice rem-go" type="button" data-rem="'+esc(r.u)+'"><b>'+esc(unitTitle(r.u))+'</b><small>苦手 '+r.k.length+'フレーズ ・ 約'+Math.max(1,Math.round(r.k.length*3*0.2))+'分</small></button>';}).join('')+'</section>';
+}
+/* ---- 穴埋め (cloze): blank out the most telling word ---- */
+function clozeWord(w){return w.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu,'');}
+function clozeKey(d){
+  var tk=tokensOf(d.t);if(tk.length<3)return null;
+  var best=-1,len=0;
+  tk.forEach(function(w,i){var c=clozeWord(w);if(c.length>len&&!/^\d+$/.test(c)){len=c.length;best=i;}});
+  if(best<0||len<3)return null;
+  return {i:best,w:clozeWord(tk[best]),tk:tk};
+}
+function clozeOpts(L,ck){
+  var right=ck.w,seen={},picks=[];seen[right.toLowerCase()]=1;
+  shuffle(langPool(L)).some(function(x){
+    if(picks.length>=3)return true;
+    tokensOf(x.t).some(function(w){
+      var c=clozeWord(w);if(c.length<3||/^\d+$/.test(c)||seen[c.toLowerCase()])return false;
+      if(Math.abs(c.length-right.length)>4)return false;
+      seen[c.toLowerCase()]=1;picks.push(c);return true;
+    });
+    return false;
+  });
+  var all=shuffle(picks.concat([right]));
+  return {opts:all,ci:all.indexOf(right)};
+}
+function clozeHTML(ck){
+  return ck.tk.map(function(w,i){
+    if(i!==ck.i)return esc(w);
+    var c=clozeWord(w),k=w.indexOf(c);
+    return esc(w.slice(0,k))+'<span class="blank" aria-label="空らん">　　　</span>'+esc(w.slice(k+c.length));
+  }).join(' ');
+}
+/* ---- AI example drill ---- */
+var AID={busy:false,ctl:null,wrong:null,L:''};
+var aiDrillErr=null; /* the standalone site sets its own error messages */
+function aiDrillAvail(){return !!(AI.ok&&AI.sample);}
+function aiDrillPrompt(L,items){
+  return 'You write practice questions for a Babel Flight learner: a Japanese junior high school student (13-15) learning '+LANGS[L].native+'. '+
+    'Everything must be age-appropriate, everyday and friendly.\n'+
+    'The learner just got these phrases wrong:\n'+items.map(function(d,i){return (i+1)+'. '+d.t+' (= '+d.jp+')';}).join('\n')+'\n'+
+    'For EACH phrase, write 2 NEW short example sentences (at most 12 words) in '+LANGS[L].native+' that reuse the same key word or pattern in a different everyday situation. '+
+    'Give a natural Japanese translation of each, and 3 wrong Japanese translations that look plausible but clearly mean something else. '+
+    'Use only correct, natural, standard language; when unsure, choose a simpler sentence.\n'+
+    'Reply with ONLY this JSON: {"qs":[{"t":"sentence","jp":"correct Japanese","wrong":["wrong 1","wrong 2","wrong 3"]}]}';
+}
+function aiDrillClean(raw){
+  var qs=raw&&Array.isArray(raw.qs)?raw.qs:[],out=[];
+  qs.forEach(function(q){
+    if(out.length>=6||!q||typeof q.t!=='string'||typeof q.jp!=='string'||!Array.isArray(q.wrong))return;
+    var t=q.t.trim().slice(0,160),jp=q.jp.trim().slice(0,120),seen={},w=[];seen[jp]=1;
+    q.wrong.forEach(function(x){if(typeof x==='string'){x=x.trim().slice(0,120);if(x&&!seen[x]&&w.length<3){seen[x]=1;w.push(x);}}});
+    if(t&&jp&&w.length===3)out.push({t:t,jp:jp,wrong:w});
+  });
+  return out;
+}
+/* Claude (artifact) version; the standalone site replaces this with its own server */
+function aiDrillMake(L,items,signal){
+  return AI.sample.json([{role:'user',content:aiDrillPrompt(L,items)}],{cache:false,modelTier:'quick',signal:signal}).then(function(r){
+    var qs=aiDrillClean(r);if(!qs.length)throw {code:'invalid_json'};return {qs:qs};
+  });
+}
+function aiDrillBtnHTML(){
+  if(!AID.wrong||!AID.wrong.length||!aiDrillAvail())return '';
+  return '<button class="ghost ai-drill" type="button" data-ai-drill>AIが作る新しい例文で練習<small>間違えたフレーズを使った例文をAIが作ります(まちがいがあるかも)</small></button>';
+}
+function aiDrillSheet(msg,busy){
+  $('sheetHost').innerHTML='<div class="sheet plain" role="dialog" aria-label="AIの練習問題"><div class="sheet-in"><h3>AIの練習問題</h3><p class="dim" style="font-size:14px;margin-top:6px'+(busy?'':';color:var(--ink)')+'">'+esc(msg)+'</p>'+
+    '<button class="ghost" type="button" data-ai-drill-close>'+(busy?'やめる':'閉じる')+'</button></div></div>';
+}
+function aiDrillStart(){
+  if(AID.busy||!AID.wrong||!AID.wrong.length)return;
+  var L=AID.L,ctl=typeof AbortController==='function'?new AbortController():null;
+  AID.busy=true;AID.ctl=ctl;
+  aiDrillSheet('AIが問題を作っています…(10秒くらい)',true);
+  aiDrillMake(L,AID.wrong.slice(0,3),ctl&&ctl.signal).then(function(r){
+    if(AID.ctl!==ctl)return;
+    AID.busy=false;AID.ctl=null;closeSheet();
+    UNITS[L]['ai-drill']={id:'ai-drill',items:r.qs.map(function(q){return {jp:q.jp,t:q.t,r:'',n:'AIが作った例文です。まちがいがあるかもしれません。'};}),track:'ai'};
+    startFlight({mode:'ai',lang:L,items:r.qs.map(function(q,i){return {uid:'ai-drill',i:i};}),qs:r.qs});
+  },function(e){
+    if(AID.ctl!==ctl)return;
+    AID.busy=false;AID.ctl=null;
+    if(e&&(e.code==='cancelled'||e.name==='AbortError'))return;
+    aiDrillSheet(typeof aiDrillErr==='function'?aiDrillErr(e):'うまく問題を作れませんでした。少し待ってから、もう一度試してね。',false);
+  });
+}
+document.addEventListener('click',function(e){
+  var t=e.target&&e.target.closest&&e.target.closest('button');if(!t)return;
+  if(t.hasAttribute('data-skip-test')){closeSheet();startSkipTest(t.getAttribute('data-skip-test'));return;}
+  if(t.hasAttribute('data-rem')){startRem(save.lang,t.getAttribute('data-rem'));return;}
+  if(t.hasAttribute('data-ai-drill')){aiDrillStart();return;}
+  if(t.hasAttribute('data-ai-drill-close')){if(AID.ctl){try{AID.ctl.abort();}catch(x){}}AID.busy=false;AID.ctl=null;closeSheet();return;}
+});
 /* ================= ANONYMOUS USAGE COUNT (standalone site only) =================
    Feeds the owner's /stats page. Sends only a random per-browser id plus the language / mode
    in use; no names, answers or progress. Runs only on the Higgsfield site (never inside Claude). */
@@ -3133,6 +3351,8 @@ function unionSave(a,b){
   if((od.d||'')>(out.daily.d||''))out.daily={d:od.d,n:od.n||0};
   else if(od.d===out.daily.d)out.daily.n=Math.max(out.daily.n||0,od.n||0);
   out.tq=Math.max(a.tq||0,b.tq||0);
+  ORDER.forEach(function(l){var m={};[older.rem&&older.rem[l]||[],out.rem&&out.rem[l]||[]].forEach(function(list){list.forEach(function(r){if(!m[r.u]||r.t>=m[r.u].t)m[r.u]=r;});});
+    if(!out.rem)out.rem={};out.rem[l]=Object.keys(m).map(function(k){return m[k];}).sort(function(x,y){return y.t-x.t;}).slice(0,6);});
   out.cap=(a.cap&&b.cap)?Math.min(a.cap,b.cap):(a.cap||b.cap||0);
   var mh={};[a.mh||{},b.mh||{}].forEach(function(m){Object.keys(m).forEach(function(k){if(!(mh[k]>=m[k]))mh[k]=m[k];});});out.mh=mh;
   out.st=(function(x,y){if(!x)return y||null;if(!y)return x;var now=Date.now(),xv=x.until>now,yv=y.until>now;
@@ -3594,6 +3814,23 @@ if(SAI.on){
       out.textContent=(acc?acc+'\n\n(途中で通信が切れました)':'通信できませんでした。電波を確認して、もう一度試してね。');
     })
     .then(function(){if(AI.ctl===ctl)AI.ctl=null;});
+  };
+  /* AIの例文練習 through the site's server */
+  aiDrillAvail=function(){return SAI.enabled&&!!ACCT.me;};
+  aiDrillMake=function(L,items,signal){
+    var body={lang:L,variant:L==='en'&&save.enVar==='uk'?'uk':'us',items:items.map(function(d){return {t:String(d.t||'').slice(0,200),jp:String(d.jp||'').slice(0,200)};})};
+    return saiPost('/api/ai/drill',body,signal).then(function(r){return r.json().catch(function(){return {};});}).then(function(j){
+      if(j&&j.left)SAI.left=j.left;
+      if(!j||!j.ok)throw {code:(j&&j.error)||'server'};
+      var qs=aiDrillClean(j);if(!qs.length)throw {code:'invalid_json'};
+      return {qs:qs};
+    });
+  };
+  aiDrillErr=function(e){
+    var c=e&&e.code;
+    if(c==='quota')return '今日のAI例文練習はここまで(1日10回)。また明日ね！';
+    if(c==='signin'||c==='disabled')saiStatus();
+    return e&&e.name==='TypeError'?'通信できませんでした。電波を確認して、もう一度試してね。':saiErr({error:c},'drill');
   };
   atcSend=function(){
     var inp=$('atcIn');if(!inp||ATC.busy||ATC.done||!ATC.sc)return;

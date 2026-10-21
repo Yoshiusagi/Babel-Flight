@@ -28,7 +28,7 @@ function destChips(){
 }
 function passHTML(L,uid){
   var LG=LANGS[L],u=UNITS[L][uid],rec=unitRec(L,uid),rk=statusIdx(),m=Math.round(unitMastery(L,uid)*100);
-  var track=u.track==='travel'?'基本の会話':(profById(u.track)||{}).jp+'コース';
+  var tp=profById(u.track),track=tp?tp.jp+'コース':({travel:'旅行フレーズ',daily:'日常会話',study:'留学'}[u.track]||'基本の会話');
   return '<section class="pass" aria-label="搭乗券"><div class="pass-main"><div class="card-h" style="margin:4px 0 0"><span class="lbl">搭乗券 ・ '+esc(track)+'</span><span class="lbl">'+RANKS[rk][1]+'</span></div>'+
     '<div class="pass-route"><div class="ap">HND<small>東京 羽田</small></div>'+planeIcon()+'<div class="ap">'+LG.code+'<small>'+esc(LG.city)+'</small></div></div>'+
     '<div class="pass-title">'+esc(unitTitle(uid))+'</div><div class="lbl" style="margin-top:4px">'+esc(unitLat(uid))+(rec.n>0?'  ・  '+rec.n+'回クリア':'')+'</div>'+
@@ -37,7 +37,7 @@ function passHTML(L,uid){
     '<div><span class="lbl">問題数</span><div class="v">'+(u.items.length*2)+'問</div></div>'+
     '<div><span class="lbl">定着度</span><div class="v">'+m+'%</div></div></div></div>'+
     '<div class="pass-stub"><div class="stub-row"><div class="barcode">'+barcodeSVG(flightNo(L,uid)+L)+'</div></div>'+
-    '<button class="go" type="button" data-go="'+esc(uid)+'">はじめる<small>約3分 ・ '+u.items.length+'フレーズ ・ 全部問題形式</small></button></div></section>';
+    '<button class="go" type="button" data-go="'+esc(uid)+'">はじめる<small>約3分 ・ '+u.items.length+'フレーズ ・ 全部問題形式</small></button>'+skipBtnHTML(L,uid)+'</div></section>';
 }
 function reviewHTML(){
   var L=save.lang,LG=LANGS[L],due=dueList(L),weak=weakList(L),learned=learnedList(L),nd=nextDueIn(L),h=topBar('復習');
@@ -47,6 +47,7 @@ function reviewHTML(){
   else if(learned.length)h+='今は復習するものがありません。次は'+fmtIn(nd)+'です。';
   else h+='まだ学習したフレーズがありません。ホームから1レッスンやってみよう。';
   h+='</p></div></div><button class="go" type="button" data-mode="review"'+(due.length?'':' disabled')+'>復習をはじめる<small>'+(due.length?Math.min(10,due.length)+'問':'復習するものはありません')+'</small></button></section>';
+  h+=remCardHTML(L);
   h+='<div class="mode-grid">';
   h+='<section class="card mode"><span class="lbl">WEAK POINTS</span><h2 class="jh">弱点コース</h2><p class="dim">間違えたことのあるフレーズを、間違えた回数が多い順に出します。2回続けて正解すると卒業。</p><div class="mcount mono">'+weak.length+'<small> フレーズ</small></div><button class="go sm" type="button" data-mode="weak"'+(weak.length?'':' disabled')+'>はじめる</button></section>';
   var annOK=!!UNITS[L]['pilot-ann']&&ttsAvail(LG.tts);

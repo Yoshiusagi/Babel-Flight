@@ -12,6 +12,7 @@
 //   GET  /api/ai/status   { enabled, signedIn, left? }
 //   POST /api/ai/ask      { lang, phrase, jp, reading?, note?, question } -> streamed plain text
 //   POST /api/ai/atc      { scenario, history[], pilot } -> { atc, score, feedback_ja, better, done, left }
+//   POST /api/ai/drill    { lang, variant?, items[{t,jp}] } -> { qs[{t,jp,wrong[3]}], left }
 import type { D1Database, D1PreparedStatement } from "@cloudflare/workers-types";
 
 import { accountUid } from "./account.server";
@@ -24,10 +25,12 @@ const API_URL = "https://api.anthropic.com/v1/messages";
 const ASK_PER_DAY = 20;
 const ATC_SESSIONS_PER_DAY = 5;
 const ATC_TURNS_PER_DAY = 60;
+const DRILL_PER_DAY = 10;
 const ATC_MAX_HISTORY = 8;
 const SITE_CALLS_PER_DAY = 3000;
 const JST_MS = 9 * 3_600_000;
 const LANG_NAMES: Record<string, string> = { ko: "韓国語", en: "英語", es: "スペイン語", it: "イタリア語" };
+const LANG_EN: Record<string, string> = { ko: "Korean", en: "English", es: "Spanish (Spain)", it: "Italian" };
 
 const SAFETY_JA =
   "利用者には中学生・高校生(13〜17歳)も含まれます。年齢にふさわしい、やさしく安全な内容だけで答えてください。" +
@@ -66,7 +69,7 @@ const ATC_SCENARIOS: Record<string, Scenario> = {
   },
 };
 
-type Usage = { ask: number; atcStart: number; atcTurn: number };
+type Usage = { ask: number; atcStart: number; atcTurn: number; drill: number };
 type Exchange = { pilot: string; atc: string; score: number; feedback: string; better: string };
 
 function jstDay(ms: number): string {
@@ -85,32 +88,43 @@ function text(v: unknown, max: number, required = false): string | null {
 
 async function usage(db: D1Database, uid: string, day: string): Promise<Usage> {
   const r = await db
-    .prepare("SELECT ask, atc_start, atc_turn FROM bf_ai_usage WHERE uid = ? AND day = ?")
+    .prepare("SELECT ask, atc_start, atc_turn, drill FROM bf_ai_usage WHERE uid = ? AND day = ?")
     .bind(uid, day)
     .first<Row>();
-  return { ask: num(r?.ask), atcStart: num(r?.atc_start), atcTurn: num(r?.atc_turn) };
+  return { ask: num(r?.ask), atcStart: num(r?.atc_start), atcTurn: num(r?.atc_turn), drill: num(r?.drill) };
 }
 
 function leftOf(u: Usage) {
-  return { ask: Math.max(0, ASK_PER_DAY - u.ask), atc: Math.max(0, ATC_SESSIONS_PER_DAY - u.atcStart) };
+  return {
+    ask: Math.max(0, ASK_PER_DAY - u.ask),
+    atc: Math.max(0, ATC_SESSIONS_PER_DAY - u.atcStart),
+    drill: Math.max(0, DRILL_PER_DAY - u.drill),
+  };
 }
 
 async function siteBusy(db: D1Database, day: string): Promise<boolean> {
   const r = await db
-    .prepare("SELECT COALESCE(SUM(ask + atc_turn), 0) AS n FROM bf_ai_usage WHERE day = ?")
+    .prepare("SELECT COALESCE(SUM(ask + atc_turn + drill), 0) AS n FROM bf_ai_usage WHERE day = ?")
     .bind(day)
     .first<Row>();
   return num(r?.n) >= SITE_CALLS_PER_DAY;
 }
 
 /** Counts one call if the account is under its limit; returns the new usage row or null. */
-async function reserve(db: D1Database, uid: string, day: string, kind: "ask" | "atc", start: boolean): Promise<Usage | null> {
+async function reserve(db: D1Database, uid: string, day: string, kind: "ask" | "atc" | "drill", start: boolean): Promise<Usage | null> {
   let stmt: D1PreparedStatement;
-  if (kind === "ask") {
+  if (kind === "drill") {
+    stmt = db
+      .prepare(
+        "INSERT INTO bf_ai_usage (uid, day, drill) VALUES (?, ?, 1) ON CONFLICT(uid, day) DO UPDATE " +
+          "SET drill = bf_ai_usage.drill + 1 WHERE bf_ai_usage.drill < ? RETURNING ask, atc_start, atc_turn, drill",
+      )
+      .bind(uid, day, DRILL_PER_DAY);
+  } else if (kind === "ask") {
     stmt = db
       .prepare(
         "INSERT INTO bf_ai_usage (uid, day, ask) VALUES (?, ?, 1) ON CONFLICT(uid, day) DO UPDATE " +
-          "SET ask = bf_ai_usage.ask + 1 WHERE bf_ai_usage.ask < ? RETURNING ask, atc_start, atc_turn",
+          "SET ask = bf_ai_usage.ask + 1 WHERE bf_ai_usage.ask < ? RETURNING ask, atc_start, atc_turn, drill",
       )
       .bind(uid, day, ASK_PER_DAY);
   } else if (start) {
@@ -118,25 +132,27 @@ async function reserve(db: D1Database, uid: string, day: string, kind: "ask" | "
       .prepare(
         "INSERT INTO bf_ai_usage (uid, day, atc_start, atc_turn) VALUES (?, ?, 1, 1) ON CONFLICT(uid, day) DO UPDATE " +
           "SET atc_start = bf_ai_usage.atc_start + 1, atc_turn = bf_ai_usage.atc_turn + 1 " +
-          "WHERE bf_ai_usage.atc_start < ? AND bf_ai_usage.atc_turn < ? RETURNING ask, atc_start, atc_turn",
+          "WHERE bf_ai_usage.atc_start < ? AND bf_ai_usage.atc_turn < ? RETURNING ask, atc_start, atc_turn, drill",
       )
       .bind(uid, day, ATC_SESSIONS_PER_DAY, ATC_TURNS_PER_DAY);
   } else {
     stmt = db
       .prepare(
         "INSERT INTO bf_ai_usage (uid, day, atc_turn) VALUES (?, ?, 1) ON CONFLICT(uid, day) DO UPDATE " +
-          "SET atc_turn = bf_ai_usage.atc_turn + 1 WHERE bf_ai_usage.atc_turn < ? RETURNING ask, atc_start, atc_turn",
+          "SET atc_turn = bf_ai_usage.atc_turn + 1 WHERE bf_ai_usage.atc_turn < ? RETURNING ask, atc_start, atc_turn, drill",
       )
       .bind(uid, day, ATC_TURNS_PER_DAY);
   }
   const r = await stmt.first<Row>();
-  return r ? { ask: num(r.ask), atcStart: num(r.atc_start), atcTurn: num(r.atc_turn) } : null;
+  return r ? { ask: num(r.ask), atcStart: num(r.atc_start), atcTurn: num(r.atc_turn), drill: num(r.drill) } : null;
 }
 
 /** Gives the call back when the AI could not answer (so a failed request doesn't use up the day). */
-async function refund(db: D1Database, uid: string, day: string, kind: "ask" | "atc", start: boolean): Promise<void> {
+async function refund(db: D1Database, uid: string, day: string, kind: "ask" | "atc" | "drill", start: boolean): Promise<void> {
   const sql =
-    kind === "ask"
+    kind === "drill"
+      ? "UPDATE bf_ai_usage SET drill = MAX(drill - 1, 0) WHERE uid = ? AND day = ?"
+      : kind === "ask"
       ? "UPDATE bf_ai_usage SET ask = MAX(ask - 1, 0) WHERE uid = ? AND day = ?"
       : start
         ? "UPDATE bf_ai_usage SET atc_start = MAX(atc_start - 1, 0), atc_turn = MAX(atc_turn - 1, 0) WHERE uid = ? AND day = ?"
@@ -378,6 +394,99 @@ async function handleAtc(request: Request, db: D1Database, key: string): Promise
   return json({ ok: true, ...reply, left: leftOf(used) });
 }
 
+/* ---------- AI example drill ---------- */
+
+type DrillQ = { t: string; jp: string; wrong: string[] };
+
+function cleanDrill(raw: string): DrillQ[] {
+  const a = raw.indexOf("{");
+  const b = raw.lastIndexOf("}");
+  if (a < 0 || b <= a) return [];
+  let data: Row;
+  try {
+    data = JSON.parse(raw.slice(a, b + 1)) as Row;
+  } catch {
+    return [];
+  }
+  const out: DrillQ[] = [];
+  const qs = Array.isArray(data.qs) ? data.qs : [];
+  for (const q of qs) {
+    if (out.length >= 6 || !q || typeof q !== "object") continue;
+    const r = q as Row;
+    const t = text(r.t, 160, true);
+    const jp = text(r.jp, 120, true);
+    if (t === null || jp === null || !Array.isArray(r.wrong)) continue;
+    const seen = new Set([jp]);
+    const wrong: string[] = [];
+    for (const w of r.wrong) {
+      const x = text(w, 120, true);
+      if (x !== null && !seen.has(x) && wrong.length < 3) {
+        seen.add(x);
+        wrong.push(x);
+      }
+    }
+    if (wrong.length === 3) out.push({ t, jp, wrong });
+  }
+  return out;
+}
+
+async function handleDrill(request: Request, db: D1Database, key: string): Promise<Response> {
+  const uid = await accountUid(request, db);
+  if (!uid) return json({ ok: false, error: "signin" }, 401);
+  const body = await readJsonBody(request, 4000);
+  const lang = typeof body?.lang === "string" ? body.lang : "";
+  const variant = body?.variant === "uk" ? "British" : "American";
+  const items: { t: string; jp: string }[] = [];
+  const list = Array.isArray(body?.items) ? body.items : null;
+  if (!LANG_EN[lang] || !list || list.length < 1 || list.length > 3) return json({ ok: false, error: "bad_request" }, 400);
+  for (const it of list) {
+    const r = (it && typeof it === "object" ? it : {}) as Row;
+    const t = text(r.t, 200, true);
+    const jp = text(r.jp, 200, true);
+    if (t === null || jp === null) return json({ ok: false, error: "bad_request" }, 400);
+    items.push({ t, jp });
+  }
+
+  const day = jstDay(Date.now());
+  if (await siteBusy(db, day)) return json({ ok: false, error: "busy" }, 429);
+  const used = await reserve(db, uid, day, "drill", false);
+  if (!used) return json({ ok: false, error: "quota", left: leftOf(await usage(db, uid, day)) }, 429);
+
+  const language = lang === "en" ? `${variant} English` : LANG_EN[lang];
+  const system =
+    "You write practice questions for Babel Flight, a language-learning app. The learner is a Japanese junior high school " +
+    `student learning ${language}. Some learners are teenagers (13-17): use only everyday, friendly, age-appropriate ` +
+    "content. Never include anything violent, sexual, hateful, dangerous or personal. Use only correct, natural, standard " +
+    "language; when unsure, choose a simpler sentence. Reply with JSON only.";
+  const prompt =
+    "The learner just got these phrases wrong:\n" +
+    items.map((d, i) => `${i + 1}. ${d.t} (= ${d.jp})`).join("\n") +
+    `\nFor EACH phrase, write 2 NEW short example sentences (at most 12 words) in ${language} that reuse the same key word ` +
+    "or pattern in a different everyday situation. Give a natural Japanese translation of each, and 3 wrong Japanese " +
+    "translations that look plausible but clearly mean something else.\n" +
+    'Reply with ONLY this JSON: {"qs":[{"t":"sentence","jp":"correct Japanese","wrong":["wrong 1","wrong 2","wrong 3"]}]}';
+
+  let qs: DrillQ[] = [];
+  let upstreamOk = false;
+  try {
+    const res = await callClaude(key, { max_tokens: 1500, system, messages: [{ role: "user", content: prompt }] });
+    if (res.ok) {
+      upstreamOk = true;
+      const data = (await res.json()) as { content?: { type?: string; text?: string }[] };
+      qs = cleanDrill((data.content ?? []).map((c) => (c.type === "text" ? c.text ?? "" : "")).join(""));
+    } else {
+      console.error("ai drill upstream failed:", res.status);
+    }
+  } catch {
+    console.error("ai drill upstream failed: network");
+  }
+  if (!upstreamOk || !qs.length) {
+    await refund(db, uid, day, "drill", false);
+    return json({ ok: false, error: upstreamOk ? "invalid_json" : "upstream" }, 502);
+  }
+  return json({ ok: true, qs, left: leftOf(used) });
+}
+
 /* ---------- dispatcher ---------- */
 
 export async function handleAi(request: Request, url: URL): Promise<Response | null> {
@@ -394,6 +503,7 @@ export async function handleAi(request: Request, url: URL): Promise<Response | n
     if (!enabled || !key) return json({ ok: false, error: "disabled" }, 503);
     if (route === "ask") return await handleAsk(request, db, key);
     if (route === "atc") return await handleAtc(request, db, key);
+    if (route === "drill") return await handleDrill(request, db, key);
     return json({ ok: false, error: "not_found" }, 404);
   } catch (error) {
     console.error("ai error:", error instanceof Error ? error.message : "unknown");

@@ -35,7 +35,7 @@ var KEY='babelflight.save.v1';
 var OLD_ORDER=['checkin','inflight','immigration','hotel','restaurant','city','atc1','atc2'];
 function blankProg(){var p={};ORDER.forEach(function(k){p[k]={items:{},units:{}};});return p;}
 function defaults(){return {v:2,t:0,name:'PASSENGER',icon:'',rz:0,lang:'ko',prof:'',level:'mid',goal:2,onboarded:false,theme:'auto',sound:true,mode:'daily',amb:false,tap:true,pos:{},
-  miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,daily:{d:'',n:0},mh:null,st:null,cap:0,tq:0,enVar:'us',prog:blankProg()};}
+  miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,daily:{d:'',n:0},mh:null,st:null,cap:0,tq:0,enVar:'us',acc:{},rem:{},prog:blankProg()};}
 function mergeSave(raw){
   var d=defaults();
   if(!raw||typeof raw!=='object')return d;
@@ -68,6 +68,14 @@ function mergeSave(raw){
   d.mh=mh;
   var st=raw.st;d.st=(st&&typeof st==='object'&&st.lv>=0&&st.lv<RANKS.length&&+st.until>0)?{lv:Math.floor(st.lv),until:+st.until}:null;
   if(d.enVar!=='uk')d.enVar='us';
+  var acc={},rem={};
+  ORDER.forEach(function(l){
+    var a=raw.acc&&raw.acc[l];if(a&&+a.n>0&&+a.a>=0&&+a.a<=1)acc[l]={a:+a.a,n:Math.floor(+a.n)};
+    var r=raw.rem&&raw.rem[l];
+    if(Array.isArray(r))rem[l]=r.filter(function(x){return x&&typeof x.u==='string'&&UNITS[l][x.u]&&Array.isArray(x.k)&&x.k.length;}).slice(0,6).map(function(x){
+      return {u:x.u,k:x.k.filter(function(k){return typeof k==='string'&&/^.+\.\d+$/.test(k);}).slice(0,8),t:+x.t||0};}).filter(function(x){return x.k.length;});
+  });
+  d.acc=acc;d.rem=rem;
   d.cap=+d.cap>0?+d.cap:0;d.tq=+d.tq>0?Math.floor(+d.tq):0;
   return d;
 }

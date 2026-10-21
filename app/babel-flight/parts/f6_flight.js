@@ -9,6 +9,7 @@ function canDo(kind,it){
   if(kind==='listenjp')return ttsAvail(LG.tts);
   if(kind==='build'){var n=tokensOf(d.t).length;return n>=3&&n<=8;}
   if(kind==='type')return F.lang!=='ko'&&d.t.length<=34&&save.level!=='beg';
+  if(kind==='cloze')return !!clozeKey(d);
   return true;
 }
 function firstOK(list,it,avoid){
@@ -22,7 +23,7 @@ function round2Kind(it,n){
   var order=ROUND2[save.level]||ROUND2.mid,k=order[n%4];
   return canDo(k,it)?k:firstOK(['j2t','build','listen'],it);
 }
-var MODE_TITLE={review:'復習',free:'自由練習',weak:'弱点コース',ann:'リスニング特訓'};
+var MODE_TITLE={review:'復習',free:'自由練習',weak:'弱点コース',ann:'リスニング特訓',skip:'飛び級テスト',rem:'補習フライト',ai:'AIの例文練習'};
 function startFlight(opts){
   var items=opts.items,q=[];
   F={mode:opts.mode,lang:opts.lang,uid:opts.uid,items:items,queue:q,idx:0,mist:0,corr:0,wrong:{},retry:{},cur:null,answered:false,
@@ -30,6 +31,17 @@ function startFlight(opts){
   if(opts.mode==='unit'){
     shuffle(items).forEach(function(it){q.push({k:'t2j',it:it,w:1});});
     shuffle(items).forEach(function(it,n){q.push({k:round2Kind(it,n),it:it,w:1});});
+  }else if(opts.mode==='skip'){
+    /* harder forms only: no "choose the meaning" warm-up */
+    var sk=['cloze','j2t','build','type','listen','j2t'];
+    items.forEach(function(it,n){var k=sk[n%sk.length];q.push({k:canDo(k,it)?k:firstOK(['j2t','build','listen'],it),it:it,w:1});});
+  }else if(opts.mode==='rem'){
+    /* each weak phrase three times, in three different forms */
+    [['cloze','j2t'],['build','listen','listenjp'],['type','listen','j2t']].forEach(function(round){
+      shuffle(items).forEach(function(it){q.push({k:firstOK(round,it),it:it,w:1});});
+    });
+  }else if(opts.mode==='ai'){
+    items.forEach(function(it,n){var x=opts.qs[n],all=shuffle([x.jp].concat(x.wrong));q.push({k:'aiq',it:it,w:1,opts:all,ci:all.indexOf(x.jp)});});
   }else if(opts.mode==='ann'){
     shuffle(items).forEach(function(it){q.push({k:canDo('listenjp',it)?'listenjp':'t2j',it:it,w:1});});
   }else{
@@ -38,8 +50,8 @@ function startFlight(opts){
   }
   q.forEach(function(x){F.wTotal+=x.w;});
   view='flight';
-  var LG=LANGS[F.lang],title=opts.mode==='unit'?unitTitle(opts.uid):MODE_TITLE[opts.mode];
-  var id=opts.mode==='unit'?flightNo(F.lang,opts.uid):'BF'+(ORDER.indexOf(F.lang)+1)+'XX';
+  var LG=LANGS[F.lang],title=opts.mode==='unit'?unitTitle(opts.uid):(opts.mode==='skip'||opts.mode==='rem')?MODE_TITLE[opts.mode]+': '+unitTitle(opts.uid):MODE_TITLE[opts.mode];
+  var id=(opts.mode==='unit'||opts.mode==='skip'||opts.mode==='rem')?flightNo(F.lang,opts.uid):'BF'+(ORDER.indexOf(F.lang)+1)+'XX';
   rootEl.style.setProperty('--lc','var(--c-'+F.lang+')');
   $('tabs').hidden=true;
   $('main').innerHTML=
@@ -93,7 +105,7 @@ function optsFor(it,field){
     });
   }
   /* 1-2 look-alikes from the same course keep the level; the rest come from anywhere in the language */
-  take(grpPool(F.lang,UNITS[F.lang][it.uid].track),Math.random()<0.5?1:2,true);
+  take(grpPool(F.lang,UNITS[F.lang][it.uid].track),lookAlikes(F.lang),true);
   take(langPool(F.lang),3,true);
   take(langPool(F.lang),3,false);
   var all=shuffle(picks.concat([d]));
@@ -118,6 +130,15 @@ function showStep(){
   if(q.k==='t2j'){
     board.set(d.t);ledSet('? ? ?',beg&&d.r?'読み: '+d.r:'意味を選ぼう');optsFor(q.it,'jp');
     box.innerHTML='<span class="qh">意味はどれ？'+tag+'</span>'+hearBtns()+optsHTML('');
+    if(beg)speak(d.t,LG.tts,false);
+  }else if(q.k==='cloze'){
+    q.ck=q.ck||clozeKey(d);var co=clozeOpts(F.lang,q.ck);F.opts=co.opts;F.optR=[];F.ci=co.ci;
+    board.set('');ledSet(d.jp,'空らんに入る語はどれ？');
+    box.innerHTML='<span class="qh">穴埋め'+tag+'</span><div class="cloze'+koCls()+'">'+clozeHTML(q.ck)+'</div>'+optsHTML(koCls());
+  }else if(q.k==='aiq'){
+    F.opts=q.opts;F.optR=[];F.ci=q.ci;
+    board.set(d.t);ledSet('? ? ?','AIが作った例文。意味はどれ？');
+    box.innerHTML='<span class="qh">AIの例文<span class="newtag">AI</span></span>'+hearBtns()+optsHTML('');
     if(beg)speak(d.t,LG.tts,false);
   }else if(q.k==='j2t'){
     board.set('');ledSet(d.jp,'これを'+LG.name+'で言うと？');optsFor(q.it,'t');
@@ -153,6 +174,7 @@ function drawBuild(){
 }
 function normAns(s){return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' ').trim();}
 function pushRetry(q){
+  if(F.mode==='skip'||F.mode==='ai')return;
   var key=ik(q.it.uid,q.it.i);
   if((F.retry[key]||0)>=2)return;
   F.retry[key]=(F.retry[key]||0)+1;

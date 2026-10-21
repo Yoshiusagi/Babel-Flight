@@ -20,6 +20,7 @@ function land(){
   var L=F.lang,now=Date.now(),P=save.prog[L];
   var uniq={},keys=[];
   F.items.forEach(function(it){var k=ik(it.uid,it.i);if(!uniq[k]){uniq[k]=it;keys.push(k);}});
+  if(F.mode==='ai'){landAi();return;}
   keys.forEach(function(k){
     var rec=P.items[k]||{b:0,d:0},w=F.wrong[k]||0,wasDue=rec.b===0||rec.d<=now;
     if(w===0){
@@ -31,8 +32,32 @@ function land(){
   });
   var mist=F.mist,stars=mist===0?3:mist<=2?2:1;
   var grade=mist===0?['完璧な着陸','PERFECT LANDING','ミスなし！バターのようになめらか']:mist<=2?['なめらかな着陸','SMOOTH LANDING','いい調子。この感覚で続けよう']:mist<=5?['しっかり着陸','FIRM LANDING','間違えたフレーズは復習に回るよ']:['ちょっと揺れた着陸','HARD LANDING','大丈夫。間違えた分だけ記憶に残りやすいよ'];
-  var wrong=keys.filter(function(k){return F.wrong[k];}).slice(0,5).map(function(k){var it=uniq[k];return UNITS[L][it.uid].items[it.i];});
-  completeLesson({L:L,uid:F.uid,mode:F.mode==='unit'?'unit':F.mode,stars:stars,corr:F.corr,answered:F.corr+F.mist,grade:grade,wrong:wrong,wrongTitle:'間違えたフレーズ',wrongNote:'弱点コースに追加'});
+  var wrongKeys=keys.filter(function(k){return F.wrong[k];});
+  var wrong=wrongKeys.slice(0,5).map(function(k){var it=uniq[k];return UNITS[L][it.uid].items[it.i];});
+  if(F.mode==='skip'){landSkip(L,keys,stars,wrong);return;}
+  if(F.mode==='rem'){
+    var cleared=F.mist<=1;remDone(L,F.uid,cleared?[]:wrongKeys);
+    if(cleared)grade=['補習クリア！','REMEDIAL CLEARED','苦手だったフレーズを卒業。この調子！'];
+  }
+  completeLesson({L:L,uid:F.uid,mode:F.mode==='unit'?'unit':F.mode,stars:stars,corr:F.corr,answered:F.corr+F.mist,wrongKeys:wrongKeys,grade:grade,wrong:wrong,wrongTitle:'間違えたフレーズ',wrongNote:'弱点コースに追加'});
+}
+/* 飛び級テスト: pass = the unit counts as flown; unasked phrases join the review list */
+function landSkip(L,keys,stars,wrong){
+  var pass=F.mist<=SKIP_MAX_MISS,uid=F.uid,P=save.prog[L],now=Date.now();
+  if(pass){
+    UNITS[L][uid].items.forEach(function(x,i){var k=ik(uid,i);if(keys.indexOf(k)<0&&!P.items[k])P.items[k]={b:1,d:now+DAY};});
+    completeLesson({L:L,uid:uid,mode:'unit',stars:Math.max(2,stars),corr:F.corr,answered:F.corr+F.mist,skip:true,
+      grade:['飛び級合格！','SKIP TEST PASSED','このレッスンは合格扱い。どんどん先へ進もう'],wrong:wrong,wrongTitle:'間違えたフレーズ',wrongNote:'弱点コースに追加'});
+  }else{
+    completeLesson({L:L,uid:uid,mode:'skip',stars:1,corr:F.corr,answered:F.corr+F.mist,lessonUid:uid,
+      grade:['今回は普通のレッスンで','NOT THIS TIME','間違えたところがあったので、レッスンで固めよう'],wrong:wrong,wrongTitle:'間違えたフレーズ',wrongNote:'弱点コースに追加'});
+  }
+}
+/* AI example drill: practice only, nothing is added to the phrase records */
+function landAi(){
+  var mist=F.mist,stars=mist===0?3:mist<=1?2:1;
+  completeLesson({L:F.lang,uid:null,mode:'ai',stars:stars,corr:F.corr,answered:F.corr+F.mist,
+    grade:mist===0?['全問正解！','ALL CORRECT','新しい文でも意味がわかった！']:['おつかれさま','PRACTICE DONE','新しい文で使い方をつかもう'],wrong:[],wrongTitle:'',wrongNote:''});
 }
 function completeLesson(o){
   var L=o.L,LG=LANGS[L],today=dayStr(),P=save.prog[L],rankBefore=statusIdx(),unitMode=(o.mode==='unit'||o.mode==='scene');
@@ -60,6 +85,11 @@ function completeLesson(o){
   }
   save.miles+=miles;save.flights++;
   save.tq=(save.tq||0)+(o.answered||0);
+  if(o.mode!=='ai')accNote(L,o.corr,o.answered);
+  /* many mistakes in a lesson: add a remedial flight made of those phrases */
+  var remAdded=0;
+  if(o.mode==='unit'&&!o.skip&&o.wrongKeys&&o.wrongKeys.length>=2&&o.answered>0&&o.corr/o.answered<0.75){remAdd(L,o.uid,o.wrongKeys);remAdded=o.wrongKeys.length;}
+  AID.wrong=o.mode==='ai'?null:(o.wrong||[]).slice(0,3);AID.L=L;
   var firstCap=statusEarn(miles);
   store();
   var rankAfter=statusIdx(),gpct=clamp(save.daily.n/save.goal,0,1)*100;
@@ -74,11 +104,15 @@ function completeLesson(o){
      '<div class="ln tot"><span>獲得マイル</span><span>+'+miles+' mi</span></div></div>';
   if(firstCap)h+='<div class="up-note">キャプテンに到達！ 記念のキャプテンスタンプをもらいました(ずっと残ります)</div>';
   else if(rankAfter>rankBefore)h+='<div class="up-note">ステータスアップ！ '+RANKS[rankAfter][0]+'になりました(6ヶ月有効)</div>';
+  if(remAdded)h+='<div class="up-note rem-note">苦手が多かったので「補習フライト」を追加しました(苦手 '+remAdded+'フレーズ)</div>';
   if(o.wrong&&o.wrong.length){
     h+='<div class="card" style="text-align:left"><div class="card-h"><h2 class="jh">'+esc(o.wrongTitle)+'</h2><span class="lbl">'+esc(o.wrongNote)+'</span></div>'+
        o.wrong.map(function(d){return '<p style="font-size:14px;margin-top:6px"><b class="'+(L==='ko'?'ko':'')+'">'+esc(d.t)+'</b><br><span class="dim" style="font-size:12.5px">'+esc(d.jp)+'</span></p>';}).join('')+'</div>';
   }
   h+='<div class="acts">';
+  if(remAdded)h+='<button class="go" type="button" data-rem="'+esc(o.uid)+'">補習フライトへ<small>苦手を別の形で練習 ・ 約'+Math.max(1,Math.round(remAdded*0.6))+'分</small></button>';
+  if(o.lessonUid)h+='<button class="go" type="button" data-go="'+esc(o.lessonUid)+'">このレッスンを受ける<small>'+esc(unitTitle(o.lessonUid))+'</small></button>';
+  h+=aiDrillBtnHTML();
   if(unitMode){var nu=nextPathUnit(L,o.uid);if(nu)h+='<button class="go" type="button" data-next-lesson="'+esc(nu)+'">次のレッスンへ<small>'+esc(unitTitle(nu))+' ・ 地図で飛行機が進みます</small></button>';}
   h+='<button class="ghost" type="button" data-home>ホームに戻る(地図を見る)</button></div></div>';
   view='land';F=null;board=null;closeSheet();$('tabs').hidden=true;

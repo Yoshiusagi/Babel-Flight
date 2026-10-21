@@ -108,6 +108,23 @@ if(SAI.on){
     })
     .then(function(){if(AI.ctl===ctl)AI.ctl=null;});
   };
+  /* AIの例文練習 through the site's server */
+  aiDrillAvail=function(){return SAI.enabled&&!!ACCT.me;};
+  aiDrillMake=function(L,items,signal){
+    var body={lang:L,variant:L==='en'&&save.enVar==='uk'?'uk':'us',items:items.map(function(d){return {t:String(d.t||'').slice(0,200),jp:String(d.jp||'').slice(0,200)};})};
+    return saiPost('/api/ai/drill',body,signal).then(function(r){return r.json().catch(function(){return {};});}).then(function(j){
+      if(j&&j.left)SAI.left=j.left;
+      if(!j||!j.ok)throw {code:(j&&j.error)||'server'};
+      var qs=aiDrillClean(j);if(!qs.length)throw {code:'invalid_json'};
+      return {qs:qs};
+    });
+  };
+  aiDrillErr=function(e){
+    var c=e&&e.code;
+    if(c==='quota')return '今日のAI例文練習はここまで(1日10回)。また明日ね！';
+    if(c==='signin'||c==='disabled')saiStatus();
+    return e&&e.name==='TypeError'?'通信できませんでした。電波を確認して、もう一度試してね。':saiErr({error:c},'drill');
+  };
   atcSend=function(){
     var inp=$('atcIn');if(!inp||ATC.busy||ATC.done||!ATC.sc)return;
     var text=inp.value.trim().slice(0,300);if(!text)return;
