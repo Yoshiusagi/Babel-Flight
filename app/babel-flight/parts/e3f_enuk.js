@@ -23,7 +23,11 @@ var EN_UK={
  'lab.2':["I'm analysing the data.","つづりの違い: イギリスは -ise(analyse)、アメリカは -ize(analyze)。"],
  'sport.1':["What time is training today?","チームの練習は、イギリスでは training、アメリカでは practice。"],
  'sport.4':["Let's tighten up our defence in the first half.","つづりの違い: イギリスは defence、アメリカは defense。"],
- 'sport.7':["Let's win the next match for sure!","試合は、イギリスでは match、アメリカでは game がよく使われます。"]
+ 'sport.7':["Let's win the next match for sure!","試合は、イギリスでは match、アメリカでは game がよく使われます。"],
+ 's-life.0':["timetable","時間割は、イギリスでは timetable、アメリカでは class schedule。"],
+ 's-life.1':["marks","成績は、イギリスでは marks、アメリカでは grades。"],
+ 's-life.3':["break","休み時間は、イギリスでは break、アメリカでは recess。"],
+ 'crew-safe.3':["Your life jacket is under your seat.","救命胴衣は、イギリスでは life jacket、アメリカでは life vest。"]
 };
 /* conversation scenes: [field, British text] pairs per turn */
 var SC_UK={

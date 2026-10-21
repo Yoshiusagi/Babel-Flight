@@ -15,7 +15,7 @@ function isScene(L,uid){var u=UNITS[L][uid];return !!(u&&u.kind==='scene');}
 function unitKind(L,uid){
   var u=UNITS[L][uid];if(!u)return '';
   if(u.kind==='scene')return '会話';
-  if(uid==='math'||uid==='sci'||uid==='soc')return '用語';
-  if(u.track==='travel'||u.track==='daily')return 'フレーズ';
+  if(uid==='math'||uid==='sci'||uid==='soc'||/^s-(lang|hist|arts|it)$/.test(uid))return '用語';
+  if(u.track==='travel'||u.track==='daily'||u.track==='study')return 'フレーズ';
   return '専門';
 }

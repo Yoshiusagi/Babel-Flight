@@ -153,7 +153,7 @@ function pathSections(lang){
   if(save.mode==='job'){
     var p=profById(save.prof);
     if(!p)return [];
-    return [{key:p.id,title:p.jp+'の専門会話',sub:p.en+' ・ 仕事で使う会話',ids:p.units[lang].slice(),prof:p}];
+    return [{key:p.id,title:p.id==='study'?'留学先の学校で':p.jp+'の専門会話',sub:p.id==='study'?'STUDY ABROAD ・ 学校の会話と教科の用語':p.en+' ・ 仕事で使う会話',ids:p.units[lang].slice(),prof:p}];
   }
   return [
     {key:'basic',title:'基本の日常会話',sub:'あいさつ・自己紹介・数字・気持ち',ids:DAILY_IDS.slice()},

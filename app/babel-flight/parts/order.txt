@@ -17,6 +17,7 @@ e3c_scenes.js
 e3d_geo.js
 e3e_reg.js
 e3f_enuk.js
+d4_more1.js
 e4_core.js
 f5_views.js
 f5_home.js
