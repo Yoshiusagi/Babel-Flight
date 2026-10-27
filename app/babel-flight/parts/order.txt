@@ -9,6 +9,7 @@ f17_css.html
 f18_css.html
 f19_css.html
 f20_css.html
+f21_css.html
 @HEADEND
 e2_body.html
 a0_env.js
@@ -49,5 +50,6 @@ f17_cabin.js
 f18_layout.js
 f19_board.js
 f20_native.js
+f21_billing.js
 f7_boot.js
 @END

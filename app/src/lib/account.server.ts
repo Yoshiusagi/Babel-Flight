@@ -14,7 +14,7 @@
 //   GET  /api/account/save      { rev, t, data }
 //   PUT  /api/account/save      { data, t, baseRev, force? } -> { rev } | 409 with the newer copy
 //   POST /api/account/logout
-//   POST /api/account/delete    { idToken } from a sign-in made in the last 10 minutes
+//   POST /api/account/delete    { idToken } from a sign-in made in the last 10 minutes (stops a paid plan first)
 import type { D1Database } from "@cloudflare/workers-types";
 
 import PRIVACY_HTML from "../privacy.html?raw";
@@ -23,6 +23,7 @@ import { entitlementsOf, grantOnSignIn } from "./entitlements.server";
 import { ALLOWED_PROVIDERS, FIREBASE_WEB_CONFIG } from "./firebase-config";
 import { KeysUnavailableError, verifyFirebaseIdToken, type FirebaseClaims } from "./firebase-token.server";
 import { appOrigin, isSameOrigin, json, num, randomHex, readJsonBody, readSessionToken, sha256Hex, type Row } from "./http.server";
+import { cancelBillingOnDelete } from "./stripe.server";
 
 const COOKIE = "bf_acct";
 const SESSION_MS = 90 * 86_400_000;
@@ -229,6 +230,8 @@ async function handleDelete(request: Request, db: D1Database, projectId: string)
   if (!claims) return json({ ok: false, error: "bad_token" }, 401);
   if (claims.uid !== session.uid) return json({ ok: false, error: "other_account" }, 403);
   if (Date.now() / 1000 - claims.authTime > RECENT_SIGN_IN_S) return json({ ok: false, error: "reauth" }, 403);
+  // A paid plan is stopped first; if that fails the account stays, so nobody keeps paying for a deleted account.
+  if (!(await cancelBillingOnDelete(db, session.uid))) return json({ ok: false, error: "billing" }, 502);
   await db.batch([
     db.prepare("DELETE FROM bf_saves WHERE uid = ?").bind(session.uid),
     db.prepare("DELETE FROM bf_acct_sessions WHERE uid = ?").bind(session.uid),

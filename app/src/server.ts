@@ -5,6 +5,7 @@ import { applySecurityHeaders } from "./lib/security-headers.server";
 import { handleAccount } from "./lib/account.server";
 import { handleAi } from "./lib/ai.server";
 import { handleAnalytics } from "./lib/analytics.server";
+import { handleBilling } from "./lib/billing.server";
 import { appPreflight, withAppCors } from "./lib/http.server";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
@@ -71,6 +72,10 @@ export default {
     // AI for the standalone site (Claude API, signed-in accounts, daily limits; see lib/ai.server.ts).
     const ai = await handleAi(request, url);
     if (ai) return applySecurityHeaders(withAppCors(request, ai));
+    // Paid classes through Stripe, website only and test mode only for now (see lib/billing.server.ts).
+    // No app CORS on purpose: the iPhone app doesn't sell plans (App Store rules).
+    const billing = await handleBilling(request, url);
+    if (billing) return applySecurityHeaders(billing);
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);

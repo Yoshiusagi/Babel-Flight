@@ -25,6 +25,9 @@ type AppEnv = {
   HF_ENV?: string;
   // Website secret (set in Higgsfield website settings): Claude API key for the AI features.
   ANTHROPIC_API_KEY?: string;
+  // Website secrets for paid classes through Stripe (see lib/billing.server.ts).
+  STRIPE_SECRET_KEY?: string;
+  STRIPE_WEBHOOK_SECRET?: string;
   APP_SLUG?: string;
 };
 
