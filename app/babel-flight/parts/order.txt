@@ -7,6 +7,7 @@ f13_css.html
 f16_css.html
 f17_css.html
 f18_css.html
+f19_css.html
 @HEADEND
 e2_body.html
 p3a_data.js
@@ -44,5 +45,6 @@ f16_share.js
 f17_exam.js
 f17_cabin.js
 f18_layout.js
+f19_board.js
 f7_boot.js
 @END
