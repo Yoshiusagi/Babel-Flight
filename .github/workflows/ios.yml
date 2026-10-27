@@ -130,6 +130,13 @@ jobs:
           xcrun simctl io "$UDID" screenshot "$RUNNER_TEMP/report/launch.png"
           xcrun simctl spawn "$UDID" log show --last 2m --predicate 'process == "App"' --style compact 2>/dev/null | grep -iE "error|exception|⚡️|capacitor" | tail -60 > "$RUNNER_TEMP/report/app-log.txt" || true
 
+      - name: App Store screenshots (6.9 inch)
+        if: env.UPLOAD != 'true'
+        working-directory: ios-app
+        run: |
+          npx playwright install chromium > /dev/null
+          node scripts/screenshots.mjs "$RUNNER_TEMP/report/store" || echo "::warning::screenshots failed"
+
       - name: Sign and upload to App Store Connect
         if: env.UPLOAD == 'true'
         working-directory: ios-app/ios/App

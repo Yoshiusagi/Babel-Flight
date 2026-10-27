@@ -123,6 +123,9 @@ if File.exist?(podfile_path)
     pod.sub!(/^(target 'App' do\n\s*capacitor_pods\n)/) { "#{$1}#{google_pod}\n" } or abort "Podfile: target 'App' block not found"
   end
   File.write(podfile_path, pod)
+  # the lock from `cap add` was made without the Google subspec; let CocoaPods resolve again
+  lock = File.join(ROOT, "ios/App/Podfile.lock")
+  File.delete(lock) if File.exist?(lock)
 end
 
 puts "configured #{cap["appId"]} #{version} (#{build})#{team.empty? ? "" : " team #{team}"}"
