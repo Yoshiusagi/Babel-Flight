@@ -49,6 +49,58 @@ const SAFETY_EN =
   "You are an AI; never claim to be a human.";
 
 type Scenario = { fac: string; en: string; first: string };
+
+// AI会話ロールプレイ (a paid feature; only accounts with full access for now). Must stay in step with
+// ROLE_SC in babel-flight/parts/f17_cabin.js. The learner always speaks first.
+type RoleScene = { who: string; place: string; goal: string };
+const ROLE_SCENES: Record<string, RoleScene> = {
+  cabin: { who: "a friendly flight attendant on an international flight", place: "on board, during the meal service",
+    goal: "The passenger (the learner) calls you to ask for a drink or help. Offer the meal choices, answer the request, and handle one small extra request such as a blanket." },
+  immigration: { who: "an immigration officer", place: "at passport control at the airport",
+    goal: "Ask the purpose of the visit, the length of stay and where the learner will stay, then finish by welcoming them to the country." },
+  hotel: { who: "a hotel front desk clerk", place: "at the hotel front desk",
+    goal: "Check the learner in: confirm the reservation and the number of nights, ask for the passport, and explain breakfast time and the Wi-Fi." },
+  restaurant: { who: "a server at a casual restaurant", place: "at a restaurant",
+    goal: "Seat the learner, take the order (one dish and a drink), ask about allergies, and bring the bill at the end." },
+  directions: { who: "a kind local person on the street", place: "on a street in the city",
+    goal: "The learner asks the way to the station. Give simple directions in two or three steps and check that they understood." },
+  homestay: { who: "a host parent at a homestay", place: "at home on the learner's first evening",
+    goal: "Welcome the learner, ask about the trip, explain one or two house rules (dinner time, the bathroom), and ask what food they like." },
+  class: { who: "a school teacher", place: "in a classroom after a lesson at a school abroad",
+    goal: "The learner asks about the homework. Explain it simply, give the deadline, and ask if they have any other questions." },
+  interview: { who: "a speaking-test examiner", place: "in a speaking test room",
+    goal: "Greet the learner and ask four short questions, one at a time, about their hometown, hobbies, school life and future dream, with one follow-up question." },
+};
+
+const SAFETY_ROLE =
+  "Some learners are teenagers (13-17). Keep everything age-appropriate and safe. Stay strictly inside this practice " +
+  "conversation; if the learner writes about anything unrelated, unsafe, or personal (address, school name, contact " +
+  "details), do not engage with it: give a short kind note in feedback_ja steering back to the exercise, and repeat or " +
+  "simplify your previous line. You are an AI playing a role; never claim to be a real human.";
+
+/** "role:<scene>:<lang>" -> the system prompt for that conversation, or null. */
+function roleSystem(id: string): string | null {
+  const m = /^role:([a-z]+):(ko|en|es|it)$/.exec(id);
+  const s = m ? ROLE_SCENES[m[1] ?? ""] : undefined;
+  if (!m || !s) return null;
+  const lang = LANG_EN[m[2] ?? ""] ?? "English";
+  return (
+    `You are role-playing ${s.who} for Babel Flight, a language-learning app. The learner is a Japanese student ` +
+    `practising ${lang}. This is a practice conversation only.\nPlace: ${s.place}.\nWhat happens: ${s.goal}\n` +
+    `The learner speaks first. Speak ONLY in ${lang}, in short, natural, polite sentences at a beginner-to-intermediate ` +
+    "level (at most two sentences per turn).\n" +
+    "After each learner message, reply with ONLY one JSON object and no other text, in this shape:\n" +
+    `{"atc":"your next line in ${lang}. Use an empty string only when the conversation is finished.",` +
+    '"score":3,"feedback_ja":"1-2 short sentences in easy Japanese for the student: what was good and what to fix ' +
+    '(grammar, word choice, politeness, missing information).",' +
+    `"better":"a natural model version of the learner's last message in ${lang}","done":false}\n` +
+    `score: 3 = natural and correct, 2 = understandable with small mistakes, 1 = hard to understand, 0 = not usable or not in ${lang}.\n` +
+    "Keep the conversation to about five learner messages, then finish with done true and a short friendly closing line " +
+    "in \"atc\". If the learner writes in Japanese or seems stuck, kindly explain in feedback_ja what to say and repeat " +
+    "or simplify your previous line in \"atc\".\n" +
+    SAFETY_ROLE
+  );
+}
 // Must stay in step with ATC_SC in babel-flight/parts/c8_ai.js (ids, station, opening call).
 const ATC_SCENARIOS: Record<string, Scenario> = {
   taxi: {
@@ -355,33 +407,37 @@ async function handleAtc(request: Request, db: D1Database, key: string): Promise
   const uid = await accountUid(request, db);
   if (!uid) return json({ ok: false, error: "signin" }, 401);
   const body = await readJsonBody(request, 12000);
-  const sc = typeof body?.scenario === "string" ? ATC_SCENARIOS[body.scenario] : undefined;
+  const scName = typeof body?.scenario === "string" ? body.scenario : "";
+  const role = roleSystem(scName);
+  const sc = role ? undefined : ATC_SCENARIOS[scName];
   const history = readHistory(body?.history ?? []);
   const pilot = text(body?.pilot, 300, true);
-  if (!sc || !history || pilot === null) return json({ ok: false, error: "bad_request" }, 400);
+  if ((!sc && !role) || !history || pilot === null) return json({ ok: false, error: "bad_request" }, 400);
   if (history.length >= ATC_MAX_HISTORY) return json({ ok: false, error: "too_long" }, 400);
 
   const day = jstDay(Date.now());
   const start = history.length === 0;
   const all = await fullAccess(db, uid);
+  if (role && !all) return json({ ok: false, error: "plan" }, 403);
   if (!all && (await siteBusy(db, day))) return json({ ok: false, error: "busy" }, 429);
   const used = await reserve(db, uid, day, "atc", start, all);
   if (!used) return json({ ok: false, error: "quota", left: leftOf(await usage(db, uid, day)) }, 429);
 
   const messages: { role: "user" | "assistant"; content: string }[] = [];
+  const said = role ? "Learner" : "Pilot transmission";
   for (const ex of history) {
-    messages.push({ role: "user", content: `Pilot transmission: "${ex.pilot}"` });
+    messages.push({ role: "user", content: `${said}: "${ex.pilot}"` });
     messages.push({
       role: "assistant",
       content: JSON.stringify({ atc: ex.atc, score: ex.score, feedback_ja: ex.feedback, better: ex.better, done: false }),
     });
   }
-  messages.push({ role: "user", content: `Pilot transmission: "${pilot}"` });
+  messages.push({ role: "user", content: `${said}: "${pilot}"` });
 
   let reply: ReturnType<typeof parseAtc> = null;
   let upstreamOk = false;
   try {
-    const res = await callClaude(key, { max_tokens: 600, system: atcSystem(sc), messages });
+    const res = await callClaude(key, { max_tokens: 600, system: role ?? atcSystem(sc as Scenario), messages });
     if (res.ok) {
       upstreamOk = true;
       const data = (await res.json()) as { content?: { type?: string; text?: string }[] };

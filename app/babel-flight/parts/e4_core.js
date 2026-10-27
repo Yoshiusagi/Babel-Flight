@@ -61,7 +61,7 @@ function mergeSave(raw){
   if(d.prof&&!profById(d.prof))d.prof='';
   if(['beg','mid','adv'].indexOf(d.level)<0)d.level='mid';
   d.goal=clamp(parseInt(d.goal,10)||2,1,5);
-  if(d.mode!=='job'&&d.mode!=='study')d.mode='daily';
+  if(d.mode!=='job'&&d.mode!=='study'&&d.mode!=='exam')d.mode='daily';
   if(typeof d.icon!=='string'||!ICON_MAP[d.icon])d.icon='';
   d.rz=+d.rz||0;
   /* miles per day (for the 6-month status); older saves start with their total as of today */
@@ -155,6 +155,7 @@ function weakList(lang){
 }
 function nextDueIn(lang){var m=Infinity;eachItem(lang,function(uid,i,r){if(r.b>=1&&r.d<m)m=r.d;});return m===Infinity?null:m;}
 function pathSections(lang){
+  if(save.mode==='exam'&&typeof examSections==='function'){var xs=examSections(lang);if(xs)return xs;}
   if(save.mode==='job'){
     var p=profById(save.prof);
     if(!p)return [];

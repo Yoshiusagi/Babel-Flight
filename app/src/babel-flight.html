@@ -703,6 +703,19 @@ body.dark-ui .sheet{--sc:#ff6b79}
 .photo-ed svg{width:12px;height:12px}
 .id-card input{text-transform:none}
 .id-card .st-sub{margin-top:3px;opacity:.5;font-size:11px}
+:root{--qc:rgba(255,255,255,.97)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--qc:rgba(182,198,228,.55)}}
+:root[data-theme="dark"]{--qc:rgba(182,198,228,.55)}
+.qcloud{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden}
+.qcloud span{position:absolute;left:0;border-radius:50%;background:radial-gradient(closest-side,var(--qc) 0%,var(--qc) 52%,transparent 100%);opacity:0;transform:translateX(75vw);animation:qcloud .45s cubic-bezier(.45,.05,.35,1) forwards}
+.qcloud span:nth-child(1){width:95vw;height:46vh;top:14%;animation-delay:0s}
+.qcloud span:nth-child(2){width:80vw;height:40vh;top:44%;animation-delay:.03s}
+.qcloud span:nth-child(3){width:70vw;height:34vh;top:-4%;animation-delay:.05s}
+.qcloud span:nth-child(4){width:90vw;height:42vh;top:66%;animation-delay:.02s}
+.qcloud span:nth-child(5){width:60vw;height:30vh;top:32%;animation-delay:.06s}
+@keyframes qcloud{0%{transform:translateX(75vw);opacity:0}14%{opacity:1}70%{opacity:.95}100%{transform:translateX(-125vw);opacity:0}}
+#q.qin{animation:qIn .42s ease-out both}
+@keyframes qIn{0%,40%{opacity:0;transform:translateX(16px)}100%{opacity:1;transform:none}}
 :root[data-accent="sky"]{--signal:#6cc3ff}:root[data-accent="mint"]{--signal:#4fd6a5}:root[data-accent="coral"]{--signal:#ff9478}:root[data-accent="lavender"]{--signal:#b9a4ff}
 .perk-list{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
 .perk-list li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;font-size:13.5px;padding:8px 10px;border-radius:10px;background:var(--surface2)}
@@ -717,6 +730,19 @@ body.dark-ui .sheet{--sc:#ff6b79}
 .accents button i{width:22px;height:22px;border-radius:50%;display:block;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
 .accents button small{font-size:10px;color:var(--ink2);white-space:nowrap}
 .accents button[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--signal)}
+.credits .cr-app{font:700 22px/1.1 var(--f-disp);letter-spacing:.08em;text-transform:uppercase}
+.credits .cr-by{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;font-size:15px}
+.credits .cr-by .lbl{display:inline;margin:0}
+.credits .cr-by span[lang]{font-size:13.5px;color:var(--ink2)}
+.credits .cr-h{margin-top:8px}
+.cr-links{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.cr-links a{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px;padding:8px 12px;border-radius:10px;background:var(--surface2);color:var(--ink);text-decoration:none}
+.cr-links a b{display:inline-flex;align-items:baseline;gap:5px;font-size:14.5px}
+.cr-links a b i{font-style:normal;font-size:12px;color:var(--ink2)}
+.cr-links a small{font-size:12px;color:var(--ink2);text-align:right}
+.cr-links a:hover b{text-decoration:underline;text-underline-offset:3px}
+.cr-links a:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+.credits .cr-copy{margin-top:4px;font:400 11.5px var(--f-mono);color:var(--ink2)}
 .icon-grid button.locked{opacity:.4;position:relative;cursor:not-allowed}
 .icon-grid button .lock{position:absolute;right:2px;bottom:0;font-size:12px;font-style:normal}
 .id-card.gold{background:linear-gradient(135deg,#fff1b8 0%,#f2c94c 38%,#d9a520 68%,#f7dc7e 100%);color:#2a1d00}
@@ -798,6 +824,293 @@ body.dark-ui .sheet{--sc:#ff6b79}
 body:has(#tabs:not([hidden])) #hf-watermark{bottom:calc(74px + env(safe-area-inset-bottom,0px)) !important}
 body:has(#hf-watermark) .sheet{padding-bottom:calc(54px + env(safe-area-inset-bottom,0px))}
 body:has(#sheetHost .sheet) #hf-watermark{bottom:calc(12px + env(safe-area-inset-bottom,0px)) !important}
+</style>
+<style>
+/* share (standalone site only) */
+.share-ic{margin-left:auto;flex:none;width:42px;height:42px;display:grid;place-items:center;padding:0;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.share-ic:active{transform:scale(.95)}
+.share-ic:focus-visible,.shr-btn:focus-visible,.share-go:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+.share-go{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;color:var(--ink);text-align:left;cursor:pointer}
+.share-go svg{flex:none}
+.share-go span{font-weight:700;font-size:15px}
+.share-go small{display:block;font-weight:400;font-size:11px;color:var(--ink2);margin-top:2px}
+.share-sheet .sheet-in{gap:10px}
+.shr-prev{position:relative;display:grid;place-items:center;margin:0 auto;height:min(34vh,330px);aspect-ratio:9/16;border-radius:12px;overflow:hidden;background:var(--surface2);box-shadow:0 10px 24px -14px var(--shadow)}
+.shr-prev img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.shr-prev img:not([src]){visibility:hidden}
+.shr-wait{position:relative;z-index:1;padding:0 12px;font-size:12.5px;line-height:1.5;color:var(--ink2);text-align:center}
+.shr-wait[hidden]{display:none}
+.shr-name{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13.5px;cursor:pointer}
+.shr-name input{width:20px;height:20px;margin:0;accent-color:var(--signal)}
+.shr-img[hidden],.shr-more[hidden],.shr-note[hidden]{display:none}
+.shr-more{display:grid;gap:8px}
+.shr-sns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.shr-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.shr-btn{display:flex;align-items:center;justify-content:center;min-height:46px;padding:8px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:700 14.5px/1.2 var(--f-body);text-decoration:none;text-align:center;cursor:pointer}
+.shr-btn[aria-disabled="true"]{opacity:.45;cursor:default}
+.shr-note{font-size:12px;line-height:1.5;text-align:center}
+</style>
+<style>
+/* classes (standalone site, test account only) */
+.modesw.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.modesw.four .modesw-ind{width:calc((100% - 8px) / 4)}
+.modesw.four .modesw-ind.exam{transform:translateX(300%)}
+.modesw.four button{padding:9px 2px}
+.modesw.four button b{font-size:13.5px}
+.modesw.four button small{font-size:10px;white-space:nowrap}
+.stop.locked{opacity:.62}
+.stop.locked .stop-st{color:var(--ink2);letter-spacing:0;font-size:11px}
+/* 搭乗クラス card */
+.cabin-seg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:10px}
+.cabin-seg button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);text-align:left;min-height:56px}
+.cabin-seg button b{font-size:14px;line-height:1.3}
+.cabin-seg button small{font-size:11.5px;color:var(--ink2)}
+.cabin-seg button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--bg)}
+.cabin-seg button[aria-pressed="true"] small{color:inherit;opacity:.8}
+.cabin-feat{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:6px}
+.cabin-feat li{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:8px 10px;border-radius:10px;background:var(--surface2);font-size:13.5px}
+.cabin-feat li b{font-size:13px;text-align:right}
+.cabin-feat li.off{opacity:.6}
+.cabin-design{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:6px}
+.cabin-design button{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:8px;align-items:center;padding:8px 10px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);text-align:left}
+.cabin-design button b{font-size:13.5px}
+.cabin-design button small{grid-column:2;font-size:11px;color:var(--ink2)}
+.cabin-design button[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--signal)}
+.cd-sw{grid-row:span 2;width:26px;height:26px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
+.cd-base{background:linear-gradient(135deg,#ffcf26 0 50%,#0b1626 50%)}
+.cd-window{background:linear-gradient(180deg,#bfe3ff,#ffd9b8);border-radius:45%}
+.cd-lounge{background:linear-gradient(135deg,#0c1524 0 55%,#d4af62 55%)}
+.cd-suite{background:linear-gradient(135deg,#0a0a0c 0 55%,#e9d6a8 55%)}
+/* 検定 */
+.exam-card .go.sm{margin-top:10px}
+.exam-tm{margin-top:10px;font-size:11px;line-height:1.55;color:var(--ink2)}
+.xg-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.xg-chg{flex:none;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:700}
+.xmeter{margin-top:10px}
+.xm-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.xm-top b{font:700 26px/1.1 var(--f-disp);font-variant-numeric:tabular-nums}
+.xm-top b small{font-size:13px}
+.xm-bar{position:relative;height:10px;border-radius:5px;background:var(--surface2);box-shadow:inset 0 0 0 1px var(--line);margin-top:6px}
+.xm-bar i{display:block;height:100%;border-radius:5px;background:var(--lc)}
+.xm-pass{position:absolute;top:-4px;bottom:-4px;width:2px;margin-left:-1px;border-radius:1px;background:var(--ink)}
+.xm-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 8px;margin-top:6px;font-size:12px;color:var(--ink2)}
+.xm-pl{font-weight:700;color:var(--ink)}
+.xm-note{margin-top:6px;font-size:11.5px;line-height:1.55;color:var(--ink2)}
+.xm-prep{margin-top:10px;padding:10px 12px;border-radius:10px;border:1px dashed var(--line);background:var(--surface2);font-size:13px;line-height:1.55}
+.xm-prep b{display:block;font-size:13.5px}
+.xm-land{margin:0;text-align:left}
+.xg-kind{margin-top:14px}
+.xg-kh b{font-size:15px;margin-right:8px}
+.xg-kh small{font-size:12px;color:var(--ink2)}
+.xg-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.xg-chip{display:flex;flex-direction:column;align-items:center;min-width:64px;padding:8px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink)}
+.xg-chip b{font-size:14.5px}
+.xg-chip small{margin-top:2px;font-size:10.5px;color:var(--ink2)}
+.xg-chip[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--signal)}
+.xg-chip.locked{opacity:.75}
+.xg-chip.none{opacity:.45}
+.study-more .sm-sub{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.study-more .sm-sub>b{font-size:15px}
+.mock-tm{margin-left:auto;font:700 15px var(--f-mono);padding:6px 10px;border-radius:8px;background:var(--surface2);border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.mock-tm.low{color:var(--bad);border-color:var(--bad)}
+/* 発音チェック */
+.pron{display:grid;gap:6px;margin-top:8px}
+.pron-go{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 14px}
+.pron-go svg{flex:none}
+.pron-go span{font-weight:700;font-size:14.5px}
+.pron-go small{display:block;font-weight:400;font-size:11.5px;color:var(--ink2)}
+.pron-go.rec,.role-mic.rec{border-color:var(--bad);color:var(--bad);box-shadow:0 0 0 3px color-mix(in srgb,var(--bad) 22%,transparent)}
+@media (prefers-reduced-motion:no-preference){.pron-go.rec svg,.role-mic.rec svg{animation:recPulse 1s ease-in-out infinite}}
+@keyframes recPulse{50%{opacity:.35}}
+.pron-out{font-size:13.5px;line-height:1.55}
+.pron-out:empty{display:none}
+.pron-out b{display:block;font-size:14.5px}
+.pron-out span{display:block;color:var(--ink2)}
+.pron-out q{color:var(--ink)}
+.pron-out.good b{color:var(--good)}
+.pron-out.ok b{color:var(--info)}
+.pron-out.bad b,.pron-out.bad{color:var(--bad)}
+/* 弱点レポート */
+.report .rep-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:4px}
+.report .rep-kpis>div{background:var(--surface2);border-radius:10px;padding:8px 10px}
+.report .rep-kpis .lbl{display:block}
+.report .rep-kpis b{display:block;font:700 26px/1.15 var(--f-disp)}
+.report .rep-kpis b small{font:500 13px var(--f-body);margin-left:2px}
+.rep-diff{font-size:12px;font-weight:700}
+.rep-diff.up{color:var(--good)}.rep-diff.down{color:var(--bad)}
+.rep-h{font-size:13.5px;margin-top:12px}
+.rep-weak{margin:6px 0 0;padding-left:1.4em;display:grid;gap:6px}
+.rep-weak li{font-size:14px;line-height:1.4}
+.rep-weak small{display:block;font-size:12px;color:var(--ink2)}
+.report .go.sm{margin-top:10px}
+.rep-trend{display:block;width:100%;height:auto;margin-top:6px;overflow:visible}
+.rep-bar{fill:var(--lc)}
+.rep-none{fill:var(--line)}
+.rep-ref{stroke:var(--ink2);stroke-width:1;stroke-dasharray:3 4;opacity:.6}
+.rep-ax{fill:var(--ink2);font-size:10px;font-family:var(--f-body)}
+.rep-kinds{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:6px}
+.rep-kinds li{display:grid;grid-template-columns:7.2em minmax(0,1fr) auto auto;gap:8px;align-items:center;font-size:13px}
+.rk-n em{display:block;font-style:normal;font-size:10.5px;color:var(--bad);font-weight:700}
+.rk-bar{height:10px;border-radius:5px;background:var(--surface2);overflow:hidden}
+.rk-bar i{display:block;height:100%;border-radius:5px;background:var(--lc)}
+.rep-kinds b{font-variant-numeric:tabular-nums}
+.rep-kinds small{color:var(--ink2);font-size:11px;min-width:3.2em;text-align:right}
+.coach{display:grid;gap:8px;margin-top:12px}
+.coach .aiout:empty{display:none}
+.coach .aiout{padding:10px 12px}
+/* ロールプレイ */
+.role-mic{padding:11px 12px}
+.role-log .radio p,.role-log .me p,.role-log .better span{font-family:var(--f-body);font-size:15px;line-height:1.55;letter-spacing:0}
+
+/* ===== 窓側の席 (プレミアムエコノミー) ===== */
+:root[data-cabin="window"]{--bg:#eaf3fb;--bg2:#dbeaf7;--surface:#ffffff;--surface2:#eef5fc;--ink:#0d2238;--ink2:#4a6580;--line:#cfe0ef;--signal:#ffc94d;--on-signal:#2a1b00;--shadow:rgba(30,80,140,.18);--sky1:#bfe3ff;--sky2:#f2f8ff}
+:root[data-cabin="window"][data-sky="morning"]{--sky1:#ffe2c6;--sky2:#dcefff}
+:root[data-cabin="window"][data-sky="evening"]{--sky1:#ffc6a1;--sky2:#e7dcff}
+@media (prefers-color-scheme:dark){:root[data-cabin="window"]:not([data-theme="light"]){--bg:#0a1424;--bg2:#0e1b30;--surface:#11203a;--surface2:#172a4a;--ink:#e8f1ff;--ink2:#a3b9d8;--line:#23395e;--shadow:rgba(0,0,0,.5);--sky1:#0b1835;--sky2:#22305e}}
+:root[data-cabin="window"][data-theme="dark"]{--bg:#0a1424;--bg2:#0e1b30;--surface:#11203a;--surface2:#172a4a;--ink:#e8f1ff;--ink2:#a3b9d8;--line:#23395e;--shadow:rgba(0,0,0,.5);--sky1:#0b1835;--sky2:#22305e}
+:root[data-cabin="window"] body{background:linear-gradient(180deg,var(--sky1),var(--sky2) 55%,var(--bg)) fixed}
+[data-cabin="window"] .card{border-radius:26px;border-color:transparent;box-shadow:0 14px 34px -22px var(--shadow)}
+[data-cabin="window"] .hero{border-radius:46px}
+[data-cabin="window"] .id-card{border-radius:30px}
+[data-cabin="window"] .go{border-radius:999px;letter-spacing:.08em}
+[data-cabin="window"] .ghost,[data-cabin="window"] .sq,[data-cabin="window"] .choice,[data-cabin="window"] .opt{border-radius:18px}
+[data-cabin="window"] .modesw{border-radius:999px}
+[data-cabin="window"] .modesw-ind,[data-cabin="window"] .modesw button{border-radius:999px}
+[data-cabin="window"] .sheet{border-radius:28px 28px 0 0;border-top-width:0;box-shadow:0 -18px 40px -16px var(--shadow)}
+[data-cabin="window"] .tabs{background:color-mix(in srgb,var(--surface) 82%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top-color:transparent}
+
+/* ===== ラウンジ (ビジネス) ===== */
+:root[data-cabin="lounge"]{color-scheme:dark;--bg:#0c1524;--bg2:#101c30;--surface:#13203a;--surface2:#1b2b49;--ink:#f3ead7;--ink2:#b9ad93;--line:#2e3d5b;--signal:#d4af62;--on-signal:#1a1204;--good:#63d69f;--bad:#ff7d88;--info:#93b7ff;--shadow:rgba(0,0,0,.6)}
+:root[data-cabin="lounge"]{--dawn1:#1a2440;--dawn2:#0c1524;--day1:#14223e;--day2:#0c1524;--dusk1:#211d38;--dusk2:#0c1524;--night1:#070c18;--night2:#0c1524;--cloud:rgba(212,175,98,.05);--star:.7}
+:root[data-cabin="lounge"] body{background:radial-gradient(120% 55% at 50% 0%,#1d2e4f 0%,#0c1524 62%) fixed}
+[data-cabin="lounge"] .card{background:linear-gradient(180deg,#16254a,#111c35);border-color:rgba(212,175,98,.26)}
+[data-cabin="lounge"] .lbl{color:#cdb682;letter-spacing:.12em}
+[data-cabin="lounge"] .dim{color:#b3a88f}
+[data-cabin="lounge"] .go{background:linear-gradient(180deg,#e6c77f,#c39a4a);color:#1a1204;box-shadow:0 10px 22px -14px #d4af62}
+[data-cabin="lounge"] .opt,[data-cabin="lounge"] .choice{min-height:60px;border-color:rgba(212,175,98,.3);background:#13203a;color:var(--ink)}
+[data-cabin="lounge"] .ghost,[data-cabin="lounge"] .sq,[data-cabin="lounge"] .seg button{border-color:rgba(212,175,98,.35);color:var(--ink)}
+[data-cabin="lounge"] .tabs{background:#0a1220;border-top-color:rgba(212,175,98,.3)}
+[data-cabin="lounge"] .id-card{background:linear-gradient(135deg,#1b2b4b,#0e1830);color:var(--ink);box-shadow:inset 0 0 0 1px rgba(212,175,98,.45)}
+[data-cabin="lounge"] .sheet{background:#111c33;border-top-color:#d4af62}
+
+/* ===== スイート (ファースト) ===== */
+:root[data-cabin="suite"]{color-scheme:dark;--bg:#0a0a0c;--bg2:#111114;--surface:#141417;--surface2:#1d1d22;--ink:#f6f0e4;--ink2:#b9af9c;--line:#2c2b30;--signal:#e9d6a8;--on-signal:#18130a;--good:#7fe0b0;--bad:#ff8c8c;--info:#a9c4ff;--shadow:rgba(0,0,0,.7)}
+:root[data-cabin="suite"]{--dawn1:#1f1a13;--dawn2:#0a0a0c;--day1:#18150f;--day2:#0a0a0c;--dusk1:#231b12;--dusk2:#0a0a0c;--night1:#050506;--night2:#0a0a0c;--cloud:rgba(233,214,168,.04);--star:.55}
+:root[data-cabin="suite"] body{background:radial-gradient(110% 50% at 50% 0%,#2a241b 0%,#0a0a0c 66%) fixed}
+[data-cabin="suite"] .card{background:#131316;border-color:transparent;box-shadow:inset 0 0 0 1px rgba(233,214,168,.13),0 18px 40px -26px #000}
+[data-cabin="suite"] .lbl{color:#d6c49a;letter-spacing:.2em}
+[data-cabin="suite"] .dim{color:#bdb3a1}
+[data-cabin="suite"] .go{border-radius:999px;background:linear-gradient(180deg,#f1e2bb,#d9bf86);color:#18130a}
+[data-cabin="suite"] .opt{min-height:66px;font-size:17px;border-radius:16px;border-color:rgba(233,214,168,.22);background:#151518;color:var(--ink)}
+[data-cabin="suite"] .choice,[data-cabin="suite"] .ghost,[data-cabin="suite"] .sq,[data-cabin="suite"] .seg button{border-radius:16px;border-color:rgba(233,214,168,.28);color:var(--ink)}
+[data-cabin="suite"] .tabs{background:rgba(10,10,12,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top-color:rgba(233,214,168,.2)}
+[data-cabin="suite"] .id-card{background:linear-gradient(135deg,#221d14,#0e0d0b);color:var(--ink);box-shadow:inset 0 0 0 1px rgba(233,214,168,.5)}
+[data-cabin="suite"] .sheet{background:#121215;border-top-color:#e9d6a8;border-radius:24px 24px 0 0}
+[data-cabin="suite"] .profile{opacity:.5}
+/* swipe hint on the answer card (ラウンジ・スイート) */
+[data-cabin="lounge"] #sheetHost .sheet[role="status"] .sheet-in::after,
+[data-cabin="suite"] #sheetHost .sheet[role="status"] .sheet-in::after{content:'← 左にスワイプしても次へ';display:block;text-align:center;font-size:11.5px;color:var(--ink2);margin-top:-2px}
+</style>
+<style>
+/* ===== 窓側の席: home ===== */
+.win-hello{padding:4px 2px 0}
+.win-hello h1{font-size:24px;line-height:1.3}
+.win-hello p{margin-top:2px;font-size:13px;color:var(--ink2)}
+.win-leg{margin-top:20px}
+.win-leg-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:0 4px}
+.win-leg-h h2{font-size:16px}
+.win-leg-h span{font-size:12px;color:var(--ink2)}
+.win-rail{position:relative;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:14px max(16px,calc(50% - 100px)) 20px;scrollbar-width:none;overscroll-behavior-x:contain}
+.win-rail::-webkit-scrollbar{display:none}
+.win{flex:none;width:200px;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 12px 16px;border:9px solid var(--surface);border-radius:100px;background:var(--surface2);color:var(--ink);text-align:center;box-shadow:0 12px 26px -16px var(--shadow);transition:transform .2s}
+.win:active{transform:scale(.98)}
+.win-pane{position:relative;width:100%;height:132px;border-radius:72px;margin-bottom:8px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,hsl(calc(204 + var(--wi,0) * 9) 92% 70%),hsl(calc(200 + var(--wi,0) * 6) 90% 84%) 56%,hsl(calc(26 + var(--wi,0) * 7) 95% 82%));box-shadow:inset 0 0 0 3px rgba(13,34,56,.08)}
+.win-pane::before,.win-pane::after{content:'';position:absolute;border-radius:50%;background:rgba(255,255,255,.8)}
+.win-pane::before{left:12px;bottom:22px;width:74px;height:20px}
+.win-pane::after{right:8px;bottom:42px;width:54px;height:15px;opacity:.75}
+.win-k{position:relative;font:700 11px var(--f-mono);letter-spacing:.2em;color:#0d2238}
+.win-n{position:relative;font:700 54px/1 var(--f-disp);color:#0d2238}
+.win-t{font-size:15px;font-weight:700;line-height:1.35}
+.win small{font-size:11.5px;color:var(--ink2)}
+.win-st{min-height:22px;font-size:12.5px;color:var(--ink2);margin-top:4px}
+.win-st em{font-style:normal;opacity:.35}
+.win-go{display:inline-block;padding:6px 18px;border-radius:999px;background:var(--signal);color:var(--on-signal);font-weight:700;font-size:13px;box-shadow:0 3px 0 color-mix(in srgb,var(--signal) 70%,#000)}
+.win.next{border-color:var(--signal);transform:translateY(-4px)}
+.win.locked{opacity:.6}
+.win.done .win-pane{filter:saturate(.7)}
+.win-due{display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:14px;padding:14px 18px;text-align:left;color:var(--ink)}
+.win-due b{display:block;font-size:18px}
+:root[data-cabin="window"] .dests{margin-top:12px}
+
+/* the 模試 button's second line */
+.exam-card .ghost small{display:block;margin-top:3px;font-size:12px;color:var(--ink2)}
+
+/* ===== the question, for 窓側の席 and スイート ===== */
+.cab-p,.cab-bar{display:none}
+[data-cabin="window"] #bd,[data-cabin="window"] #led,[data-cabin="suite"] #bd,[data-cabin="suite"] #led{display:none}
+[data-cabin="window"] .cab-p{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;margin:14px auto 0;max-width:340px;min-height:196px;padding:28px 32px;border:10px solid var(--surface);border-radius:120px;
+  background:linear-gradient(180deg,#e6f4ff,#f7fbff 60%,#fff0e2);color:#0d2238;box-shadow:inset 0 0 0 3px rgba(13,34,56,.08),0 14px 34px -16px var(--shadow)}
+[data-cabin="window"] .cab-p .cp-m{font-size:21px;font-weight:700;line-height:1.4;overflow-wrap:anywhere}
+[data-cabin="window"] .cab-p .cp-x{font-size:13px;color:#3d5874}
+[data-cabin="window"] .opt:not(.ok):not(.no){border-color:var(--surface);background:color-mix(in srgb,var(--surface) 94%,transparent);box-shadow:0 4px 14px -8px var(--shadow)}
+[data-cabin="window"] .opt{border-radius:26px;padding:14px 18px}
+@media (prefers-color-scheme:dark){:root[data-cabin="window"]:not([data-theme="light"]) .cab-p{background:linear-gradient(180deg,#183258,#1d3763 60%,#33305a);color:#e8f1ff}
+  :root[data-cabin="window"]:not([data-theme="light"]) .cab-p .cp-x{color:#a9bfdd}}
+:root[data-cabin="window"][data-theme="dark"] .cab-p{background:linear-gradient(180deg,#183258,#1d3763 60%,#33305a);color:#e8f1ff}
+:root[data-cabin="window"][data-theme="dark"] .cab-p .cp-x{color:#a9bfdd}
+
+[data-cabin="suite"] .profile,[data-cabin="suite"] .phase{display:none}
+[data-cabin="suite"] .cab-bar{display:block;position:fixed;left:0;top:0;width:0;height:2px;background:var(--signal);z-index:30;transition:width .4s ease}
+[data-cabin="suite"] .cab-p{display:flex;flex-direction:column;gap:12px;padding:46px 6px 26px;min-height:200px}
+[data-cabin="suite"] .cab-p .cp-m{order:2;font:600 33px/1.25 'Cormorant Garamond','Shippori Mincho',serif;color:var(--ink);overflow-wrap:anywhere}
+[data-cabin="suite"] .cab-p .cp-m.ko{font-family:var(--f-ko);font-weight:500;font-size:28px}
+[data-cabin="suite"] .cab-p .cp-x{order:1;font:500 15px/1.5 'Shippori Mincho','Cormorant Garamond',serif;color:#b9ab8c;letter-spacing:.04em}
+[data-cabin="suite"] .opts{counter-reset:o;gap:0;border-top:1px solid var(--line)}
+[data-cabin="suite"] .opt{display:flex;align-items:baseline;gap:14px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;min-height:60px;padding:16px 8px;font-size:15.5px;color:#ddd3bd}
+[data-cabin="suite"] .opt .on{display:none}
+[data-cabin="suite"] .opt::before{counter-increment:o;content:counter(o,lower-roman);flex:none;width:1.6em;font:italic 500 19px/1 'Cormorant Garamond',serif;color:#8f846d}
+[data-cabin="suite"] .opt.ok{color:var(--good);background:transparent;border-bottom-color:var(--good)}
+[data-cabin="suite"] .opt.no{color:var(--bad);background:transparent;border-bottom-color:var(--bad)}
+[data-cabin="suite"] .qh{font:500 13px 'Shippori Mincho',serif;letter-spacing:.06em;color:var(--ink2)}
+
+/* ===== スイート: home ===== */
+.suite-wrap{position:relative;margin-top:6px}
+.suite-pages{height:calc(100svh - 225px);min-height:460px;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none;overscroll-behavior-y:contain;border-radius:24px}
+.suite-pages::-webkit-scrollbar{display:none}
+.suite-pg{position:relative;min-height:100%;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;padding:24px 26px 54px}
+.sp-ctx{align-self:flex-start;min-height:44px;margin-bottom:18px;padding:8px 16px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--ink2);font-size:12.5px}
+.sp-it{font:italic 500 18px 'Cormorant Garamond',serif;color:#b9ab8c}
+.sp-big{margin-top:8px;font:700 44px/1.2 'Shippori Mincho','Cormorant Garamond',serif;color:var(--ink);overflow-wrap:anywhere}
+.sp-big2{font:500 28px/1.3 'Shippori Mincho',serif;color:var(--signal)}
+.sp-line{display:block;width:100%;max-width:322px;height:auto;margin-top:18px;color:var(--signal)}
+.sp-meta{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:12.5px;color:var(--ink2);letter-spacing:.04em}
+.sp-board{align-self:center;margin-top:30px;width:128px;height:128px;border-radius:50%;border:1px solid var(--signal);background:radial-gradient(circle at 50% 35%,#f4e4bb,#cdb37a);color:#15120c;font:700 22px 'Shippori Mincho',serif;box-shadow:0 0 0 10px rgba(233,214,168,.08),0 18px 40px rgba(0,0,0,.6);transition:transform .2s}
+.sp-board:active{transform:scale(.96)}
+.sp-hint{position:absolute;left:0;right:0;bottom:14px;display:flex;flex-direction:column;align-items:center;font-size:12px;color:var(--ink2);letter-spacing:.08em}
+@media (prefers-reduced-motion:no-preference){.sp-hint svg{animation:spUp 1.8s ease-in-out infinite}}
+@keyframes spUp{50%{transform:translateY(-4px)}}
+.sp-num{margin-top:6px;font:600 96px/1 'Cormorant Garamond',serif;color:var(--ink)}
+.sp-num small{font-size:36px;color:var(--ink2)}
+.sp-p{margin-top:8px;font-size:13.5px;color:var(--ink2)}
+.sp-thin{position:relative;height:3px;margin-top:16px;background:var(--line)}
+.sp-thin i{display:block;height:100%;background:var(--signal)}
+.sp-rev .go{margin-top:26px}
+.sp-prog .card{margin:0}
+.sp-all{justify-content:flex-start;padding-top:28px}
+.sp-all .dests,.sp-all .modesw,.sp-all .course{margin-top:12px}
+.sp-sec{margin-top:22px}
+.sp-sec h2{display:flex;justify-content:space-between;align-items:baseline;font:700 17px 'Shippori Mincho',serif;margin-bottom:2px}
+.sp-sec h2 small{font:400 12px var(--f-mono);color:var(--ink2)}
+.sp-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;width:100%;min-height:52px;padding:12px 4px;border:0;border-bottom:1px solid var(--line);background:none;color:var(--ink);text-align:left;font-size:15px}
+.sp-row small{flex:none;font-size:12px;color:var(--ink2)}
+.sp-row small em{font-style:normal;opacity:.35}
+.sp-row.next span{color:var(--signal);font-weight:700}
+.sp-row.locked{opacity:.55}
+.sp-dots{position:absolute;right:-8px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:9px;pointer-events:none}
+.sp-dots i{display:block;width:4px;height:4px;border-radius:2px;background:#6b6355;transition:height .25s}
+.sp-dots i.on{height:24px;background:var(--signal)}
+[data-cabin="suite"] #sheetHost .sheet[role="status"] .sheet-in::after{content:'↑ 上にスワイプしても次へ'}
 </style>
 </head>
 <body>
@@ -1859,7 +2172,7 @@ function mergeSave(raw){
   if(d.prof&&!profById(d.prof))d.prof='';
   if(['beg','mid','adv'].indexOf(d.level)<0)d.level='mid';
   d.goal=clamp(parseInt(d.goal,10)||2,1,5);
-  if(d.mode!=='job'&&d.mode!=='study')d.mode='daily';
+  if(d.mode!=='job'&&d.mode!=='study'&&d.mode!=='exam')d.mode='daily';
   if(typeof d.icon!=='string'||!ICON_MAP[d.icon])d.icon='';
   d.rz=+d.rz||0;
   /* miles per day (for the 6-month status); older saves start with their total as of today */
@@ -1953,6 +2266,7 @@ function weakList(lang){
 }
 function nextDueIn(lang){var m=Infinity;eachItem(lang,function(uid,i,r){if(r.b>=1&&r.d<m)m=r.d;});return m===Infinity?null:m;}
 function pathSections(lang){
+  if(save.mode==='exam'&&typeof examSections==='function'){var xs=examSections(lang);if(xs)return xs;}
   if(save.mode==='job'){
     var p=profById(save.prof);
     if(!p)return [];
@@ -2157,9 +2471,10 @@ function ringSVG(n,goal){
   return '<svg class="ring" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15" fill="none" stroke="var(--line)" stroke-width="4"/>'+
     '<circle cx="18" cy="18" r="15" fill="none" stroke="'+(p>=1?'var(--good)':'var(--signal)')+'" stroke-width="4" stroke-linecap="round" pathLength="100" stroke-dasharray="'+(p*100).toFixed(1)+' 100" transform="rotate(-90 18 18)"/></svg>';
 }
-function topBar(title){
+function topBar(title,share){
   var n=todayCount();
   return '<header class="top"><div class="brand">'+planeIcon()+(title?esc(title):'Babel<b>Flight</b>')+'</div>'+
+    (share&&typeof shareIconHTML==='function'?shareIconHTML(share):'')+
     '<div class="stats-top"><div class="goal-pill" title="今日の目標">'+ringSVG(n,save.goal)+'<span><span class="lbl">今日</span><span class="v">'+n+'/'+save.goal+'</span></span></div>'+
     '<div class="pill"><span class="lbl">連続</span><span class="v">'+streakNow()+'日</span></div>'+
     '<div class="pill"><span class="lbl">マイル</span><span class="v">'+fmt(save.miles)+'</span></div></div></header>';
@@ -2187,6 +2502,7 @@ function passHTML(L,uid){
 function reviewHTML(){
   var L=save.lang,LG=LANGS[L],due=dueList(L),weak=weakList(L),learned=learnedList(L),nd=nextDueIn(L),h=topBar('復習');
   h+=destChips();
+  if(typeof reportCardHTML==='function')h+=reportCardHTML(L);
   h+='<section class="card mode"><div class="big-count"><div class="due-board" aria-label="復習 '+due.length+'フレーズ">'+pad2(Math.min(due.length,99))+'</div><div><h2 class="jh">忘れかけた頃の復習</h2><p class="dim" style="font-size:13.5px;margin-top:4px">';
   if(due.length)h+='今がちょうど復習のタイミング。思い出すほど記憶が長持ちします。';
   else if(learned.length)h+='今は復習するものがありません。次は'+fmtIn(nd)+'です。';
@@ -2201,6 +2517,7 @@ function reviewHTML(){
      (annOK?'<button class="go sm" type="button" data-mode="ann">はじめる</button>':'<p class="warn">この端末では'+esc(LG.name)+'の音声が使えません</p>')+'</section>';
   h+='<section class="card mode atc-card"><span class="lbl">AI ROLEPLAY ・ 英語</span><h2 class="jh">AI管制官と交信練習</h2><p class="dim">管制官役のAIと英語で無線交信。あなたの返答を採点して、お手本も教えてくれます。</p>'+
      (typeof aiAtcEntryHTML==='function'?aiAtcEntryHTML():AI.ok?'<button class="go sm" type="button" data-atc>交信をはじめる</button>':'<p class="warn">'+(AI.checked?'この環境ではAI機能が使えません(Claudeで開くと使えます)':'AI機能を確認中…')+'</p>')+'</section>';
+  if(typeof roleCardHTML==='function')h+=roleCardHTML(L);
   h+='<section class="card mode"><span class="lbl">FREE</span><h2 class="jh">自由練習</h2><p class="dim">学習ずみのフレーズからランダムに10問。復習のタイミングに関係なく練習できます。</p><div class="mcount mono">'+learned.length+'<small> フレーズ</small></div><button class="go sm" type="button" data-mode="free"'+(learned.length?'':' disabled')+'>はじめる</button></section>';
   h+='</div>';
   var counts=[0,0,0,0,0,0,0];
@@ -2251,7 +2568,7 @@ var GOALS=[[1,'1回'],[2,'2回'],[3,'3回'],[5,'5回']];
 function recordHTML(){
   var now=Date.now(),win=milesWindow(now),rk=statusIdx(now),nx=RANKS[rk+1],cur=RANKS[rk],p=profById(save.prof);
   var kept=!!(save.st&&save.st.until>now&&save.st.lv===rk&&rk>0);
-  var pct=nx?clamp((win-cur[2])/(nx[2]-cur[2]),0,1)*100:100,h=topBar('記録'),stamps=0;
+  var pct=nx?clamp((win-cur[2])/(nx[2]-cur[2]),0,1)*100:100,h=topBar('記録','status'),stamps=0;
   ORDER.forEach(function(l){ALL_IDS[l].forEach(function(uid){if(unitRec(l,uid).n>0)stamps++;});});
   h+='<section class="id-card'+((typeof perkHas==='function'?perkHas(5):rk>=RANKS.length-1)?' gold':'')+'"><button class="photo" type="button" data-icon-open aria-label="アイコンを変える">'+avatarHTML()+'<i class="photo-ed" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></i></button><div style="min-width:0"><span class="lbl">名前</span>'+
      '<input id="pname" maxlength="14" value="'+esc(save.name)+'" aria-label="名前" autocomplete="off" spellcheck="false">'+
@@ -2260,6 +2577,7 @@ function recordHTML(){
      '<div class="lbl st-sub">直近6ヶ月 '+fmt(win)+' マイル'+(kept?' ・ '+fmtDate(save.st.until)+' まで有効':'')+'</div></div>'+
      (save.cap?capStampHTML():'')+'</section>';
   if(typeof perksCardHTML==='function')h+=perksCardHTML();
+  if(typeof cabinCardHTML==='function')h+=cabinCardHTML();
   if(typeof acctCardHTML==='function')h+=acctCardHTML();
   if(typeof pwaCardHTML==='function')h+=pwaCardHTML();
   h+='<div class="kpis">'+
@@ -2286,7 +2604,22 @@ function recordHTML(){
      '<div class="set-row"><span>タップ音</span><button class="ghost" type="button" data-toggle-tap aria-pressed="'+save.tap+'">'+(save.tap?'ON':'OFF')+'</button></div>'+
      '<div class="set-row"><span class="dim" style="font-size:13px">進捗は'+(cloud.doc?'アカウントに保存されています':'この端末のブラウザに保存されます')+'</span>'+
      (confirmReset?'<span class="row2"><button class="ghost danger" type="button" data-reset-yes>消去する</button><button class="ghost" type="button" data-reset-no>やめる</button></span>':'<button class="ghost danger" type="button" data-reset>リセット</button>')+'</div></section>';
+  h+=creditsHTML();
   return h;
+}
+/* credits: who made the app and the services it was built with (bottom of 記録) */
+var CREDITS={by:'戸井慶成',byEn:'Yoshinari Toi',year:2026,links:[
+ ['Claude','https://claude.ai','設計・プログラミング・AI'],
+ ['Higgsfield','https://higgsfield.ai','公開・サーバー'],
+ ['GitHub','https://github.com/Yoshiusagi/babel-flight','コードの保存場所']
+]};
+function creditsHTML(){
+  return '<section class="card credits"><div class="card-h"><h2 class="jh">このアプリについて</h2></div>'+
+    '<div class="cr-app" lang="en">Babel Flight</div>'+
+    '<div class="cr-by"><span class="lbl">制作</span><b>'+esc(CREDITS.by)+'</b><span lang="en">('+esc(CREDITS.byEn)+')</span></div>'+
+    '<span class="lbl cr-h">使ったサービス</span><ul class="cr-links">'+
+    CREDITS.links.map(function(l){return '<li><a href="'+l[1]+'" target="_blank" rel="noopener noreferrer" aria-label="'+esc(l[0]+': '+l[2]+'(新しいタブで開きます)')+'"><b lang="en">'+esc(l[0])+'<i aria-hidden="true">↗</i></b><small>'+esc(l[2])+'</small></a></li>';}).join('')+
+    '</ul><p class="cr-copy" lang="en">© '+CREDITS.year+' '+esc(CREDITS.byEn)+'</p></section>';
 }
 var LEVEL_HINT={beg:'読み方のヒントつき。入力問題は出ません。基本の会話から始めます。',mid:'標準。並べ替えや入力問題も出ます。',adv:'入力問題が多め。職業コースが先に表示されます。'};
 function pathIdsFor(l){
@@ -2344,9 +2677,10 @@ function render(){
   else if(view==='onboard')main.innerHTML=onboardHTML();
   else if(view==='atc')main.innerHTML=atcHTML();
   else if(view==='scene')main.innerHTML=sceneHTML();
+  else if(view==='role'&&typeof roleHTML==='function')main.innerHTML=roleHTML();
   var TABS=['home','review','record'],pi=TABS.indexOf(PREVVIEW),nx=TABS.indexOf(view),cls='enter';
   if(pi>=0&&nx>=0&&pi!==nx)cls=nx>pi?'enter-r':'enter-l';
-  else if(HOME_ANIM==='mode'){var MO=['daily','job','study'];cls=MO.indexOf(save.mode)>MO.indexOf(MODEPREV)?'enter-r':'enter-l';}
+  else if(HOME_ANIM==='mode'){var MO=['daily','job','study','exam'];cls=MO.indexOf(save.mode)>MO.indexOf(MODEPREV)?'enter-r':'enter-l';}
   main.classList.remove('enter','enter-l','enter-r');void main.offsetWidth;main.classList.add(cls);
   PREVVIEW=view;
   if(view==='home'){mapMount();revealRows();}
@@ -2369,13 +2703,16 @@ function fmtCoord(c){return Math.abs(c[2]).toFixed(2)+'°'+(c[2]>=0?'N':'S')+'  
 function cssVar(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()||'#ffcf26';}
 function flapHTML(t,anim){return '<span class="flapw'+(anim?' flip':'')+'">'+String(t).split('').map(function(ch,i){return '<span style="--d:'+i+'">'+(ch===' '?'&nbsp;':esc(ch))+'</span>';}).join('')+'</span>';}
 function modeSwitch(){
-  return '<div class="modesw float" role="group" aria-label="学ぶモード"><span class="modesw-ind '+(MODEPREV||save.mode)+'" aria-hidden="true"></span>'+
-    '<button type="button" data-mode-set="daily" aria-pressed="'+(save.mode==='daily')+'"><b>日常会話モード</b><small>あいさつ・旅行</small></button>'+
-    '<button type="button" data-mode-set="job" aria-pressed="'+(save.mode==='job')+'"><b>職業モード</b><small>13職業の会話</small></button>'+
-    '<button type="button" data-mode-set="study" aria-pressed="'+(save.mode==='study')+'"><b>留学モード</b><small>学校と授業</small></button></div>';
+  var x=typeof examModeOn==='function'&&examModeOn(),m=save.mode==='exam'&&!x?'daily':save.mode;
+  return '<div class="modesw float'+(x?' four':'')+'" role="group" aria-label="学ぶモード"><span class="modesw-ind '+(MODEPREV||m)+'" aria-hidden="true"></span>'+
+    '<button type="button" data-mode-set="daily" aria-pressed="'+(m==='daily')+'"><b>'+(x?'日常会話':'日常会話モード')+'</b><small>あいさつ・旅行</small></button>'+
+    '<button type="button" data-mode-set="job" aria-pressed="'+(m==='job')+'"><b>'+(x?'職業':'職業モード')+'</b><small>13職業の会話</small></button>'+
+    '<button type="button" data-mode-set="study" aria-pressed="'+(m==='study')+'"><b>'+(x?'留学':'留学モード')+'</b><small>学校と授業</small></button>'+
+    (x?'<button type="button" data-mode-set="exam" aria-pressed="'+(m==='exam')+'"><b>検定</b><small>英検・TOEIC</small></button>':'')+'</div>';
 }
 function stopStatus(L,uid,nextId){
   var r=unitRec(L,uid);
+  if(typeof examLockText==='function'&&r.n===0){var lk=examLockText(L,uid);if(lk)return {c:'locked',t:lk};}
   if(r.n>0){var due=unitDue(L,uid);return {c:'done',t:due?'復習あり':'★★★'.slice(0,r.stars)+'<em>'+'★★★'.slice(r.stars)+'</em>'};}
   if(uid===nextId)return {c:'next',t:'次はここ'};
   return {c:'todo',t:''};
@@ -2386,7 +2723,7 @@ function heroLangs(){
   }).join('')+'</div>';
 }
 function homeHTML(){
-  var L=save.lang,LG=LANGS[L],p=profById(save.prof),anim=!!HOME_ANIM&&!reduceMotion,h=topBar();
+  var L=save.lang,LG=LANGS[L],p=profById(save.prof),anim=!!HOME_ANIM&&!reduceMotion,h=topBar('','progress');
   var ids=pathIds(L);
   if(!ids.length){
     h+='<section class="hero empty"><div class="hero-in"><div class="hud"><div class="hud-l"><span class="lbl">'+esc(LG.cityEn)+' ・ '+esc(LG.name)+'</span><b class="mono">職業を選ぼう</b></div></div>'+heroLangs()+'</div></section>'+modeSwitch();
@@ -2401,6 +2738,7 @@ function homeHTML(){
      '<div class="hud-foot mono"><span>'+fmtCoord(nc)+'</span><span>'+(cp>=0?esc(from[1]):'東京')+'から '+fmt(dist)+' km</span></div>'+
      heroLangs()+'</div></section>';
   h+=modeSwitch();
+  if(typeof examHomeHTML==='function')h+=examHomeHTML(L);
   if(save.mode==='job'){
     h+='<button class="course" type="button" data-picker><span class="ccode">'+p.code+'</span><span class="ctext"><span class="lbl">職業コース</span><b>'+esc(p.jp)+'</b><small>タップして変更 ・ 13職業から選べます</small></span><span class="chev" aria-hidden="true">›</span></button>';
     if(p.id==='pilot')h+='<button class="course atcbtn" type="button" data-atc><span class="ccode">ATC</span><span class="ctext"><span class="lbl">AIロールプレイ ・ 英語</span><b>AI管制官と交信練習</b><small>羽田空港で、管制官役のAIと無線交信</small></span><span class="chev" aria-hidden="true">›</span></button>';
@@ -2430,6 +2768,7 @@ function sceneSheetHTML(L,uid){
 }
 function openNodeSheet(uid){
   var L=save.lang;
+  if(typeof examLockSheet==='function'&&examLockSheet(L,uid))return;
   $('sheetHost').innerHTML='<div class="sheet plain print" role="dialog" aria-label="レッスンの詳細"><div class="sheet-in">'+(isScene(L,uid)?sceneSheetHTML(L,uid):passHTML(L,uid))+
     '<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
 }
@@ -2695,7 +3034,7 @@ function newTag(it){return itemRec(F.lang,it.uid,it.i).b===0?'<span class="newta
 function showStep(){
   var q=F.queue[F.idx];
   if(!q){land();return;}
-  F.cur=q;F.answered=false;F.build=null;F.peeked=false;closeSheet();
+  F.cur=q;F.answered=false;F.build=null;F.peeked=false;F.shownAt=performance.now();closeSheet();
   var d=dat(q.it),LG=LANGS[F.lang],box=$('q'),beg=save.level==='beg';
   updateProfile();
   var tag=newTag(q.it);
@@ -2758,17 +3097,30 @@ function judge(ok){
   var q=F.cur,d=dat(q.it),key=ik(q.it.uid,q.it.i);
   if(ok){F.corr++;chimeOK();fxGood();}
   else{F.mist++;fxBad();F.wrong[key]=(F.wrong[key]||0)+1;chimeBad();buzz(40);pushRetry(q);}
+  if(typeof repNote==='function')repNote(F.lang,q.k,ok);
   board.set(d.t);ledSet(d.jp,d.r);
   updateProfile();
   var h='<div class="sheet'+(ok?'':' bad')+'" role="status"><div class="sheet-in"><h3>'+(ok?PRAISE[Math.floor(Math.random()*PRAISE.length)]:'おしい！ 正解はこちら')+'</h3>'+
     '<div class="ans'+koCls()+'"><b>'+esc(d.t)+'</b><br><span class="dim" style="font-size:13px">'+(d.r?esc(d.r)+' ・ ':'')+esc(d.jp)+'</span></div>'+
     (d.n?'<div class="note"><b>ワンポイント</b>'+esc(d.n)+'</div>':'')+
-    aiBtnHTML()+
+    aiBtnHTML()+(typeof pronBoxHTML==='function'?pronBoxHTML():'')+
     '<div class="row2"><button class="sq" type="button" data-hear aria-label="発音を聞く">'+speakerIcon()+'</button>'+
     '<button class="go" type="button" data-next style="flex:1;width:auto;margin:0">次へ</button></div></div></div>';
   $('sheetHost').innerHTML=h;
 }
 function closeSheet(){aiStop();var s=$('sheetHost');if(s)s.innerHTML='';}
+/* ---- tap guard ---- */
+var TAP_GUARD_MS=500,PRESS={el:null,t:0};
+function answerEl(t){return t&&t.closest?t.closest('.opt,[data-tile],[data-untile],[data-check],[data-clear]'):null;}
+function answerReady(at){return !!F&&(at||performance.now())-(F.shownAt||0)>=TAP_GUARD_MS;}
+document.addEventListener('pointerdown',function(e){PRESS={el:answerEl(e.target),t:performance.now()};},true);
+document.addEventListener('click',function(e){
+  if(view!=='flight'||!F)return;
+  var el=answerEl(e.target);if(!el)return;
+  /* a mouse/finger press must begin on this same answer, after the question has been up for 0.5 s; keyboard presses (detail 0) only need the 0.5 s */
+  var ok=e.detail===0?answerReady():(PRESS.el===el&&answerReady(PRESS.t));
+  if(!ok){e.preventDefault();e.stopImmediatePropagation();}
+},true);
 function onOption(i){
   if(F.answered||!F.cur)return;
   var btns=document.querySelectorAll('.opt'),ok=(i===F.ci);
@@ -2791,7 +3143,17 @@ function nextStep(){
   if(!F||!F.cur||!F.answered)return;
   F.wDone+=F.cur.w;F.idx++;closeSheet();
   if(F.idx>=F.queue.length){land();return;}
-  window.scrollTo(0,0);showStep();
+  window.scrollTo(0,0);showStep();cloudPass();
+}
+/* between questions: clouds sweep past and the next question fades in (skipped with reduced motion) */
+function cloudPass(){
+  if(reduceMotion)return;
+  var old=document.querySelector('.qcloud');if(old&&old.parentNode)old.parentNode.removeChild(old);
+  var c=document.createElement('div');c.className='qcloud';c.setAttribute('aria-hidden','true');
+  c.innerHTML='<span></span><span></span><span></span><span></span><span></span>';
+  document.body.appendChild(c);
+  var q=$('q');if(q){q.classList.remove('qin');void q.offsetWidth;q.classList.add('qin');}
+  setTimeout(function(){if(c.parentNode)c.parentNode.removeChild(c);},650);
 }
 function abortAsk(){
   $('sheetHost').innerHTML='<div class="sheet bad" role="alertdialog" aria-label="終了の確認"><div class="sheet-in"><h3>このレッスンをやめますか？</h3><p class="dim" style="font-size:14px">ここまでの記録は保存されません。</p>'+
@@ -2818,6 +3180,7 @@ function startMode(kind){
 }
 /* ================= LESSON END (shared by phrase lessons and scenes) ================= */
 function nextPathUnit(L,cur){
+  if(typeof examNext==='function'){var xn=examNext(L,cur);if(xn!==undefined)return xn;}
   var ids=pathIds(L),i,best=null,bd=0;
   if(!ids.length)return null;
   /* stay in the same group: the next unit not flown yet (入国審査 → カフェ), then the next group */
@@ -2839,6 +3202,7 @@ function land(){
   var uniq={},keys=[];
   F.items.forEach(function(it){var k=ik(it.uid,it.i);if(!uniq[k]){uniq[k]=it;keys.push(k);}});
   if(F.mode==='ai'){landAi();return;}
+  if(F.mode==='mock'&&typeof landMock==='function'){landMock();return;}
   keys.forEach(function(k){
     var rec=P.items[k]||{b:0,d:0},w=F.wrong[k]||0,wasDue=rec.b===0||rec.d<=now;
     if(w===0){
@@ -2932,6 +3296,7 @@ function completeLesson(o){
   if(remAdded)h+='<button class="go" type="button" data-rem="'+esc(o.uid)+'">補習フライトへ<small>苦手を別の形で練習 ・ 約'+Math.max(1,Math.round(remAdded*0.6))+'分</small></button>';
   if(o.lessonUid)h+='<button class="go" type="button" data-go="'+esc(o.lessonUid)+'">このレッスンを受ける<small>'+esc(unitTitle(o.lessonUid))+'</small></button>';
   h+=aiDrillBtnHTML();
+  if(typeof shareLandBtnHTML==='function')h+=shareLandBtnHTML({L:L,mode:o.mode,uid:o.uid,unit:unitMode,flight:unitMode?flightNo(L,o.uid):'',city:c[0],cityJp:c[1],stars:o.stars,miles:miles,grade:o.grade,rank:rankAfter,rankUp:rankAfter>rankBefore,cap:!!firstCap});
   if(unitMode){var nu=nextPathUnit(L,o.uid);if(nu)h+='<button class="go" type="button" data-next-lesson="'+esc(nu)+'">次のレッスンへ<small>'+esc(unitTitle(nu))+' ・ 地図で飛行機が進みます</small></button>';}
   h+='<button class="ghost" type="button" data-home>ホームに戻る(地図を見る)</button></div></div>';
   view='land';F=null;board=null;closeSheet();$('tabs').hidden=true;
@@ -4220,6 +4585,1635 @@ if(SAI.on){
     });
   };
 }
+/* ================= SHARE (standalone site only) =================
+   Makes a 1080×1920 picture of a finished lesson, your progress or your status. The picture is drawn
+   in the browser and never uploaded. It goes to the phone's share menu (Instagram, TikTok, LINE…),
+   where X, Threads, Instagram, TikTok, LINE… are all listed. Only the picture is passed: with text
+   added, iPhones treat the share as text and show no picture at the top. PCs (no share menu for
+   pictures in some browsers) also get X / Threads / Facebook links, save and copy. */
+var SHR={on:false,kind:'',data:null,land:null,blob:null,file:null,url:'',seq:0,copyT:0};
+try{SHR.on=!window.claude&&!!document.createElement('canvas').getContext;}catch(e){SHR.on=false;}
+var SHR_W=1080,SHR_H=1920,SHR_CARD={x:90,y:410,w:900,h:1060};
+var SHR_F={disp:'"Barlow Condensed","IBM Plex Sans JP",sans-serif',body:'"IBM Plex Sans JP","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif',mono:'"B612 Mono",ui-monospace,Menlo,monospace',emoji:'"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'};
+var SHR_INK='#101a2b',SHR_SUB='#5b6676',SHR_PAPER='#fffaf0',SHR_TRACK='#ebe3d1';
+var SHR_LC={ko:'#e8505b',en:'#2d6bff',es:'#f08a1c',it:'#17a068'};
+/* status colours on the picture: [strip colour, text on the strip] */
+var SHR_RC=[['#b9773f','#ffffff'],['#a3adbb','#121a26'],['#e3b23c','#1b1500'],['#8cc3d3','#0d1b24'],['#55c4f0','#05202c'],['#16233f','#ffd76a']];
+var SHR_MODE={review:'復習フライト',weak:'弱点コース',ann:'機内アナウンス',lounge:'プラチナラウンジ',rem:'補習フライト',ai:'AIの例文練習',skip:'飛び級テスト'};
+
+function shrSite(){try{if(/(^|\.)higgsfield\.app$/.test(location.hostname))return location.origin;}catch(e){}return 'https://babel-flight.higgsfield.app';}
+function shrLink(){return shrSite()+'/';}
+/* phones and tablets: the share menu is enough */
+function shrMobile(){
+  try{
+    var ua=navigator.userAgent||'';
+    if(/Android|iPhone|iPad|iPod|Mobile/i.test(ua))return true;
+    if(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1)return true;
+    return !!(window.matchMedia&&matchMedia('(pointer:coarse)').matches&&!matchMedia('(any-pointer:fine)').matches);
+  }catch(e){return false;}
+}
+function shrName(){var n=String(save.name||'').trim();return n&&n!=='PASSENGER'?n:'';}
+function shrNameOn(){try{return localStorage.getItem('babelflight.shareName')!=='0';}catch(e){return true;}}
+function shrNameSet(v){try{localStorage.setItem('babelflight.shareName',v?'1':'0');}catch(e){}}
+function shrDate(){return dayStr().replace(/-/g,'.');}
+function shrIcon(){return '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 14V3"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/></svg>';}
+
+/* ---- buttons placed by the shared views ---- */
+function shareIconHTML(kind){
+  if(!SHR.on)return '';
+  var lb=kind==='status'?'ステータスをシェア':'進捗をシェア';
+  return '<button class="share-ic" type="button" data-share="'+kind+'" aria-label="'+lb+'" title="'+lb+'">'+shrIcon()+'</button>';
+}
+function shareLandBtnHTML(d){
+  if(!SHR.on||!d)return '';
+  SHR.land=d;
+  return '<button class="ghost share-go" type="button" data-share="lesson">'+shrIcon()+'<span>レッスンをシェア<small>Instagram・TikTok・X・Threads・Facebook</small></span></button>';
+}
+
+/* ---- what goes on each picture ---- */
+function shrLesson(){
+  var d=SHR.land;if(!d)return null;
+  var LG=LANGS[d.L];
+  return {L:d.L,langName:LG.name,title:d.unit?unitTitle(d.uid):(SHR_MODE[d.mode]||'フライト'),flight:d.flight||'',
+    from:'TOKYO',fromJp:'東京',to:d.city||LG.cityEn,toJp:d.cityJp||LG.city,stars:d.stars,miles:d.miles,grade:d.grade?d.grade[1]:'',
+    rank:d.rank,rankUp:!!d.rankUp,cap:!!d.cap};
+}
+function shrProgress(){
+  return {streak:streakNow(),miles:save.miles,learned:totalLearned(),flights:save.flights,rank:statusIdx(),
+    langs:ORDER.map(function(l){var ids=pathIdsFor(l);return {L:l,name:LANGS[l].name,done:unitsDone(l,ids),total:ids.length};})};
+}
+function shrStatus(){
+  var now=Date.now(),stamps=0,p=profById(save.prof),ic=ICON_MAP[save.icon];
+  ORDER.forEach(function(l){ALL_IDS[l].forEach(function(uid){if(unitRec(l,uid).n>0)stamps++;});});
+  return {rank:statusIdx(now),win:milesWindow(now),miles:save.miles,stamps:stamps,prof:p?p.jp:'',cap:!!save.cap,icon:ic?ic[1]:''};
+}
+function shrText(kind,d){
+  var t;
+  if(kind==='lesson')t='Babel Flightで'+d.langName+'の「'+d.title+'」をクリアしました✈️ '+'★★★'.slice(0,d.stars)+' +'+fmt(d.miles)+'マイル';
+  else if(kind==='progress')t='Babel Flightで語学の旅を続けています✈️ '+(d.streak>0?'連続'+d.streak+'日・':'')+fmt(d.miles)+'マイル・覚えたフレーズ'+fmt(d.learned);
+  else t='Babel Flightのステータスは「'+RANKS[d.rank][0]+'」✈️ 総'+fmt(d.miles)+'マイル・スタンプ'+d.stamps+'個';
+  return t+' #BabelFlight';
+}
+function shrIntent(where,kind,d){
+  var tx=encodeURIComponent(shrText(kind,d)),u=encodeURIComponent(shrLink());
+  if(where==='x')return 'https://x.com/intent/tweet?text='+tx+'&url='+u;
+  if(where==='threads')return 'https://www.threads.com/intent/post?text='+tx+'&url='+u;
+  return 'https://www.facebook.com/sharer/sharer.php?u='+u;
+}
+
+/* ---- canvas helpers ---- */
+function shrRR(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
+function shrFont(c,weight,size,fam){c.font=weight+' '+size+'px '+fam;}
+/* shrink the font until the text fits */
+function shrFit(c,text,weight,size,fam,maxW,minSize){
+  var s=size;shrFont(c,weight,s,fam);
+  while(s>(minSize||16)&&c.measureText(text).width>maxW){s-=2;shrFont(c,weight,s,fam);}
+  return s;
+}
+/* letter-spaced text (canvas letterSpacing is not everywhere yet) */
+function shrSpaced(c,text,x,y,sp,align){
+  var ch=Array.from(text),w=0;ch.forEach(function(k,i){w+=c.measureText(k).width+(i?sp:0);});
+  var sx=align==='center'?x-w/2:align==='right'?x-w:x,keep=c.textAlign;c.textAlign='left';
+  ch.forEach(function(k){c.fillText(k,sx,y);sx+=c.measureText(k).width+sp;});
+  c.textAlign=keep;return w;
+}
+function shrStar(c,cx,cy,r,fill){
+  c.beginPath();
+  for(var i=0;i<10;i++){var a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*0.45:r;c.lineTo(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr);}
+  c.closePath();c.fillStyle=fill;c.fill();
+}
+/* a small airliner seen from above, nose to the right */
+function shrPlane(c,cx,cy,s,col){
+  c.save();c.translate(cx,cy);c.scale(s/100,s/100);c.fillStyle=col;c.beginPath();
+  c.moveTo(50,0);c.quadraticCurveTo(46,-6,38,-6);c.lineTo(8,-6);c.lineTo(-14,-44);c.lineTo(-26,-44);c.lineTo(-12,-6);c.lineTo(-34,-6);
+  c.lineTo(-44,-20);c.lineTo(-52,-20);c.lineTo(-46,0);c.lineTo(-52,20);c.lineTo(-44,20);c.lineTo(-34,6);c.lineTo(-12,6);
+  c.lineTo(-26,44);c.lineTo(-14,44);c.lineTo(8,6);c.lineTo(38,6);c.quadraticCurveTo(46,6,50,0);c.closePath();c.fill();c.restore();
+}
+function shrBarcode(c,x,y,w,h,seed,col){
+  var s=0;for(var i=0;i<seed.length;i++)s=(s*31+seed.charCodeAt(i))>>>0;
+  c.fillStyle=col;var px=x;
+  while(px<x+w){s=(s*1103515245+12345)>>>0;var bw=1+(s>>>16)%4*2;if(px+bw>x+w)break;c.fillRect(px,y,bw,h);s=(s*1103515245+12345)>>>0;px+=bw+2+(s>>>16)%3*2;}
+}
+function shrLabel(c,text,x,y,col,align){shrFont(c,'400',24,SHR_F.mono);c.fillStyle=col||'#7a8494';c.textAlign=align||'left';shrSpaced(c,text,x,y,3,align||'left');}
+function shrSky(c){
+  var g=c.createLinearGradient(0,0,0,SHR_H);
+  g.addColorStop(0,'#0a1330');g.addColorStop(0.42,'#25336f');g.addColorStop(0.72,'#7b4f8f');g.addColorStop(0.9,'#e48a72');g.addColorStop(1,'#f5b170');
+  c.fillStyle=g;c.fillRect(0,0,SHR_W,SHR_H);
+  var s=7;c.fillStyle='#ffffff';
+  for(var i=0;i<70;i++){s=(s*1103515245+12345)>>>0;var x=s%SHR_W;s=(s*1103515245+12345)>>>0;var y=s%760;c.globalAlpha=0.25+(i%5)*0.12;c.beginPath();c.arc(x,y,1.5+(i%3),0,Math.PI*2);c.fill();}
+  c.globalAlpha=1;
+  [[160,1760,260,70],[520,1830,340,80],[930,1745,260,66],[-20,1890,300,70],[760,1900,320,74]].forEach(function(e){
+    var cg=c.createRadialGradient(e[0],e[1],0,e[0],e[1],e[2]);cg.addColorStop(0,'rgba(255,255,255,.55)');cg.addColorStop(1,'rgba(255,255,255,0)');
+    c.fillStyle=cg;c.beginPath();c.ellipse(e[0],e[1],e[2],e[3],0,0,Math.PI*2);c.fill();
+  });
+}
+function shrSpacedW(c,text,sp){var w=0;Array.from(text).forEach(function(k,i){w+=c.measureText(k).width+(i?sp:0);});return w;}
+function shrHeader(c){
+  c.fillStyle='#ffffff';c.textAlign='center';c.textBaseline='alphabetic';
+  shrFont(c,'700',92,SHR_F.disp);
+  var w=shrSpacedW(c,'BABEL FLIGHT',10),x0=(SHR_W-(w+96))/2;
+  shrPlane(c,x0+36,286,72,'#ffd76a');
+  c.fillStyle='#ffffff';shrSpaced(c,'BABEL FLIGHT',x0+96,318,10,'left');
+  shrFont(c,'500',34,SHR_F.body);c.fillStyle='rgba(255,255,255,.82)';c.fillText('飛行機に乗るように、語学を学ぶ',SHR_W/2,372);
+}
+function shrFooter(c){
+  c.textAlign='center';c.fillStyle='#ffffff';
+  shrFont(c,'700',66,SHR_F.disp);shrSpaced(c,'#BabelFlight',SHR_W/2,1578,2,'center');
+  shrFont(c,'400',34,SHR_F.mono);c.fillStyle='rgba(255,255,255,.9)';c.fillText(shrSite().replace(/^https?:\/\//,''),SHR_W/2,1636);
+  shrFont(c,'500',30,SHR_F.body);c.fillStyle='rgba(255,255,255,.75)';c.fillText('韓国語・英語・スペイン語・イタリア語',SHR_W/2,1688);
+}
+/* the paper card with a coloured strip, a tear line and notches */
+function shrCard(stripCol,draw){
+  var C=SHR_CARD,cv=document.createElement('canvas');cv.width=C.w;cv.height=C.h;
+  var c=cv.getContext('2d');c.textBaseline='alphabetic';
+  shrRR(c,0,0,C.w,C.h,36);c.fillStyle=SHR_PAPER;c.fill();
+  c.save();shrRR(c,0,0,C.w,C.h,36);c.clip();c.fillStyle=stripCol;c.fillRect(0,0,C.w,130);c.restore();
+  draw(c);
+  var ty=960;c.strokeStyle='#d8cfbb';c.lineWidth=3;c.setLineDash([14,12]);c.beginPath();c.moveTo(40,ty);c.lineTo(C.w-40,ty);c.stroke();c.setLineDash([]);
+  c.globalCompositeOperation='destination-out';c.beginPath();c.arc(0,ty,28,0,Math.PI*2);c.arc(C.w,ty,28,0,Math.PI*2);c.fill();c.globalCompositeOperation='source-over';
+  return cv;
+}
+function shrStub(c,seed,right){
+  shrBarcode(c,50,986,430,52,seed,SHR_INK);
+  c.textAlign='right';shrFont(c,'700',30,SHR_F.mono);c.fillStyle=SHR_INK;c.fillText(right,850,1022);
+}
+
+/* ---- the three pictures ---- */
+function shrDrawLesson(c,d,name){
+  var col=SHR_LC[d.L]||'#2d6bff';
+  return shrCard(col,function(k){
+    k.fillStyle='#ffffff';shrFont(k,'700',46,SHR_F.disp);shrSpaced(k,'BOARDING PASS',50,84,6,'left');
+    k.textAlign='right';shrFont(k,'700',44,SHR_F.mono);k.fillText(d.flight||'BABEL',850,84);
+    /* route */
+    k.textAlign='center';k.fillStyle=SHR_INK;
+    shrFit(k,d.from,'700',118,SHR_F.disp,320,60);k.fillText(d.from,215,300);
+    shrFit(k,d.to,'700',118,SHR_F.disp,320,60);k.fillText(d.to,685,300);
+    shrFont(k,'500',32,SHR_F.body);k.fillStyle=SHR_SUB;k.fillText(d.fromJp,215,352);k.fillText(d.toJp,685,352);
+    shrPlane(k,450,258,76,col);
+    k.strokeStyle='#e2dac8';k.lineWidth=3;k.beginPath();k.moveTo(50,410);k.lineTo(850,410);k.stroke();
+    /* fields */
+    shrLabel(k,'LESSON',50,470);
+    k.fillStyle=SHR_INK;k.textAlign='left';shrFit(k,d.title,'700',56,SHR_F.body,800,30);k.fillText(d.title,50,536);
+    shrLabel(k,'LANGUAGE',50,610);shrLabel(k,'DATE',480,610);
+    shrFont(k,'700',42,SHR_F.body);k.fillStyle=SHR_INK;k.fillText(d.langName,50,666);
+    shrFont(k,'700',40,SHR_F.mono);k.fillText(shrDate(),480,666);
+    shrLabel(k,'RESULT',50,746);shrLabel(k,'MILES',480,746);
+    k.fillStyle=SHR_INK;shrFit(k,d.grade||'LANDED','700',54,SHR_F.disp,400,30);k.fillText(d.grade||'LANDED',50,808);
+    shrFont(k,'700',58,SHR_F.disp);k.fillStyle=col;k.fillText('+'+fmt(d.miles),480,810);
+    for(var i=0;i<3;i++)shrStar(k,86+i*86,890,36,i<d.stars?'#f5b301':'#ddd5c3');
+    if(name){shrLabel(k,'PASSENGER',480,866);k.fillStyle=SHR_INK;k.textAlign='left';shrFit(k,name,'700',42,SHR_F.body,370,24);k.fillText(name,480,916);}
+    shrStub(k,(d.flight||'')+d.title,(d.flight?d.flight+' ・ ':'')+'TYO');
+  });
+}
+function shrDrawProgress(c,d,name){
+  return shrCard('#ffcf26',function(k){
+    k.fillStyle='#1b1500';shrFont(k,'700',46,SHR_F.disp);shrSpaced(k,'FLIGHT LOG',50,84,6,'left');
+    k.textAlign='right';if(name){shrFit(k,name,'700',40,SHR_F.body,420,24);k.fillText(name,850,82);}else{shrFont(k,'700',38,SHR_F.mono);k.fillText(shrDate(),850,82);}
+    var kp=[[d.streak,'連続日数'],[fmt(d.miles),'マイル'],[fmt(d.learned),'覚えたフレーズ']];
+    kp.forEach(function(x,i){var cx=150+i*300;k.textAlign='center';k.fillStyle=SHR_INK;shrFit(k,String(x[0]),'700',104,SHR_F.disp,250,50);k.fillText(String(x[0]),cx,286);
+      shrFont(k,'500',30,SHR_F.body);k.fillStyle=SHR_SUB;k.fillText(x[1],cx,338);});
+    k.strokeStyle='#e2dac8';k.lineWidth=3;k.beginPath();k.moveTo(50,396);k.lineTo(850,396);k.stroke();
+    d.langs.forEach(function(g,i){
+      var y=436+i*126,col=SHR_LC[g.L];
+      shrRR(k,50,y,86,54,12);k.fillStyle=col;k.fill();
+      k.fillStyle='#ffffff';k.textAlign='center';shrFont(k,'700',36,SHR_F.disp);k.fillText(g.L.toUpperCase(),93,y+40);
+      k.fillStyle=SHR_INK;k.textAlign='left';shrFont(k,'700',38,SHR_F.body);k.fillText(g.name,158,y+41);
+      k.textAlign='right';shrFont(k,'700',32,SHR_F.mono);k.fillStyle=g.done?SHR_INK:'#9aa3b0';k.fillText(g.done+' / '+g.total,850,y+40);
+      shrRR(k,50,y+76,800,18,9);k.fillStyle=SHR_TRACK;k.fill();
+      if(g.done>0){shrRR(k,50,y+76,Math.max(18,800*g.done/Math.max(1,g.total)),18,9);k.fillStyle=col;k.fill();}
+    });
+    shrStub(k,'log'+d.miles,RANKS[d.rank][1]);
+  });
+}
+function shrDrawStatus(c,d,name){
+  var rc=SHR_RC[d.rank]||SHR_RC[0];
+  return shrCard(rc[0],function(k){
+    k.fillStyle=rc[1];shrFont(k,'700',46,SHR_F.disp);shrSpaced(k,'ID CARD',50,84,6,'left');
+    k.textAlign='right';shrFont(k,'700',44,SHR_F.disp);shrSpaced(k,RANKS[d.rank][1],850,84,5,'right');
+    /* photo */
+    k.beginPath();k.arc(450,300,128,0,Math.PI*2);k.fillStyle='#f1ebdd';k.fill();k.lineWidth=10;k.strokeStyle=rc[0];k.stroke();
+    if(d.icon){k.textAlign='center';k.textBaseline='middle';shrFont(k,'400',150,SHR_F.emoji);k.fillStyle=SHR_INK;k.fillText(d.icon,450,308);k.textBaseline='alphabetic';}
+    else shrPlane(k,450,300,150,SHR_INK);
+    if(d.cap){
+      k.save();k.translate(745,250);k.rotate(-0.22);k.strokeStyle='rgba(196,48,58,.85)';k.lineWidth=7;k.beginPath();k.arc(0,0,92,0,Math.PI*2);k.stroke();
+      k.lineWidth=3;k.beginPath();k.arc(0,0,78,0,Math.PI*2);k.stroke();k.fillStyle='rgba(196,48,58,.9)';k.textAlign='center';
+      shrFont(k,'700',40,SHR_F.disp);shrSpaced(k,'CAPTAIN',0,12,3,'center');shrFont(k,'700',20,SHR_F.mono);k.fillText('BABEL FLIGHT',0,46);k.restore();
+    }
+    var y=500;k.textAlign='center';
+    if(name){k.fillStyle=SHR_INK;shrFit(k,name,'700',58,SHR_F.body,780,28);k.fillText(name,450,y);y+=36;}
+    k.fillStyle=SHR_INK;shrFont(k,'700',128,SHR_F.disp);shrSpaced(k,RANKS[d.rank][1],450,y+118,8,'center');
+    k.fillStyle=rc[0];shrRR(k,390,y+142,120,12,6);k.fill();
+    shrFont(k,'500',36,SHR_F.body);k.fillStyle=SHR_SUB;k.fillText(RANKS[d.rank][0]+' ステータス'+(d.prof?' ・ '+d.prof+'志望':''),450,y+204);
+    var kp=[[fmt(d.win),'直近6ヶ月のマイル'],[fmt(d.miles),'総マイル'],[String(d.stamps),'スタンプ']];
+    kp.forEach(function(x,i){var cx=150+i*300;k.fillStyle=SHR_INK;shrFit(k,x[0],'700',84,SHR_F.disp,250,40);k.fillText(x[0],cx,y+330);
+      shrFont(k,'500',28,SHR_F.body);k.fillStyle=SHR_SUB;k.fillText(x[1],cx,y+376);});
+    shrStub(k,'id'+d.miles+d.rank,'MEMBER');
+  });
+}
+/* fonts must be loaded (with the characters in use) before drawing */
+function shrFonts(text){
+  if(!document.fonts||!document.fonts.load)return Promise.resolve();
+  var t=text+'BABELFLIGHT#0123456789.+/ ';
+  var list=['700 80px "Barlow Condensed"','400 30px "B612 Mono"','700 30px "B612 Mono"','500 30px "IBM Plex Sans JP"','700 30px "IBM Plex Sans JP"'];
+  var all=Promise.all(list.map(function(f){return document.fonts.load(f,t).catch(function(){});}));
+  return Promise.race([all,new Promise(function(r){setTimeout(r,2500);})]);
+}
+function shrDraw(kind,d,name){
+  var cv=document.createElement('canvas');cv.width=SHR_W;cv.height=SHR_H;
+  var c=cv.getContext('2d');c.textBaseline='alphabetic';
+  shrSky(c);shrHeader(c);
+  var card=kind==='lesson'?shrDrawLesson(c,d,name):kind==='progress'?shrDrawProgress(c,d,name):shrDrawStatus(c,d,name);
+  c.save();c.shadowColor='rgba(5,10,30,.45)';c.shadowBlur=60;c.shadowOffsetY=24;c.drawImage(card,SHR_CARD.x,SHR_CARD.y);c.restore();
+  shrFooter(c);
+  return cv;
+}
+function shrMake(kind,d,name){
+  var words=JSON.stringify(d)+(name||'')+'飛行機に乗るように、語学を学ぶ韓国語・英語・スペイン語・イタリア語連続日数マイル覚えたフレーズ直近6ヶ月のマイル総マイルスタンプステータス志望';
+  return shrFonts(words).then(function(){
+    var cv=shrDraw(kind,d,name);
+    return new Promise(function(res,rej){
+      try{cv.toBlob(function(b){b?res(b):rej(new Error('blob'));},'image/jpeg',0.93);}catch(e){rej(e);}
+    });
+  });
+}
+
+/* ---- the share sheet ---- */
+function shrCanFiles(f){try{return !!(navigator.canShare&&navigator.share&&navigator.canShare({files:[f]}));}catch(e){return false;}}
+function shareOpen(kind){
+  if(!SHR.on)return;
+  var d=kind==='lesson'?shrLesson():kind==='progress'?shrProgress():kind==='status'?shrStatus():null;
+  if(!d)return;
+  SHR.kind=kind;SHR.data=d;
+  var title={lesson:'レッスンをシェア',progress:'進捗をシェア',status:'ステータスをシェア'}[kind],nm=shrName(),mob=shrMobile();
+  $('sheetHost').innerHTML='<div class="sheet share-sheet" role="dialog" aria-label="'+title+'"><div class="sheet-in">'+
+    '<h3>'+title+'</h3>'+
+    '<div class="shr-prev"><img id="shrImg" alt="シェアする画像"><span class="shr-wait" id="shrWait">画像を作っています…</span></div>'+
+    (nm?'<label class="shr-name"><input type="checkbox" id="shrName"'+(shrNameOn()?' checked':'')+'> 画像に名前(<b>'+esc(nm)+'</b>)を入れる</label>':'')+
+    '<button class="go shr-img" type="button" data-shr="img" hidden disabled>画像をシェア<small>Instagram・TikTok・LINEなど</small></button>'+
+    '<div class="shr-more" id="shrMore"'+(mob?' hidden':'')+'><div class="shr-sns">'+[['x','X'],['threads','Threads'],['fb','Facebook']].map(function(s){
+      return '<a class="shr-btn" data-shr="'+s[0]+'" href="'+esc(shrIntent(s[0],kind,d))+'" target="_blank" rel="noopener noreferrer">'+s[1]+'</a>';}).join('')+'</div>'+
+    '<div class="shr-row"><a class="shr-btn" data-shr="save" id="shrSave" aria-disabled="true" download="babel-flight-'+kind+'.jpg">画像を保存</a>'+
+    '<button class="shr-btn" type="button" data-shr="copy">投稿文をコピー</button></div></div>'+
+    '<p class="dim shr-note" id="shrNote" hidden></p>'+
+    '<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
+  shrRender();
+}
+function shrRender(){
+  var my=++SHR.seq,kind=SHR.kind,d=SHR.data,cb=$('shrName'),name=cb&&cb.checked?shrName():'';
+  var img=$('shrImg'),wait=$('shrWait');if(wait)wait.hidden=false;
+  shrMake(kind,d,name).then(function(b){
+    if(my!==SHR.seq||!$('shrImg'))return;
+    if(SHR.url){try{URL.revokeObjectURL(SHR.url);}catch(e){}}
+    SHR.blob=b;SHR.url=URL.createObjectURL(b);
+    try{SHR.file=new File([b],'babel-flight-'+kind+'.jpg',{type:'image/jpeg'});}catch(e){SHR.file=null;}
+    $('shrImg').src=SHR.url;$('shrImg').alt=shrText(kind,d);if($('shrWait'))$('shrWait').hidden=true;
+    var sv=$('shrSave');if(sv){sv.href=SHR.url;sv.removeAttribute('aria-disabled');}
+    var ib=document.querySelector('[data-shr="img"]'),can=!!SHR.file&&shrCanFiles(SHR.file),mob=shrMobile(),more=$('shrMore');
+    if(ib){ib.hidden=!can;ib.disabled=!can;}
+    /* a phone whose browser can't share pictures (some in-app browsers) falls back to the PC buttons */
+    if(more)more.hidden=mob&&can;
+    var nt=$('shrNote');
+    if(nt){nt.hidden=false;nt.textContent=mob&&can?'Instagram・TikTok・X・LINEなど、出てきたメニューから投稿先を選んでね。'
+      :can?'Instagram・TikTokは「画像をシェア」か、保存した画像から投稿してね。X・Threads・Facebookはリンク付きの投稿画面が開きます。'
+          :'Instagram・TikTokは、画像を保存してからアプリで投稿してね。X・Threads・Facebookはリンク付きの投稿画面が開きます。';}
+  },function(){
+    if(my!==SHR.seq||!$('shrWait'))return;
+    $('shrWait').textContent='画像を作れませんでした。X・Threads・Facebookのボタンは使えます。';
+    if($('shrMore'))$('shrMore').hidden=false;
+  });
+}
+function shrCopy(btn){
+  var t=shrText(SHR.kind,SHR.data)+' '+shrLink();
+  function done(ok){if(!btn)return;btn.textContent=ok?'コピーしました ✓':'コピーできませんでした';clearTimeout(SHR.copyT);SHR.copyT=setTimeout(function(){if(btn.isConnected)btn.textContent='投稿文をコピー';},1800);}
+  try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){done(true);},function(){done(false);});return;}}catch(e){}
+  try{var ta=document.createElement('textarea');ta.value=t;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();var ok=document.execCommand('copy');ta.remove();done(ok);}catch(e){done(false);}
+}
+document.addEventListener('click',function(e){
+  var t=e.target&&e.target.closest&&e.target.closest('[data-share],[data-shr]');if(!t)return;
+  if(t.hasAttribute('data-share')){shareOpen(t.getAttribute('data-share'));return;}
+  var w=t.getAttribute('data-shr');
+  if(w==='save'&&t.getAttribute('aria-disabled')==='true'){e.preventDefault();return;}
+  if(w==='img'){
+    if(!SHR.file||!shrCanFiles(SHR.file))return;
+    navigator.share({files:[SHR.file]}).catch(function(){});
+    return;
+  }
+  if(w==='copy'){shrCopy(t);return;}
+  /* x / threads / fb / save: the link itself does the rest */
+});
+document.addEventListener('change',function(e){
+  if(e.target&&e.target.id==='shrName'){shrNameSet(e.target.checked);shrRender();}
+});
+/* ================= 検定コース: content (standalone site, test account only for now) =================
+   Every sentence here is original practice material written for Babel Flight. Nothing is taken from
+   real past papers. Exam names are trademarks of their owners; these courses are not official. */
+/* XU(uid, title, latin title, language, [[target, reading, Japanese, note], ...]) */
+function XU(uid,jp,lat,L,list){
+  UM[uid]={jp:jp,lat:lat};
+  UNITS[L][uid]={id:uid,items:list.map(function(x){return {jp:x[2],t:x[0],r:x[1]||'',n:x[3]||''};}),track:'exam'};
+}
+/* ---- English: 英検 ---- */
+XU('x-ek5','英検5級 ステップ1','EIKEN 5 STEP 1','en',[
+ ["I'm a junior high school student.","","私は中学生です。","junior high school=中学校。I am を短くすると I'm。"],
+ ["What time is it now?","","今何時ですか。","時刻をたずねる定番の文。"],
+ ["This is my bag.","","これは私のかばんです。",""],
+ ["Do you like music?","","あなたは音楽が好きですか。","一般動詞の疑問文は Do で始めます。"],
+ ["I play tennis every Sunday.","","私は毎週日曜日にテニスをします。","every Sunday=毎週日曜日。on はつけません。"],
+ ["Can you swim?","","あなたは泳げますか。",""],
+ ["My sister is ten years old.","","私の妹は10歳です。",""],
+ ["How many books do you have?","","あなたは本を何冊持っていますか。","How many+複数形で「いくつの〜」。"]]);
+XU('x-ek4','英検4級 ステップ1','EIKEN 4 STEP 1','en',[
+ ["I went to the library yesterday.","","私は昨日図書館に行きました。","go の過去形は went(不規則に変わる)。"],
+ ["What are you going to do this weekend?","","今週末は何をする予定ですか。","be going to=〜する予定。"],
+ ["It was rainy last Saturday.","","先週の土曜日は雨でした。",""],
+ ["I have to finish my homework.","","私は宿題を終わらせなければなりません。","have to=〜しなければならない。"],
+ ["Which season do you like the best?","","どの季節がいちばん好きですか。",""],
+ ["My father usually gets up at six.","","父はたいてい6時に起きます。","主語が3人称単数なので gets。"],
+ ["Shall we have lunch together?","","一緒にお昼ごはんを食べませんか。","Shall we 〜?=〜しませんか(誘い)。"],
+ ["I was watching TV when you called.","","あなたが電話したとき、私はテレビを見ていました。","過去進行形(was+〜ing)=〜していた。"]]);
+XU('x-ek3','英検3級 ステップ1','EIKEN 3 STEP 1','en',[
+ ["I have lived in Tokyo for five years.","","私は東京に5年間住んでいます。","現在完了(継続)。for=〜の間。"],
+ ["This book is more interesting than that one.","","この本はあの本よりおもしろいです。","長い形容詞は more をつけて比べます。"],
+ ["I want to be a pilot in the future.","","私は将来パイロットになりたいです。",""],
+ ["Have you ever been to Kyoto?","","京都に行ったことはありますか。","have been to=〜に行ったことがある。"],
+ ["The dog was found by a little boy.","","その犬は小さな男の子に見つけられました。","受け身(be+過去分詞)。"],
+ ["Do you know where the station is?","","駅がどこにあるか知っていますか。","文の中の疑問文は「疑問詞+主語+動詞」の順。"],
+ ["It is important to study every day.","","毎日勉強することが大切です。","It is 〜 to …=…することは〜だ。"],
+ ["I'm looking forward to seeing you.","","あなたに会えるのを楽しみにしています。","look forward to のあとは〜ing形。"]]);
+XU('x-ekp2','英検準2級 ステップ1','EIKEN PRE-2 STEP 1','en',[
+ ["I'm thinking of studying abroad next year.","","来年、留学しようかと考えています。",""],
+ ["If I had more time, I would travel around the world.","","もっと時間があれば、世界中を旅するのに。","仮定法過去=今の事実とちがうことを想像する言い方。"],
+ ["The festival was canceled because of the typhoon.","","台風のせいでお祭りは中止になりました。","canceled はアメリカ式のつづり。イギリス式は cancelled。"],
+ ["It took me two hours to get there.","","そこに行くのに2時間かかりました。","It took 人 時間 to 〜=人が〜するのに時間がかかった。"],
+ ["I'm used to getting up early.","","私は早起きに慣れています。","be used to 〜ing=〜に慣れている。"],
+ ["Recycling is one way to protect the environment.","","リサイクルは環境を守る方法の一つです。",""],
+ ["Could you tell me how to get to the museum?","","美術館への行き方を教えてもらえますか。",""],
+ ["She suggested that we take a taxi.","","彼女はタクシーに乗ろうと提案しました。","suggest that のあとの動詞は原形(take)にします。"]]);
+XU('x-ek2','英検2級 ステップ1','EIKEN 2 STEP 1','en',[
+ ["More and more people are working from home.","","在宅勤務をする人がますます増えています。",""],
+ ["Some people argue that school uniforms should be abolished.","","制服は廃止すべきだと主張する人もいます。",""],
+ ["The number of tourists has increased dramatically.","","観光客の数が大幅に増えました。","the number of 〜 は単数あつかい(has)。"],
+ ["In my opinion, students should learn about money at school.","","私の意見では、学生は学校でお金について学ぶべきです。","英作文の書き出しの定番。"],
+ ["We need to reduce the amount of plastic waste.","","プラスチックごみの量を減らす必要があります。",""],
+ ["Volunteering gives young people valuable experience.","","ボランティアは若者に貴重な経験を与えます。",""],
+ ["This policy may have a negative impact on small businesses.","","この政策は小さな会社に悪い影響を与えるかもしれません。",""],
+ ["For these two reasons, I agree with the idea.","","これら2つの理由から、私はその考えに賛成です。","英作文のまとめで使える表現。"]]);
+/* ---- 英検5級〜2級: ステップ2〜5 (each level has 40 phrases in all) ---- */
+XU('x-ek5b','英検5級 ステップ2','EIKEN 5 STEP 2','en',[
+ ["I get up at seven every morning.","","私は毎朝7時に起きます。","時刻の前は at。"],
+ ["She doesn't eat breakfast.","","彼女は朝ごはんを食べません。","主語が3人称単数の否定文は doesn't+動詞の原形。"],
+ ["Where do you live?","","あなたはどこに住んでいますか。","Where=どこ。"],
+ ["I'm reading a comic book now.","","私は今マンガを読んでいます。","現在進行形(am/is/are+〜ing)=今〜している。"],
+ ["Please open the window.","","窓を開けてください。","Please+動詞の原形=〜してください。"],
+ ["Whose pencil is this?","","これはだれの鉛筆ですか。","Whose=だれの。"],
+ ["My mother is a nurse.","","私の母は看護師です。",""],
+ ["Let's play soccer after school.","","放課後サッカーをしよう。","Let's+動詞の原形=〜しよう。"]]);
+XU('x-ek5c','英検5級 ステップ3','EIKEN 5 STEP 3','en',[
+ ["I like cats very much.","","私はネコがとても好きです。","好きな動物は複数形(cats)で言うのが自然。"],
+ ["He can play the piano well.","","彼は上手にピアノをひけます。","楽器には the をつけます。can のあとは動詞の原形。"],
+ ["What sport do you like?","","あなたは何のスポーツが好きですか。","What+名詞=何の〜。"],
+ ["My favorite subject is English.","","私のいちばん好きな教科は英語です。","favorite=いちばん好きな。"],
+ ["I don't have any pets.","","私はペットを1匹も飼っていません。","not 〜 any=1つも〜ない。"],
+ ["Can I use your eraser?","","あなたの消しゴムを使ってもいいですか。","Can I 〜?=〜してもいいですか。"],
+ ["Who is that tall boy?","","あの背の高い男の子はだれですか。","Who=だれ。"],
+ ["How do you go to school?","","あなたはどうやって学校に行きますか。","How=どうやって。答えは By bike.(自転車で)など。"]]);
+XU('x-ek5d','英検5級 ステップ4','EIKEN 5 STEP 4','en',[
+ ["What day is it today?","","今日は何曜日ですか。","曜日をたずねる文。日付は What's the date today?"],
+ ["It's sunny today.","","今日は晴れています。","天気を言うときの主語は it。"],
+ ["My birthday is June fifth.","","私の誕生日は6月5日です。","日付は fifth(5番目)のような「順番の数」で言います。"],
+ ["How old is your grandfather?","","あなたのおじいさんは何歳ですか。",""],
+ ["We have English on Monday and Friday.","","英語の授業は月曜日と金曜日にあります。","曜日の前は on。"],
+ ["It's very cold here in winter.","","ここは冬はとても寒いです。","寒さ・暑さを言うときも主語は it。"],
+ ["How much is this T-shirt?","","このTシャツはいくらですか。","How much=いくら(値段)。"],
+ ["It's ten thirty now.","","今10時30分です。","時刻は「時→分」の順に数字を言います。"]]);
+XU('x-ek5e','英検5級 ステップ5','EIKEN 5 STEP 5','en',[
+ ["Nice to meet you.","","はじめまして。","初めて会ったときのあいさつ。答えは Nice to meet you, too."],
+ ["Thank you for your help.","","手伝ってくれてありがとう。","Thank you for 〜=〜をありがとう。"],
+ ["Excuse me. Where is the library?","","すみません。図書館はどこですか。","Excuse me=(声をかけるときの)すみません。"],
+ ["See you tomorrow.","","また明日ね。",""],
+ ["Here you are.","","はい、どうぞ。","物を手わたすときの言葉。"],
+ ["That's a good idea.","","それはいい考えですね。",""],
+ ["I'm sorry I'm late.","","遅れてごめんなさい。",""],
+ ["How about you?","","あなたはどうですか。","相手に同じ質問を返すときに使います。"]]);
+XU('x-ek4b','英検4級 ステップ2','EIKEN 4 STEP 2','en',[
+ ["I visited my grandmother last Sunday.","","先週の日曜日、祖母に会いに行きました。","規則動詞の過去形は -ed をつけます。"],
+ ["Did you see the movie?","","あなたはその映画を見ましたか。","過去の疑問文は Did+主語+動詞の原形。"],
+ ["We didn't go out because it was snowing.","","雪が降っていたので、私たちは外出しませんでした。","because=〜なので(理由)。"],
+ ["I bought a new bike last month.","","先月、新しい自転車を買いました。","buy の過去形は bought(不規則に変わる)。"],
+ ["What did you do during the summer vacation?","","夏休みの間に何をしましたか。","during=〜の間に。"],
+ ["She came home at five.","","彼女は5時に帰宅しました。","come home=帰宅する。come の過去形は came。"],
+ ["There were many people at the station.","","駅にはたくさんの人がいました。","There were+複数=〜があった・いた。"],
+ ["I lost my key on the way to school.","","学校に行く途中でかぎをなくしました。","on the way to 〜=〜へ行く途中で。"]]);
+XU('x-ek4c','英検4級 ステップ3','EIKEN 4 STEP 3','en',[
+ ["It will be sunny tomorrow.","","明日は晴れるでしょう。","will+動詞の原形=〜でしょう(未来)。"],
+ ["I'm going to visit Osaka next month.","","来月、大阪に行く予定です。","be going to=前から決めている予定。"],
+ ["Will you help me with my homework?","","宿題を手伝ってくれませんか。","Will you 〜?=〜してくれませんか(お願い)。help 人 with 物=人の物を手伝う。"],
+ ["I'll call you later.","","あとで電話するね。","その場で決めたことは will(I'll)で言います。"],
+ ["When are you going to leave?","","いつ出発する予定ですか。",""],
+ ["My brother wants to be a doctor.","","兄は医者になりたいと思っています。","want to be 〜=〜になりたい。"],
+ ["The concert starts at seven.","","コンサートは7時に始まります。","時刻表や予定表で決まっていることは現在形でも言えます。"],
+ ["I hope you like it.","","気に入ってくれるといいな。","プレゼントをわたすときの定番の一言。"]]);
+XU('x-ek4d','英検4級 ステップ4','EIKEN 4 STEP 4','en',[
+ ["Tom is taller than his father.","","トムはお父さんより背が高いです。","比較級(-er)+than=…より〜。"],
+ ["This is the biggest park in our city.","","ここは私たちの市でいちばん大きい公園です。","最上級は the+-est。big は g を重ねて biggest。"],
+ ["Math is as difficult as science for me.","","私にとって数学は理科と同じくらい難しいです。","as 〜 as …=…と同じくらい〜。"],
+ ["Which do you like better, summer or winter?","","夏と冬では、どちらが好きですか。","Which 〜 better, A or B?=AとBではどちらが〜?"],
+ ["There is a big tree in front of our school.","","学校の前に大きな木があります。","There is+単数=〜がある。in front of=〜の前に。"],
+ ["I enjoyed talking with my friends.","","友だちと話して楽しかったです。","enjoy のあとは〜ing形。"],
+ ["I went to the park to play tennis.","","テニスをするために公園に行きました。","to+動詞の原形=〜するために(目的)。"],
+ ["My uncle gave me a watch.","","おじが私に腕時計をくれました。","give 人 物=人に物をあげる。"]]);
+XU('x-ek4e','英検4級 ステップ5','EIKEN 4 STEP 5','en',[
+ ["You must not run in the hallway.","","廊下を走ってはいけません。","must not=〜してはいけない(禁止)。"],
+ ["May I speak to Ken, please?","","(電話で)ケンさんはいますか。","電話で相手を呼んでもらうときの言い方。"],
+ ["Could you say that again?","","もう一度言っていただけますか。","Could you 〜? は Can you 〜? よりていねい。"],
+ ["How was your trip?","","旅行はどうでしたか。","How was 〜?=〜はどうだった?"],
+ ["You don't have to bring your lunch.","","お弁当を持ってくる必要はありません。","don't have to=〜する必要はない(禁止ではありません)。"],
+ ["Would you like some more cake?","","ケーキをもう少しいかがですか。","Would you like 〜?=〜はいかがですか(ていねいなすすめ)。"],
+ ["What's wrong?","","どうしたの?","相手の様子が気になるときに。"],
+ ["I'm glad to hear that.","","それを聞いてうれしいです。","気持ち+to+動詞=〜して(うれしい など)。"]]);
+XU('x-ek3b','英検3級 ステップ2','EIKEN 3 STEP 2','en',[
+ ["I have just finished my homework.","","ちょうど宿題を終えたところです。","現在完了(完了)。just=ちょうど。"],
+ ["Have you had lunch yet?","","もうお昼ごはんを食べましたか。","疑問文の yet=もう。"],
+ ["I haven't decided yet.","","まだ決めていません。","否定文の yet=まだ。"],
+ ["She has been sick since last Monday.","","彼女は先週の月曜日からずっと体調が悪いです。","since=〜から(ずっと)。"],
+ ["How long have you known him?","","彼と知り合ってどのくらいになりますか。","How long=どのくらいの間。"],
+ ["I have read this book three times.","","この本を3回読んだことがあります。","回数は once, twice, three times。"],
+ ["My father has never been abroad.","","父は一度も海外に行ったことがありません。","never=一度も〜ない。abroad の前に to はつけません。"],
+ ["We have been friends for ten years.","","私たちは10年来の友だちです。","現在完了(継続)。"]]);
+XU('x-ek3c','英検3級 ステップ3','EIKEN 3 STEP 3','en',[
+ ["English is spoken in many countries.","","英語は多くの国で話されています。","受け身=be+過去分詞。"],
+ ["This temple was built a long time ago.","","このお寺はずっと昔に建てられました。",""],
+ ["The letter was written in French.","","その手紙はフランス語で書かれていました。","言語の前は in。"],
+ ["I'm interested in Japanese history.","","私は日本の歴史に興味があります。","be interested in=〜に興味がある。"],
+ ["The boy playing soccer is my brother.","","サッカーをしている男の子は私の弟です。","〜ing のかたまりが後ろから名詞(The boy)を説明しています。"],
+ ["This is a picture taken in Hawaii.","","これはハワイでとられた写真です。","過去分詞のかたまりが後ろから名詞を説明しています。"],
+ ["I have a friend who lives in Canada.","","私にはカナダに住んでいる友だちがいます。","who=人を説明する関係代名詞。"],
+ ["This is the cake that my mother made.","","これは母が作ったケーキです。","that=物を説明する関係代名詞。"]]);
+XU('x-ek3d','英検3級 ステップ4','EIKEN 3 STEP 4','en',[
+ ["My dream is to travel around the world.","","私の夢は世界中を旅することです。","to+動詞=〜すること。"],
+ ["I don't know what to say.","","何と言えばいいかわかりません。","what to 〜=何を〜すればいいか。"],
+ ["Could you show me how to use this machine?","","この機械の使い方を教えてもらえますか。","how to 〜=〜のしかた。"],
+ ["My mother told me to clean my room.","","母は私に部屋を掃除するように言いました。","tell 人 to 〜=人に〜するように言う。"],
+ ["This song makes me happy.","","この歌を聞くと幸せな気持ちになります。","make 人 気持ち=人を〜な気持ちにする。"],
+ ["Playing video games is fun.","","テレビゲームをするのは楽しいです。","〜ing(〜すること)が文の主語になっています。"],
+ ["We call this dog Pochi.","","私たちはこの犬をポチと呼んでいます。","call A B=AをBと呼ぶ。"],
+ ["Thank you for inviting me to the party.","","パーティーに招待してくれてありがとう。","for のあとは〜ing形。"]]);
+XU('x-ek3e','英検3級 ステップ5','EIKEN 3 STEP 5','en',[
+ ["What do you think about this plan?","","この計画についてどう思いますか。","意見をたずねる定番の言い方。"],
+ ["I think so, too.","","私もそう思います。",""],
+ ["Why don't we go shopping this weekend?","","今週末、買い物に行きませんか。","Why don't we 〜?=〜しませんか(誘い)。"],
+ ["How about meeting at the station at ten?","","10時に駅で会うのはどう?","How about 〜ing?=〜するのはどう?"],
+ ["Sure, I'd be happy to.","","もちろん、喜んで。","頼まれたときの感じのいい返事。"],
+ ["That sounds like fun.","","それは楽しそうですね。","sound like 〜=〜のように聞こえる。"],
+ ["I'm afraid I can't come.","","残念ですが行けません。","I'm afraid 〜=残念ながら〜(ていねいに断る)。"],
+ ["Have a nice weekend!","","よい週末を!",""]]);
+XU('x-ekp2b','英検準2級 ステップ2','EIKEN PRE-2 STEP 2','en',[
+ ["I've been learning the guitar for two years.","","ギターを習い始めて2年になります。","現在完了進行形(have been 〜ing)=ずっと〜している。"],
+ ["I wish I could speak English fluently.","","英語をすらすら話せたらいいのに。","I wish+過去形=今の現実とちがう願い。"],
+ ["The bus was so crowded that I couldn't sit down.","","バスがとても混んでいたので座れませんでした。","so 〜 that …=とても〜なので…。"],
+ ["Not only students but also teachers enjoyed the event.","","生徒だけでなく先生たちもそのイベントを楽しみました。","not only A but also B=AだけでなくBも。"],
+ ["I'm too tired to do my homework tonight.","","今夜は疲れすぎて宿題ができません。","too 〜 to …=〜すぎて…できない。"],
+ ["This is the town where I was born.","","ここは私が生まれた町です。","where=場所を説明する関係副詞。"],
+ ["You'd better take an umbrella with you.","","かさを持っていったほうがいいよ。","had better=〜したほうがいい(強めの助言)。"],
+ ["I forgot to bring my textbook.","","教科書を持ってくるのを忘れました。","forget to 〜=〜するのを忘れる。"]]);
+XU('x-ekp2c','英検準2級 ステップ3','EIKEN PRE-2 STEP 3','en',[
+ ["Many young people use smartphones to get news.","","多くの若者がスマートフォンでニュースを得ています。",""],
+ ["It is said that this lake is the deepest in the area.","","この湖はこの地域でいちばん深いと言われています。","It is said that 〜=〜と言われている。"],
+ ["Online shopping has become more and more popular.","","ネットショッピングはますます人気になっています。","more and more=ますます。"],
+ ["We should use public transportation to save energy.","","エネルギーを節約するために公共交通機関を使うべきです。",""],
+ ["Some people think that students have too much homework.","","生徒の宿題が多すぎると考える人もいます。","Some people 〜=〜する人もいる。"],
+ ["Eating breakfast helps students concentrate in class.","","朝食を食べると、生徒は授業に集中しやすくなります。","help 人 動詞の原形=人が〜するのを助ける。"],
+ ["The town is famous for its hot springs.","","その町は温泉で有名です。","be famous for 〜=〜で有名だ。"],
+ ["Volunteers cleaned the beach after the storm.","","嵐のあと、ボランティアが海岸を掃除しました。",""]]);
+XU('x-ekp2d','英検準2級 ステップ4','EIKEN PRE-2 STEP 4','en',[
+ ["I think it is a good idea for students to learn cooking.","","生徒が料理を学ぶのはいい考えだと思います。","It is 〜 for 人 to …=人が…するのは〜だ。"],
+ ["I have two reasons.","","理由は2つあります。","英作文で理由を言う前の一文。"],
+ ["First, it is good for our health.","","第一に、それは健康によいです。","First, Second で理由を順番に並べます。"],
+ ["Second, we can make new friends.","","第二に、新しい友だちができます。",""],
+ ["For example, many people enjoy reading e-books.","","たとえば、多くの人が電子書籍を楽しんでいます。","For example=たとえば(具体例)。"],
+ ["On the other hand, it can be expensive.","","一方で、それはお金がかかることがあります。","On the other hand=一方で(反対の面)。"],
+ ["However, not everyone agrees with this idea.","","しかし、全員がこの考えに賛成しているわけではありません。","not everyone=全員が〜というわけではない(部分否定)。"],
+ ["That's why I support this idea.","","だから私はこの考えを支持します。","That's why 〜=そういうわけで〜。"]]);
+XU('x-ekp2e','英検準2級 ステップ5','EIKEN PRE-2 STEP 5','en',[
+ ["Thank you for your email.","","メールをありがとう。","Eメール問題の書き出しの定番。"],
+ ["I'm sorry to hear that you caught a cold.","","かぜをひいたと聞いて心配しています。","I'm sorry to hear 〜=〜と聞いて気の毒に思う。"],
+ ["Do you mind if I open the window?","","窓を開けてもかまいませんか。","Do you mind if 〜?=〜してもかまいませんか。いいときは No で答えます。"],
+ ["I'm looking for a present for my sister.","","妹へのプレゼントを探しています。","look for=〜を探す。"],
+ ["Would you like me to carry your bag?","","かばんをお持ちしましょうか。","Would you like me to 〜?=(私が)〜しましょうか。"],
+ ["It depends on the weather.","","天気しだいです。","depend on 〜=〜しだいだ。"],
+ ["Let me know if you have any questions.","","何か質問があれば知らせてね。","let me know=知らせて。"],
+ ["I'm planning to join the drama club.","","演劇部に入ろうと思っています。","plan to 〜=〜するつもりだ。"]]);
+/* ---- 英検準2級プラス (between 準2級 and 2級): 5 steps, 40 phrases ---- */
+XU('x-ekp2p','英検準2級プラス ステップ1','EIKEN PRE-2 PLUS STEP 1','en',[
+ ["Our school started a program to reduce food waste.","","私たちの学校は食品ロスを減らす取り組みを始めました。","program=取り組み・計画。"],
+ ["I used to be shy, but now I enjoy speaking in front of people.","","以前は内気でしたが、今は人前で話すのが好きです。","used to=以前は〜だった。"],
+ ["It was not until I lived abroad that I realized how convenient Japan is.","","海外に住んで初めて、日本がどれほど便利かに気づきました。","It was not until 〜 that …=〜して初めて…した。"],
+ ["The more you practice, the better you will become.","","練習すればするほど、上手になります。","the 比較級, the 比較級=〜すればするほど…。"],
+ ["I'm not sure whether I should join the club.","","その部活に入るべきかどうか迷っています。","whether=〜かどうか。"],
+ ["She asked me if I could help her with the event.","","彼女は私に、イベントを手伝えるかとたずねました。","ask 人 if 〜=人に〜かどうかたずねる。"],
+ ["Having finished my homework, I went out to play.","","宿題を終えてから、遊びに出かけました。","分詞構文=〜してから(時)。"],
+ ["It's worth visiting the museum at least once.","","その博物館は一度は行ってみる価値があります。","be worth 〜ing=〜する価値がある。"]]);
+XU('x-ekp2pb','英検準2級プラス ステップ2','EIKEN PRE-2 PLUS STEP 2','en',[
+ ["Many shops have stopped giving out free plastic bags.","","多くの店が無料のレジ袋を配るのをやめました。","stop 〜ing=〜するのをやめる。"],
+ ["Working part-time can teach students about responsibility.","","アルバイトをすることで、学生は責任について学べます。",""],
+ ["The number of foreign visitors to Japan has been rising.","","日本を訪れる外国人の数は増え続けています。","has been rising=ずっと増え続けている。"],
+ ["Some schools allow students to use tablets in class.","","授業でタブレットを使うことを認めている学校もあります。","allow 人 to 〜=人が〜するのを認める。"],
+ ["Communities are working together to prepare for natural disasters.","","地域の人たちは自然災害に備えて協力しています。","prepare for 〜=〜に備える。"],
+ ["Eating local food helps support farmers in the area.","","地元の食べ物を食べることは、その地域の農家を支えることにつながります。","help 動詞の原形=〜するのに役立つ。"],
+ ["People are spending more time on their phones than before.","","人々は以前よりもスマートフォンに時間を使っています。",""],
+ ["Recycled materials are used to make new products.","","リサイクルされた素材が、新しい製品を作るのに使われています。","be used to 動詞の原形=〜するために使われる(be used to 〜ing「〜に慣れている」とのちがいに注意)。"]]);
+XU('x-ekp2pc','英検準2級プラス ステップ3','EIKEN PRE-2 PLUS STEP 3','en',[
+ ["I agree that students should do volunteer work.","","生徒はボランティア活動をすべきだという意見に賛成です。","agree that 〜=〜という考えに賛成する。"],
+ ["I disagree with the idea for two reasons.","","2つの理由から、その考えには反対です。","disagree with 〜=〜に反対する。"],
+ ["To begin with, it would cost too much money.","","まず第一に、お金がかかりすぎるでしょう。","To begin with=まず第一に。"],
+ ["In addition, it could cause problems for local people.","","さらに、地元の人たちに問題を起こすかもしれません。","In addition=さらに。"],
+ ["This is because people can learn from each other.","","これは、人々がお互いから学べるからです。","This is because 〜=これは〜だからです。"],
+ ["For these reasons, I believe this plan is a good idea.","","これらの理由から、この計画はいい考えだと思います。",""],
+ ["Some people say it is a waste of time, but I don't think so.","","時間のむだだと言う人もいますが、私はそうは思いません。",""],
+ ["It is important for us to think about the future.","","私たちが将来について考えることは大切です。","It is 〜 for 人 to …=人が…することは〜だ。"]]);
+XU('x-ekp2pd','英検準2級プラス ステップ4','EIKEN PRE-2 PLUS STEP 4','en',[
+ ["Thank you for telling me about your new school.","","新しい学校のことを教えてくれてありがとう。","Thank you for 〜ing=〜してくれてありがとう。"],
+ ["I'm glad to hear that you're enjoying your new life.","","新しい生活を楽しんでいると聞いてうれしいです。",""],
+ ["By the way, have you decided what to do this summer?","","ところで、この夏に何をするか決めましたか。","By the way=ところで(話題を変える)。"],
+ ["I'd like to know more about the event.","","そのイベントについてもっと知りたいです。","I'd like to 〜=〜したい(ていねい)。"],
+ ["Could you tell me what time it starts?","","何時に始まるか教えてもらえますか。","文の中の疑問文は「疑問詞+主語+動詞」の順。"],
+ ["I'm looking forward to hearing from you.","","お返事を楽しみにしています。","メールの結びの定番。look forward to のあとは〜ing形。"],
+ ["Unfortunately, I won't be able to attend the meeting.","","残念ながら、会議に出席できません。","Unfortunately=残念ながら。"],
+ ["Please let me know if the schedule changes.","","予定が変わったら知らせてください。",""]]);
+XU('x-ekp2pe','英検準2級プラス ステップ5','EIKEN PRE-2 PLUS STEP 5','en',[
+ ["The graph shows how much water each family uses.","","そのグラフは、各家庭がどれくらい水を使うかを示しています。","show=示す。"],
+ ["Compared with ten years ago, more people shop online.","","10年前とくらべて、ネットで買い物をする人が増えています。","Compared with 〜=〜とくらべて。"],
+ ["As a result of the new rule, fewer students were late.","","新しいルールの結果、遅刻する生徒が減りました。","as a result of 〜=〜の結果。fewer=(数えられるものが)より少ない。"],
+ ["The main reason is that the price went up.","","主な理由は、値段が上がったことです。","The main reason is that 〜=主な理由は〜だ。"],
+ ["Instead of driving, more people are riding bicycles.","","車を運転する代わりに、自転車に乗る人が増えています。","instead of 〜ing=〜する代わりに。"],
+ ["According to the survey, most students sleep less than seven hours.","","調査によると、ほとんどの生徒の睡眠時間は7時間未満です。","According to 〜=〜によると。less than=〜未満。"],
+ ["Thanks to the internet, we can learn almost anything.","","インターネットのおかげで、私たちはほとんど何でも学べます。","thanks to 〜=〜のおかげで。"],
+ ["Even though it was raining, the festival was held.","","雨が降っていたにもかかわらず、お祭りは開かれました。","even though=〜にもかかわらず。"]]);
+XU('x-ek2b','英検2級 ステップ2','EIKEN 2 STEP 2','en',[
+ ["Artificial intelligence is changing the way we work.","","人工知能は私たちの働き方を変えつつあります。","the way we work=私たちの働き方。"],
+ ["Many companies have introduced flexible working hours.","","多くの会社がフレックスタイム制を導入しています。","introduce=導入する。"],
+ ["Cashless payments are becoming common in Japan.","","日本ではキャッシュレス決済が一般的になりつつあります。",""],
+ ["Online classes allow students to study anywhere.","","オンライン授業のおかげで、生徒はどこでも勉強できます。","allow 人 to 〜=人が〜できるようにする。"],
+ ["There are concerns about the safety of personal data.","","個人データの安全性について懸念があります。","concern=懸念・心配。"],
+ ["Some people spend too much time on social media.","","SNSに時間を使いすぎる人もいます。","spend 時間 on 〜=〜に時間を使う。"],
+ ["Technology has made our lives more convenient.","","技術は私たちの生活をより便利にしました。","make A B=AをBにする。"],
+ ["It is hard to predict how robots will be used in the future.","","将来ロボットがどのように使われるかを予測するのは難しいです。","文の中の疑問文は「疑問詞+主語+動詞」の順。"]]);
+XU('x-ek2c','英検2級 ステップ3','EIKEN 2 STEP 3','en',[
+ ["Global warming is causing more extreme weather.","","地球温暖化によって異常気象が増えています。","cause=引き起こす。"],
+ ["Many cities are trying to reduce traffic jams.","","多くの都市が交通渋滞を減らそうとしています。",""],
+ ["The population of rural areas is decreasing.","","地方の人口は減少しています。","rural=いなかの・地方の。"],
+ ["Local governments should support elderly people living alone.","","地方自治体は一人暮らしの高齢者を支援すべきです。",""],
+ ["Food waste is a serious problem in many countries.","","食品ロスは多くの国で深刻な問題です。",""],
+ ["Electric cars produce less pollution than gasoline cars.","","電気自動車はガソリン車より汚染物質を出しません。","less=より少ない。"],
+ ["Tourism brings money to local communities.","","観光は地域社会にお金をもたらします。",""],
+ ["Protecting endangered animals is everyone's responsibility.","","絶滅の危機にある動物を守るのは、みんなの責任です。","endangered=絶滅の危機にある。"]]);
+XU('x-ek2d','英検2級 ステップ4','EIKEN 2 STEP 4','en',[
+ ["I believe that companies should let employees work from home.","","会社は従業員の在宅勤務を認めるべきだと私は考えます。","let 人 動詞の原形=人に〜させる(許可)。"],
+ ["One reason is that it saves commuting time.","","理由の一つは、通勤時間を節約できることです。","One reason is that 〜=理由の一つは〜。"],
+ ["Another reason is that it reduces stress.","","もう一つの理由は、ストレスが減ることです。",""],
+ ["As a result, workers can be more productive.","","その結果、働く人の生産性が上がります。","As a result=その結果。"],
+ ["Some people may disagree, but I think the benefits are greater.","","反対する人もいるかもしれませんが、利点の方が大きいと思います。",""],
+ ["It is true that this system costs a lot of money.","","たしかに、この仕組みには多くのお金がかかります。","It is true that 〜=たしかに〜だ(反対意見を認めるときに)。"],
+ ["This is especially important for young people.","","これは特に若者にとって大切です。","especially=特に。"],
+ ["In conclusion, I strongly support this idea.","","結論として、私はこの考えを強く支持します。","In conclusion=結論として(まとめ)。"]]);
+XU('x-ek2e','英検2級 ステップ5','EIKEN 2 STEP 5','en',[
+ ["According to the article, sales have dropped by half.","","記事によると、売り上げは半分に落ち込みました。","According to 〜=〜によると。"],
+ ["The main point of the passage is that sleep affects learning.","","この文章の要点は、睡眠が学習に影響するということです。","affect=影響する。"],
+ ["In other words, we need to change our habits.","","言いかえれば、私たちは習慣を変える必要があります。","In other words=言いかえれば。"],
+ ["I'm writing to ask about your summer program.","","夏のプログラムについてお聞きしたくてメールしました。","メールの目的を書く定番の書き出し。"],
+ ["I'd appreciate it if you could reply soon.","","早めにお返事いただけるとありがたいです。","I'd appreciate it if 〜=〜していただけるとありがたい。"],
+ ["Could you let me know the details?","","詳しいことを教えていただけますか。",""],
+ ["I'm afraid I have to cancel my reservation.","","申し訳ありませんが、予約を取り消さなければなりません。",""],
+ ["Unless we act now, the situation will get worse.","","今行動しなければ、状況は悪化するでしょう。","unless=〜しない限り。"]]);
+XU('x-ekp1','英検準1級','EIKEN PRE-1','en',[
+ ["The government should invest more in renewable energy.","","政府は再生可能エネルギーにもっと投資すべきです。",""],
+ ["Automation could lead to a decline in certain jobs.","","自動化によって、一部の仕事が減るかもしれません。","lead to 〜=〜につながる。"],
+ ["This approach has both advantages and drawbacks.","","このやり方には長所と短所の両方があります。",""],
+ ["It is essential to strike a balance between work and life.","","仕事と生活のバランスを取ることが不可欠です。","strike a balance=バランスを取る。"],
+ ["The new law is expected to come into effect next year.","","新しい法律は来年施行される見込みです。","come into effect=(法律などが)施行される。"],
+ ["Critics claim that the plan is unrealistic.","","批判する人たちは、その計画は非現実的だと主張しています。",""],
+ ["Public awareness of the issue has grown considerably.","","この問題への人々の関心はかなり高まっています。",""],
+ ["Measures must be taken to tackle the declining birth rate.","","少子化に取り組むための対策が必要です。","take measures=対策をとる。"]]);
+XU('x-ek1','英検1級','EIKEN 1','en',[
+ ["The proposal was met with fierce opposition.","","その提案は激しい反対にあいました。","be met with 〜=〜という反応を受ける。"],
+ ["Economic disparity has become increasingly pronounced.","","経済格差はますます顕著になっています。","pronounced は形容詞で「顕著な」。"],
+ ["The findings corroborate earlier research.","","その結果は以前の研究を裏付けています。","corroborate=裏付ける。"],
+ ["Such measures would merely alleviate the symptoms.","","そのような対策は症状をやわらげるだけでしょう。",""],
+ ["The treaty is widely regarded as a diplomatic milestone.","","その条約は外交上の画期的な出来事だと広く考えられています。",""],
+ ["Unchecked surveillance could erode civil liberties.","","歯止めのない監視は市民の自由をむしばむおそれがあります。",""],
+ ["The scheme proved to be financially unsustainable.","","その計画は財政的に続けられないとわかりました。",""],
+ ["We must not underestimate the ramifications of this decision.","","この決定がもたらす影響を軽く見てはいけません。","ramifications=(予想しにくい)影響・結果。"]]);
+/* ---- English: TOEIC / IELTS / TOEFL / aviation ---- */
+XU('x-toeic','TOEIC L&R','TOEIC','en',[
+ ["The meeting has been postponed until Thursday.","","会議は木曜日まで延期されました。",""],
+ ["Please submit the report by the end of the day.","","今日中に報告書を提出してください。","by=〜までに(期限)。until は「〜までずっと」。"],
+ ["Our sales increased by 15 percent this quarter.","","今四半期の売上は15パーセント増えました。","quarter=四半期(3か月)。"],
+ ["The shipment is expected to arrive next week.","","荷物は来週届く予定です。",""],
+ ["Could you send me the invoice again?","","請求書をもう一度送っていただけますか。",""],
+ ["All employees are required to attend the training session.","","全従業員は研修会に出席する必要があります。","attend は後ろにすぐ目的語。attend to ではありません。"],
+ ["The position requires at least three years of experience.","","この職には少なくとも3年の経験が必要です。",""],
+ ["We apologize for any inconvenience this may cause.","","ご迷惑をおかけすることをおわびします。",""]]);
+XU('x-ielts','IELTS','IELTS','en',[
+ ["The graph shows the number of international students from 2010 to 2020.","","このグラフは2010年から2020年までの留学生の数を示しています。","ライティング Task 1 の書き出しの型。"],
+ ["There was a gradual increase over the period.","","その期間を通して、ゆるやかな増加がありました。",""],
+ ["Overall, the figures rose steadily.","","全体として、数値は着実に上がりました。",""],
+ ["On the one hand, technology makes life easier.","","一方では、技術は生活を便利にします。",""],
+ ["On the other hand, it can make people less active.","","他方では、人の活動量を減らすこともあります。",""],
+ ["I'd like to talk about a teacher who inspired me.","","私にやる気をくれた先生について話したいと思います。","スピーキング Part 2 の話し始めの型。"],
+ ["To sum up, I believe the benefits outweigh the drawbacks.","","まとめると、利点は欠点を上回ると思います。",""],
+ ["That's an interesting question. Let me think.","","おもしろい質問ですね。少し考えさせてください。","スピーキングで考える時間を作る自然な言い方。"]]);
+XU('x-toefl','TOEFL iBT','TOEFL','en',[
+ ["The professor will hold office hours on Wednesday.","","教授は水曜日に相談の時間を設けます。","office hours=教授が学生の相談を受ける時間。"],
+ ["Photosynthesis converts sunlight into chemical energy.","","光合成は太陽の光を化学エネルギーに変えます。",""],
+ ["According to the lecture, the theory has been challenged.","","講義によると、その理論には異論が出ています。",""],
+ ["I need to register for one more course this semester.","","今学期、もう1つ授業を登録する必要があります。",""],
+ ["The reading passage claims that the plan would be effective.","","読解文は、その計画が効果的だろうと主張しています。",""],
+ ["The student is worried about missing the deadline.","","その学生は締め切りに間に合わないことを心配しています。",""],
+ ["Glaciers shape the landscape over thousands of years.","","氷河は何千年もかけて地形をつくります。",""],
+ ["The main point of the lecture is that the evidence is unclear.","","講義の要点は、その証拠がはっきりしないということです。",""]]);
+XU('x-icao','ICAO航空英語','ICAO ENGLISH','en',[
+ ["We have a sick passenger on board.","","体調の悪い乗客がいます。","決まった交信用語で言えないときは、このようなふつうの英語(plain English)で伝えます。"],
+ ["Say again.","","もう一度言ってください。","無線では Pardon? ではなく Say again を使います。"],
+ ["Request vectors to avoid the weather.","","悪天候を避けるための誘導をお願いします。","vectors=レーダー誘導(進む方位の指示)。"],
+ ["We are experiencing severe turbulence.","","激しい乱気流に遭遇しています。",""],
+ ["Unable to comply due to traffic.","","他の飛行機がいるため、その指示には従えません。","Unable=指示に従えないときの言い方。traffic=近くを飛ぶ他の飛行機。"],
+ ["We had a bird strike on the left engine.","","左エンジンにバードストライクがありました。",""],
+ ["Request priority landing.","","優先着陸をお願いします。",""],
+ ["Confirm runway in use.","","使用中の滑走路を確認してください。",""]]);
+/* ---- Korean: TOPIK ---- */
+XU('x-topik1','TOPIK Ⅰ','TOPIK I','ko',[
+ ["저는 학생이에요.","チョヌン ハクセンイエヨ","私は学生です。","이에요/예요=〜です。パッチムがあるときは 이에요。"],
+ ["주말에 친구를 만났어요.","チュマレ チングルル マンナッソヨ","週末に友だちに会いました。","「〜に会う」は 를/을 만나다。日本語の「に」とちがうので注意。"],
+ ["이 가방은 얼마예요?","イ カバンウン オルマエヨ","このかばんはいくらですか。",""],
+ ["내일은 날씨가 좋을 거예요.","ネイルン ナルッシガ チョウル コエヨ","明日は天気がいいでしょう。","-(으)ㄹ 거예요=〜でしょう(推測)。"],
+ ["한국 음식을 좋아해요.","ハングク ウムシグル チョアヘヨ","韓国料理が好きです。",""],
+ ["도서관에서 책을 읽어요.","トソグァネソ チェグル イルゴヨ","図書館で本を読みます。","에서=(場所)で。"],
+ ["지하철역이 어디에 있어요?","チハチョルリョギ オディエ イッソヨ","地下鉄の駅はどこにありますか。",""],
+ ["같이 영화를 볼까요?","カチ ヨンファルル ボルッカヨ","一緒に映画を見ましょうか。","-(으)ㄹ까요?=〜しましょうか(誘い)。"]]);
+XU('x-topik2','TOPIK Ⅱ','TOPIK II','ko',[
+ ["환경을 보호하기 위해 일회용품 사용을 줄여야 합니다.","ファンギョンウル ポホハギ ウィヘ イルェヨンプム サヨンウル チュリョヤ ハムニダ","環境を守るために、使い捨て用品の使用を減らさなければなりません。","-기 위해=〜するために。"],
+ ["바쁘더라도 아침은 꼭 먹는 게 좋아요.","パップドラド アチムン ッコク モンヌン ゲ チョアヨ","忙しくても、朝ごはんは必ず食べたほうがいいです。","-더라도=〜しても。"],
+ ["회의가 연기되었다는 연락을 받았어요.","フェイガ ヨンギドェオッタヌン ヨルラグル パダッソヨ","会議が延期されたという連絡を受けました。",""],
+ ["최근 혼자 사는 사람이 늘고 있습니다.","チェグン ホンジャ サヌン サラミ ヌルゴ イッスムニダ","最近、一人暮らしの人が増えています。",""],
+ ["저는 그 의견에 동의하지 않습니다.","チョヌン ク ウィギョネ トンイハジ アンスムニダ","私はその意見に同意しません。",""],
+ ["이 문제에는 여러 가지 원인이 있다고 생각합니다.","イ ムンジェエヌン ヨロ ガジ ウォニニ イッタゴ センガカムニダ","この問題にはいろいろな原因があると思います。",""],
+ ["기술이 발달하면서 생활이 편리해졌습니다.","キスリ パルタラミョンソ センファリ ピョルリヘジョッスムニダ","技術が発達するにつれて、生活が便利になりました。",""],
+ ["결론적으로 저는 이 정책에 찬성합니다.","キョルロンジョグロ チョヌン イ チョンチェゲ チャンソンハムニダ","結論として、私はこの政策に賛成です。","作文(쓰기)のまとめで使える表現。"]]);
+/* ---- Spanish: DELE ---- */
+XU('x-dele-a2','DELE A2','DELE A2','es',[
+ ["Ayer fui al cine con mis amigos.","アジェル フイ アル シネ コン ミス アミゴス","昨日、友だちと映画に行きました。","fui は ir(行く)の点過去。"],
+ ["¿Cuánto cuesta este billete?","クアント クエスタ エステ ビジェテ","この切符はいくらですか。",""],
+ ["Normalmente me levanto a las siete.","ノルマルメンテ メ レバント ア ラス シエテ","ふだんは7時に起きます。",""],
+ ["Me gustaría reservar una mesa para dos.","メ グスタリア レセルバル ウナ メサ パラ ドス","2人分の席を予約したいのですが。","Me gustaría 〜=〜したいのですが(ていねい)。"],
+ ["Estudio español desde hace un año.","エストゥディオ エスパニョル デスデ アセ ウン アニョ","1年前からスペイン語を勉強しています。","desde hace+期間=〜前から(今も続いている)。"],
+ ["¿Puedes ayudarme con la maleta?","プエデス アジュダルメ コン ラ マレタ","スーツケースを手伝ってくれる?",""],
+ ["El museo está cerca de la plaza.","エル ムセオ エスタ セルカ デ ラ プラサ","美術館は広場の近くにあります。",""],
+ ["En verano hace mucho calor.","エン ベラノ アセ ムチョ カロル","夏はとても暑いです。","天気は hacer を使って言います。"]]);
+XU('x-dele-b1','DELE B1','DELE B1','es',[
+ ["Si tuviera más tiempo, viajaría por toda España.","シ トゥビエラ マス ティエンポ ビアハリア ポル トダ エスパニャ","もっと時間があれば、スペイン中を旅するのに。","接続法過去+過去未来で「もし〜なら…するのに」。"],
+ ["Espero que te guste el regalo.","エスペロ ケ テ グステ エル レガロ","プレゼントを気に入ってくれるといいな。","esperar que のあとは接続法(guste)。"],
+ ["Cuando era niño, vivía en el campo.","クアンド エラ ニニョ ビビア エン エル カンポ","子どものころ、田舎に住んでいました。","線過去=過去の習慣や状態。"],
+ ["En mi opinión, las redes sociales tienen ventajas e inconvenientes.","エン ミ オピニオン ラス レデス ソシアレス ティエネン ベンタハス エ インコンベニエンテス","私の意見では、SNSには長所と短所があります。","i の音の前では y が e に変わります。"],
+ ["Te recomiendo que visites el Museo del Prado.","テ レコミエンド ケ ビシテス エル ムセオ デル プラド","プラド美術館に行くことをすすめます。",""],
+ ["Cuando llegué a la estación, el tren ya había salido.","クアンド ジェゲ ア ラ エスタシオン エル トレン ジャ アビア サリド","駅に着いたとき、電車はもう出ていました。","había salido=過去完了(もう〜していた)。"],
+ ["Me interesa mucho la cultura de otros países.","メ インテレサ ムチョ ラ クルトゥラ デ オトロス パイセス","ほかの国の文化にとても興味があります。",""],
+ ["Es importante que todos reciclemos.","エス インポルタンテ ケ トドス レシクレモス","みんながリサイクルすることが大切です。","Es importante que のあとは接続法。"]]);
+/* ---- Italian: CILS ---- */
+XU('x-cils-a2','CILS A2','CILS A2','it',[
+ ["Ieri sono andato al mare con la mia famiglia.","イエーリ ソーノ アンダート アル マーレ コン ラ ミア ファミーリア","昨日、家族と海に行きました。","女性が話すときは andata になります。"],
+ ["Quanto costa questo biglietto?","クアント コスタ クエスト ビリエット","この切符はいくらですか。",""],
+ ["Di solito mi alzo alle sette.","ディ ソーリト ミ アルツォ アッレ セッテ","ふだんは7時に起きます。",""],
+ ["Vorrei prenotare un tavolo per due.","ヴォッレイ プレノターレ ウン ターヴォロ ペル ドゥーエ","2人分の席を予約したいのですが。","Vorrei 〜=〜したいのですが(ていねい)。"],
+ ["Studio l'italiano da un anno.","ストゥーディオ リタリアーノ ダ ウン アンノ","1年前からイタリア語を勉強しています。","da+期間=〜前から(今も続いている)。"],
+ ["Mi puoi aiutare con la valigia?","ミ プオイ アイウターレ コン ラ ヴァリージャ","スーツケースを手伝ってくれる?",""],
+ ["Il museo è vicino alla piazza.","イル ムゼーオ エ ヴィチーノ アッラ ピアッツァ","美術館は広場の近くにあります。",""],
+ ["D'estate fa molto caldo.","デスターテ ファ モルト カルド","夏はとても暑いです。","天気は fare を使って言います。"]]);
+XU('x-cils-b1','CILS B1','CILS B1','it',[
+ ["Se avessi più tempo, viaggerei in tutta Italia.","セ アヴェッスィ ピウ テンポ ヴィアッジェレイ イン トゥッタ イターリア","もっと時間があれば、イタリア中を旅するのに。","接続法半過去+条件法で「もし〜なら…するのに」。"],
+ ["Spero che il regalo ti piaccia.","スペーロ ケ イル レガーロ ティ ピアッチャ","プレゼントを気に入ってくれるといいな。","sperare che のあとは接続法(piaccia)。"],
+ ["Quando ero bambino, abitavo in campagna.","クアンド エーロ バンビーノ アビターヴォ イン カンパーニャ","子どものころ、田舎に住んでいました。","半過去=過去の習慣や状態。"],
+ ["Secondo me, i social hanno vantaggi e svantaggi.","セコンド メ イ ソーシャル アンノ ヴァンタッジ エ ズヴァンタッジ","私の意見では、SNSには長所と短所があります。",""],
+ ["Ti consiglio di visitare gli Uffizi.","ティ コンスィーリオ ディ ヴィズィターレ リ ウッフィーツィ","ウフィツィ美術館に行くことをすすめます。",""],
+ ["Quando sono arrivato in stazione, il treno era già partito.","クアンド ソーノ アッリヴァート イン スタツィオーネ イル トレーノ エーラ ジャ パルティート","駅に着いたとき、電車はもう出ていました。","era partito=大過去(もう〜していた)。"],
+ ["Mi interessa molto la cultura degli altri paesi.","ミ インテレッサ モルト ラ クルトゥーラ デッリ アルトリ パエーズィ","ほかの国の文化にとても興味があります。",""],
+ ["È importante che tutti facciano la raccolta differenziata.","エ インポルタンテ ケ トゥッティ ファッチャーノ ラ ラッコルタ ディッフェレンツィアータ","みんなが分別収集をすることが大切です。","È importante che のあとは接続法。"]]);
+/* ================= 授業の用語(くわしく): 数学と理科 in English (プレミアムエコノミーから, test account only for now) =================
+   Each item: [English term, Japanese, what it means + how a teacher might use it in class]. Original material. */
+function SU(uid,jp,lat,list){
+  UM[uid]={jp:jp,lat:lat};
+  UNITS.en[uid]={id:uid,items:list.map(function(x){return {jp:x[1],t:x[0],r:'',n:x[2]||''};}),track:'study'};
+}
+SU('sd-num1','数と式 1','NUMBERS 1',[
+ ["positive number","正の数","0より大きい数。授業では Positive numbers are greater than zero.(正の数は0より大きい)"],
+ ["negative number","負の数","0より小さい数。授業では Minus five is a negative number.(-5は負の数です)"],
+ ["absolute value","絶対値","0からの距離。授業では The absolute value of minus three is three.(-3の絶対値は3)"],
+ ["integer","整数","…,-1, 0, 1, 2,… のような数。授業では Is zero point five an integer?(0.5は整数かな?)"],
+ ["numerator","分子","分数の上の数。授業では In two thirds, the numerator is two.(2/3の分子は2)"],
+ ["denominator","分母","分数の下の数。授業では Find the common denominator.(分母をそろえよう=通分)"],
+ ["decimal","小数","0.5 のような数。授業では Write one quarter as a decimal.(1/4を小数で書こう)"],
+ ["reciprocal","逆数","かけて1になる数。授業では The reciprocal of three is one third.(3の逆数は1/3)"]]);
+SU('sd-num2','数と式 2','NUMBERS 2',[
+ ["square root","平方根","2乗するとその数になる数。授業では The square root of nine is three.(9の平方根は3)"],
+ ["expression","式","数や文字を記号でつないだもの。授業では Simplify the expression.(式を簡単にしよう)"],
+ ["variable","文字(変数)","x や y のように、いろいろな値をとる文字。授業では Here, x is a variable.(ここでは x が変数)"],
+ ["coefficient","係数","文字にかかっている数。授業では In five x, the coefficient is five.(5xの係数は5)"],
+ ["solve for x","xについて解く","方程式から x の値を求めること。授業では Solve for x and check your answer.(xを求めて、答えを確かめよう)"],
+ ["expand","展開する","かっこをはずして式を広げること。授業では Expand the brackets.(かっこを展開しよう)"],
+ ["factor","因数分解する","式をかけ算の形にすること。イギリスでは factorise とも。授業では Factor x squared minus four.(x²-4を因数分解しよう)"],
+ ["simultaneous equations","連立方程式","アメリカでは a system of equations とも言います。授業では Solve the simultaneous equations.(連立方程式を解こう)"]]);
+SU('sd-geo1','図形 1','GEOMETRY 1',[
+ ["angle","角","2本の線が作る開き。授業では Measure the angle with a protractor.(分度器で角をはかろう)"],
+ ["right angle","直角","90度の角。授業では A square has four right angles.(正方形には直角が4つ)"],
+ ["parallel","平行な","どこまでのばしても交わらないこと。授業では These two lines are parallel.(この2本の線は平行)"],
+ ["perpendicular","垂直な","直角に交わること。授業では Draw a line perpendicular to AB.(ABに垂直な線をかこう)"],
+ ["vertex","頂点","角の先の点。複数形は vertices。授業では A triangle has three vertices.(三角形には頂点が3つ)"],
+ ["isosceles triangle","二等辺三角形","2つの辺の長さが等しい三角形。授業では The base angles of an isosceles triangle are equal.(二等辺三角形の底角は等しい)"],
+ ["area","面積","広さ。授業では Find the area of the rectangle.(長方形の面積を求めよう)"],
+ ["perimeter","周の長さ","図形のまわりの長さ。授業では The perimeter is the distance around the shape.(周の長さは図形のまわりの長さ)"]]);
+SU('sd-geo2','図形 2','GEOMETRY 2',[
+ ["radius","半径","円の中心から円周までの長さ。授業では The radius is half of the diameter.(半径は直径の半分)"],
+ ["diameter","直径","円の中心を通る、はしからはしまでの長さ。授業では Measure the diameter of the circle.(円の直径をはかろう)"],
+ ["circumference","円周","円のまわりの長さ。授業では The circumference is pi times the diameter.(円周は直径×円周率)"],
+ ["volume","体積","立体の大きさ。授業では Find the volume of the cube.(立方体の体積を求めよう)"],
+ ["congruent","合同な","形も大きさも同じこと。授業では These two triangles are congruent.(この2つの三角形は合同)"],
+ ["similar","相似な","形が同じで大きさがちがうこと。授業では Similar figures have the same shape.(相似な図形は形が同じ)"],
+ ["prove","証明する","正しいことを理由をつけて示すこと。授業では Prove that angle A equals angle B.(角Aと角Bが等しいことを証明しよう)"],
+ ["Pythagorean theorem","三平方の定理","直角三角形で a²+b²=c² になる定理。授業では Use the Pythagorean theorem to find the length.(三平方の定理で長さを求めよう)"]]);
+SU('sd-func1','関数 1','FUNCTIONS 1',[
+ ["function","関数","xが決まるとyがただ1つ決まる関係。授業では y is a function of x.(yはxの関数)"],
+ ["directly proportional","比例している","y=ax の関係。授業では y is directly proportional to x.(yはxに比例する)"],
+ ["inversely proportional","反比例している","y=a/x の関係。授業では y is inversely proportional to x.(yはxに反比例する)"],
+ ["origin","原点","x軸とy軸が交わる点(0, 0)。授業では The graph passes through the origin.(グラフは原点を通る)"],
+ ["x-axis","x軸","横の軸。たての軸は y-axis。授業では Label the x-axis.(x軸に名前を書こう)"],
+ ["coordinates","座標","点の位置を表す数の組。授業では Write the coordinates of point P.(点Pの座標を書こう)"],
+ ["plot","(点を)とる","グラフに点をかきこむこと。授業では Plot the points on the graph.(グラフに点をとろう)"],
+ ["substitute","代入する","文字に数を入れること。授業では Substitute two for x.(xに2を代入しよう)"]]);
+SU('sd-func2','関数 2','FUNCTIONS 2',[
+ ["linear function","一次関数","y=ax+b の形の関数。グラフは直線。授業では The graph of a linear function is a straight line.(一次関数のグラフは直線)"],
+ ["slope","傾き","直線の傾きぐあい。イギリスでは gradient とも。授業では The slope of this line is two.(この直線の傾きは2)"],
+ ["y-intercept","切片","グラフがy軸と交わる点のy座標。授業では The y-intercept is minus three.(切片は-3)"],
+ ["rate of change","変化の割合","xが増えた分に対するyの増え方。授業では Find the rate of change.(変化の割合を求めよう)"],
+ ["table of values","表(対応表)","xとyの値を並べた表。授業では Complete the table of values.(表を完成させよう)"],
+ ["quadratic function","二次関数","y=ax² のような関数。授業では y equals x squared is a quadratic function.(y=x²は二次関数)"],
+ ["parabola","放物線","y=ax² のグラフの形。授業では The graph is a parabola.(グラフは放物線になる)"],
+ ["increase","増加する","ふえること。反対は decrease(減少する)。授業では As x increases, y decreases.(xが増えるとyは減る)"]]);
+SU('sd-prob1','確率とデータ 1','PROBABILITY 1',[
+ ["probability","確率","あることが起こる割合。授業では What is the probability of getting heads?(表が出る確率は?)"],
+ ["outcome","(起こりうる)結果","起こりうる1つ1つの場合。授業では List all the possible outcomes.(起こりうる結果を全部書き出そう)"],
+ ["equally likely","同様に確からしい","どれも同じ程度に起こりやすいこと。授業では Each number is equally likely.(どの目も同様に確からしい)"],
+ ["roll a die","さいころを投げる","die はさいころ1個。2個以上は dice。授業では Roll a die twenty times.(さいころを20回投げよう)"],
+ ["flip a coin","コインを投げる","toss a coin とも言います。表は heads、裏は tails。授業では Flip a coin and record the result.(コインを投げて結果を記録しよう)"],
+ ["tree diagram","樹形図","場合の数を枝分かれで整理する図。授業では Draw a tree diagram.(樹形図をかこう)"],
+ ["mean","平均値","全部たして個数でわった値。授業では Calculate the mean of the data.(データの平均値を計算しよう)"],
+ ["median","中央値","小さい順に並べたとき真ん中の値。授業では Find the median.(中央値を求めよう)"]]);
+SU('sd-prob2','確率とデータ 2','PROBABILITY 2',[
+ ["mode","最頻値","いちばん多く出てくる値。授業では The mode is the most common value.(最頻値はいちばん多い値)"],
+ ["range","範囲","最大値−最小値。授業では The range is the largest value minus the smallest.(範囲は最大値−最小値)"],
+ ["frequency","度数","それぞれの値や階級に入る数。授業では Make a frequency table.(度数分布表を作ろう)"],
+ ["relative frequency","相対度数","度数÷全体の数。授業では Find the relative frequency of each class.(各階級の相対度数を求めよう)"],
+ ["histogram","ヒストグラム","度数を柱で表したグラフ。授業では Draw a histogram from the table.(表からヒストグラムをかこう)"],
+ ["box plot","箱ひげ図","box-and-whisker plot とも。授業では Compare the two box plots.(2つの箱ひげ図をくらべよう)"],
+ ["sample","標本","調べるために全体から取り出した一部。授業では Choose a random sample.(無作為に標本を選ぼう)"],
+ ["population","母集団","調べたい集団の全体。授業では The population is all the students in the school.(母集団は学校の全生徒)"]]);
+SU('sd-phy1','物理 1','PHYSICS 1',[
+ ["force","力","物を押したり引いたりするはたらき。単位は N(ニュートン)。授業では Draw an arrow to show the force.(力を矢印で表そう)"],
+ ["friction","摩擦","ふれ合う面で動きをじゃまする力。授業では Friction slows the box down.(摩擦で箱がおそくなる)"],
+ ["pressure","圧力","面をおす力の大きさ。授業では Pressure is force divided by area.(圧力は力÷面積)"],
+ ["speed","速さ","距離÷時間。授業では Calculate the average speed.(平均の速さを計算しよう)"],
+ ["acceleration","加速(加速度)","速さが変わること・その割合。授業では The ball shows acceleration as it rolls down.(ボールは転がりながら加速する)"],
+ ["inertia","慣性","物体が今の運動を続けようとする性質。授業では Inertia keeps the passengers moving forward.(慣性で乗客は前に動き続ける)"],
+ ["kinetic energy","運動エネルギー","動いている物が持つエネルギー。授業では Faster objects have more kinetic energy.(速い物ほど運動エネルギーが大きい)"],
+ ["potential energy","位置エネルギー","高い所にある物が持つエネルギー。授業では The ball has more potential energy at the top.(ボールは高い所で位置エネルギーが大きい)"]]);
+SU('sd-phy2','物理 2','PHYSICS 2',[
+ ["electric current","電流","電気の流れ。単位は A(アンペア)。授業では Measure the current with an ammeter.(電流計で電流をはかろう)"],
+ ["voltage","電圧","電流を流そうとするはたらき。単位は V(ボルト)。授業では Connect the voltmeter in parallel.(電圧計は並列につなごう)"],
+ ["resistance","抵抗","電流の流れにくさ。単位は Ω(オーム)。授業では Resistance equals voltage divided by current.(抵抗=電圧÷電流)"],
+ ["series circuit","直列回路","1本道でつながった回路。授業では In a series circuit, the current is the same everywhere.(直列回路では電流はどこも同じ)"],
+ ["parallel circuit","並列回路","枝分かれしてつながった回路。授業では Build a parallel circuit with two bulbs.(豆電球2個で並列回路を作ろう)"],
+ ["magnetic field","磁界","磁石の力がはたらく空間。授業では Use iron filings to see the magnetic field.(鉄粉で磁界のようすを見よう)"],
+ ["reflection","反射","光がはね返ること。授業では The angle of incidence equals the angle of reflection.(入射角と反射角は等しい)"],
+ ["refraction","屈折","光が別の物質に入るときに曲がること。授業では Refraction makes the pencil look bent.(屈折で鉛筆が折れて見える)"]]);
+SU('sd-chem1','化学 1','CHEMISTRY 1',[
+ ["element","元素","物質をつくるもとになる成分。授業では Find the element on the periodic table.(周期表でその元素を探そう)"],
+ ["atom","原子","物質をつくる、とても小さなつぶ。授業では Atoms are too small to see.(原子は小さすぎて見えない)"],
+ ["molecule","分子","いくつかの原子が結びついたつぶ。授業では A water molecule has two hydrogen atoms.(水分子には水素原子が2つ)"],
+ ["compound","化合物","2種類以上の元素が結びついた物質。授業では Water is a compound.(水は化合物)"],
+ ["mixture","混合物","いくつかの物質がまざったもの。授業では Air is a mixture of gases.(空気は気体の混合物)"],
+ ["combustion","燃焼","物が酸素と結びついて、熱や光を出しながら燃えること。授業では Combustion needs oxygen.(燃焼には酸素が必要)"],
+ ["oxidation","酸化","物質が酸素と結びつくこと。授業では Rust is a result of oxidation.(さびは酸化によってできる)"],
+ ["reduction","還元","酸化物から酸素がうばわれること。授業では Carbon is used for the reduction of copper oxide.(酸化銅の還元に炭素を使う)"]]);
+SU('sd-chem2','化学 2','CHEMISTRY 2',[
+ ["acid","酸","水溶液が酸性を示す物質。授業では Lemon juice is an acid.(レモン汁は酸)"],
+ ["alkali","アルカリ","水溶液がアルカリ性を示す物質。形容詞は alkaline。授業では Soap is slightly alkaline.(せっけんは弱いアルカリ性)"],
+ ["neutralization","中和","酸とアルカリが反応して性質を打ち消し合うこと。授業では Neutralization produces salt and water.(中和で塩と水ができる)"],
+ ["solution","溶液(水溶液)","物質が液体にとけたもの。授業では Make a salt solution.(食塩水を作ろう)"],
+ ["dissolve","とける・とかす","液体の中に物質がとけこむこと。授業では Sugar dissolves in water.(砂糖は水にとける)"],
+ ["ion","イオン","電気をおびた原子やそのまとまり。授業では Ions carry electric charge.(イオンは電気をおびている)"],
+ ["electrolysis","電気分解","電流を流して物質を分解すること。授業では Electrolysis of water produces hydrogen and oxygen.(水の電気分解で水素と酸素ができる)"],
+ ["density","密度","体積あたりの質量。授業では Density is mass divided by volume.(密度=質量÷体積)"]]);
+SU('sd-bio1','生物 1','BIOLOGY 1',[
+ ["nucleus","核","細胞の中で遺伝子を持つ部分。複数形は nuclei。授業では Stain the cells to see the nucleus.(染色して核を見よう)"],
+ ["cell membrane","細胞膜","細胞のまわりのうすい膜。授業では Every cell has a cell membrane.(どの細胞にも細胞膜がある)"],
+ ["chloroplast","葉緑体","植物の細胞で光合成をする緑のつぶ。授業では Chloroplasts are found in plant cells.(葉緑体は植物の細胞にある)"],
+ ["respiration","呼吸","細胞が栄養分からエネルギーを取り出すはたらき。授業では Respiration releases energy.(呼吸でエネルギーが取り出される)"],
+ ["digestion","消化","食べ物を体に吸収できる形に分解すること。授業では Digestion starts in the mouth.(消化は口から始まる)"],
+ ["blood vessel","血管","血液が流れる管。授業では Arteries and veins are blood vessels.(動脈と静脈は血管)"],
+ ["gene","遺伝子","親から子に伝わる特徴のもと。授業では Genes are passed from parents to children.(遺伝子は親から子に伝わる)"],
+ ["evolution","進化","生物が長い年月をかけて変化すること。授業では Fossils give evidence of evolution.(化石は進化の証拠になる)"]]);
+SU('sd-bio2','生物 2','BIOLOGY 2',[
+ ["chromosome","染色体","細胞分裂のときに見える、遺伝子をのせたもの。授業では Chromosomes can be seen during cell division.(染色体は細胞分裂のときに見える)"],
+ ["cell division","細胞分裂","1つの細胞が2つに分かれること。授業では Observe cell division in an onion root.(タマネギの根で細胞分裂を観察しよう)"],
+ ["fertilization","受精","卵と精子(や精細胞)が合体すること。授業では Fertilization produces a new cell.(受精で新しい細胞ができる)"],
+ ["heredity","遺伝","親の特徴が子に伝わること。授業では Mendel studied heredity using peas.(メンデルはエンドウで遺伝を研究した)"],
+ ["food chain","食物連鎖","「食べる・食べられる」のつながり。授業では Draw a food chain for the forest.(森の食物連鎖をかこう)"],
+ ["producer","生産者","光合成で栄養分をつくる生物(植物など)。授業では Plants are producers.(植物は生産者)"],
+ ["consumer","消費者","ほかの生物を食べて栄養分をとる生物。授業では Animals are consumers.(動物は消費者)"],
+ ["decomposer","分解者","死がいやふんを分解する生物(菌類など)。授業では Fungi are decomposers.(菌類は分解者)"]]);
+SU('sd-earth1','地学 1','EARTH SCIENCE 1',[
+ ["earthquake","地震","大地がゆれること。授業では The earthquake was felt across the region.(その地震は地域全体で感じられた)"],
+ ["epicenter","震央","震源の真上の地表の点。イギリスでは epicentre。授業では Mark the epicenter on the map.(地図に震央をかこう)"],
+ ["volcano","火山","マグマがふき出してできた山。授業では This volcano is still active.(この火山は今も活動している)"],
+ ["magma","マグマ","地下でとけている岩石。授業では Magma cools to form igneous rock.(マグマが冷えて火成岩になる)"],
+ ["fossil","化石","大昔の生物の死がいや跡が残ったもの。授業では Fossils tell us about ancient life.(化石から大昔の生物がわかる)"],
+ ["layer","層(地層)","積み重なった層。地層は rock layers や strata とも。授業では The lower layers are usually older.(ふつう下の層ほど古い)"],
+ ["erosion","侵食","水や風が岩や土をけずること。授業では Rivers cause erosion.(川は侵食を起こす)"],
+ ["sedimentary rock","堆積岩","土砂などが積もって固まった岩石。授業では Sandstone is a sedimentary rock.(砂岩は堆積岩)"]]);
+SU('sd-earth2','地学 2','EARTH SCIENCE 2',[
+ ["air pressure","気圧","空気がおす力。授業では Air pressure is falling, so it may rain.(気圧が下がっているので雨かも)"],
+ ["weather front","前線","性質のちがう空気の境目。cold front は寒冷前線。授業では A cold front is coming.(寒冷前線が近づいている)"],
+ ["humidity","湿度","空気中の水蒸気の割合。授業では The humidity is high today.(今日は湿度が高い)"],
+ ["condensation","凝結","水蒸気が冷えて水滴になること。授業では Condensation forms clouds.(凝結で雲ができる)"],
+ ["rotation","自転","天体が自分の軸のまわりを回ること。授業では The Earth's rotation causes day and night.(地球の自転で昼と夜ができる)"],
+ ["revolution","公転","天体がほかの天体のまわりを回ること。授業では The Earth's revolution takes about a year.(地球の公転には約1年かかる)"],
+ ["solar system","太陽系","太陽とそのまわりを回る天体の集まり。授業では There are eight planets in the solar system.(太陽系には8つの惑星がある)"],
+ ["eclipse","食(日食・月食)","solar eclipse は日食、lunar eclipse は月食。授業では A solar eclipse happens when the Moon blocks the Sun.(月が太陽をかくすと日食が起こる)"]]);
+ORDER.forEach(function(l){ALL_IDS[l]=Object.keys(UNITS[l]);});
+/* the exam groups shown in 検定モード, and the class each lesson needs (0 economy … 3 first) */
+var EXAMS={
+ en:[{key:'eiken',title:'英検',sub:'5級から1級まで',ids:['x-ek5','x-ek4','x-ek3','x-ekp2','x-ekp2p','x-ek2','x-ekp1','x-ek1']},
+     {key:'global',title:'TOEIC・IELTS・TOEFL',sub:'就職・留学で使う英語のテスト',ids:['x-toeic','x-ielts','x-toefl']},
+     {key:'icao',title:'航空英語(ICAO)',sub:'パイロットや管制官に必要な英語',ids:['x-icao']}],
+ ko:[{key:'topik',title:'TOPIK(韓国語能力試験)',sub:'Ⅰは初級、Ⅱは中級〜上級',ids:['x-topik1','x-topik2']}],
+ es:[{key:'dele',title:'DELE(スペイン語検定)',sub:'A2は初級、B1は中級',ids:['x-dele-a2','x-dele-b1']}],
+ it:[{key:'cils',title:'CILS(イタリア語検定)',sub:'A2は初級、B1は中級',ids:['x-cils-a2','x-cils-b1']}]
+};
+/* 問題集 (bank): the lessons for one level. tier = the class it needs (1 プレミアムエコノミー, 2 ビジネス).
+   A bank with fewer than XBANK_FULL phrases is still 準備中: it can be studied, but has no 合格圏メーター yet. */
+var XBANK_FULL=40;
+var XBANK={
+ ek5:{L:'en',name:'英検5級',tier:1,ids:['x-ek5','x-ek5b','x-ek5c','x-ek5d','x-ek5e']},
+ ek4:{L:'en',name:'英検4級',tier:1,ids:['x-ek4','x-ek4b','x-ek4c','x-ek4d','x-ek4e']},
+ ek3:{L:'en',name:'英検3級',tier:1,ids:['x-ek3','x-ek3b','x-ek3c','x-ek3d','x-ek3e']},
+ ekp2:{L:'en',name:'英検準2級',tier:1,ids:['x-ekp2','x-ekp2b','x-ekp2c','x-ekp2d','x-ekp2e']},
+ ekp2p:{L:'en',name:'英検準2級プラス',tier:2,ids:['x-ekp2p','x-ekp2pb','x-ekp2pc','x-ekp2pd','x-ekp2pe']},
+ ek2:{L:'en',name:'英検2級',tier:2,ids:['x-ek2','x-ek2b','x-ek2c','x-ek2d','x-ek2e']},
+ ekp1:{L:'en',name:'英検準1級',tier:2,ids:['x-ekp1']},
+ ek1:{L:'en',name:'英検1級',tier:2,ids:['x-ek1']},
+ toeic:{L:'en',name:'TOEIC L&R',tier:2,ids:['x-toeic']},
+ ielts:{L:'en',name:'IELTS',tier:2,ids:['x-ielts']},
+ toefl:{L:'en',name:'TOEFL iBT',tier:2,ids:['x-toefl']},
+ icao:{L:'en',name:'航空英語(ICAO)',tier:2,ids:['x-icao']},
+ topik1:{L:'ko',name:'TOPIK Ⅰ',tier:1,ids:['x-topik1']},
+ topik2:{L:'ko',name:'TOPIK Ⅱ',tier:2,ids:['x-topik2']},
+ 'dele-a2':{L:'es',name:'DELE A2',tier:1,ids:['x-dele-a2']},
+ 'dele-b1':{L:'es',name:'DELE B1',tier:2,ids:['x-dele-b1']},
+ 'cils-a2':{L:'it',name:'CILS A2',tier:1,ids:['x-cils-a2']},
+ 'cils-b1':{L:'it',name:'CILS B1',tier:2,ids:['x-cils-b1']},
+ /* 授業の用語(くわしく) in 留学モード: プレミアムエコノミーから */
+ 'sd-math':{L:'en',name:'数学の用語',tier:1,study:1,ids:['sd-num1','sd-num2','sd-geo1','sd-geo2','sd-func1','sd-func2','sd-prob1','sd-prob2']},
+ 'sd-sci':{L:'en',name:'理科の用語',tier:1,study:1,ids:['sd-phy1','sd-phy2','sd-chem1','sd-chem2','sd-bio1','sd-bio2','sd-earth1','sd-earth2']}
+};
+var XBANK_OF={};
+Object.keys(XBANK).forEach(function(k){XBANK[k].key=k;XBANK[k].ids.forEach(function(u){XBANK_OF[u]=k;});});
+function examTier(uid){var b=XBANK[XBANK_OF[uid]];return b?b.tier:2;}
+/* 目標: pick an exam, then the level or score you are aiming for. [label, bank] (bank null = not made yet) */
+var XGOALS={
+ en:[{key:'eiken',title:'英検',pre:'英検',sub:'目標の級',goals:[['5級','ek5'],['4級','ek4'],['3級','ek3'],['準2級','ekp2'],['準2級プラス','ekp2p'],['2級','ek2'],['準1級','ekp1'],['1級','ek1']]},
+     {key:'toeic',title:'TOEIC L&R',pre:'TOEIC ',sub:'目標スコア(990点満点)',goals:[['400点','toeic'],['500点','toeic'],['600点','toeic'],['700点','toeic'],['800点','toeic'],['900点','toeic']]},
+     {key:'ielts',title:'IELTS',pre:'IELTS ',sub:'目標バンド(9.0満点)',goals:[['4.0','ielts'],['5.0','ielts'],['5.5','ielts'],['6.0','ielts'],['6.5','ielts'],['7.0','ielts']]},
+     {key:'toefl',title:'TOEFL iBT',pre:'TOEFL ',sub:'目標スコア(2026年からの1〜6のスコア)',goals:[['3.5','toefl'],['4.0','toefl'],['4.5','toefl'],['5.0','toefl'],['5.5','toefl']]},
+     {key:'icao',title:'航空英語(ICAO)',pre:'ICAO ',sub:'パイロット・管制官に必要なのはレベル4以上',goals:[['レベル4','icao'],['レベル5','icao'],['レベル6','icao']]}],
+ ko:[{key:'topik',title:'TOPIK',pre:'TOPIK ',sub:'目標の級(Ⅰは1〜2級、Ⅱは3〜6級)',goals:[['1級','topik1'],['2級','topik1'],['3級','topik2'],['4級','topik2'],['5級','topik2'],['6級','topik2']]}],
+ es:[{key:'dele',title:'DELE',pre:'DELE ',sub:'目標のレベル',goals:[['A2','dele-a2'],['B1','dele-b1']]}],
+ it:[{key:'cils',title:'CILS',pre:'CILS ',sub:'目標のレベル',goals:[['A2','cils-a2'],['B1','cils-b1']]}]
+};
+/* ================= CLASSES (standalone site; test account only for now) =================
+   Only the test account (full access) sees any of this. It can switch between エコノミー /
+   プレミアムエコノミー / ビジネス / ファースト in 記録 to try what each class would get:
+   発音チェック (every class), 検定モード, 模試 (ファースト), AI会話ロールプレイ, 弱点レポート and
+   the class designs. Every other account sees the app exactly as before. */
+var CABINS=[['economy','エコノミー','ECONOMY','無料','エコノミー'],['premium','プレミアムエコノミー','PREMIUM ECONOMY','月500円(予定)','プレエコ'],
+            ['business','ビジネス','BUSINESS','月800円(予定)','ビジネス'],['first','ファースト','FIRST','月1,280円(予定)','ファースト']];
+var CAB_DESIGN=[['','いつもの','今のデザイン'],['window','窓側の席','丸い窓を横にスワイプ'],['lounge','ラウンジ','紺と金・スワイプ操作'],['suite','スイート','黒と金・縦に1画面ずつ']];
+var CAB_FEAT=[
+ ['発音チェック',['◯','◯','◯','◯']],
+ ['検定コース',['—','英検5級〜準2級など','すべての検定','すべて+模試']],
+ ['授業の用語(くわしく)',['—','数学・理科(英語)','数学・理科(英語)','数学・理科(英語)']],
+ ['AI会話ロールプレイ',['—','1日5回','1日15回','1日30回']],
+ ['弱点レポート',['—','かんたん版','詳しい版','詳しい版+AIコーチ']],
+ ['専用デザイン',['—','窓側の席','+ラウンジ','+スイート']]
+];
+var CAB_KEY='babelflight.cabin',CAB_DKEY='babelflight.cabinDesign';
+function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+function cabinTester(){try{return typeof entitled==='function'&&entitled();}catch(e){return false;}}
+function cabinLv(){if(!cabinTester())return -1;var v=parseInt(lsGet(CAB_KEY),10);return v>=0&&v<=3?v:3;}
+function cabinName(lv){return CABINS[lv]?CABINS[lv][1]:'';}
+function cabinDesign(){var lv=cabinLv();if(lv<0)return -1;var d=parseInt(lsGet(CAB_DKEY),10);if(!(d>=0&&d<=lv))d=lv;return d;}
+function applyCabin(){
+  var d=cabinDesign(),name=d>0?CAB_DESIGN[d][0]:'';
+  if(name)rootEl.setAttribute('data-cabin',name);else rootEl.removeAttribute('data-cabin');
+  if(name==='window'){var h=new Date().getHours();rootEl.setAttribute('data-sky',h<5||h>=19?'night':h<9?'morning':h<16?'day':'evening');}
+  else rootEl.removeAttribute('data-sky');
+}
+(function(){var e0=entSet;entSet=function(){var r=e0.apply(this,arguments);applyCabin();return r;};})();
+function cabinCardHTML(){
+  var lv=cabinLv();if(lv<0)return '';
+  var d=cabinDesign();
+  return '<section class="card cabin-card"><div class="card-h"><h2 class="jh">搭乗クラス</h2><span class="lbl">テスト用アカウントだけ</span></div>'+
+    '<p class="dim hint">切り替えると、そのクラスで使える機能だけになります。ほかのアカウントには表示されません。</p>'+
+    '<div class="cabin-seg" role="group" aria-label="搭乗クラス">'+CABINS.map(function(c,i){
+      return '<button type="button" data-cabin-set="'+i+'" aria-pressed="'+(i===lv)+'"><b>'+c[1]+'</b><small>'+c[3]+'</small></button>';}).join('')+'</div>'+
+    '<ul class="cabin-feat">'+CAB_FEAT.map(function(f){var v=f[1][lv];return '<li class="'+(v==='—'?'off':'on')+'"><span>'+f[0]+'</span><b>'+(v==='—'?'🔒':esc(v))+'</b></li>';}).join('')+'</ul>'+
+    (lv>0?'<div class="set-block"><span class="lbl">デザイン</span><div class="cabin-design" role="group" aria-label="デザイン">'+CAB_DESIGN.slice(0,lv+1).map(function(x,i){
+      return '<button type="button" data-cabin-design="'+i+'" aria-pressed="'+(i===d)+'"><i class="cd-sw cd-'+(x[0]||'base')+'" aria-hidden="true"></i><b>'+x[1]+'</b><small>'+x[2]+'</small></button>';}).join('')+'</div></div>':'')+
+    '<p class="dim hint">ステータス特典とAIの回数制限は、テスト用アカウントなのでどのクラスでも解放されたままです。</p></section>';
+}
+
+/* ---- 検定モード ---- */
+function examModeOn(){return cabinTester();}
+/* 目標 (one per language), kept on this device in the test version */
+var XG_KEY='babelflight.examTarget';
+function xgLoad(){try{var o=JSON.parse(lsGet(XG_KEY)||'{}');return o&&typeof o==='object'?o:{};}catch(e){return {};}}
+function xgFind(L,v){
+  var p=typeof v==='string'?v.split('|'):[],out=null;
+  (XGOALS[L]||[]).forEach(function(k){if(k.key!==p[0])return;k.goals.forEach(function(g){if(g[0]===p[1]&&g[1]&&XBANK[g[1]])out={kind:k,label:g[0],bank:XBANK[g[1]],name:k.pre+g[0],val:v};});});
+  return out;
+}
+function examTarget(L){return xgFind(L,xgLoad()[L]);}
+function bankUnits(b){return b.ids.filter(function(u){return !!UNITS[b.L][u];});}
+function bankItems(b){var out=[];bankUnits(b).forEach(function(u){UNITS[b.L][u].items.forEach(function(x,i){out.push({uid:u,i:i});});});return out;}
+function bankFull(b){return bankItems(b).length>=XBANK_FULL;}
+function bankLocked(b){var lv=cabinLv();return lv>=0&&b.tier>lv;}
+/* 合格圏メーター: an estimate from how firmly each phrase of the bank is remembered.
+   A phrase counts 1/3 once learned, 2/3 after one more right answer on a later day, and fully after a third. */
+function bankMeter(b){
+  var it=bankItems(b),s=0,seen=0,firm=0;
+  it.forEach(function(o){var v=Math.min(itemRec(b.L,o.uid,o.i).b||0,3);s+=v/3;if(v>=1)seen++;if(v>=3)firm++;});
+  return {n:it.length,pct:it.length?Math.floor(s/it.length*100):0,seen:seen,firm:firm};
+}
+var XPASS=80,XW_EXAM={meter:'合格圏メーター',line:'合格圏'},XW_STUDY={meter:'理解度メーター',line:'しっかり理解'};
+function bankWords(b){return b.study?XW_STUDY:XW_EXAM;}
+function meterHTML(b,m,diff){
+  var p=m.pct,left=Math.max(0,XPASS-p),w=bankWords(b);
+  return '<div class="xmeter"><div class="xm-top"><span class="lbl">'+w.meter+'(目安)</span><b class="mono">'+p+'%'+(diff?'<small class="rep-diff up"> +'+diff+'</small>':'')+'</b></div>'+
+    '<div class="xm-bar" role="img" aria-label="'+w.meter+' '+p+'%。'+XPASS+'%で'+w.line+'"><i style="width:'+p+'%"></i><span class="xm-pass" style="left:'+XPASS+'%"></span></div>'+
+    '<div class="xm-row"><span>覚えた '+m.seen+'/'+m.n+' ・ 定着 '+m.firm+'/'+m.n+'</span><span class="xm-pl">'+(p>=XPASS?w.line+'に到達！':w.line+'まであと'+left+'%')+'</span></div></div>';
+}
+function examSections(L){
+  if(!examModeOn())return null;
+  var t=examTarget(L);
+  if(t){var ids=bankUnits(t.bank);return [{key:'x-goal',title:t.name+'をめざす',sub:ids.length>1?'ステップ1〜'+ids.length+'のあとは、合格圏まで終わらないトレーニング':'問題集を準備中(今は1レッスン)',ids:ids}];}
+  return (EXAMS[L]||[]).map(function(g){return {key:'x-'+g.key,title:g.title,sub:g.sub,ids:g.ids.filter(function(u){return !!UNITS[L][u];})};});
+}
+function examIsUnit(uid){return /^x-/.test(uid)&&!!UM[uid];}
+function examLocked(uid){var lv=cabinLv();return lv>=0&&examIsUnit(uid)&&examTier(uid)>lv;}
+function examLockText(L,uid){
+  if(save.mode!=='exam'||!examModeOn()||!examLocked(uid))return '';
+  return '🔒 '+CABINS[examTier(uid)][4];
+}
+function lockSheetHTML(title,t){
+  return '<div class="sheet plain" role="dialog" aria-label="ロック中"><div class="sheet-in"><h3>🔒 '+esc(title)+'</h3>'+
+    '<p style="font-size:14.5px">「'+CABINS[t][1]+'」から使えます。</p>'+
+    '<p class="dim hint">テスト用: 「記録」の「搭乗クラス」で切り替えられます。</p>'+
+    '<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
+}
+function examLockSheet(L,uid){
+  if(!examModeOn()||!examLocked(uid))return false;
+  $('sheetHost').innerHTML=lockSheetHTML(unitTitle(uid),examTier(uid));
+  return true;
+}
+function examNext(L,cur){
+  if(save.mode!=='exam'||!examModeOn())return undefined;
+  var ids=pathIds(L).filter(function(u){return !examLocked(u);}),i,best=null,bd=0;
+  if(!ids.length)return null;
+  var k=cur?ids.indexOf(cur):-1;
+  for(i=1;i<=ids.length;i++){var u=ids[(Math.max(k,-1)+i+ids.length)%ids.length];if(unitRec(L,u).n===0)return u;}
+  for(i=0;i<ids.length;i++){var d=unitDue(L,ids[i]);if(d>bd){bd=d;best=ids[i];}}
+  return best||ids[0];
+}
+/* the training card for a bank: meter, then 終わらないトレーニング (and AI examples once 合格圏 is reached) */
+function trainBlockHTML(b){
+  var full=bankFull(b),m=bankMeter(b),w=bankWords(b),h='';
+  if(full)h+=meterHTML(b,m,0)+'<p class="xm-note">'+(b.study?'用語':'フレーズ')+'の覚え具合から出した目安です。日にちをあけて正解すると上がります。'+(b.study?'':'本番の合否を約束するものではありません。長文・リスニング・作文の練習も続けよう。')+'</p>';
+  else h+='<p class="xm-prep"><b>問題集を準備中</b>今はこの目標のフレーズが'+m.n+'個だけなので、'+w.meter+'はまだ出ません。'+XBANK_FULL+'フレーズそろったら表示します。</p>';
+  if(bankLocked(b))return h+'<p class="dim hint">🔒 この目標のレッスンは「'+CABINS[b.tier][1]+'」から</p>';
+  var next=null;bankUnits(b).some(function(u){if(unitRec(b.L,u).n===0){next=u;return true;}return false;});
+  if(m.seen>=4)h+='<button class="go sm" type="button" data-xtrain="'+esc(b.key)+'">トレーニング(10問)<small>'+(next?'覚えたフレーズを復習 ・ 新しいフレーズは地図のステップで':'復習の時期・苦手・まだ弱いフレーズから出題。何回でも')+'</small></button>';
+  else if(next)h+='<button class="go sm" type="button" data-go="'+esc(next)+'">'+esc(unitTitle(next))+'からはじめる<small>レッスンで覚えたフレーズが、トレーニングに出てきます</small></button>';
+  if(full&&m.pct>=XPASS&&typeof aiDrillAvail==='function'&&aiDrillAvail())
+    h+='<button class="ghost ai-drill" type="button" data-xai="'+esc(b.key)+'">AIが作る新しい例文で練習<small>'+w.line+'に到達したので、同じ表現を別の文で(まちがいがあるかも)</small></button>';
+  return h;
+}
+function xgoalSheet(){
+  var L=save.lang,cur=xgLoad()[L],kinds=XGOALS[L]||[];
+  $('sheetHost').innerHTML='<div class="sheet plain" role="dialog" aria-label="目標を選ぶ"><div class="sheet-in"><h3>目標を選ぼう</h3>'+
+    '<p class="dim" style="font-size:13.5px">選んだ目標の問題集が地図に並びます。全部終わっても、合格圏に届くまでトレーニングが続きます。</p>'+
+    kinds.map(function(k){
+      return '<div class="xg-kind"><div class="xg-kh"><b>'+esc(k.title)+'</b><small>'+esc(k.sub)+'</small></div><div class="xg-chips">'+k.goals.map(function(g){
+        var b=g[1]&&XBANK[g[1]],v=k.key+'|'+g[0],on=cur===v,sub='',cls='xg-chip';
+        if(!b){sub='準備中';cls+=' none';}
+        else if(bankLocked(b)){sub='🔒 '+CABINS[b.tier][4];cls+=' locked';}
+        else if(!bankFull(b))sub='準備中';
+        return '<button class="'+cls+'" type="button" '+(b?'data-xgoal-set="'+esc(v)+'"':'disabled')+' aria-pressed="'+on+'"><b>'+esc(g[0])+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</button>';
+      }).join('')+'</div></div>';
+    }).join('')+
+    (kinds.length?'':'<p class="dim">この言語の検定は準備中です。</p>')+
+    (cur?'<button class="ghost" type="button" data-xgoal-set="">目標をはずす(検定を一覧で見る)</button>':'')+
+    '<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
+}
+function xgoalSet(v){
+  var L=save.lang,o=xgLoad();
+  if(v){var t=xgFind(L,v);if(!t)return;if(bankLocked(t.bank)){$('sheetHost').innerHTML=lockSheetHTML(t.name,t.bank.tier);return;}o[L]=v;}
+  else delete o[L];
+  lsSet(XG_KEY,JSON.stringify(o));
+  if(save.pos)delete save.pos[posKey(L)];
+  closeSheet();render();window.scrollTo(0,0);
+}
+function examHomeHTML(L){
+  if(!examModeOn())return '';
+  if(save.mode==='study')return studyMoreHTML(L);
+  if(save.mode!=='exam')return '';
+  var lv=cabinLv(),t=examTarget(L),h='<section class="card exam-card"><span class="lbl">EXAM COURSE ・ '+CABINS[lv][2]+'</span>';
+  if(t){
+    h+='<div class="xg-head"><h2 class="jh">'+esc(t.name)+'</h2><button class="xg-chg" type="button" data-xgoal>目標を変える</button></div>'+trainBlockHTML(t.bank);
+  }else{
+    h+='<h2 class="jh">検定コース</h2><p class="dim" style="font-size:13.5px;margin-top:4px">目標の級やスコアを選ぶと、その問題集が地図に並びます。'+(lv<1?'':'今は検定ごとの最初のレッスンを一覧で表示中。')+'</p>'+
+       '<button class="go sm" type="button" data-xgoal>目標を選ぶ<small>英検の級・TOEICのスコアなど</small></button>';
+    if(lv<1)h+='<p class="dim hint">🔒 検定コースは「プレミアムエコノミー」から</p>';
+  }
+  h+=(lv>=3?'<button class="ghost" type="button" data-mock-open>本番形式の模試に挑戦<small>時間制限つき ・ 合格ラインの目安つき</small></button>'
+          :'<p class="dim hint">🔒 本番形式の模試(時間制限つき)はファーストから</p>')+
+    '<p class="exam-tm">英検®・TOEIC®・IELTS・TOEFL®・TOPIK・DELE・CILSは、それぞれの団体の商標です。このコースは公式のものではなく、問題はすべてBabel Flightのオリジナルです。</p></section>';
+  return h;
+}
+
+/* ---- 授業の用語(くわしく): 留学モード, 英語, プレミアムエコノミーから ---- */
+var STUDY_MORE=[{bank:'sd-math',title:'数学の用語(くわしく)',sub:'数と式・図形・関数・確率とデータ ・ 英語'},{bank:'sd-sci',title:'理科の用語(くわしく)',sub:'物理・化学・生物・地学 ・ 英語'}];
+(function(){
+  var ps0=pathSections;
+  pathSections=function(lang){
+    var s=ps0.apply(this,arguments);
+    if(save.mode==='study'&&lang==='en'&&cabinLv()>=1)
+      s=s.concat(STUDY_MORE.map(function(x){return {key:'study-'+x.bank,title:x.title,sub:x.sub,ids:bankUnits(XBANK[x.bank])};}));
+    return s;
+  };
+  var uk0=unitKind;
+  unitKind=function(L,uid){if(/^sd-/.test(uid))return '用語';if(/^x-/.test(uid))return '検定';return uk0.apply(this,arguments);};
+})();
+function studyMoreHTML(L){
+  var lv=cabinLv();
+  if(lv<0||L!=='en')return '';
+  var h='<section class="card exam-card study-more"><span class="lbl">STUDY ・ '+CABINS[lv][2]+'</span><h2 class="jh">授業の用語(くわしく)</h2>';
+  if(lv<1)return h+'<p class="dim" style="font-size:13.5px;margin-top:4px">数学と理科の用語128語を、意味と授業での使われ方つきで。</p><p class="dim hint">🔒 「プレミアムエコノミー」から</p></section>';
+  h+='<p class="dim" style="font-size:13.5px;margin-top:4px">数学と理科の用語を、意味と授業での使われ方つきで。答えたあとの説明に、先生が授業で言いそうな英文がのっています。</p>';
+  STUDY_MORE.forEach(function(x){h+='<div class="sm-sub"><b>'+esc(x.title.replace('(くわしく)',''))+'</b>'+trainBlockHTML(XBANK[x.bank])+'</div>';});
+  return h+'</section>';
+}
+
+/* ---- 終わらないトレーニング: due → weak → least firm, 10 at a time ---- */
+var XT=null,XT_LAND=null;
+MODE_TITLE.xtrain='トレーニング';
+if(typeof SHR_MODE==='object')SHR_MODE.xtrain='トレーニング';
+function xtrainPick(b,n){
+  var now=Date.now(),due=[],weak=[],rest=[];
+  bankItems(b).forEach(function(o){
+    var r=itemRec(b.L,o.uid,o.i);
+    if(!r.b)return;
+    if(r.d<=now)due.push(o);else if((r.m||0)>0&&(r.k||0)<2)weak.push(o);else rest.push(o);
+  });
+  due.sort(function(a,c){return itemRec(b.L,a.uid,a.i).d-itemRec(b.L,c.uid,c.i).d;});
+  rest=shuffle(rest).sort(function(a,c){return itemRec(b.L,a.uid,a.i).b-itemRec(b.L,c.uid,c.i).b;});
+  return due.concat(shuffle(weak),rest).slice(0,n);
+}
+function startXtrain(key){
+  var b=XBANK[key];if(!b||b.L!==save.lang||bankLocked(b))return;
+  var items=xtrainPick(b,10);if(items.length<4)return;
+  closeSheet();
+  XT={bank:key,before:bankMeter(b).pct};
+  startFlight({mode:'xtrain',lang:b.L,uid:null,items:shuffle(items)});
+  var title=document.querySelector('#main .fl-id b');if(title)title.textContent='トレーニング: '+b.name;
+}
+function xaiStart(key){
+  var b=XBANK[key];if(!b||b.L!==save.lang||bankLocked(b))return;
+  AID.wrong=shuffle(bankItems(b)).slice(0,3).map(function(o){return UNITS[b.L][o.uid].items[o.i];});AID.L=b.L;
+  aiDrillStart();
+}
+(function(){
+  var c0=completeLesson;
+  completeLesson=function(o){XT_LAND=o&&o.mode==='xtrain'&&XT?XT:null;if(!o||o.mode!=='xtrain')XT=null;return c0.apply(this,arguments);};
+  var a0=aiDrillBtnHTML;
+  aiDrillBtnHTML=function(){
+    var h=a0.apply(this,arguments),x=XT_LAND;XT_LAND=null;
+    if(!x||!XBANK[x.bank])return h;
+    var b=XBANK[x.bank],m=bankMeter(b);
+    return (bankFull(b)?'<div class="card xm-land">'+meterHTML(b,m,Math.max(0,m.pct-x.before))+'</div>':'')+
+      (xtrainPick(b,10).length>=4?'<button class="go" type="button" data-xtrain="'+esc(b.key)+'">続けてトレーニング<small>'+esc(b.name)+' ・ 10問</small></button>':'')+h;
+  };
+})();
+
+/* ---- 模試 (ファースト): one level's bank plus a few phrases from the levels next to it ---- */
+var MOCK=null;
+MODE_TITLE.mock='模試';
+if(typeof SHR_MODE==='object')SHR_MODE.mock='模試';
+function mockBanks(L){
+  var out=[];(XGOALS[L]||[]).forEach(function(k){k.goals.forEach(function(g){if(g[1]&&XBANK[g[1]]&&out.indexOf(g[1])<0)out.push(g[1]);});});
+  return out;
+}
+function mockSheet(){
+  var L=save.lang,ks=mockBanks(L),t=examTarget(L);
+  if(t){var i=ks.indexOf(t.bank.key);if(i>0){ks.splice(i,1);ks.unshift(t.bank.key);}}
+  $('sheetHost').innerHTML='<div class="sheet plain" role="dialog" aria-label="模試"><div class="sheet-in"><h3>模試を選ぼう</h3>'+
+    '<p class="dim" style="font-size:13.5px">選んだレベルの問題集と、前後のレベルから出題。1問20秒の時間制限つきです。復習の記録には入りません。</p><div class="opt-list">'+
+    ks.map(function(k){var n=mockItems(L,k).length;return '<button class="choice" type="button" data-mock="'+esc(k)+'"><b>'+esc(XBANK[k].name)+'</b><small>'+n+'問 ・ 制限時間 '+fmtSec(n*20)+'</small></button>';}).join('')+
+    '</div><button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
+}
+function mockItems(L,key){
+  var ks=mockBanks(L),k=ks.indexOf(key),b=XBANK[key];if(!b)return [];
+  var own=shuffle(bankItems(b)).slice(0,16),extra=own.length>=16?2:4,out=own;
+  [ks[k-1],ks[k+1]].forEach(function(n){if(n&&XBANK[n])out=out.concat(shuffle(bankItems(XBANK[n])).slice(0,extra));});
+  return out;
+}
+function fmtSec(s){s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+pad2(s%60);}
+function startMock(key){
+  var L=save.lang;if(cabinLv()<3||!XBANK[key]||XBANK[key].L!==L)return;
+  closeSheet();
+  var items=shuffle(mockItems(L,key));
+  startFlight({mode:'mock',lang:L,uid:null,items:items});
+  var limit=items.length*20;
+  MOCK={uid:key,t0:Date.now(),limit:limit,timeout:false,iv:0};
+  var top=document.querySelector('#main .fl-top'),title=document.querySelector('#main .fl-id b');
+  if(title)title.textContent='模試: '+XBANK[key].name;
+  if(top)top.insertAdjacentHTML('beforeend','<div class="mock-tm" id="mockTm" role="timer" aria-label="残り時間">'+fmtSec(limit)+'</div>');
+  var m=MOCK;
+  m.iv=setInterval(function(){
+    if(MOCK!==m||!F||F.mode!=='mock'||view!=='flight'){clearInterval(m.iv);if(MOCK===m&&(!F||F.mode!=='mock'))MOCK=null;return;}
+    var left=m.limit-(Date.now()-m.t0)/1000,el=$('mockTm');
+    if(el){el.textContent=fmtSec(left);el.classList.toggle('low',left<=30);}
+    if(left<=0){m.timeout=true;clearInterval(m.iv);closeSheet();land();}
+  },250);
+}
+function landMock(){
+  var m=MOCK||{t0:Date.now()},total=F.queue.length,corr=F.corr,pct=Math.round(corr/Math.max(1,total)*100),pass=pct>=70;
+  var used=(Date.now()-m.t0)/1000;
+  if(m.iv)clearInterval(m.iv);MOCK=null;
+  completeLesson({L:F.lang,uid:null,mode:'mock',stars:pct>=90?3:pct>=70?2:1,corr:corr,answered:F.corr+F.mist,
+    grade:[pass?'合格ライン突破！':'あと少し！',(m.timeout?'TIME UP ・ ':'')+'SCORE '+pct+'%',
+           '正解 '+corr+' / '+total+'問 ・ かかった時間 '+fmtSec(used)+' ・ 合格ラインの目安は70%'],
+    wrong:[],wrongTitle:'',wrongNote:''});
+}
+
+/* ---- 発音チェック (speech recognition built into the browser; nothing is sent to this site) ---- */
+var SRX={rec:null};
+function srCtor(){return window.SpeechRecognition||window.webkitSpeechRecognition||null;}
+function srStop(){if(SRX.rec){try{SRX.rec.abort();}catch(e){}SRX.rec=null;}}
+function srListen(lang,done,state){
+  var C=srCtor();if(!C){done(null,'unsupported');return;}
+  srStop();
+  var r=new C(),fin=false;SRX.rec=r;
+  r.lang=lang;r.interimResults=false;r.maxAlternatives=3;r.continuous=false;
+  function end(alts,err){if(fin)return;fin=true;if(SRX.rec===r)SRX.rec=null;if(state)state(false);done(alts,err);}
+  r.onresult=function(ev){var res=ev.results&&ev.results[0],alts=[];if(res)for(var i=0;i<res.length;i++)alts.push(res[i].transcript);end(alts.length?alts:null,alts.length?null:'no-speech');};
+  r.onerror=function(ev){end(null,(ev&&ev.error)||'error');};
+  r.onend=function(){end(null,'no-speech');};
+  try{r.start();if(state)state(true);}catch(e){end(null,'error');}
+}
+function srErrText(c){
+  if(c==='not-allowed'||c==='service-not-allowed')return 'マイクが許可されていません。ブラウザの設定でマイクを許可してね。';
+  if(c==='no-speech'||c==='aborted')return '声が聞き取れませんでした。もう一度、はっきり言ってみてね。';
+  if(c==='unsupported')return 'このブラウザは音声認識に対応していません(ChromeやSafariで使えます)。';
+  if(c==='network')return '音声認識には通信が必要です。電波を確認してね。';
+  if(c==='language-not-supported')return 'この端末では、この言語の音声認識が使えません。';
+  return 'うまく聞き取れませんでした。もう一度試してね。';
+}
+var NUMW=['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen','twenty'];
+function normSay(s,L){
+  s=String(s||'').toLowerCase();
+  if(L!=='ko')s=s.normalize('NFD').replace(/[̀-ͯ]/g,'');
+  s=s.replace(/[’‘`]/g,"'").replace(/[^\p{L}\p{N}' ]+/gu,' ').replace(/\s+/g,' ').trim();
+  if(L==='en')s=s.split(' ').map(function(w){return /^\d+$/.test(w)&&+w<=20?NUMW[+w]:w;}).join(' ');
+  return s;
+}
+function lcsLen(a,b){
+  var prev=new Array(b.length+1).fill(0);
+  for(var i=1;i<=a.length;i++){var cur=new Array(b.length+1).fill(0);for(var j=1;j<=b.length;j++)cur[j]=a[i-1]===b[j-1]?prev[j-1]+1:Math.max(prev[j],cur[j-1]);prev=cur;}
+  return prev[b.length];
+}
+function sayScore(target,heard,L){
+  var a=normSay(target,L),b=normSay(heard,L);
+  if(!a||!b)return 0;
+  if(L==='ko'){a=Array.from(a.replace(/ /g,'').normalize('NFD'));b=Array.from(b.replace(/ /g,'').normalize('NFD'));}
+  else{a=a.split(' ');b=b.split(' ');}
+  return 2*lcsLen(a,b)/(a.length+b.length);
+}
+function micIcon(){return '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg>';}
+function pronBoxHTML(){
+  if(!cabinTester()||!srCtor()||!F||!F.cur)return '';
+  return '<div class="pron"><button class="ghost pron-go" type="button" data-pron>'+micIcon()+'<span>発音チェック<small>ボタンを押して、言ってみよう</small></span></button><div id="pronOut" class="pron-out" aria-live="polite"></div></div>';
+}
+function pronRun(btn){
+  if(!F||!F.cur)return;
+  if(SRX.rec){srStop();return;}
+  var d=dat(F.cur.it),L=F.lang,out=$('pronOut'),label=btn.querySelector('span');
+  srListen(LANGS[L].tts,function(alts,err){
+    var o=$('pronOut');if(!o)return;
+    if(!alts){o.className='pron-out bad';o.textContent=srErrText(err);return;}
+    var best=0,heard=alts[0];
+    alts.forEach(function(a){var s=sayScore(d.t,a,L);if(s>best){best=s;heard=a;}});
+    var lv=best>=0.9?['good','◎ ばっちり！ ちゃんと伝わる発音です']:best>=0.6?['ok','◯ おしい！ 聞こえた言葉と見比べてみよう']:['bad','△ もう一度！ ゆっくり、はっきり言ってみよう'];
+    o.className='pron-out '+lv[0];
+    o.innerHTML='<b>'+lv[1]+'</b><span>聞こえた言葉: <q class="'+(L==='ko'?'ko':'')+'">'+esc(heard)+'</q></span>';
+    if(lv[0]==='good'&&typeof chimeOK==='function')chimeOK();
+  },function(on){
+    btn.classList.toggle('rec',on);
+    if(label)label.innerHTML=on?'聞いています…<small>言い終わったら少し待ってね(もう一度押すと止まる)</small>':'発音チェック<small>ボタンを押して、言ってみよう</small>';
+    if(on&&out){out.className='pron-out';out.textContent='';}
+  });
+}
+document.addEventListener('click',function(e){var t=e.target&&e.target.closest&&e.target.closest('[data-next],[data-abort],[data-close-sheet],[data-role-back]');if(t)srStop();},true);
+
+/* ---- 弱点レポート (kept on this device in the test version) ---- */
+var REP_KEY='babelflight.report.v1';
+var KIND_JP={t2j:'意味を選ぶ',j2t:'言い方を選ぶ',listen:'聞き取り',listenjp:'聞いて意味を選ぶ',build:'並べ替え',type:'入力',cloze:'穴埋め',aiq:'AIの例文'};
+function repLoad(){try{var o=JSON.parse(lsGet(REP_KEY)||'{}');return o&&typeof o==='object'?o:{};}catch(e){return {};}}
+function repNote(L,k,ok){
+  if(!cabinTester()||!LANGS[L])return;
+  var o=repLoad(),r=o[L]||(o[L]={d:{},k:{}}),day=dayStr();
+  var d=r.d[day]||(r.d[day]=[0,0]);d[0]++;if(ok)d[1]++;
+  var kk=r.k[k]||(r.k[k]=[0,0]);kk[0]++;if(ok)kk[1]++;
+  var days=Object.keys(r.d).sort();while(days.length>60)delete r.d[days.shift()];
+  lsSet(REP_KEY,JSON.stringify(o));
+}
+function repTrendSVG(r){
+  var W=300,H=96,n=14,bw=14,gap=(W-n*bw)/(n-1),now=Date.now(),cells=[];
+  for(var i=n-1;i>=0;i--){var day=dayStr(new Date(now-i*864e5)),v=r.d[day];cells.push({day:day,n:v?v[0]:0,p:v&&v[0]?Math.round(v[1]/v[0]*100):null});}
+  var s='<svg class="rep-trend" viewBox="0 0 '+W+' '+(H+18)+'" role="img" aria-label="この14日の正答率。'+cells.filter(function(c){return c.p!==null;}).map(function(c){return c.day.slice(5).replace('-','/')+' '+c.p+'%';}).join('、')+'">';
+  s+='<line x1="0" x2="'+W+'" y1="'+(H-0.7*H)+'" y2="'+(H-0.7*H)+'" class="rep-ref"/><text x="'+W+'" y="'+(H-0.7*H-4)+'" text-anchor="end" class="rep-ax">70%</text>';
+  cells.forEach(function(c,i){
+    var x=i*(bw+gap);
+    if(c.p===null){s+='<rect x="'+x+'" y="'+(H-2)+'" width="'+bw+'" height="2" rx="1" class="rep-none"><title>'+c.day+' 解答なし</title></rect>';return;}
+    var h=Math.max(3,c.p/100*H);
+    s+='<rect x="'+x+'" y="'+(H-h)+'" width="'+bw+'" height="'+h+'" rx="4" class="rep-bar"><title>'+c.day+' 正答率'+c.p+'%('+c.n+'問)</title></rect>';
+  });
+  s+='<text x="0" y="'+(H+15)+'" class="rep-ax">'+cells[0].day.slice(5).replace('-','/')+'</text><text x="'+W+'" y="'+(H+15)+'" text-anchor="end" class="rep-ax">今日</text></svg>';
+  return s;
+}
+function repKindsHTML(r){
+  var rows=Object.keys(r.k).filter(function(k){return KIND_JP[k]&&r.k[k][0]>=3;}).map(function(k){var v=r.k[k];return {k:k,n:v[0],p:Math.round(v[1]/v[0]*100)};})
+    .sort(function(a,b){return a.p-b.p;});
+  if(!rows.length)return '<p class="dim" style="font-size:13px">それぞれの形式を3問以上解くと、ここに出てきます。</p>';
+  return '<ul class="rep-kinds">'+rows.map(function(x,i){
+    return '<li><span class="rk-n">'+KIND_JP[x.k]+(i===0&&rows.length>1&&x.p<rows[rows.length-1].p?'<em>いちばん苦手</em>':'')+'</span>'+
+      '<span class="rk-bar"><i style="width:'+Math.max(2,x.p)+'%"></i></span><b>'+x.p+'%</b><small>'+x.n+'問</small></li>';}).join('')+'</ul>';
+}
+function reportCardHTML(L){
+  var lv=cabinLv();if(lv<0)return '';
+  if(lv<1)return '<section class="card report off"><span class="lbl">WEAKNESS REPORT</span><h2 class="jh">弱点レポート</h2>'+
+    '<p class="dim" style="font-size:13.5px;margin-top:4px">🔒 プレミアムエコノミーから使えます。苦手なフレーズや、正答率の変化をまとめて見られます。</p></section>';
+  var r=repLoad()[L]||{d:{},k:{}},weak=weakList(L).slice(0,5),now=Date.now(),wk=[0,0],pw=[0,0];
+  for(var i=0;i<14;i++){var v=r.d[dayStr(new Date(now-i*864e5))];if(v){var t=i<7?wk:pw;t[0]+=v[0];t[1]+=v[1];}}
+  var acc=wk[0]?Math.round(wk[1]/wk[0]*100):null,pacc=pw[0]?Math.round(pw[1]/pw[0]*100):null,diff=acc!==null&&pacc!==null?acc-pacc:null;
+  var h='<section class="card report"><div class="card-h"><h2 class="jh">弱点レポート</h2><span class="lbl">'+esc(LANGS[L].name)+' ・ '+(lv>=2?'詳しい版':'かんたん版')+'</span></div>'+
+    '<div class="rep-kpis"><div><span class="lbl">この7日の解答</span><b>'+wk[0]+'<small>問</small></b></div>'+
+    '<div><span class="lbl">この7日の正答率</span><b>'+(acc===null?'—':acc+'<small>%</small>')+'</b>'+(diff!==null?'<span class="rep-diff '+(diff>=0?'up':'down')+'">先週より '+(diff>=0?'+':'')+diff+'pt</span>':'')+'</div></div>'+
+    '<h3 class="rep-h">苦手なフレーズ TOP5</h3>'+
+    (weak.length?'<ol class="rep-weak">'+weak.map(function(x){var d=UNITS[L][x.uid]&&UNITS[L][x.uid].items[x.i];if(!d)return '';
+        return '<li><b class="'+(L==='ko'?'ko':'')+'">'+esc(d.t)+'</b><small>'+esc(d.jp)+' ・ ミス'+x.m+'回</small></li>';}).join('')+'</ol>'+
+        '<button class="go sm" type="button" data-mode="weak">弱点コースで練習する</button>'
+      :'<p class="dim" style="font-size:13px">まだ苦手なフレーズはありません。間違えたフレーズがここに出てきます。</p>');
+  if(lv>=2){
+    h+='<h3 class="rep-h">この14日の正答率</h3>'+repTrendSVG(r)+'<h3 class="rep-h">問題の形式ごとの正答率</h3>'+repKindsHTML(r);
+  }else h+='<p class="dim hint">🔒 正答率の推移と、問題の形式ごとの得意・苦手はビジネスから</p>';
+  if(lv>=3)h+='<div class="coach"><button class="ghost" type="button" data-coach>AIコーチにアドバイスをもらう</button><div id="coachOut" class="aiout" aria-live="polite"></div></div>';
+  else if(lv===2)h+='<p class="dim hint">🔒 AIコーチのアドバイスはファーストから</p>';
+  return h+'<p class="dim hint">テスト版のため、レポートの記録はこの端末だけに保存されます。</p></section>';
+}
+function coachRun(){
+  var L=save.lang,out=$('coachOut');if(!out)return;
+  if(!(typeof SAI==='object'&&SAI.enabled)){out.textContent='AIは準備中です(サイトのAIキーの設定待ち)。';return;}
+  if(!(typeof ACCT==='object'&&ACCT.me)){out.textContent='ログインすると使えます。';return;}
+  var r=repLoad()[L]||{d:{},k:{}},weak=weakList(L).slice(0,5).map(function(x){return UNITS[L][x.uid].items[x.i];}).filter(Boolean);
+  var kinds=Object.keys(r.k).filter(function(k){return KIND_JP[k]&&r.k[k][0]>=3;}).map(function(k){return KIND_JP[k]+' '+Math.round(r.k[k][1]/r.k[k][0]*100)+'%('+r.k[k][0]+'問)';});
+  var tot=[0,0];Object.keys(r.d).forEach(function(k){tot[0]+=r.d[k][0];tot[1]+=r.d[k][1];});
+  var body={lang:L,
+    phrase:(weak.map(function(d){return d.t;}).join(' / ')||'(苦手なフレーズはまだありません)').slice(0,300),
+    jp:(weak.map(function(d){return d.jp;}).join(' / ')||'(なし)').slice(0,300),reading:'',
+    note:('弱点レポートのデータ: これまでの解答 '+tot[0]+'問、正答率 '+(tot[0]?Math.round(tot[1]/tot[0]*100):0)+'%。問題の形式ごとの正答率: '+(kinds.join('、')||'まだデータが少ない')+'。上のフレーズは間違えた回数が多いものです。').slice(0,600),
+    question:'この弱点データを見て、これからの勉強のしかたを3つ、具体的にアドバイスしてください。'};
+  out.textContent='AIコーチが考え中…';out.classList.add('wait');
+  saiPost('/api/ai/ask',body).then(function(res){
+    var left=res.headers.get('x-ai-left');if(left!==null&&SAI.left){SAI.left.ask=parseInt(left,10);}
+    if(!res.ok)return res.json().catch(function(){return {};}).then(function(j){throw j;});
+    return res.text();
+  }).then(function(t){out.classList.remove('wait');out.textContent=t;},function(j){out.classList.remove('wait');out.textContent=saiErr(j,'ask');});
+}
+
+/* ---- AI会話ロールプレイ (on top of the AI管制官 engine) ---- */
+var ROLE_SC=[
+ {id:'cabin',jp:'機内でCAと話す',sub:'飲み物や毛布をお願いする',who:'CABIN CREW',sit:'国際線の機内。食事の時間です。客室乗務員に話しかけて、飲み物を頼んだり、困っていることを伝えよう。',
+  hint:{en:'Excuse me, could I have some water, please?',ko:'저기요, 물 좀 주시겠어요?',es:'Perdone, ¿me puede traer un poco de agua, por favor?',it:"Scusi, potrei avere un po' d'acqua, per favore?"}},
+ {id:'immigration',jp:'入国審査',sub:'目的・日数・泊まる場所を答える',who:'IMMIGRATION',sit:'空港の入国審査。係官にあいさつしてパスポートを渡し、質問に答えて入国しよう。',
+  hint:{en:'Hello. Here is my passport.',ko:'안녕하세요. 여기 여권이요.',es:'Hola. Aquí tiene mi pasaporte.',it:'Buongiorno. Ecco il mio passaporto.'}},
+ {id:'hotel',jp:'ホテルのチェックイン',sub:'予約を伝えて、朝食やWi-Fiを聞く',who:'FRONT DESK',sit:'ホテルのフロント。予約していることを伝えて、チェックインしよう。',
+  hint:{en:'Hi, I have a reservation under the name Sato.',ko:'안녕하세요. 사토 이름으로 예약했어요.',es:'Hola, tengo una reserva a nombre de Sato.',it:'Buonasera, ho una prenotazione a nome Sato.'}},
+ {id:'restaurant',jp:'レストランで注文',sub:'席・注文・アレルギー・お会計',who:'SERVER',sit:'レストランに入りました。席をお願いして、料理と飲み物を注文しよう。',
+  hint:{en:'Hi, a table for one, please.',ko:'안녕하세요. 한 명이에요.',es:'Hola, una mesa para uno, por favor.',it:'Buonasera, un tavolo per uno, per favore.'}},
+ {id:'directions',jp:'道をたずねる',sub:'駅への行き方を聞く',who:'LOCAL',sit:'街で道に迷いました。近くの人に、駅への行き方をたずねよう。',
+  hint:{en:'Excuse me, how can I get to the station?',ko:'실례합니다. 역에 어떻게 가요?',es:'Perdone, ¿cómo puedo llegar a la estación?',it:'Scusi, come arrivo alla stazione?'}},
+ {id:'homestay',jp:'ホームステイ初日',sub:'あいさつ・家のルール・好きな食べ物',who:'HOST',sit:'ホームステイ先に着きました。ホストファミリーにあいさつして、自己紹介しよう。',
+  hint:{en:"Hi, nice to meet you! I'm Ken from Japan.",ko:'안녕하세요! 일본에서 온 켄이에요.',es:'¡Hola, mucho gusto! Soy Ken, de Japón.',it:'Ciao, piacere! Sono Ken, vengo dal Giappone.'}},
+ {id:'class',jp:'授業で先生に質問',sub:'宿題や授業の内容を聞く',who:'TEACHER',sit:'留学先の授業のあと。先生に話しかけて、宿題について質問しよう。',
+  hint:{en:'Excuse me, I have a question about the homework.',ko:'선생님, 숙제에 대해 질문이 있어요.',es:'Perdone, profesor, tengo una pregunta sobre los deberes.',it:'Scusi, professore, ho una domanda sui compiti.'}},
+ {id:'interview',jp:'スピーキング試験・面接',sub:'自分のことを話す',who:'EXAMINER',sit:'スピーキング試験の部屋に入りました。試験官にあいさつして、質問に答えよう。',
+  hint:{en:'Good morning. Nice to meet you.',ko:'안녕하세요. 만나서 반갑습니다.',es:'Buenos días. Encantado de conocerle.',it:'Buongiorno. Piacere di conoscerla.'}}
+];
+var ROLE_LIM=[0,5,15,30],ROLE_KEY='babelflight.roleDay';
+var ROLE={sc:null,L:'en',log:[],ex:[],busy:false,done:false,ctl:null,counted:false,hint:false};
+function roleUsed(){try{var o=JSON.parse(lsGet(ROLE_KEY)||'{}');return o&&o.d===dayStr()?(o.n|0):0;}catch(e){return 0;}}
+function roleLeft(){var lv=cabinLv();return lv<0?0:Math.max(0,ROLE_LIM[lv]-roleUsed());}
+function roleAiOn(){return typeof SAI==='object'&&SAI.enabled&&typeof ACCT==='object'&&!!ACCT.me;}
+function roleCardHTML(L){
+  var lv=cabinLv();if(lv<0)return '';
+  var h='<section class="card mode role-card"><span class="lbl">AI ROLEPLAY ・ '+esc(LANGS[L].name)+'</span><h2 class="jh">AI会話ロールプレイ</h2>'+
+    '<p class="dim">機内のCA、入国審査官、ホテルの人などの役をAIが演じます。'+esc(LANGS[L].name)+'で返事をすると、採点とお手本が出ます。</p>';
+  if(lv<1)return h+'<p class="warn">🔒 プレミアムエコノミーから使えます</p></section>';
+  if(!roleAiOn())return h+'<p class="warn">'+(typeof SAI==='object'&&!SAI.enabled?'AIは準備中です(サイトのAIキーの設定待ち)。':'ログインすると使えます。')+'</p></section>';
+  var left=roleLeft();
+  return h+(left>0?'<button class="go sm" type="button" data-role>はじめる</button>':'<p class="warn">今日のロールプレイはここまで。また明日ね！</p>')+
+    '<p class="sai-left">'+cabinName(lv)+': 1日'+ROLE_LIM[lv]+'回 ・ 今日はあと'+left+'回</p></section>';
+}
+function roleLogHTML(){
+  var sc=ROLE.sc,ko=ROLE.L==='ko'?' ko':'';
+  return ROLE.log.map(function(m,i){
+    if(m.who==='ai')return '<div class="radio"><span class="lbl">'+esc(sc.who)+'</span><p class="'+ko+'" lang="'+ROLE.L+'">'+esc(m.text)+'</p><button class="mini" type="button" data-role-say="'+i+'" aria-label="もう一度聞く">'+speakerIcon()+'</button></div>';
+    var fb='';
+    if(m.err)fb='<div class="fb warn">'+esc(m.err)+'</div>';
+    else if(m.score!==undefined)fb='<div class="fb"><span class="fstars" aria-label="評価 '+m.score+' / 3">'+'★★★'.slice(0,m.score)+'<em>'+'★★★'.slice(m.score)+'</em></span>'+esc(m.fb||'')+(m.better?'<div class="better"><span class="lbl">お手本</span><span class="'+ko+'" lang="'+ROLE.L+'">'+esc(m.better)+'</span></div>':'')+'</div>';
+    else if(m.wait)fb='<div class="fb dim">相手が考え中…</div>';
+    return '<div class="me"><span class="lbl">あなた</span><p class="'+ko+'" lang="'+ROLE.L+'">'+esc(m.text)+'</p></div>'+fb;
+  }).join('');
+}
+function roleHTML(){
+  var L=ROLE.L,LG=LANGS[L],sc=ROLE.sc;
+  var h='<div class="fl-top"><button class="x" type="button" data-role-back aria-label="戻る">'+closeIcon()+'</button><div class="fl-id"><span class="lbl">AI会話ロールプレイ ・ '+esc(LG.name)+'</span><b>'+(sc?esc(sc.jp):'場面を選ぼう')+'</b></div></div>';
+  if(!sc){
+    return h+'<p class="dim lead">AIが相手の役を演じます。'+esc(LG.name)+'で返事をしよう。返事ごとに採点とお手本が出ます。</p><div class="opt-list">'+
+      ROLE_SC.map(function(s,i){return '<button class="choice" type="button" data-role-sc="'+i+'"><b>'+esc(s.jp)+'</b><small>'+esc(s.sub)+'</small></button>';}).join('')+'</div>'+
+      '<p class="dim hint">'+cabinName(cabinLv())+': 1日'+ROLE_LIM[cabinLv()]+'回まで(今日はあと'+roleLeft()+'回)。AIの答えはまちがうこともあります。</p><div class="pad-b"></div>';
+  }
+  h+='<div class="card sit"><span class="lbl">場面</span><p>'+esc(sc.sit)+'</p></div><div id="roleLog" class="atclog role-log">'+roleLogHTML()+'</div>';
+  if(ROLE.done){
+    h+='<div class="card" style="text-align:center"><b>会話終了。おつかれさま！</b><div class="row2" style="margin-top:10px"><button class="ghost" type="button" data-role-sc="'+ROLE_SC.indexOf(sc)+'" style="flex:1">もう一度</button><button class="ghost" type="button" data-role-list style="flex:1">別の場面</button></div></div>';
+  }else{
+    h+='<div class="atc-in"><div id="roleHint" class="hintline'+(ROLE.hint?'':' hidden-hint')+'">'+(ROLE.hint?'例: '+esc(sc.hint[L]):'')+'</div>'+
+      '<div class="row2"><input id="roleIn" class="typebox'+(L==='ko'?' ko':'')+'" type="text" lang="'+L+'" placeholder="'+esc(LG.name)+'で返事を書こう" aria-label="返事" autocomplete="off" autocapitalize="none" spellcheck="false">'+
+      (srCtor()?'<button class="sq role-mic" type="button" data-role-mic aria-label="声で入力">'+micIcon()+'</button>':'')+
+      '<button class="go" type="button" data-role-send style="width:auto;margin:0;padding:12px 16px">送信</button></div>'+
+      (ROLE.log.length?'':'<button class="sq" type="button" data-role-hint>最初の言い方のヒント</button>')+'</div>';
+  }
+  return h+'<div class="pad-b"></div>';
+}
+function roleRefresh(){var l=$('roleLog');if(l)l.innerHTML=roleLogHTML();window.scrollTo(0,document.body.scrollHeight);}
+function roleStart(i){
+  if(ROLE.ctl){try{ROLE.ctl.abort();}catch(e){}}
+  ROLE={sc:ROLE_SC[i],L:ROLE.L,log:[],ex:[],busy:false,done:false,ctl:null,counted:false,hint:false};
+  render();window.scrollTo(0,0);
+}
+function roleSend(){
+  var inp=$('roleIn');if(!inp||ROLE.busy||ROLE.done||!ROLE.sc)return;
+  var text=inp.value.trim().slice(0,300);if(!text)return;
+  if(!ROLE.counted){
+    if(roleLeft()<=0){ROLE.log.push({who:'me',text:text,err:'今日のロールプレイはここまで。また明日ね！'});roleRefresh();return;}
+    lsSet(ROLE_KEY,JSON.stringify({d:dayStr(),n:roleUsed()+1}));ROLE.counted=true;
+  }
+  inp.value='';ROLE.busy=true;
+  var me={who:'me',text:text,wait:true};ROLE.log.push(me);roleRefresh();
+  var ctl=typeof AbortController==='function'?new AbortController():null;ROLE.ctl=ctl;
+  var at=ROLE,sc=ROLE.sc,L=ROLE.L;
+  saiPost('/api/ai/atc',{scenario:'role:'+sc.id+':'+L,history:ROLE.ex.slice(),pilot:text},ctl&&ctl.signal)
+  .then(function(r){return r.json().catch(function(){return {};});})
+  .then(function(j){
+    if(ROLE!==at)return;
+    ROLE.busy=false;me.wait=false;
+    if(!j||!j.ok){
+      me.err=j&&j.error==='plan'?'このアカウントでは使えません。':saiErr(j,'atc');
+      if(j&&j.error==='too_long'){ROLE.done=true;render();window.scrollTo(0,document.body.scrollHeight);}else roleRefresh();
+      return;
+    }
+    var s=parseInt(j.score,10);me.score=isNaN(s)?0:clamp(s,0,3);me.fb=String(j.feedback_ja||'');me.better=String(j.better||'');
+    var ai=String(j.atc||'').trim();
+    ROLE.ex.push({pilot:text,atc:ai,score:me.score,feedback:me.fb,better:me.better});
+    if(ai){ROLE.log.push({who:'ai',text:ai});speak(ai,LANGS[L].tts,false,true);}
+    if(j.done===true||ROLE.ex.length>=8){ROLE.done=true;render();window.scrollTo(0,document.body.scrollHeight);}
+    else roleRefresh();
+    if(me.score>=3)chimeOK();
+  },function(e){
+    if(ROLE!==at)return;
+    ROLE.busy=false;me.wait=false;
+    if(e&&e.name==='AbortError')return;
+    me.err='通信できませんでした。電波を確認して、もう一度送ってね。';roleRefresh();
+  });
+}
+
+/* ---- clicks ---- */
+document.addEventListener('click',function(e){
+  var t=e.target&&e.target.closest&&e.target.closest('button');if(!t)return;
+  var a=function(n){return t.hasAttribute(n);},g=function(n){return t.getAttribute(n);};
+  if(a('data-cabin-set')){var v=parseInt(g('data-cabin-set'),10);if(!(v>=0&&v<=3)||!cabinTester())return;lsSet(CAB_KEY,String(v));lsSet(CAB_DKEY,String(v));applyCabin();render();return;}
+  if(a('data-cabin-design')){var dv=parseInt(g('data-cabin-design'),10);if(!(dv>=0&&dv<=cabinLv()))return;lsSet(CAB_DKEY,String(dv));applyCabin();render();return;}
+  if(a('data-mock-open')){if(cabinLv()>=3)mockSheet();return;}
+  if(a('data-xgoal')){xgoalSheet();return;}
+  if(a('data-xgoal-set')){xgoalSet(g('data-xgoal-set'));return;}
+  if(a('data-xtrain')){startXtrain(g('data-xtrain'));return;}
+  if(a('data-xai')){xaiStart(g('data-xai'));return;}
+  if(a('data-mock')){startMock(g('data-mock'));return;}
+  if(a('data-pron')){pronRun(t);return;}
+  if(a('data-coach')){coachRun();return;}
+  if(a('data-role')){if(cabinLv()<1)return;ROLE={sc:null,L:save.lang,log:[],ex:[],busy:false,done:false,ctl:null,counted:false,hint:false};view='role';render();window.scrollTo(0,0);return;}
+  if(a('data-role-sc')){roleStart(parseInt(g('data-role-sc'),10));return;}
+  if(a('data-role-list')){ROLE.sc=null;render();window.scrollTo(0,0);return;}
+  if(a('data-role-back')){if(ROLE.ctl){try{ROLE.ctl.abort();}catch(x){}}ROLE.busy=false;if(ROLE.sc){ROLE.sc=null;render();window.scrollTo(0,0);}else go('review');return;}
+  if(a('data-role-send')){roleSend();return;}
+  if(a('data-role-hint')){ROLE.hint=true;var hl=$('roleHint');if(hl&&ROLE.sc){hl.textContent='例: '+ROLE.sc.hint[ROLE.L];hl.classList.remove('hidden-hint');}t.hidden=true;return;}
+  if(a('data-role-say')){var m=ROLE.log[parseInt(g('data-role-say'),10)];if(m)speak(m.text,LANGS[ROLE.L].tts,false,true);return;}
+  if(a('data-role-mic')){
+    if(SRX.rec){srStop();return;}
+    srListen(LANGS[ROLE.L].tts,function(alts,err){var inp=$('roleIn');if(!inp)return;if(alts){inp.value=alts[0];inp.focus();}else{var hl=$('roleHint');if(hl){hl.textContent=srErrText(err);hl.classList.remove('hidden-hint');}}},
+      function(on){t.classList.toggle('rec',on);});
+    return;
+  }
+});
+document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target&&e.target.id==='roleIn'&&!e.isComposing){e.preventDefault();roleSend();}});
+
+/* ---- ラウンジ・スイート: swipe left on the answer card for 次へ, a small tap of vibration when right ---- */
+(function(){
+  var sx=0,sy=0,st=0,on=false;
+  function swipeOK(){var d=rootEl.getAttribute('data-cabin');return d==='lounge'||d==='suite';}
+  document.addEventListener('touchstart',function(e){
+    var s=e.target&&e.target.closest&&e.target.closest('#sheetHost .sheet');if(!s||!swipeOK()||!e.touches||!e.touches[0])return;
+    on=true;sx=e.touches[0].clientX;sy=e.touches[0].clientY;st=Date.now();
+  },{passive:true});
+  document.addEventListener('touchend',function(e){
+    if(!on)return;on=false;
+    var p=e.changedTouches&&e.changedTouches[0];if(!p)return;
+    var dx=p.clientX-sx,dy=p.clientY-sy;
+    var up=rootEl.getAttribute('data-cabin')==='suite';
+    if(((dx<-70&&Math.abs(dy)<60)||(up&&dy<-60&&Math.abs(dx)<70))&&Date.now()-st<800){var b=document.querySelector('#sheetHost [data-next]');if(b){buzz(8);b.click();}}
+  },{passive:true});
+  var c0=chimeOK;chimeOK=function(){if(swipeOK())buzz(12);return c0.apply(this,arguments);};
+})();
+applyCabin();
+/* ================= 窓側の席・スイート: their own home and question screens (standalone site; test account only) =================
+   窓側の席 (プレミアムエコノミー): the lessons are round plane windows in a row you swipe sideways, and the question sits in a window.
+   スイート (ファースト): one big thing per screen, swiped upward; the question is set in large serif type.
+   Only the test account can pick these designs, so nobody else sees any of this. */
+function cabinLayout(){var d=cabinDesign();return d>0?CAB_DESIGN[d][0]:'';}
+var SUITE_FONT=false;
+function suiteFonts(){
+  if(SUITE_FONT)return;SUITE_FONT=true;
+  var l=document.createElement('link');l.rel='stylesheet';
+  l.href='https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Shippori+Mincho:wght@500;700&display=swap';
+  document.head.appendChild(l);
+}
+function helloWord(){var h=new Date().getHours();return h<4||h>=18?'こんばんは':h<11?'おはよう':'こんにちは';}
+function modeName(L){
+  if(save.mode==='exam'){var t=typeof examTarget==='function'?examTarget(L):null;return t?t.name+'をめざす':'検定モード';}
+  if(save.mode==='job'){var p=profById(save.prof);return p?p.jp+'の会話':'職業モード';}
+  if(save.mode==='study')return '留学モード';
+  return '日常会話モード';
+}
+function jobButtonsHTML(){
+  if(save.mode!=='job')return '';
+  var p=profById(save.prof);if(!p)return '';
+  return '<button class="course" type="button" data-picker><span class="ccode">'+p.code+'</span><span class="ctext"><span class="lbl">職業コース</span><b>'+esc(p.jp)+'</b><small>タップして変更 ・ 13職業から選べます</small></span><span class="chev" aria-hidden="true">›</span></button>'+
+    (p.id==='pilot'?'<button class="course atcbtn" type="button" data-atc><span class="ccode">ATC</span><span class="ctext"><span class="lbl">AIロールプレイ ・ 英語</span><b>AI管制官と交信練習</b><small>羽田空港で、管制官役のAIと無線交信</small></span><span class="chev" aria-hidden="true">›</span></button>':'');
+}
+function kindSize(L,uid){var k=unitKind(L,uid),z=unitSize(L,uid);return (k==='フレーズ'?'':k+(z.n?' ・ ':''))+z.n;}
+function unitSize(L,uid){
+  var u=UNITS[L][uid];if(!u)return {n:'',min:''};
+  if(u.kind==='scene')return {n:(u.turns?u.turns.length:0)+'往復',min:'約3分'};
+  return {n:u.items.length+'フレーズ',min:'約'+Math.max(2,Math.round(u.items.length*0.5))+'分'};
+}
+
+/* ---- 窓側の席: home ---- */
+function winHomeHTML(){
+  var L=save.lang,LG=LANGS[L],ids=pathIds(L),h=topBar('','progress');
+  h+='<section class="win-hello"><h1 class="jh">'+helloWord()+(save.name?'、'+esc(save.name):'')+'</h1><p>'+esc(LG.name)+' ・ '+esc(modeName(L))+' ・ 窓側の席</p></section>';
+  h+=destChips()+modeSwitch()+jobButtonsHTML();
+  var nextId=nextPathUnit(L);
+  pathSections(L).forEach(function(sec){
+    var sd=unitsDone(L,sec.ids);
+    h+='<section class="win-leg"><div class="win-leg-h"><h2 class="jh">'+esc(sec.title)+'</h2><span class="mono">'+sd+'/'+sec.ids.length+'</span></div>'+
+       '<div class="win-rail" data-rail role="group" aria-label="'+esc(sec.title)+'">';
+    sec.ids.forEach(function(uid,i){
+      var st=stopStatus(L,uid,nextId);
+      h+='<button class="win '+st.c+'" type="button" data-node="'+esc(uid)+'" style="--wi:'+(i%6)+'">'+
+         '<span class="win-pane" aria-hidden="true"><span class="win-k">'+(isScene(L,uid)?'TALK':'STEP')+'</span><b class="win-n">'+(i+1)+'</b></span>'+
+         '<span class="win-t">'+esc(unitTitle(uid))+'</span><small>'+kindSize(L,uid)+'</small>'+
+         '<span class="win-st">'+(uid===nextId&&st.c!=='locked'?'<span class="win-go">出発する</span>':st.t)+'</span></button>';
+    });
+    h+='</div></section>';
+  });
+  if(typeof examHomeHTML==='function')h+=examHomeHTML(L);
+  var due=dueList(L).length;
+  if(due)h+='<button class="card win-due" type="button" data-tab="review"><span><span class="lbl">復習の時期</span><b>'+due+'フレーズ</b></span><span class="chev" aria-hidden="true">›</span></button>';
+  return h;
+}
+function centerRails(){
+  document.querySelectorAll('#main [data-rail]').forEach(function(r){
+    var n=r.querySelector('.win.next')||r.querySelector('.win.todo');
+    if(n)r.scrollLeft=Math.max(0,n.offsetLeft-(r.clientWidth-n.offsetWidth)/2);
+  });
+}
+
+/* ---- スイート: home, one screen at a time ---- */
+function suiteHomeHTML(){
+  var L=save.lang,LG=LANGS[L],ids=pathIds(L),h=topBar('','progress');
+  var nextId=nextPathUnit(L),title=unitTitle(nextId),sp=title.indexOf(' '),t1=sp>0?title.slice(0,sp):title,t2=sp>0?title.slice(sp+1):'';
+  var sz=unitSize(L,nextId),due=dueList(L).length,weak=weakList(L).length,done=unitsDone(L,ids);
+  h+='<div class="suite-wrap"><div class="suite-pages" id="suitePages">';
+  h+='<section class="suite-pg sp-next" aria-label="次のフライト"><button class="sp-ctx" type="button" data-suite-go="3">'+esc(LG.name)+' ・ '+esc(modeName(L))+'</button>'+
+     '<span class="sp-it">Next flight</span><h1 class="sp-big">'+esc(t1)+'</h1>'+(t2?'<div class="sp-big2">'+esc(t2)+'</div>':'')+
+     '<svg class="sp-line" viewBox="0 0 322 60" aria-hidden="true" fill="none"><path d="M2 52C90 52 140 12 250 12" stroke="currentColor" stroke-width="1" stroke-dasharray="2 5" opacity=".5"/><path d="M252 12l26-3 4 2-24 6z M262 10l-6-9h4l10 8z M262 13l-6 9h4l10-8z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>'+
+     '<div class="sp-meta"><span>'+kindSize(L,nextId)+'</span><span>'+sz.min+'</span></div>'+
+     '<button class="sp-board" type="button" data-node="'+esc(nextId)+'">搭乗</button>'+
+     '<div class="sp-hint" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>上にスワイプ</div></section>';
+  var card=typeof examHomeHTML==='function'?examHomeHTML(L):'';
+  h+='<section class="suite-pg sp-prog" aria-label="進み具合">'+(card||
+     '<span class="sp-it">Progress</span><div class="sp-num">'+done+'<small>/'+ids.length+'</small></div><p class="sp-p">到着したレッスン ・ '+esc(modeName(L))+'</p>'+
+     '<div class="sp-thin" role="img" aria-label="'+done+' / '+ids.length+'"><i style="width:'+Math.round(done/Math.max(1,ids.length)*100)+'%"></i></div>')+'</section>';
+  h+='<section class="suite-pg sp-rev" aria-label="復習"><span class="sp-it">Review</span><div class="sp-num">'+due+'</div><p class="sp-p">復習の時期のフレーズ'+(weak?' ・ 苦手 '+weak:'')+'</p>'+
+     '<button class="go" type="button" data-tab="review">復習へ</button></section>';
+  h+='<section class="suite-pg sp-all" aria-label="すべてのレッスン"><span class="sp-it">All flights</span>'+destChips()+modeSwitch().replace('modesw float','modesw')+jobButtonsHTML();
+  pathSections(L).forEach(function(sec){
+    h+='<div class="sp-sec"><h2>'+esc(sec.title)+'<small>'+unitsDone(L,sec.ids)+'/'+sec.ids.length+'</small></h2>';
+    sec.ids.forEach(function(uid){var st=stopStatus(L,uid,nextId);h+='<button class="sp-row '+st.c+'" type="button" data-node="'+esc(uid)+'"><span>'+esc(unitTitle(uid))+'</span><small>'+(st.t||unitKind(L,uid))+'</small></button>';});
+    h+='</div>';
+  });
+  h+='</section></div><div class="sp-dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div></div>';
+  return h;
+}
+function suiteMount(){
+  var p=$('suitePages');if(!p)return;
+  var dots=document.querySelectorAll('#main .sp-dots i');
+  function upd(){var i=Math.round(p.scrollTop/Math.max(1,p.clientHeight));for(var k=0;k<dots.length;k++)dots[k].classList.toggle('on',k===Math.min(i,dots.length-1));}
+  p.addEventListener('scroll',upd,{passive:true});upd();
+}
+
+/* ---- the question: the board and the LED become one prompt (a window, or large serif type) ---- */
+var PROMPT={board:''};
+function promptSync(){
+  var lay=cabinLayout();
+  if((lay!=='window'&&lay!=='suite')||view!=='flight'||!F)return;
+  var bd=$('bd');if(!bd)return;
+  var p=$('cabP');
+  if(!p){bd.insertAdjacentHTML('beforebegin','<div class="cab-p" id="cabP" aria-live="polite"></div>');p=$('cabP');}
+  var mEl=document.querySelector('#led .m'),sEl=document.querySelector('#led .s'),m=mEl?mEl.textContent:'',s=sEl?sEl.textContent:'',b=PROMPT.board,big=b||m,small=[];
+  if(b&&m&&!/^[?♪\s]+$/.test(m))small.push(m);
+  if(s)small.push(s);
+  p.innerHTML='<span class="cp-m'+(b&&F.lang==='ko'?' ko':'')+'"'+(b?' lang="'+LANGS[F.lang].tts.slice(0,2)+'"':'')+'>'+esc(big)+'</span>'+small.map(function(x){return '<span class="cp-x">'+esc(x)+'</span>';}).join('');
+  var bar=$('cabBar');
+  if(!bar){$('main').insertAdjacentHTML('afterbegin','<div class="cab-bar" id="cabBar" aria-hidden="true"></div>');bar=$('cabBar');}
+  bar.style.width=Math.round(F.idx/Math.max(1,F.queue.length)*100)+'%';
+}
+
+(function(){
+  var hh0=homeHTML;
+  homeHTML=function(){
+    var lay=cabinLayout();
+    if(lay&&pathIds(save.lang).length){if(lay==='window')return winHomeHTML();if(lay==='suite')return suiteHomeHTML();}
+    return hh0.apply(this,arguments);
+  };
+  var mm0=mapMount;
+  mapMount=function(){
+    var r=mm0.apply(this,arguments),lay=cabinLayout();
+    if(view==='home'&&lay==='window')centerRails();
+    if(view==='home'&&lay==='suite')suiteMount();
+    return r;
+  };
+  var ls0=ledSet;
+  ledSet=function(){var r=ls0.apply(this,arguments);promptSync();return r;};
+  var bs0=Board.prototype.set;
+  Board.prototype.set=function(t){var r=bs0.apply(this,arguments);if(this.host&&this.host.id==='bd'){PROMPT.board=t||'';promptSync();}return r;};
+  var a0=applyCabin;
+  applyCabin=function(){var r=a0.apply(this,arguments);if(cabinLayout()==='suite')suiteFonts();return r;};
+})();
+document.addEventListener('click',function(e){
+  var t=e.target&&e.target.closest&&e.target.closest('[data-suite-go]');if(!t)return;
+  var p=$('suitePages'),i=parseInt(t.getAttribute('data-suite-go'),10)||0;
+  if(p)p.scrollTo({top:i*p.clientHeight,behavior:reduceMotion?'auto':'smooth'});
+});
+if(cabinLayout()==='suite')suiteFonts();
 /* ================= EVENTS + BOOT ================= */
 function go(v){view=v;confirmReset=false;render();window.scrollTo(0,0);}
 document.addEventListener('click',function(e){
@@ -4333,7 +6327,7 @@ document.addEventListener('keydown',function(e){
     else if(F.cur.k==='type'&&inField){e.preventDefault();onCheck();}
     return;
   }
-  if(!F.answered&&!inField&&/^[1-4]$/.test(e.key)&&document.querySelector('.opt')){
+  if(!F.answered&&!inField&&/^[1-4]$/.test(e.key)&&document.querySelector('.opt')&&answerReady()){
     var i=parseInt(e.key,10)-1;if(i<F.opts.length)onOption(i);
   }
 });

@@ -12,9 +12,10 @@ function ringSVG(n,goal){
   return '<svg class="ring" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15" fill="none" stroke="var(--line)" stroke-width="4"/>'+
     '<circle cx="18" cy="18" r="15" fill="none" stroke="'+(p>=1?'var(--good)':'var(--signal)')+'" stroke-width="4" stroke-linecap="round" pathLength="100" stroke-dasharray="'+(p*100).toFixed(1)+' 100" transform="rotate(-90 18 18)"/></svg>';
 }
-function topBar(title){
+function topBar(title,share){
   var n=todayCount();
   return '<header class="top"><div class="brand">'+planeIcon()+(title?esc(title):'Babel<b>Flight</b>')+'</div>'+
+    (share&&typeof shareIconHTML==='function'?shareIconHTML(share):'')+
     '<div class="stats-top"><div class="goal-pill" title="今日の目標">'+ringSVG(n,save.goal)+'<span><span class="lbl">今日</span><span class="v">'+n+'/'+save.goal+'</span></span></div>'+
     '<div class="pill"><span class="lbl">連続</span><span class="v">'+streakNow()+'日</span></div>'+
     '<div class="pill"><span class="lbl">マイル</span><span class="v">'+fmt(save.miles)+'</span></div></div></header>';
@@ -42,6 +43,7 @@ function passHTML(L,uid){
 function reviewHTML(){
   var L=save.lang,LG=LANGS[L],due=dueList(L),weak=weakList(L),learned=learnedList(L),nd=nextDueIn(L),h=topBar('復習');
   h+=destChips();
+  if(typeof reportCardHTML==='function')h+=reportCardHTML(L);
   h+='<section class="card mode"><div class="big-count"><div class="due-board" aria-label="復習 '+due.length+'フレーズ">'+pad2(Math.min(due.length,99))+'</div><div><h2 class="jh">忘れかけた頃の復習</h2><p class="dim" style="font-size:13.5px;margin-top:4px">';
   if(due.length)h+='今がちょうど復習のタイミング。思い出すほど記憶が長持ちします。';
   else if(learned.length)h+='今は復習するものがありません。次は'+fmtIn(nd)+'です。';
@@ -56,6 +58,7 @@ function reviewHTML(){
      (annOK?'<button class="go sm" type="button" data-mode="ann">はじめる</button>':'<p class="warn">この端末では'+esc(LG.name)+'の音声が使えません</p>')+'</section>';
   h+='<section class="card mode atc-card"><span class="lbl">AI ROLEPLAY ・ 英語</span><h2 class="jh">AI管制官と交信練習</h2><p class="dim">管制官役のAIと英語で無線交信。あなたの返答を採点して、お手本も教えてくれます。</p>'+
      (typeof aiAtcEntryHTML==='function'?aiAtcEntryHTML():AI.ok?'<button class="go sm" type="button" data-atc>交信をはじめる</button>':'<p class="warn">'+(AI.checked?'この環境ではAI機能が使えません(Claudeで開くと使えます)':'AI機能を確認中…')+'</p>')+'</section>';
+  if(typeof roleCardHTML==='function')h+=roleCardHTML(L);
   h+='<section class="card mode"><span class="lbl">FREE</span><h2 class="jh">自由練習</h2><p class="dim">学習ずみのフレーズからランダムに10問。復習のタイミングに関係なく練習できます。</p><div class="mcount mono">'+learned.length+'<small> フレーズ</small></div><button class="go sm" type="button" data-mode="free"'+(learned.length?'':' disabled')+'>はじめる</button></section>';
   h+='</div>';
   var counts=[0,0,0,0,0,0,0];
@@ -106,7 +109,7 @@ var GOALS=[[1,'1回'],[2,'2回'],[3,'3回'],[5,'5回']];
 function recordHTML(){
   var now=Date.now(),win=milesWindow(now),rk=statusIdx(now),nx=RANKS[rk+1],cur=RANKS[rk],p=profById(save.prof);
   var kept=!!(save.st&&save.st.until>now&&save.st.lv===rk&&rk>0);
-  var pct=nx?clamp((win-cur[2])/(nx[2]-cur[2]),0,1)*100:100,h=topBar('記録'),stamps=0;
+  var pct=nx?clamp((win-cur[2])/(nx[2]-cur[2]),0,1)*100:100,h=topBar('記録','status'),stamps=0;
   ORDER.forEach(function(l){ALL_IDS[l].forEach(function(uid){if(unitRec(l,uid).n>0)stamps++;});});
   h+='<section class="id-card'+((typeof perkHas==='function'?perkHas(5):rk>=RANKS.length-1)?' gold':'')+'"><button class="photo" type="button" data-icon-open aria-label="アイコンを変える">'+avatarHTML()+'<i class="photo-ed" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></i></button><div style="min-width:0"><span class="lbl">名前</span>'+
      '<input id="pname" maxlength="14" value="'+esc(save.name)+'" aria-label="名前" autocomplete="off" spellcheck="false">'+
@@ -115,6 +118,7 @@ function recordHTML(){
      '<div class="lbl st-sub">直近6ヶ月 '+fmt(win)+' マイル'+(kept?' ・ '+fmtDate(save.st.until)+' まで有効':'')+'</div></div>'+
      (save.cap?capStampHTML():'')+'</section>';
   if(typeof perksCardHTML==='function')h+=perksCardHTML();
+  if(typeof cabinCardHTML==='function')h+=cabinCardHTML();
   if(typeof acctCardHTML==='function')h+=acctCardHTML();
   if(typeof pwaCardHTML==='function')h+=pwaCardHTML();
   h+='<div class="kpis">'+
@@ -141,7 +145,22 @@ function recordHTML(){
      '<div class="set-row"><span>タップ音</span><button class="ghost" type="button" data-toggle-tap aria-pressed="'+save.tap+'">'+(save.tap?'ON':'OFF')+'</button></div>'+
      '<div class="set-row"><span class="dim" style="font-size:13px">進捗は'+(cloud.doc?'アカウントに保存されています':'この端末のブラウザに保存されます')+'</span>'+
      (confirmReset?'<span class="row2"><button class="ghost danger" type="button" data-reset-yes>消去する</button><button class="ghost" type="button" data-reset-no>やめる</button></span>':'<button class="ghost danger" type="button" data-reset>リセット</button>')+'</div></section>';
+  h+=creditsHTML();
   return h;
+}
+/* credits: who made the app and the services it was built with (bottom of 記録) */
+var CREDITS={by:'戸井慶成',byEn:'Yoshinari Toi',year:2026,links:[
+ ['Claude','https://claude.ai','設計・プログラミング・AI'],
+ ['Higgsfield','https://higgsfield.ai','公開・サーバー'],
+ ['GitHub','https://github.com/Yoshiusagi/babel-flight','コードの保存場所']
+]};
+function creditsHTML(){
+  return '<section class="card credits"><div class="card-h"><h2 class="jh">このアプリについて</h2></div>'+
+    '<div class="cr-app" lang="en">Babel Flight</div>'+
+    '<div class="cr-by"><span class="lbl">制作</span><b>'+esc(CREDITS.by)+'</b><span lang="en">('+esc(CREDITS.byEn)+')</span></div>'+
+    '<span class="lbl cr-h">使ったサービス</span><ul class="cr-links">'+
+    CREDITS.links.map(function(l){return '<li><a href="'+l[1]+'" target="_blank" rel="noopener noreferrer" aria-label="'+esc(l[0]+': '+l[2]+'(新しいタブで開きます)')+'"><b lang="en">'+esc(l[0])+'<i aria-hidden="true">↗</i></b><small>'+esc(l[2])+'</small></a></li>';}).join('')+
+    '</ul><p class="cr-copy" lang="en">© '+CREDITS.year+' '+esc(CREDITS.byEn)+'</p></section>';
 }
 var LEVEL_HINT={beg:'読み方のヒントつき。入力問題は出ません。基本の会話から始めます。',mid:'標準。並べ替えや入力問題も出ます。',adv:'入力問題が多め。職業コースが先に表示されます。'};
 function pathIdsFor(l){
@@ -199,9 +218,10 @@ function render(){
   else if(view==='onboard')main.innerHTML=onboardHTML();
   else if(view==='atc')main.innerHTML=atcHTML();
   else if(view==='scene')main.innerHTML=sceneHTML();
+  else if(view==='role'&&typeof roleHTML==='function')main.innerHTML=roleHTML();
   var TABS=['home','review','record'],pi=TABS.indexOf(PREVVIEW),nx=TABS.indexOf(view),cls='enter';
   if(pi>=0&&nx>=0&&pi!==nx)cls=nx>pi?'enter-r':'enter-l';
-  else if(HOME_ANIM==='mode'){var MO=['daily','job','study'];cls=MO.indexOf(save.mode)>MO.indexOf(MODEPREV)?'enter-r':'enter-l';}
+  else if(HOME_ANIM==='mode'){var MO=['daily','job','study','exam'];cls=MO.indexOf(save.mode)>MO.indexOf(MODEPREV)?'enter-r':'enter-l';}
   main.classList.remove('enter','enter-l','enter-r');void main.offsetWidth;main.classList.add(cls);
   PREVVIEW=view;
   if(view==='home'){mapMount();revealRows();}

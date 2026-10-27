@@ -1,5 +1,6 @@
 /* ================= LESSON END (shared by phrase lessons and scenes) ================= */
 function nextPathUnit(L,cur){
+  if(typeof examNext==='function'){var xn=examNext(L,cur);if(xn!==undefined)return xn;}
   var ids=pathIds(L),i,best=null,bd=0;
   if(!ids.length)return null;
   /* stay in the same group: the next unit not flown yet (入国審査 → カフェ), then the next group */
@@ -21,6 +22,7 @@ function land(){
   var uniq={},keys=[];
   F.items.forEach(function(it){var k=ik(it.uid,it.i);if(!uniq[k]){uniq[k]=it;keys.push(k);}});
   if(F.mode==='ai'){landAi();return;}
+  if(F.mode==='mock'&&typeof landMock==='function'){landMock();return;}
   keys.forEach(function(k){
     var rec=P.items[k]||{b:0,d:0},w=F.wrong[k]||0,wasDue=rec.b===0||rec.d<=now;
     if(w===0){
@@ -114,6 +116,7 @@ function completeLesson(o){
   if(remAdded)h+='<button class="go" type="button" data-rem="'+esc(o.uid)+'">補習フライトへ<small>苦手を別の形で練習 ・ 約'+Math.max(1,Math.round(remAdded*0.6))+'分</small></button>';
   if(o.lessonUid)h+='<button class="go" type="button" data-go="'+esc(o.lessonUid)+'">このレッスンを受ける<small>'+esc(unitTitle(o.lessonUid))+'</small></button>';
   h+=aiDrillBtnHTML();
+  if(typeof shareLandBtnHTML==='function')h+=shareLandBtnHTML({L:L,mode:o.mode,uid:o.uid,unit:unitMode,flight:unitMode?flightNo(L,o.uid):'',city:c[0],cityJp:c[1],stars:o.stars,miles:miles,grade:o.grade,rank:rankAfter,rankUp:rankAfter>rankBefore,cap:!!firstCap});
   if(unitMode){var nu=nextPathUnit(L,o.uid);if(nu)h+='<button class="go" type="button" data-next-lesson="'+esc(nu)+'">次のレッスンへ<small>'+esc(unitTitle(nu))+' ・ 地図で飛行機が進みます</small></button>';}
   h+='<button class="ghost" type="button" data-home>ホームに戻る(地図を見る)</button></div></div>';
   view='land';F=null;board=null;closeSheet();$('tabs').hidden=true;

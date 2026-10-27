@@ -4,6 +4,9 @@ c1b_css.html
 e1_css.html
 f1_css.html
 f13_css.html
+f16_css.html
+f17_css.html
+f18_css.html
 @HEADEND
 e2_body.html
 p3a_data.js
@@ -37,5 +40,9 @@ f12_track.js
 f13_account.js
 f14_pwa.js
 f15_ai.js
+f16_share.js
+f17_exam.js
+f17_cabin.js
+f18_layout.js
 f7_boot.js
 @END

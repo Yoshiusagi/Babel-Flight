@@ -111,7 +111,7 @@ document.addEventListener('keydown',function(e){
     else if(F.cur.k==='type'&&inField){e.preventDefault();onCheck();}
     return;
   }
-  if(!F.answered&&!inField&&/^[1-4]$/.test(e.key)&&document.querySelector('.opt')){
+  if(!F.answered&&!inField&&/^[1-4]$/.test(e.key)&&document.querySelector('.opt')&&answerReady()){
     var i=parseInt(e.key,10)-1;if(i<F.opts.length)onOption(i);
   }
 });

@@ -11,13 +11,16 @@ function fmtCoord(c){return Math.abs(c[2]).toFixed(2)+'°'+(c[2]>=0?'N':'S')+'  
 function cssVar(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()||'#ffcf26';}
 function flapHTML(t,anim){return '<span class="flapw'+(anim?' flip':'')+'">'+String(t).split('').map(function(ch,i){return '<span style="--d:'+i+'">'+(ch===' '?'&nbsp;':esc(ch))+'</span>';}).join('')+'</span>';}
 function modeSwitch(){
-  return '<div class="modesw float" role="group" aria-label="学ぶモード"><span class="modesw-ind '+(MODEPREV||save.mode)+'" aria-hidden="true"></span>'+
-    '<button type="button" data-mode-set="daily" aria-pressed="'+(save.mode==='daily')+'"><b>日常会話モード</b><small>あいさつ・旅行</small></button>'+
-    '<button type="button" data-mode-set="job" aria-pressed="'+(save.mode==='job')+'"><b>職業モード</b><small>13職業の会話</small></button>'+
-    '<button type="button" data-mode-set="study" aria-pressed="'+(save.mode==='study')+'"><b>留学モード</b><small>学校と授業</small></button></div>';
+  var x=typeof examModeOn==='function'&&examModeOn(),m=save.mode==='exam'&&!x?'daily':save.mode;
+  return '<div class="modesw float'+(x?' four':'')+'" role="group" aria-label="学ぶモード"><span class="modesw-ind '+(MODEPREV||m)+'" aria-hidden="true"></span>'+
+    '<button type="button" data-mode-set="daily" aria-pressed="'+(m==='daily')+'"><b>'+(x?'日常会話':'日常会話モード')+'</b><small>あいさつ・旅行</small></button>'+
+    '<button type="button" data-mode-set="job" aria-pressed="'+(m==='job')+'"><b>'+(x?'職業':'職業モード')+'</b><small>13職業の会話</small></button>'+
+    '<button type="button" data-mode-set="study" aria-pressed="'+(m==='study')+'"><b>'+(x?'留学':'留学モード')+'</b><small>学校と授業</small></button>'+
+    (x?'<button type="button" data-mode-set="exam" aria-pressed="'+(m==='exam')+'"><b>検定</b><small>英検・TOEIC</small></button>':'')+'</div>';
 }
 function stopStatus(L,uid,nextId){
   var r=unitRec(L,uid);
+  if(typeof examLockText==='function'&&r.n===0){var lk=examLockText(L,uid);if(lk)return {c:'locked',t:lk};}
   if(r.n>0){var due=unitDue(L,uid);return {c:'done',t:due?'復習あり':'★★★'.slice(0,r.stars)+'<em>'+'★★★'.slice(r.stars)+'</em>'};}
   if(uid===nextId)return {c:'next',t:'次はここ'};
   return {c:'todo',t:''};
@@ -28,7 +31,7 @@ function heroLangs(){
   }).join('')+'</div>';
 }
 function homeHTML(){
-  var L=save.lang,LG=LANGS[L],p=profById(save.prof),anim=!!HOME_ANIM&&!reduceMotion,h=topBar();
+  var L=save.lang,LG=LANGS[L],p=profById(save.prof),anim=!!HOME_ANIM&&!reduceMotion,h=topBar('','progress');
   var ids=pathIds(L);
   if(!ids.length){
     h+='<section class="hero empty"><div class="hero-in"><div class="hud"><div class="hud-l"><span class="lbl">'+esc(LG.cityEn)+' ・ '+esc(LG.name)+'</span><b class="mono">職業を選ぼう</b></div></div>'+heroLangs()+'</div></section>'+modeSwitch();
@@ -43,6 +46,7 @@ function homeHTML(){
      '<div class="hud-foot mono"><span>'+fmtCoord(nc)+'</span><span>'+(cp>=0?esc(from[1]):'東京')+'から '+fmt(dist)+' km</span></div>'+
      heroLangs()+'</div></section>';
   h+=modeSwitch();
+  if(typeof examHomeHTML==='function')h+=examHomeHTML(L);
   if(save.mode==='job'){
     h+='<button class="course" type="button" data-picker><span class="ccode">'+p.code+'</span><span class="ctext"><span class="lbl">職業コース</span><b>'+esc(p.jp)+'</b><small>タップして変更 ・ 13職業から選べます</small></span><span class="chev" aria-hidden="true">›</span></button>';
     if(p.id==='pilot')h+='<button class="course atcbtn" type="button" data-atc><span class="ccode">ATC</span><span class="ctext"><span class="lbl">AIロールプレイ ・ 英語</span><b>AI管制官と交信練習</b><small>羽田空港で、管制官役のAIと無線交信</small></span><span class="chev" aria-hidden="true">›</span></button>';
@@ -72,6 +76,7 @@ function sceneSheetHTML(L,uid){
 }
 function openNodeSheet(uid){
   var L=save.lang;
+  if(typeof examLockSheet==='function'&&examLockSheet(L,uid))return;
   $('sheetHost').innerHTML='<div class="sheet plain print" role="dialog" aria-label="レッスンの詳細"><div class="sheet-in">'+(isScene(L,uid)?sceneSheetHTML(L,uid):passHTML(L,uid))+
     '<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
 }

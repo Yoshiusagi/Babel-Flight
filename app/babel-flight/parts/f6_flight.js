@@ -123,7 +123,7 @@ function newTag(it){return itemRec(F.lang,it.uid,it.i).b===0?'<span class="newta
 function showStep(){
   var q=F.queue[F.idx];
   if(!q){land();return;}
-  F.cur=q;F.answered=false;F.build=null;F.peeked=false;closeSheet();
+  F.cur=q;F.answered=false;F.build=null;F.peeked=false;F.shownAt=performance.now();closeSheet();
   var d=dat(q.it),LG=LANGS[F.lang],box=$('q'),beg=save.level==='beg';
   updateProfile();
   var tag=newTag(q.it);
@@ -186,17 +186,30 @@ function judge(ok){
   var q=F.cur,d=dat(q.it),key=ik(q.it.uid,q.it.i);
   if(ok){F.corr++;chimeOK();fxGood();}
   else{F.mist++;fxBad();F.wrong[key]=(F.wrong[key]||0)+1;chimeBad();buzz(40);pushRetry(q);}
+  if(typeof repNote==='function')repNote(F.lang,q.k,ok);
   board.set(d.t);ledSet(d.jp,d.r);
   updateProfile();
   var h='<div class="sheet'+(ok?'':' bad')+'" role="status"><div class="sheet-in"><h3>'+(ok?PRAISE[Math.floor(Math.random()*PRAISE.length)]:'おしい！ 正解はこちら')+'</h3>'+
     '<div class="ans'+koCls()+'"><b>'+esc(d.t)+'</b><br><span class="dim" style="font-size:13px">'+(d.r?esc(d.r)+' ・ ':'')+esc(d.jp)+'</span></div>'+
     (d.n?'<div class="note"><b>ワンポイント</b>'+esc(d.n)+'</div>':'')+
-    aiBtnHTML()+
+    aiBtnHTML()+(typeof pronBoxHTML==='function'?pronBoxHTML():'')+
     '<div class="row2"><button class="sq" type="button" data-hear aria-label="発音を聞く">'+speakerIcon()+'</button>'+
     '<button class="go" type="button" data-next style="flex:1;width:auto;margin:0">次へ</button></div></div></div>';
   $('sheetHost').innerHTML=h;
 }
 function closeSheet(){aiStop();var s=$('sheetHost');if(s)s.innerHTML='';}
+/* ---- tap guard ---- */
+var TAP_GUARD_MS=500,PRESS={el:null,t:0};
+function answerEl(t){return t&&t.closest?t.closest('.opt,[data-tile],[data-untile],[data-check],[data-clear]'):null;}
+function answerReady(at){return !!F&&(at||performance.now())-(F.shownAt||0)>=TAP_GUARD_MS;}
+document.addEventListener('pointerdown',function(e){PRESS={el:answerEl(e.target),t:performance.now()};},true);
+document.addEventListener('click',function(e){
+  if(view!=='flight'||!F)return;
+  var el=answerEl(e.target);if(!el)return;
+  /* a mouse/finger press must begin on this same answer, after the question has been up for 0.5 s; keyboard presses (detail 0) only need the 0.5 s */
+  var ok=e.detail===0?answerReady():(PRESS.el===el&&answerReady(PRESS.t));
+  if(!ok){e.preventDefault();e.stopImmediatePropagation();}
+},true);
 function onOption(i){
   if(F.answered||!F.cur)return;
   var btns=document.querySelectorAll('.opt'),ok=(i===F.ci);
@@ -219,7 +232,17 @@ function nextStep(){
   if(!F||!F.cur||!F.answered)return;
   F.wDone+=F.cur.w;F.idx++;closeSheet();
   if(F.idx>=F.queue.length){land();return;}
-  window.scrollTo(0,0);showStep();
+  window.scrollTo(0,0);showStep();cloudPass();
+}
+/* between questions: clouds sweep past and the next question fades in (skipped with reduced motion) */
+function cloudPass(){
+  if(reduceMotion)return;
+  var old=document.querySelector('.qcloud');if(old&&old.parentNode)old.parentNode.removeChild(old);
+  var c=document.createElement('div');c.className='qcloud';c.setAttribute('aria-hidden','true');
+  c.innerHTML='<span></span><span></span><span></span><span></span><span></span>';
+  document.body.appendChild(c);
+  var q=$('q');if(q){q.classList.remove('qin');void q.offsetWidth;q.classList.add('qin');}
+  setTimeout(function(){if(c.parentNode)c.parentNode.removeChild(c);},650);
 }
 function abortAsk(){
   $('sheetHost').innerHTML='<div class="sheet bad" role="alertdialog" aria-label="終了の確認"><div class="sheet-in"><h3>このレッスンをやめますか？</h3><p class="dim" style="font-size:14px">ここまでの記録は保存されません。</p>'+
