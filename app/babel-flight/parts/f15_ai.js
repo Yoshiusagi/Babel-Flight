@@ -6,10 +6,15 @@ var SAI={on:false,enabled:false,left:null,seen:'',lastView:''};
 try{SAI.on=!!ACCT.on;}catch(e){}
 var aiAtcEntryHTML=null,atcNoteText=null;
 function saiPost(path,body,signal){
-  return fetch(path,{method:'POST',credentials:'same-origin',cache:'no-store',headers:{'content-type':'application/json'},body:JSON.stringify(body),signal:signal});
+  if(BF_APP&&!aiConsented())return aiConsentAsk().then(function(ok){
+    if(!ok)return new Response(JSON.stringify({ok:false,error:'consent'}),{status:403,headers:{'content-type':'application/json'}});
+    return bfFetch(path,{method:'POST',cache:'no-store',headers:{'content-type':'application/json'},body:JSON.stringify(body),signal:signal});
+  });
+  return bfFetch(path,{method:'POST',cache:'no-store',headers:{'content-type':'application/json'},body:JSON.stringify(body),signal:signal});
 }
 function saiErr(j,kind){
   var c=(j&&j.error)||'';
+  if(c==='consent')return 'AI機能を使うには、AIに送る内容の確認で「同意して使う」を選んでね。';
   if(c==='signin')return 'ログインが切れたみたい。「記録」画面からもう一度ログインしてね。';
   if(c==='quota'){
     if(kind==='ask')return '今日の質問はここまで(1日20回)。また明日ね！';
@@ -36,7 +41,7 @@ function saiRefreshView(){
 }
 function saiStatus(){
   if(!SAI.on)return;
-  fetch('/api/ai/status',{credentials:'same-origin',cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
+  bfFetch('/api/ai/status',{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
     SAI.enabled=!!(j&&j.enabled);SAI.left=j&&j.signedIn&&j.left?j.left:null;
   },function(){}).then(function(){AI.checked=true;saiRefreshView();});
 }

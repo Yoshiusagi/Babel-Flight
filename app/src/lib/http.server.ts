@@ -24,8 +24,57 @@ export function noContent(): Response {
   return new Response(null, { status: 204, headers: { "cache-control": "no-store" } });
 }
 
+// The iPhone / Android app (Capacitor) loads the page from its own bundle, so its requests come
+// from one of these origins. They authenticate with a bearer token, never a cookie, so another
+// website can't ride on them.
+export const APP_ORIGINS: readonly string[] = ["capacitor://localhost", "https://localhost"];
+
+/** The app origin a request came from, or null for the website and everything else. */
+export function appOrigin(request: Request): string | null {
+  const origin = request.headers.get("origin");
+  return origin && APP_ORIGINS.includes(origin) ? origin : null;
+}
+
+/** Lets the app read an API response (CORS). Website responses pass through unchanged. */
+export function withAppCors(request: Request, response: Response): Response {
+  const origin = appOrigin(request);
+  if (!origin) return response;
+  const headers = new Headers(response.headers);
+  headers.set("access-control-allow-origin", origin);
+  headers.append("vary", "Origin");
+  return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+}
+
+/** Answers the app's CORS preflight for /api/*; null when this isn't one. */
+export function appPreflight(request: Request, url: URL): Response | null {
+  if (request.method !== "OPTIONS" || !url.pathname.startsWith("/api/")) return null;
+  const origin = appOrigin(request);
+  if (!origin) return new Response(null, { status: 403 });
+  return new Response(null, {
+    status: 204,
+    headers: {
+      "access-control-allow-origin": origin,
+      "access-control-allow-methods": "GET, POST, PUT",
+      "access-control-allow-headers": "content-type, authorization",
+      "access-control-max-age": "86400",
+      vary: "Origin",
+    },
+  });
+}
+
+/** Session token from the cookie (website) or `Authorization: Bearer` (app). */
+export function readSessionToken(request: Request, cookieName: string): string | null {
+  const cookie = readCookie(request, cookieName);
+  if (cookie) return cookie;
+  if (!appOrigin(request)) return null;
+  const auth = request.headers.get("authorization") || "";
+  const m = /^Bearer ([0-9a-f]{64})$/.exec(auth.trim());
+  return m ? m[1] : null;
+}
+
 // Browsers send Sec-Fetch-Site on every fetch; older ones fall back to Origin.
 export function isSameOrigin(request: Request, url: URL): boolean {
+  if (appOrigin(request)) return true;
   const site = request.headers.get("sec-fetch-site");
   if (site) return site === "same-origin";
   const origin = request.headers.get("origin");

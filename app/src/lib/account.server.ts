@@ -22,7 +22,7 @@ import { bindings } from "./bindings.server";
 import { entitlementsOf, grantOnSignIn } from "./entitlements.server";
 import { ALLOWED_PROVIDERS, FIREBASE_WEB_CONFIG } from "./firebase-config";
 import { KeysUnavailableError, verifyFirebaseIdToken, type FirebaseClaims } from "./firebase-token.server";
-import { isSameOrigin, json, num, randomHex, readCookie, readJsonBody, sha256Hex, type Row } from "./http.server";
+import { appOrigin, isSameOrigin, json, num, randomHex, readJsonBody, readSessionToken, sha256Hex, type Row } from "./http.server";
 
 const COOKIE = "bf_acct";
 const SESSION_MS = 90 * 86_400_000;
@@ -46,7 +46,7 @@ function withClearedCookies(res: Response): Response {
 }
 
 async function currentSession(request: Request, db: D1Database): Promise<Session | null> {
-  const token = readCookie(request, COOKIE);
+  const token = readSessionToken(request, COOKIE);
   if (!token || !TOKEN_RE.test(token)) return null;
   const tokenHash = await sha256Hex(token);
   const row = await db
@@ -108,7 +108,15 @@ async function handleSession(request: Request, db: D1Database, projectId: string
   await grantOnSignIn(db, claims);
   const token = await newSession(db, claims.uid);
   return json(
-    { ok: true, uid: claims.uid, provider: claims.provider, isNew: !existing, ent: await entitlementsOf(db, claims.uid) },
+    {
+      ok: true,
+      uid: claims.uid,
+      provider: claims.provider,
+      isNew: !existing,
+      ent: await entitlementsOf(db, claims.uid),
+      // The app can't keep the HttpOnly cookie (different origin), so it gets the token to send as a bearer.
+      ...(appOrigin(request) ? { token } : {}),
+    },
     200,
     { "set-cookie": sessionCookie(token, SESSION_MS / 1000) },
   );
@@ -207,7 +215,7 @@ async function handlePutSave(request: Request, db: D1Database): Promise<Response
 }
 
 async function handleLogout(request: Request, db: D1Database): Promise<Response> {
-  const token = readCookie(request, COOKIE);
+  const token = readSessionToken(request, COOKIE);
   if (token && TOKEN_RE.test(token)) {
     await db.prepare("DELETE FROM bf_acct_sessions WHERE token_hash = ?").bind(await sha256Hex(token)).run();
   }

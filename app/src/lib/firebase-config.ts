@@ -16,4 +16,4 @@ export const FIREBASE_WEB_CONFIG: FirebaseWebConfig | null = {
 };
 
 // Sign-in methods the app offers; tokens from any other provider are rejected.
-export const ALLOWED_PROVIDERS: readonly string[] = ["google.com", "password"];
+export const ALLOWED_PROVIDERS: readonly string[] = ["google.com", "apple.com", "password"];

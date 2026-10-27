@@ -6,9 +6,10 @@
    progress from either device is never lost (see unionSave). */
 var FB_VER='12.4.0';
 var ACCT={on:false,cfg:null,me:null,rev:0,state:'',last:0,fbp:null,fb:null,dirty:false,force:false,pend:null,pulling:false,busy:false,sheet:'',msg:'',tries:0};
-try{ACCT.on=location.protocol==='https:'&&/(^|\.)higgsfield\.(app|ai)$/.test(location.hostname)&&!window.claude&&typeof fetch==='function';}catch(e){}
+try{ACCT.on=location.protocol==='https:'&&/(^|\.)higgsfield\.(app|ai)$/.test(location.hostname)&&!window.claude&&typeof fetch==='function';if(BF_APP)ACCT.on=true;}catch(e){}
 var AKEY='babelflight.acct';
 var G_LOGO='<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
+var A_LOGO='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.47.83-.72 0-1.82-.81-3-.79-1.54.02-2.96.9-3.76 2.28-1.6 2.78-.41 6.9 1.15 9.16.76 1.1 1.67 2.34 2.86 2.3 1.15-.05 1.58-.74 2.97-.74 1.38 0 1.77.74 2.98.72 1.23-.02 2.01-1.12 2.76-2.23.87-1.28 1.23-2.52 1.25-2.58-.03-.01-2.4-.92-2.42-3.66zM14.1 5.86c.63-.77 1.06-1.83.94-2.9-.91.04-2.02.61-2.67 1.37-.58.67-1.1 1.76-.96 2.8 1.02.08 2.06-.52 2.69-1.27z"/></svg>';
 var FB_ERR={
   'auth/invalid-email':'メールアドレスの形が正しくないみたい。',
   'auth/missing-email':'メールアドレスを入れてね。',
@@ -42,9 +43,9 @@ function acctServerMsg(err){
 function acctHint(){try{var v=JSON.parse(localStorage.getItem(AKEY)||'null');return v&&typeof v==='object'?v:{};}catch(e){return {};}}
 function acctSetHint(v){try{localStorage.setItem(AKEY,JSON.stringify(v||{}));}catch(e){}}
 function acctApi(method,path,body){
-  var o={method:method,credentials:'same-origin',cache:'no-store'};
+  var o={method:method,cache:'no-store'};
   if(body!==undefined){o.headers={'content-type':'application/json'};o.body=JSON.stringify(body);}
-  return fetch(path,o).then(function(r){
+  return bfFetch(path,o).then(function(r){
     return r.json().catch(function(){return {};}).then(function(j){if(!j||typeof j!=='object')j={};j._s=r.status;return j;});
   });
 }
@@ -210,6 +211,7 @@ document.addEventListener('click',function(e){
 function acctAfterFirebase(user){
   return user.getIdToken().then(function(tok){return acctApi('POST','/api/account/session',{idToken:tok});}).then(function(j){
     if(!j.ok)throw {code:'server',s:j._s,e:j.error};
+    if(j.token)bfSetToken(j.token);
     var prevUid=acctHint().uid||'';
     ACCT.me={uid:j.uid,provider:j.provider};ACCT.msg='';entSet(j.ent);
     acctSetHint({uid:j.uid,email:user.email||'',provider:j.provider});
@@ -218,7 +220,7 @@ function acctAfterFirebase(user){
 }
 function acctDone(){closeSheet();if(view==='record'||view==='onboard')render();}
 function acctSignedOut(msg){
-  ACCT.me=null;ACCT.rev=0;ACCT.state='';ACCT.dirty=false;ACCT.pend=null;entSet(null);
+  ACCT.me=null;ACCT.rev=0;ACCT.state='';ACCT.dirty=false;ACCT.pend=null;entSet(null);bfSetToken('');
   if(cloud.doc===ACCT_DOC)cloud.doc=null;
   ACCT.msg=msg||'';
   if(view==='record')render();
@@ -236,7 +238,9 @@ function acctLogout(){
 function acctDeleteWith(user){
   return user.getIdToken(true).then(function(tok){return acctApi('POST','/api/account/delete',{idToken:tok});}).then(function(j){
     if(!j.ok)throw {code:'server',s:j._s,e:j.error};
-    return ACCT.fb.F.deleteUser(user).catch(function(){});
+    var F=ACCT.fb.F,code=ACCT.appleCode;ACCT.appleCode='';
+    return (code&&F.revokeAccessToken?F.revokeAccessToken(ACCT.fb.auth,code).catch(function(){}):Promise.resolve())
+      .then(function(){return F.deleteUser(user).catch(function(){});});
   }).then(function(){
     acctSetHint({});closeSheet();
     acctSignedOut('アカウントを削除しました。この端末の記録はそのまま残っています。');
@@ -257,6 +261,31 @@ function acctGoogle(del){
   acctBusy(true);
   p.then(function(c){return del?acctDeleteWith(c.user):acctAfterFirebase(c.user).then(acctDone);})
     .catch(function(err){acctErr(err&&err.code==='server'?acctServerMsg(err):fbMsg(err));})
+    .then(function(){acctBusy(false);});
+}
+/* In the iPhone app, Google and Apple sign in through the system's own sheets (Firebase
+   Authentication plugin); the result is handed to the Firebase web SDK, so the rest of the flow
+   (server session, sync, deletion) is the same as on the website. */
+function acctNativeMsg(err){
+  var m=String((err&&(err.message||err.code))||'');
+  if(/cancel|1001|12501|popup-closed/i.test(m))return '';
+  if(err&&err.code&&String(err.code).indexOf('auth/')===0)return fbMsg(err);
+  return 'ログインできませんでした。もう一度試してね。';
+}
+function acctNative(provider,del){
+  var fb=ACCT.fb;if(!fb||ACCT.busy)return;
+  var P=null;try{P=window.Capacitor.Plugins.FirebaseAuthentication;}catch(e){}
+  if(!P){acctErr('このログイン方法は今は使えません。');return;}
+  var F=fb.F,apple=provider==='apple.com';
+  acctErr('');acctBusy(true);
+  (apple?P.signInWithApple({skipNativeAuth:true}):P.signInWithGoogle({skipNativeAuth:true})).then(function(r){
+    var c=(r&&r.credential)||{};
+    if(!c.idToken)throw {message:'no token'};
+    ACCT.appleCode=apple?(c.authorizationCode||''):'';
+    var cred=apple?new F.OAuthProvider('apple.com').credential({idToken:c.idToken,rawNonce:c.nonce}):F.GoogleAuthProvider.credential(c.idToken,c.accessToken||null);
+    return F.signInWithCredential(fb.auth,cred);
+  }).then(function(uc){return del?acctDeleteWith(uc.user):acctAfterFirebase(uc.user).then(acctDone);})
+    .catch(function(err){acctErr(err&&err.code==='server'?acctServerMsg(err):acctNativeMsg(err));})
     .then(function(){acctBusy(false);});
 }
 document.addEventListener('submit',function(e){
@@ -304,14 +333,14 @@ function acctCardHTML(){
        '<button class="go acct-go" type="button" data-acct-open>ログイン / 新規登録</button>';
   }else{
     var hint=acctHint();
-    h+=(ACCT.me.provider==='google.com'?'Google':'メール')+'でログイン中</span></div>'+
+    h+=(ACCT.me.provider==='google.com'?'Google':ACCT.me.provider==='apple.com'?'Apple':'メール')+'でログイン中</span></div>'+
        '<div class="acct-me"><button class="acct-av" type="button" data-icon-open aria-label="アイコンを変える">'+avatarHTML()+'</button><div class="acct-id"><b>'+esc(save.name)+'</b><small>'+esc(hint.email||'')+'</small></div>'+
        '<button class="ghost acct-edit" type="button" data-acct-name>名前を変える</button></div>'+
        '<p class="acct-sync" id="acctStat" role="status">'+acctStatusText()+'</p>'+
        '<div class="row2"><button class="ghost" type="button" data-acct-sync>今すぐ同期</button><button class="ghost" type="button" data-acct-logout>ログアウト</button></div>'+
        '<button class="acct-del" type="button" data-acct-delete>アカウントを削除</button>';
   }
-  return h+'<a class="acct-pp" href="/privacy" target="_blank" rel="noopener">プライバシーポリシー</a></section>';
+  return h+'<a class="acct-pp" href="'+bfSiteUrl('/privacy')+'" target="_blank" rel="noopener">プライバシーポリシー</a></section>';
 }
 function acctObHTML(){
   if(!ACCT.on||!ACCT.cfg||ACCT.me)return '';
@@ -323,9 +352,11 @@ function acctSheet(mode,note){
   h='<div class="sheet acct-sheet'+(mode==='delete'?' bad':'')+'" role="dialog" aria-label="アカウント"><div class="sheet-in">';
   if(mode==='start'){
     h+='<h3>ログイン / 新規登録</h3><p class="dim acct-lead">スマホとパソコンで進み具合を同期できます。この端末の記録は、アカウントの記録と合わせて引き継がれます。</p>'+
+       (BF_APP?'<button class="acct-a" type="button" data-acct-apple data-needs-fb'+nf+'>'+A_LOGO+'<span>Appleで続ける</span></button>':'')+
        '<button class="acct-g" type="button" data-acct-google data-needs-fb'+nf+'>'+G_LOGO+'<span>Googleで続ける</span></button>'+
        '<button class="ghost" type="button" data-acct-email="login">メールアドレスで続ける</button>'+
-       '<p class="acct-fine">続けると<a href="/privacy" target="_blank" rel="noopener">プライバシーポリシー</a>に同意したことになります。</p>';
+       '<p class="acct-err" id="acErr" role="alert"></p>'+
+       '<p class="acct-fine">続けると<a href="'+bfSiteUrl('/privacy')+'" target="_blank" rel="noopener">プライバシーポリシー</a>に同意したことになります。</p>';
   }else if(mode==='login'||mode==='signup'){
     var su=mode==='signup';
     h+='<h3>メールアドレスで'+(su?'新規登録':'ログイン')+'</h3>'+
@@ -350,9 +381,10 @@ function acctSheet(mode,note){
        '<label class="fld"><span>名前(14文字まで)</span><input id="acName" maxlength="14" autocomplete="nickname" spellcheck="false" placeholder="PASSENGER" value="'+esc(cur)+'"></label>'+
        '<p class="acct-err" id="acErr" role="alert"></p><button class="go" type="submit">保存する</button></form>';
   }else{
-    var g=ACCT.me&&ACCT.me.provider==='google.com';
+    var g=ACCT.me&&ACCT.me.provider==='google.com',ap=ACCT.me&&ACCT.me.provider==='apple.com';
     h+='<h3>アカウントを削除</h3><p class="dim acct-lead">サーバーにある学習記録とアカウントが消えて、元に戻せません。この端末に残っている記録はそのままです。確認のため、もう一度ログインしてね。</p>';
-    if(g)h+='<button class="acct-g" type="button" data-acct-del-google data-needs-fb'+nf+'>'+G_LOGO+'<span>Googleで確認して削除</span></button><p class="acct-err" id="acErr" role="alert"></p>';
+    if(ap)h+='<button class="acct-a" type="button" data-acct-del-apple data-needs-fb'+nf+'>'+A_LOGO+'<span>Appleで確認して削除</span></button><p class="acct-err" id="acErr" role="alert"></p>';
+    else if(g)h+='<button class="acct-g" type="button" data-acct-del-google data-needs-fb'+nf+'>'+G_LOGO+'<span>Googleで確認して削除</span></button><p class="acct-err" id="acErr" role="alert"></p>';
     else h+='<form id="acctForm" class="acct-form" data-mode="delete" novalidate>'+
        '<label class="fld"><span>メールアドレス</span><input id="acEmail" type="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" value="'+esc(hint.email||'')+'"></label>'+
        '<label class="fld"><span>パスワード</span><input id="acPass" type="password" autocomplete="current-password"></label>'+
@@ -374,8 +406,10 @@ function acctSheet(mode,note){
 document.addEventListener('click',function(e){
   var t=e.target&&e.target.closest&&e.target.closest('button');if(!t)return;
   if(t.hasAttribute('data-acct-open')){acctSheet('start');return;}
-  if(t.hasAttribute('data-acct-google')){acctGoogle(false);return;}
-  if(t.hasAttribute('data-acct-del-google')){acctGoogle(true);return;}
+  if(t.hasAttribute('data-acct-google')){if(BF_APP)acctNative('google.com',false);else acctGoogle(false);return;}
+  if(t.hasAttribute('data-acct-del-google')){if(BF_APP)acctNative('google.com',true);else acctGoogle(true);return;}
+  if(t.hasAttribute('data-acct-apple')){acctNative('apple.com',false);return;}
+  if(t.hasAttribute('data-acct-del-apple')){acctNative('apple.com',true);return;}
   if(t.hasAttribute('data-acct-email')){if(!ACCT.busy)acctSheet(t.getAttribute('data-acct-email'));return;}
   if(t.hasAttribute('data-acct-logout')){acctLogout();return;}
   if(t.hasAttribute('data-acct-sync')){acctPull();return;}

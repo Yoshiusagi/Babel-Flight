@@ -1,0 +1,26 @@
+{
+  "appId": "io.github.yoshiusagi.babelflight",
+  "appName": "Babel Flight",
+  "webDir": "www",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#0b1630",
+    "limitsNavigationsToAppBoundDomains": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": true,
+      "launchShowDuration": 700,
+      "launchFadeOutDuration": 250,
+      "backgroundColor": "#e2637f",
+      "showSpinner": false
+    },
+    "FirebaseAuthentication": {
+      "skipNativeAuth": true,
+      "providers": [
+        "google.com",
+        "apple.com"
+      ]
+    }
+  }
+}

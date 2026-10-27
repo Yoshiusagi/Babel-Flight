@@ -1184,6 +1184,42 @@ body:has(#sheetHost .sheet) #hf-watermark{bottom:calc(12px + env(safe-area-inset
 [data-cabin="lounge"] .opt.no{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--surface))}
 [data-cabin="lounge"] #sheetHost .sheet[role="status"] .sheet-in::after{content:'← 半券をちぎるように、左へスワイプしても次へ'}
 </style>
+<style>
+/* ===== the iPhone app (html.app) + Sign in with Apple ===== */
+.acct-a{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:13px 14px;margin-bottom:10px;border:1.5px solid #000;border-radius:10px;background:#000;color:#fff;font-weight:600;font-size:15px}
+.acct-a svg{width:19px;height:19px;flex:none;margin-top:-2px}
+:root[data-theme="dark"] .acct-a{background:#fff;color:#000;border-color:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .acct-a{background:#fff;color:#000;border-color:#fff}}
+.aic-list{margin:8px 0 10px 1.2em;font-size:13.5px;line-height:1.8}
+.aic-sheet .go{margin-top:14px}
+.aic-sheet .ghost{margin-top:8px;width:100%}
+.app-card .set-row small{font-size:11.5px;line-height:1.5}
+.app-time input{font:inherit;font-size:16px;padding:6px 10px;border:1.5px solid var(--line);border-radius:8px;background:var(--surface2);color:var(--ink)}
+
+/* the status bar sits over the page in the app */
+html.app #app{padding-top:calc(14px + env(safe-area-inset-top,0px))}
+/* feels like an app: no text selection or long-press menus on controls, no rubber-band at the edges */
+html.app{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+html.app input,html.app textarea,html.app [contenteditable]{-webkit-user-select:text;user-select:text}
+html.app body{overscroll-behavior:none}
+html.app button,html.app a{-webkit-tap-highlight-color:transparent}
+html.app :where(button:not(:disabled)){transition:transform .12s ease,filter .12s ease}
+html.app :where(button:not(:disabled):active){transform:scale(.97);filter:brightness(.96)}
+
+/* swipe-back arrow */
+.swb{position:fixed;left:0;top:0;z-index:95;width:38px;height:38px;margin:-19px 0 0 -10px;display:grid;place-items:center;border-radius:50%;
+  background:var(--surface);color:var(--ink2);box-shadow:0 6px 18px -6px var(--shadow);opacity:0;pointer-events:none;transition:opacity .15s,background .15s,color .15s}
+.swb svg{width:20px;height:20px}
+.swb.show{opacity:1}
+.swb.go{background:var(--signal);color:var(--on-signal,#000)}
+
+/* offline: "airplane mode" note above the tab bar */
+.off-note{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(74px + env(safe-area-inset-bottom,0px));z-index:25;width:min(480px,calc(100% - 32px));
+  display:flex;flex-direction:column;gap:2px;padding:9px 14px;border-radius:12px;background:var(--ink);color:var(--bg);font-size:12px;line-height:1.5;
+  box-shadow:0 10px 24px -12px var(--shadow);animation:up .25s ease-out}
+.off-note b{font-size:13px;letter-spacing:.02em}
+@media (prefers-reduced-motion:reduce){.off-note{animation:none}html.app :where(button:not(:disabled)){transition:none}}
+</style>
 </head>
 <body>
 <div id="sky" class="sky" aria-hidden="true"></div>
@@ -1201,6 +1237,31 @@ body:has(#sheetHost .sheet) #hf-watermark{bottom:calc(12px + env(safe-area-inset
 <script>
 (function(){
 'use strict';
+/* ================= WHERE THE PAGE RUNS =================
+   The same page runs on the website (babel-flight.higgsfield.app), inside Claude, and inside the
+   iPhone app (Capacitor). In the app the page is loaded from the app bundle, so the server lives at
+   another address: API calls go to BF_API and sign in with a bearer token instead of a cookie. */
+var BF_SITE='https://babel-flight.higgsfield.app';
+var BF_APP=false;
+try{BF_APP=!!(window.Capacitor&&typeof window.Capacitor.isNativePlatform==='function'&&window.Capacitor.isNativePlatform());}catch(e){}
+var BF_API=BF_APP?BF_SITE:'';
+var BF_TOK_KEY='babelflight.tok';
+function bfToken(){try{return localStorage.getItem(BF_TOK_KEY)||'';}catch(e){return '';}}
+function bfSetToken(t){try{if(t)localStorage.setItem(BF_TOK_KEY,t);else localStorage.removeItem(BF_TOK_KEY);}catch(e){}}
+/* fetch for this app's own server: same-origin cookie on the website, bearer token in the app */
+function bfFetch(path,o){
+  o=o||{};
+  if(BF_APP){
+    o.credentials='omit';
+    var h={},src=o.headers||{};Object.keys(src).forEach(function(k){h[k]=src[k];});
+    var tok=bfToken();if(tok)h.authorization='Bearer '+tok;
+    o.headers=h;
+  }else if(!o.credentials)o.credentials='same-origin';
+  return fetch(BF_API+path,o);
+}
+/* a page on this app's website (privacy policy, support) */
+function bfSiteUrl(path){return (BF_APP?BF_SITE:'')+path;}
+if(BF_APP){try{document.documentElement.classList.add('app');}catch(e){}}
 /* ================= DATA ================= */
 function U(id,a){return {id:id,items:a.map(function(x){return {jp:x[0],t:x[1],r:x[2]||'',n:x[3]||''};})};}
 var UM={
@@ -2674,6 +2735,7 @@ function recordHTML(){
      (typeof accentHTML==='function'?accentHTML():'')+
      '<div class="set-row"><span>効果音</span><button class="ghost" type="button" data-toggle-sound aria-pressed="'+save.sound+'">'+(save.sound?'ON':'OFF')+'</button></div>'+
      '<div class="set-row"><span>タップ音</span><button class="ghost" type="button" data-toggle-tap aria-pressed="'+save.tap+'">'+(save.tap?'ON':'OFF')+'</button></div>'+
+     (typeof vibRowHTML==='function'?vibRowHTML():'')+
      '<div class="set-row"><span class="dim" style="font-size:13px">進捗は'+(cloud.doc?'アカウントに保存されています':'この端末のブラウザに保存されます')+'</span>'+
      (confirmReset?'<span class="row2"><button class="ghost danger" type="button" data-reset-yes>消去する</button><button class="ghost" type="button" data-reset-no>やめる</button></span>':'<button class="ghost danger" type="button" data-reset>リセット</button>')+'</div></section>';
   h+=creditsHTML();
@@ -4002,7 +4064,7 @@ document.addEventListener('click',function(e){
    in use; no names, answers or progress. Runs only on the Higgsfield site (never inside Claude). */
 var TRK=(function(){
   var on=false,vid='',KEY='babelflight.vid',VKEY='babelflight.visit',GAP=30*60*1000;
-  try{on=location.protocol==='https:'&&/(^|\.)higgsfield\.(app|ai)$/.test(location.hostname)&&typeof fetch==='function'&&!window.claude;}catch(e){}
+  try{on=location.protocol==='https:'&&/(^|\.)higgsfield\.(app|ai)$/.test(location.hostname)&&typeof fetch==='function'&&!window.claude;if(BF_APP)on=true;}catch(e){}
   function uuid(){
     if(window.crypto&&crypto.randomUUID)return crypto.randomUUID();
     var b=new Uint8Array(16);crypto.getRandomValues(b);b[6]=(b[6]&15)|64;b[8]=(b[8]&63)|128;
@@ -4019,7 +4081,7 @@ var TRK=(function(){
   function send(o){
     if(!on)return;
     o.vid=vid;o.mode=save.mode==='job'||save.mode==='study'?save.mode:'daily';if(!LANGS[o.lang])o.lang=save.lang;
-    try{fetch('/api/hit',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(o),keepalive:true,credentials:'same-origin'}).catch(function(){});}catch(e){}
+    try{bfFetch('/api/hit',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(o),keepalive:true}).catch(function(){});}catch(e){}
   }
   /* a "visit" = first activity after 30 min of nothing in this tab */
   function fresh(){
@@ -4056,9 +4118,10 @@ setTimeout(function(){TRK.visit();},800);
    progress from either device is never lost (see unionSave). */
 var FB_VER='12.4.0';
 var ACCT={on:false,cfg:null,me:null,rev:0,state:'',last:0,fbp:null,fb:null,dirty:false,force:false,pend:null,pulling:false,busy:false,sheet:'',msg:'',tries:0};
-try{ACCT.on=location.protocol==='https:'&&/(^|\.)higgsfield\.(app|ai)$/.test(location.hostname)&&!window.claude&&typeof fetch==='function';}catch(e){}
+try{ACCT.on=location.protocol==='https:'&&/(^|\.)higgsfield\.(app|ai)$/.test(location.hostname)&&!window.claude&&typeof fetch==='function';if(BF_APP)ACCT.on=true;}catch(e){}
 var AKEY='babelflight.acct';
 var G_LOGO='<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
+var A_LOGO='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.47.83-.72 0-1.82-.81-3-.79-1.54.02-2.96.9-3.76 2.28-1.6 2.78-.41 6.9 1.15 9.16.76 1.1 1.67 2.34 2.86 2.3 1.15-.05 1.58-.74 2.97-.74 1.38 0 1.77.74 2.98.72 1.23-.02 2.01-1.12 2.76-2.23.87-1.28 1.23-2.52 1.25-2.58-.03-.01-2.4-.92-2.42-3.66zM14.1 5.86c.63-.77 1.06-1.83.94-2.9-.91.04-2.02.61-2.67 1.37-.58.67-1.1 1.76-.96 2.8 1.02.08 2.06-.52 2.69-1.27z"/></svg>';
 var FB_ERR={
   'auth/invalid-email':'メールアドレスの形が正しくないみたい。',
   'auth/missing-email':'メールアドレスを入れてね。',
@@ -4092,9 +4155,9 @@ function acctServerMsg(err){
 function acctHint(){try{var v=JSON.parse(localStorage.getItem(AKEY)||'null');return v&&typeof v==='object'?v:{};}catch(e){return {};}}
 function acctSetHint(v){try{localStorage.setItem(AKEY,JSON.stringify(v||{}));}catch(e){}}
 function acctApi(method,path,body){
-  var o={method:method,credentials:'same-origin',cache:'no-store'};
+  var o={method:method,cache:'no-store'};
   if(body!==undefined){o.headers={'content-type':'application/json'};o.body=JSON.stringify(body);}
-  return fetch(path,o).then(function(r){
+  return bfFetch(path,o).then(function(r){
     return r.json().catch(function(){return {};}).then(function(j){if(!j||typeof j!=='object')j={};j._s=r.status;return j;});
   });
 }
@@ -4260,6 +4323,7 @@ document.addEventListener('click',function(e){
 function acctAfterFirebase(user){
   return user.getIdToken().then(function(tok){return acctApi('POST','/api/account/session',{idToken:tok});}).then(function(j){
     if(!j.ok)throw {code:'server',s:j._s,e:j.error};
+    if(j.token)bfSetToken(j.token);
     var prevUid=acctHint().uid||'';
     ACCT.me={uid:j.uid,provider:j.provider};ACCT.msg='';entSet(j.ent);
     acctSetHint({uid:j.uid,email:user.email||'',provider:j.provider});
@@ -4268,7 +4332,7 @@ function acctAfterFirebase(user){
 }
 function acctDone(){closeSheet();if(view==='record'||view==='onboard')render();}
 function acctSignedOut(msg){
-  ACCT.me=null;ACCT.rev=0;ACCT.state='';ACCT.dirty=false;ACCT.pend=null;entSet(null);
+  ACCT.me=null;ACCT.rev=0;ACCT.state='';ACCT.dirty=false;ACCT.pend=null;entSet(null);bfSetToken('');
   if(cloud.doc===ACCT_DOC)cloud.doc=null;
   ACCT.msg=msg||'';
   if(view==='record')render();
@@ -4286,7 +4350,9 @@ function acctLogout(){
 function acctDeleteWith(user){
   return user.getIdToken(true).then(function(tok){return acctApi('POST','/api/account/delete',{idToken:tok});}).then(function(j){
     if(!j.ok)throw {code:'server',s:j._s,e:j.error};
-    return ACCT.fb.F.deleteUser(user).catch(function(){});
+    var F=ACCT.fb.F,code=ACCT.appleCode;ACCT.appleCode='';
+    return (code&&F.revokeAccessToken?F.revokeAccessToken(ACCT.fb.auth,code).catch(function(){}):Promise.resolve())
+      .then(function(){return F.deleteUser(user).catch(function(){});});
   }).then(function(){
     acctSetHint({});closeSheet();
     acctSignedOut('アカウントを削除しました。この端末の記録はそのまま残っています。');
@@ -4307,6 +4373,31 @@ function acctGoogle(del){
   acctBusy(true);
   p.then(function(c){return del?acctDeleteWith(c.user):acctAfterFirebase(c.user).then(acctDone);})
     .catch(function(err){acctErr(err&&err.code==='server'?acctServerMsg(err):fbMsg(err));})
+    .then(function(){acctBusy(false);});
+}
+/* In the iPhone app, Google and Apple sign in through the system's own sheets (Firebase
+   Authentication plugin); the result is handed to the Firebase web SDK, so the rest of the flow
+   (server session, sync, deletion) is the same as on the website. */
+function acctNativeMsg(err){
+  var m=String((err&&(err.message||err.code))||'');
+  if(/cancel|1001|12501|popup-closed/i.test(m))return '';
+  if(err&&err.code&&String(err.code).indexOf('auth/')===0)return fbMsg(err);
+  return 'ログインできませんでした。もう一度試してね。';
+}
+function acctNative(provider,del){
+  var fb=ACCT.fb;if(!fb||ACCT.busy)return;
+  var P=null;try{P=window.Capacitor.Plugins.FirebaseAuthentication;}catch(e){}
+  if(!P){acctErr('このログイン方法は今は使えません。');return;}
+  var F=fb.F,apple=provider==='apple.com';
+  acctErr('');acctBusy(true);
+  (apple?P.signInWithApple({skipNativeAuth:true}):P.signInWithGoogle({skipNativeAuth:true})).then(function(r){
+    var c=(r&&r.credential)||{};
+    if(!c.idToken)throw {message:'no token'};
+    ACCT.appleCode=apple?(c.authorizationCode||''):'';
+    var cred=apple?new F.OAuthProvider('apple.com').credential({idToken:c.idToken,rawNonce:c.nonce}):F.GoogleAuthProvider.credential(c.idToken,c.accessToken||null);
+    return F.signInWithCredential(fb.auth,cred);
+  }).then(function(uc){return del?acctDeleteWith(uc.user):acctAfterFirebase(uc.user).then(acctDone);})
+    .catch(function(err){acctErr(err&&err.code==='server'?acctServerMsg(err):acctNativeMsg(err));})
     .then(function(){acctBusy(false);});
 }
 document.addEventListener('submit',function(e){
@@ -4354,14 +4445,14 @@ function acctCardHTML(){
        '<button class="go acct-go" type="button" data-acct-open>ログイン / 新規登録</button>';
   }else{
     var hint=acctHint();
-    h+=(ACCT.me.provider==='google.com'?'Google':'メール')+'でログイン中</span></div>'+
+    h+=(ACCT.me.provider==='google.com'?'Google':ACCT.me.provider==='apple.com'?'Apple':'メール')+'でログイン中</span></div>'+
        '<div class="acct-me"><button class="acct-av" type="button" data-icon-open aria-label="アイコンを変える">'+avatarHTML()+'</button><div class="acct-id"><b>'+esc(save.name)+'</b><small>'+esc(hint.email||'')+'</small></div>'+
        '<button class="ghost acct-edit" type="button" data-acct-name>名前を変える</button></div>'+
        '<p class="acct-sync" id="acctStat" role="status">'+acctStatusText()+'</p>'+
        '<div class="row2"><button class="ghost" type="button" data-acct-sync>今すぐ同期</button><button class="ghost" type="button" data-acct-logout>ログアウト</button></div>'+
        '<button class="acct-del" type="button" data-acct-delete>アカウントを削除</button>';
   }
-  return h+'<a class="acct-pp" href="/privacy" target="_blank" rel="noopener">プライバシーポリシー</a></section>';
+  return h+'<a class="acct-pp" href="'+bfSiteUrl('/privacy')+'" target="_blank" rel="noopener">プライバシーポリシー</a></section>';
 }
 function acctObHTML(){
   if(!ACCT.on||!ACCT.cfg||ACCT.me)return '';
@@ -4373,9 +4464,11 @@ function acctSheet(mode,note){
   h='<div class="sheet acct-sheet'+(mode==='delete'?' bad':'')+'" role="dialog" aria-label="アカウント"><div class="sheet-in">';
   if(mode==='start'){
     h+='<h3>ログイン / 新規登録</h3><p class="dim acct-lead">スマホとパソコンで進み具合を同期できます。この端末の記録は、アカウントの記録と合わせて引き継がれます。</p>'+
+       (BF_APP?'<button class="acct-a" type="button" data-acct-apple data-needs-fb'+nf+'>'+A_LOGO+'<span>Appleで続ける</span></button>':'')+
        '<button class="acct-g" type="button" data-acct-google data-needs-fb'+nf+'>'+G_LOGO+'<span>Googleで続ける</span></button>'+
        '<button class="ghost" type="button" data-acct-email="login">メールアドレスで続ける</button>'+
-       '<p class="acct-fine">続けると<a href="/privacy" target="_blank" rel="noopener">プライバシーポリシー</a>に同意したことになります。</p>';
+       '<p class="acct-err" id="acErr" role="alert"></p>'+
+       '<p class="acct-fine">続けると<a href="'+bfSiteUrl('/privacy')+'" target="_blank" rel="noopener">プライバシーポリシー</a>に同意したことになります。</p>';
   }else if(mode==='login'||mode==='signup'){
     var su=mode==='signup';
     h+='<h3>メールアドレスで'+(su?'新規登録':'ログイン')+'</h3>'+
@@ -4400,9 +4493,10 @@ function acctSheet(mode,note){
        '<label class="fld"><span>名前(14文字まで)</span><input id="acName" maxlength="14" autocomplete="nickname" spellcheck="false" placeholder="PASSENGER" value="'+esc(cur)+'"></label>'+
        '<p class="acct-err" id="acErr" role="alert"></p><button class="go" type="submit">保存する</button></form>';
   }else{
-    var g=ACCT.me&&ACCT.me.provider==='google.com';
+    var g=ACCT.me&&ACCT.me.provider==='google.com',ap=ACCT.me&&ACCT.me.provider==='apple.com';
     h+='<h3>アカウントを削除</h3><p class="dim acct-lead">サーバーにある学習記録とアカウントが消えて、元に戻せません。この端末に残っている記録はそのままです。確認のため、もう一度ログインしてね。</p>';
-    if(g)h+='<button class="acct-g" type="button" data-acct-del-google data-needs-fb'+nf+'>'+G_LOGO+'<span>Googleで確認して削除</span></button><p class="acct-err" id="acErr" role="alert"></p>';
+    if(ap)h+='<button class="acct-a" type="button" data-acct-del-apple data-needs-fb'+nf+'>'+A_LOGO+'<span>Appleで確認して削除</span></button><p class="acct-err" id="acErr" role="alert"></p>';
+    else if(g)h+='<button class="acct-g" type="button" data-acct-del-google data-needs-fb'+nf+'>'+G_LOGO+'<span>Googleで確認して削除</span></button><p class="acct-err" id="acErr" role="alert"></p>';
     else h+='<form id="acctForm" class="acct-form" data-mode="delete" novalidate>'+
        '<label class="fld"><span>メールアドレス</span><input id="acEmail" type="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" value="'+esc(hint.email||'')+'"></label>'+
        '<label class="fld"><span>パスワード</span><input id="acPass" type="password" autocomplete="current-password"></label>'+
@@ -4424,8 +4518,10 @@ function acctSheet(mode,note){
 document.addEventListener('click',function(e){
   var t=e.target&&e.target.closest&&e.target.closest('button');if(!t)return;
   if(t.hasAttribute('data-acct-open')){acctSheet('start');return;}
-  if(t.hasAttribute('data-acct-google')){acctGoogle(false);return;}
-  if(t.hasAttribute('data-acct-del-google')){acctGoogle(true);return;}
+  if(t.hasAttribute('data-acct-google')){if(BF_APP)acctNative('google.com',false);else acctGoogle(false);return;}
+  if(t.hasAttribute('data-acct-del-google')){if(BF_APP)acctNative('google.com',true);else acctGoogle(true);return;}
+  if(t.hasAttribute('data-acct-apple')){acctNative('apple.com',false);return;}
+  if(t.hasAttribute('data-acct-del-apple')){acctNative('apple.com',true);return;}
   if(t.hasAttribute('data-acct-email')){if(!ACCT.busy)acctSheet(t.getAttribute('data-acct-email'));return;}
   if(t.hasAttribute('data-acct-logout')){acctLogout();return;}
   if(t.hasAttribute('data-acct-sync')){acctPull();return;}
@@ -4501,10 +4597,15 @@ var SAI={on:false,enabled:false,left:null,seen:'',lastView:''};
 try{SAI.on=!!ACCT.on;}catch(e){}
 var aiAtcEntryHTML=null,atcNoteText=null;
 function saiPost(path,body,signal){
-  return fetch(path,{method:'POST',credentials:'same-origin',cache:'no-store',headers:{'content-type':'application/json'},body:JSON.stringify(body),signal:signal});
+  if(BF_APP&&!aiConsented())return aiConsentAsk().then(function(ok){
+    if(!ok)return new Response(JSON.stringify({ok:false,error:'consent'}),{status:403,headers:{'content-type':'application/json'}});
+    return bfFetch(path,{method:'POST',cache:'no-store',headers:{'content-type':'application/json'},body:JSON.stringify(body),signal:signal});
+  });
+  return bfFetch(path,{method:'POST',cache:'no-store',headers:{'content-type':'application/json'},body:JSON.stringify(body),signal:signal});
 }
 function saiErr(j,kind){
   var c=(j&&j.error)||'';
+  if(c==='consent')return 'AI機能を使うには、AIに送る内容の確認で「同意して使う」を選んでね。';
   if(c==='signin')return 'ログインが切れたみたい。「記録」画面からもう一度ログインしてね。';
   if(c==='quota'){
     if(kind==='ask')return '今日の質問はここまで(1日20回)。また明日ね！';
@@ -4531,7 +4632,7 @@ function saiRefreshView(){
 }
 function saiStatus(){
   if(!SAI.on)return;
-  fetch('/api/ai/status',{credentials:'same-origin',cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
+  bfFetch('/api/ai/status',{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
     SAI.enabled=!!(j&&j.enabled);SAI.left=j&&j.signedIn&&j.left?j.left:null;
   },function(){}).then(function(){AI.checked=true;saiRefreshView();});
 }
@@ -6365,6 +6466,298 @@ function passSync(){
   var ps0=promptSync;
   promptSync=function(){if(cabinLayout()==='lounge')return passSync();return ps0.apply(this,arguments);};
 })();
+/* ================= THE IPHONE APP (Capacitor) =================
+   Everything here only does something inside the app (BF_APP), except vibration, which also works
+   in Android browsers. Native features go through Capacitor's plugins (window.Capacitor.Plugins):
+   - daily reminder (local notification at a time the user picks; at most 1 a day, none once the
+     day's goal is done) - vibration on right / wrong / taps - swipe from the left edge to go back
+   - links open in an in-app browser - share images with the system share sheet
+   - "airplane mode" note when offline - the save is mirrored to native storage
+   - asks before anything is first sent to the AI (App Store rule 5.1.2(i))
+   - the class / paid-plan test screens are off (the App Store version is free for now) */
+function nat(name){try{var p=window.Capacitor&&window.Capacitor.Plugins;return (p&&p[name])||null;}catch(e){return null;}}
+function natCall(name,method,arg){
+  var p=nat(name);if(!p||typeof p[method]!=='function')return Promise.reject(new Error('unavailable'));
+  try{return Promise.resolve(p[method](arg));}catch(e){return Promise.reject(e);}
+}
+
+/* ---- settings that belong to this device (not synced) ---- */
+var DEV_KEY='babelflight.device';
+function devSet(){
+  var d={vib:true,rem:false,remT:'19:00'};
+  try{var v=JSON.parse(localStorage.getItem(DEV_KEY)||'null');if(v&&typeof v==='object'){
+    if(typeof v.vib==='boolean')d.vib=v.vib;if(typeof v.rem==='boolean')d.rem=v.rem;
+    if(typeof v.remT==='string'&&/^([01]\d|2[0-3]):[0-5]\d$/.test(v.remT))d.remT=v.remT;}}catch(e){}
+  return d;
+}
+function devPut(d){try{localStorage.setItem(DEV_KEY,JSON.stringify(d));}catch(e){}natMirrorSoon();}
+
+/* ---- vibration ---- */
+var VIB_WEB=false;
+try{VIB_WEB=!BF_APP&&typeof navigator.vibrate==='function'&&/Android/i.test(navigator.userAgent||'');}catch(e){}
+function vibOK(){return BF_APP?!!nat('Haptics'):VIB_WEB;}
+function hapt(kind){
+  if(!vibOK()||!devSet().vib)return;
+  if(BF_APP){
+    var p;
+    if(kind==='ok')p=natCall('Haptics','notification',{type:'SUCCESS'});
+    else if(kind==='ng')p=natCall('Haptics','notification',{type:'ERROR'});
+    else if(kind==='big')p=natCall('Haptics','impact',{style:'HEAVY'});
+    else p=natCall('Haptics','impact',{style:'LIGHT'});
+    p.catch(function(){});
+    return;
+  }
+  try{navigator.vibrate(kind==='ok'?18:kind==='ng'?[30,40,30]:kind==='big'?[20,40,70]:8);}catch(e){}
+}
+(function(){
+  var g=fxGood,b=fxBad,c=confetti,t=tapTick;
+  fxGood=function(){hapt('ok');return g.apply(this,arguments);};
+  fxBad=function(){hapt('ng');return b.apply(this,arguments);};
+  confetti=function(){hapt('big');return c.apply(this,arguments);};
+  tapTick=function(){if(save.tap)hapt('tap');return t.apply(this,arguments);};
+})();
+/* the 振動 row in 学習の設定 (only where the device can vibrate) */
+function vibRowHTML(){
+  if(!vibOK())return '';
+  var on=devSet().vib;
+  return '<div class="set-row"><span>振動</span><button class="ghost" type="button" data-toggle-vib aria-pressed="'+on+'">'+(on?'ON':'OFF')+'</button></div>';
+}
+
+/* ---- AI: ask once before anything is sent (shown on the first AI use in the app) ---- */
+var AI_OK_KEY='babelflight.aiok';
+function aiConsented(){try{return localStorage.getItem(AI_OK_KEY)==='1';}catch(e){return false;}}
+var AIC={wait:null};
+function aiConsentAsk(){
+  if(AIC.wait){if(document.querySelector('.aic-sheet'))return AIC.wait.p;aiConsentDone(false);}
+  var w={};w.p=new Promise(function(res){w.res=res;});AIC.wait=w;
+  $('sheetHost').innerHTML='<div class="sheet aic-sheet" role="alertdialog" aria-label="AIに送る内容"><div class="sheet-in">'+
+    '<h3>AIに送る内容の確認</h3>'+
+    '<p class="dim acct-lead">「AIに質問」「AI管制官」「AIの例文練習」では、答えを作るために次の内容を <b>Anthropic社のAI「Claude」</b> に送ります。</p>'+
+    '<ul class="aic-list"><li>あなたが書いた質問・返事の文章</li><li>学習中のフレーズとその意味</li></ul>'+
+    '<p class="dim acct-lead">名前・メールアドレス・ユーザーIDは送りません。送った文章はこのアプリのサーバーには保存しません。文章に住所や学校名などの個人情報は書かないでね。</p>'+
+    '<a class="acct-pp" href="'+bfSiteUrl('/privacy')+'" target="_blank" rel="noopener">プライバシーポリシーを見る</a>'+
+    '<button class="go" type="button" data-aic="yes">同意して使う</button>'+
+    '<button class="ghost" type="button" data-aic="no">やめる</button></div></div>';
+  return w.p;
+}
+function aiConsentDone(ok){
+  var w=AIC.wait;AIC.wait=null;
+  if(ok){try{localStorage.setItem(AI_OK_KEY,'1');}catch(e){}natMirrorSoon();}
+  var s=document.querySelector('.aic-sheet');if(s)$('sheetHost').innerHTML='';
+  if(w)w.res(!!ok);
+}
+
+/* ---- daily reminder (local notification; nothing goes through a server) ---- */
+var REM_BASE=4100,REM_DAYS=14;
+var REM_LINES=[
+  function(){return 'Babel Flight便、まもなく搭乗開始です。今日のレッスンで'+LANGS[save.lang].name+'を一歩すすめよう。';},
+  function(i){var s=streakNow();return i===0&&s>0&&save.lastDay!==dayStr()?'機長よりお知らせします。連続'+(s+1)+'日目のフライトの準備が整いました。':'機長よりお知らせします。本日のフライトの準備が整いました。';},
+  function(){return '搭乗手続きのお時間です。3分のレッスンからどうぞ。';},
+  function(i){var r=i===0?Math.max(1,save.goal-todayCount()):save.goal;return '本日の目標まで、あと'+r+'レッスン。ゲートでお待ちしています。';}
+];
+var REM={busy:false,again:false,timer:0,denied:false};
+function remIds(){var a=[];for(var i=0;i<REM_DAYS;i++)a.push({id:REM_BASE+i});return a;}
+function remSchedule(){
+  if(!BF_APP||!nat('LocalNotifications'))return Promise.resolve();
+  if(REM.busy){REM.again=true;return Promise.resolve();}
+  REM.busy=true;
+  var d=devSet();
+  return natCall('LocalNotifications','cancel',{notifications:remIds()}).catch(function(){}).then(function(){
+    if(!d.rem||!save.onboarded)return;
+    var hm=d.remT.split(':'),now=new Date(),list=[];
+    for(var i=0;i<REM_DAYS;i++){
+      var at=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i,+hm[0],+hm[1],0,0);
+      if(at.getTime()<=now.getTime()+60000)continue;
+      if(i===0&&todayCount()>=save.goal)continue;   /* today's goal is done: no reminder today */
+      list.push({id:REM_BASE+i,title:'✈️ 搭乗のご案内',body:REM_LINES[(at.getDate()+i)%REM_LINES.length](i),
+        schedule:{at:at,allowWhileIdle:true},extra:{kind:'daily'}});
+    }
+    if(list.length)return natCall('LocalNotifications','schedule',{notifications:list});
+  }).catch(function(){}).then(function(){REM.busy=false;if(REM.again){REM.again=false;remSchedule();}});
+}
+function remSoon(){clearTimeout(REM.timer);REM.timer=setTimeout(remSchedule,1500);}
+function remTurnOn(){
+  natCall('LocalNotifications','requestPermissions').then(function(r){
+    var ok=r&&r.display==='granted';REM.denied=!ok;
+    var d=devSet();d.rem=ok;devPut(d);
+    if(ok)remSchedule();
+    if(view==='record')render();
+  },function(){REM.denied=true;if(view==='record')render();});
+}
+function remCheckPermission(){
+  natCall('LocalNotifications','checkPermissions').then(function(r){
+    var ok=r&&r.display==='granted';
+    if(!ok&&devSet().rem){var d=devSet();d.rem=false;devPut(d);REM.denied=r&&r.display==='denied';if(view==='record')render();}
+  },function(){});
+}
+
+/* ---- the App card on 記録 (takes the place of the website's "add to home screen" card) ---- */
+function appCardHTML(){
+  var d=devSet(),canRem=!!nat('LocalNotifications');
+  var h='<section class="card app-card"><div class="card-h"><h2>App</h2><span class="lbl">この端末の設定</span></div>';
+  if(canRem){
+    h+='<div class="set-row"><span>毎日のリマインド<br><small class="dim">1日1回まで。その日の目標を達成した日は届きません</small></span>'+
+       '<button class="ghost" type="button" data-rem-toggle aria-pressed="'+d.rem+'">'+(d.rem?'ON':'OFF')+'</button></div>';
+    if(d.rem)h+='<label class="set-row app-time"><span>届く時間</span><input id="remTime" type="time" step="300" value="'+d.remT+'"></label>';
+    if(REM.denied)h+='<p class="acct-msg" role="status">通知がオフになっています。iPhoneの「設定」→「Babel Flight」→「通知」から許可してね。</p>';
+  }
+  return h+'</section>';
+}
+
+/* ---- swipe from the left edge = back (like other iPhone apps) ---- */
+var SWB={x:0,y:0,on:false,el:null};
+function swbTarget(){
+  var sh=document.querySelector('#sheetHost .sheet');
+  if(sh)return sh.querySelector('[data-close-sheet],[data-abort-no],[data-aic="no"]');
+  var sel=['[data-abort]','[data-sc-end]','[data-atc-back]','[data-role-back]','[data-ai-drill-close]','[data-picker-close]','[data-ob-back]'];
+  for(var i=0;i<sel.length;i++){
+    var b=document.querySelector('#main '+sel[i]);
+    if(b&&!b.disabled&&b.offsetParent!==null)return b;
+  }
+  return null;
+}
+function swbArrow(){
+  if(SWB.el)return SWB.el;
+  var e=document.createElement('div');e.className='swb';e.setAttribute('aria-hidden','true');
+  e.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>';
+  document.body.appendChild(e);SWB.el=e;return e;
+}
+function swbEnd(){SWB.on=false;if(SWB.el){SWB.el.classList.remove('show','go');SWB.el.style.transform='';}}
+
+/* ---- keep a copy of the save in native storage (iOS may clear web storage when space runs low) ---- */
+var NAT_KEYS=[KEY,BF_TOK_KEY,'babelflight.acct','babelflight.vid',DEV_KEY,'babelflight.aiok','babelflight.shareName'];
+var natMirrorT=0;
+function natMirror(){
+  if(!BF_APP||!nat('Preferences'))return;
+  NAT_KEYS.forEach(function(k){
+    var v=null;try{v=localStorage.getItem(k);}catch(e){}
+    (v===null?natCall('Preferences','remove',{key:k}):natCall('Preferences','set',{key:k,value:v})).catch(function(){});
+  });
+}
+function natMirrorSoon(){if(!BF_APP)return;clearTimeout(natMirrorT);natMirrorT=setTimeout(natMirror,800);}
+function natRestore(){
+  /* web storage came back empty but the native copy has progress: put it back and reload once */
+  var has=false;try{has=!!localStorage.getItem(KEY);}catch(e){}
+  if(has||!nat('Preferences'))return Promise.resolve(false);
+  return natCall('Preferences','get',{key:KEY}).then(function(r){
+    if(!r||!r.value)return false;
+    return Promise.all(NAT_KEYS.map(function(k){return natCall('Preferences','get',{key:k}).then(function(x){
+      if(x&&typeof x.value==='string'){try{localStorage.setItem(k,x.value);}catch(e){}}},function(){});})).then(function(){
+      try{if(sessionStorage.getItem('bf.restored'))return false;sessionStorage.setItem('bf.restored','1');}catch(e){}
+      location.reload();return true;
+    });
+  },function(){return false;});
+}
+
+/* ---- offline note ---- */
+function offlineSync(){
+  var off=false;try{off=navigator.onLine===false;}catch(e){}
+  var el=$('offNote');
+  if(off&&!el){
+    el=document.createElement('div');el.id='offNote';el.className='off-note';el.setAttribute('role','status');
+    el.innerHTML='<b>✈ 機内モードで飛行中</b><span>レッスンと復習はこのまま続けられます。AIと記録の同期は、電波が戻ったら動きます。</span>';
+    document.body.appendChild(el);
+  }else if(!off&&el)el.remove();
+}
+
+/* ---- status bar text colour follows the app's light / dark theme ---- */
+function natStatusBar(){
+  if(!nat('StatusBar'))return;
+  var t=rootEl.getAttribute('data-theme'),dark=t?t==='dark':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);
+  natCall('StatusBar','setStyle',{style:dark?'DARK':'LIGHT'}).catch(function(){});
+}
+
+/* ---- share images through the system share sheet ---- */
+function natShareImage(){
+  var f=SHR&&SHR.file;if(!f)return;
+  var rd=new FileReader();
+  rd.onload=function(){
+    var b64=String(rd.result||'').split(',')[1]||'';
+    natCall('Filesystem','writeFile',{path:'babel-flight-share.png',data:b64,directory:'CACHE'}).then(function(w){
+      return natCall('Share','share',{title:'Babel Flight',files:[w.uri]});
+    }).catch(function(){});
+  };
+  rd.readAsDataURL(f);
+}
+
+if(BF_APP){
+  /* paid-plan previews stay on the website's test account; the App Store version is the free app */
+  cabinTester=function(){return false;};
+  try{applyCabin();}catch(e){}
+  pwaCardHTML=appCardHTML;
+  if(nat('Share')&&nat('Filesystem'))shrCanFiles=function(){return true;};
+
+  (function(){
+    var a0=applyTheme;applyTheme=function(){var r=a0.apply(this,arguments);natStatusBar();return r;};
+    var remKey='';
+    var p0=persistLocal;persistLocal=function(){
+      var r=p0.apply(this,arguments);natMirrorSoon();
+      var k=[todayCount()>=save.goal,save.onboarded,save.lang,dayStr()].join('|');if(k!==remKey){remKey=k;remSoon();}
+      return r;
+    };
+    var c0=closeSheet;closeSheet=function(){var r=c0.apply(this,arguments);if(AIC.wait)aiConsentDone(false);return r;};
+    var t0=bfSetToken;bfSetToken=function(){var r=t0.apply(this,arguments);natMirrorSoon();return r;};
+  })();
+  try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',natStatusBar);}catch(e){}
+
+  document.addEventListener('click',function(e){
+    var t=e.target&&e.target.closest&&e.target.closest('a[href],[data-shr="img"]');if(!t)return;
+    if(t.hasAttribute('data-shr')){e.preventDefault();e.stopPropagation();natShareImage();return;}
+    var href=t.getAttribute('href')||'';
+    if(/^https?:\/\//i.test(href)){
+      e.preventDefault();
+      natCall('Browser','open',{url:href,presentationStyle:'popover'}).catch(function(){try{window.open(href,'_blank');}catch(x){}});
+    }
+  },true);
+
+  document.addEventListener('touchstart',function(e){
+    var p=e.touches&&e.touches[0];if(!p||e.touches.length>1){SWB.on=false;return;}
+    SWB.on=p.clientX<24;SWB.x=p.clientX;SWB.y=p.clientY;
+  },{passive:true});
+  document.addEventListener('touchmove',function(e){
+    if(!SWB.on)return;var p=e.touches[0],dx=p.clientX-SWB.x,dy=Math.abs(p.clientY-SWB.y);
+    if(dy>60&&dy>dx){swbEnd();return;}
+    if(dx>12&&swbTarget()){var a=swbArrow();a.classList.add('show');a.classList.toggle('go',dx>90);a.style.transform='translate('+Math.min(dx,120)*0.5+'px,'+p.clientY+'px)';}
+  },{passive:true});
+  document.addEventListener('touchend',function(e){
+    if(!SWB.on)return;var p=e.changedTouches&&e.changedTouches[0],dx=p?p.clientX-SWB.x:0,dy=p?Math.abs(p.clientY-SWB.y):0;
+    swbEnd();
+    if(dx>90&&dy<70){var b=swbTarget();if(b)b.click();}
+  },{passive:true});
+  document.addEventListener('touchcancel',swbEnd,{passive:true});
+
+  window.addEventListener('online',offlineSync);window.addEventListener('offline',offlineSync);
+  document.addEventListener('visibilitychange',function(){
+    if(document.hidden){natMirror();return;}
+    offlineSync();remCheckPermission();remSchedule();
+  });
+  var bootNat=function(){
+    natRestore().then(function(reloading){
+      if(reloading)return;
+      offlineSync();natStatusBar();remCheckPermission();remSchedule();natMirrorSoon();
+      natCall('SplashScreen','hide',{fadeOutDuration:250}).catch(function(){});
+    });
+  };
+  setTimeout(bootNat,0);
+}
+
+document.addEventListener('click',function(e){
+  var t=e.target&&e.target.closest&&e.target.closest('button');if(!t)return;
+  if(t.hasAttribute('data-aic')){aiConsentDone(t.getAttribute('data-aic')==='yes');return;}
+  if(t.hasAttribute('data-toggle-vib')){var d=devSet();d.vib=!d.vib;devPut(d);if(d.vib)hapt('tap');render();return;}
+  if(t.hasAttribute('data-rem-toggle')){
+    var r=devSet();
+    if(r.rem){r.rem=false;devPut(r);remSchedule();render();}
+    else remTurnOn();
+    return;
+  }
+});
+document.addEventListener('change',function(e){
+  if(e.target&&e.target.id==='remTime'){
+    var v=e.target.value||'';if(!/^([01]\d|2[0-3]):[0-5]\d$/.test(v))return;
+    var d=devSet();d.remT=v;devPut(d);remSchedule();
+  }
+});
 /* ================= EVENTS + BOOT ================= */
 function go(v){view=v;confirmReset=false;render();window.scrollTo(0,0);}
 document.addEventListener('click',function(e){

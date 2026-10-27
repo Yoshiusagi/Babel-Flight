@@ -8,8 +8,10 @@ f16_css.html
 f17_css.html
 f18_css.html
 f19_css.html
+f20_css.html
 @HEADEND
 e2_body.html
+a0_env.js
 p3a_data.js
 p3b_data.js
 d1_prof.js
@@ -46,5 +48,6 @@ f17_exam.js
 f17_cabin.js
 f18_layout.js
 f19_board.js
+f20_native.js
 f7_boot.js
 @END

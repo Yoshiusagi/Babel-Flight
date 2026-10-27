@@ -5,6 +5,7 @@ import { applySecurityHeaders } from "./lib/security-headers.server";
 import { handleAccount } from "./lib/account.server";
 import { handleAi } from "./lib/ai.server";
 import { handleAnalytics } from "./lib/analytics.server";
+import { appPreflight, withAppCors } from "./lib/http.server";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
@@ -58,15 +59,18 @@ export default {
         }),
       );
     }
+    // The iPhone app calls the same APIs from its own origin (see lib/http.server.ts).
+    const preflight = appPreflight(request, url);
+    if (preflight) return preflight;
     // Anonymous usage counting + the owner-only /stats dashboard (see lib/analytics.server.ts).
     const analytics = await handleAnalytics(request, url);
-    if (analytics) return applySecurityHeaders(analytics);
+    if (analytics) return applySecurityHeaders(withAppCors(request, analytics));
     // Optional accounts (Firebase sign-in, progress sync) + /privacy (see lib/account.server.ts).
     const account = await handleAccount(request, url);
-    if (account) return applySecurityHeaders(account);
+    if (account) return applySecurityHeaders(withAppCors(request, account));
     // AI for the standalone site (Claude API, signed-in accounts, daily limits; see lib/ai.server.ts).
     const ai = await handleAi(request, url);
-    if (ai) return applySecurityHeaders(ai);
+    if (ai) return applySecurityHeaders(withAppCors(request, ai));
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);

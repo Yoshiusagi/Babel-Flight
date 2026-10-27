@@ -143,6 +143,7 @@ function recordHTML(){
      (typeof accentHTML==='function'?accentHTML():'')+
      '<div class="set-row"><span>効果音</span><button class="ghost" type="button" data-toggle-sound aria-pressed="'+save.sound+'">'+(save.sound?'ON':'OFF')+'</button></div>'+
      '<div class="set-row"><span>タップ音</span><button class="ghost" type="button" data-toggle-tap aria-pressed="'+save.tap+'">'+(save.tap?'ON':'OFF')+'</button></div>'+
+     (typeof vibRowHTML==='function'?vibRowHTML():'')+
      '<div class="set-row"><span class="dim" style="font-size:13px">進捗は'+(cloud.doc?'アカウントに保存されています':'この端末のブラウザに保存されます')+'</span>'+
      (confirmReset?'<span class="row2"><button class="ghost danger" type="button" data-reset-yes>消去する</button><button class="ghost" type="button" data-reset-no>やめる</button></span>':'<button class="ghost danger" type="button" data-reset>リセット</button>')+'</div></section>';
   h+=creditsHTML();
