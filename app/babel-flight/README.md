@@ -43,3 +43,13 @@ cached icons/fonts; APIs never cached) and shows an "App" card on the record scr
 and the AI routes skip the daily limits (`left` is reported as 999). Miles and status themselves stay real.
 **Any future paid feature must check `entitled()` in the page and `fullAccess()` on the server**, so the test
 account keeps getting everything automatically.
+
+## iPhone app (Capacitor)
+
+`parts/a0_env.js` runs first: `BF_APP` is true inside the app, `BF_API` is the website's address there, and
+`bfFetch()` is used for every call to this site's own `/api/*` (cookie on the website, `Authorization: Bearer`
+in the app, where the page's origin is `capacitor://localhost`). Server side: `appOrigin` / `withAppCors` /
+`readSessionToken` in `src/lib/http.server.ts`; `/api/account/session` returns the token to the app.
+`parts/f20_native.js` + `f20_css.html` hold the app-only features (daily reminder, haptics, swipe back,
+offline note, native share, links in an in-app browser, AI consent sheet, native Google / Apple sign-in) and
+switch the class / paid-plan screens off. The native project and its build live in `ios-app/` (see its README).
