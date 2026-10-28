@@ -134,7 +134,8 @@ async function handleImport(request: Request, key: string, db: D1Database): Prom
   } catch {
     return json({ ok: false, error: "move_from" }, 503);
   }
-  if (fromUrl.protocol !== "https:" || fromUrl.origin === new URL(request.url).origin) {
+  const local = fromUrl.hostname === "127.0.0.1" || fromUrl.hostname === "localhost"; // trying it out with wrangler dev
+  if ((fromUrl.protocol !== "https:" && !local) || fromUrl.origin === new URL(request.url).origin) {
     return json({ ok: false, error: "move_from" }, 503);
   }
   const body = (await readJsonBody(request, 1024)) as Row | null;
