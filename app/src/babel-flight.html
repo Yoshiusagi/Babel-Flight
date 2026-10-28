@@ -1257,6 +1257,20 @@ html.app :where(button:not(:disabled):active){transform:scale(.97);filter:bright
 .bill-sheet .ghost{display:block;width:100%;margin-top:8px}
 @media (max-width:359px){.bill-dl{grid-template-columns:minmax(0,1fr)}.bill-dl dd{margin-bottom:4px}}
 </style>
+<style>
+/* ---- the old address after the move (f22_move.js) ---- */
+.move-note{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;padding:24px 16px;background:var(--bg);color:var(--ink);overflow-y:auto}
+.move-in{width:min(420px,100%);display:flex;flex-direction:column;gap:12px}
+.move-in h2{font:700 24px/1.3 var(--f-body)}
+.move-host{display:flex;flex-direction:column;gap:4px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.move-host .dim{font-size:12.5px}
+.move-host b{font:700 17px var(--f-mono);word-break:break-all}
+.move-in .go{text-align:center;text-decoration:none;margin-top:4px}
+.move-list{margin:0;padding-left:1.2em;font-size:13.5px;line-height:1.7;color:var(--ink2)}
+.move-sheet h3{color:var(--ink);margin-top:4px}
+.move-sum{font-size:15px;margin-top:8px}
+.move-sheet .ghost{display:block;width:100%;margin-top:8px}
+</style>
 </head>
 <body>
 <div id="sky" class="sky" aria-hidden="true"></div>
@@ -1279,6 +1293,13 @@ html.app :where(button:not(:disabled):active){transform:scale(.97);filter:bright
    iPhone app (Capacitor). In the app the page is loaded from the app bundle, so the server lives at
    another address: API calls go to BF_API and sign in with a bearer token instead of a cookie. */
 var BF_SITE='https://babel-flight.higgsfield.app';
+/* the website's own addresses: accounts, usage counting, install and share links run only there.
+   The Higgsfield address now; the owner's Cloudflare account (*.workers.dev, then the own domain) after the move. */
+var BF_HOSTS=/(^|\.)higgsfield\.(app|ai)$|\.workers\.dev$/;
+/* set at the move to the new address (e.g. 'https://babel-flight.app'): the old Higgsfield address then only
+   shows a note with a link there (f22_move.js) */
+var BF_MOVED_TO='';
+function bfOnSite(){try{return location.protocol==='https:'&&BF_HOSTS.test(location.hostname)&&!window.claude;}catch(e){return false;}}
 var BF_APP=false;
 try{BF_APP=!!(window.Capacitor&&typeof window.Capacitor.isNativePlatform==='function'&&window.Capacitor.isNativePlatform());}catch(e){}
 var BF_API=BF_APP?BF_SITE:'';
@@ -4101,7 +4122,7 @@ document.addEventListener('click',function(e){
    in use; no names, answers or progress. Runs only on the Higgsfield site (never inside Claude). */
 var TRK=(function(){
   var on=false,vid='',KEY='babelflight.vid',VKEY='babelflight.visit',GAP=30*60*1000;
-  try{on=location.protocol==='https:'&&/(^|\.)higgsfield\.(app|ai)$/.test(location.hostname)&&typeof fetch==='function'&&!window.claude;if(BF_APP)on=true;}catch(e){}
+  try{on=bfOnSite()&&typeof fetch==='function';if(BF_APP)on=true;}catch(e){}
   function uuid(){
     if(window.crypto&&crypto.randomUUID)return crypto.randomUUID();
     var b=new Uint8Array(16);crypto.getRandomValues(b);b[6]=(b[6]&15)|64;b[8]=(b[8]&63)|128;
@@ -4155,7 +4176,7 @@ setTimeout(function(){TRK.visit();},800);
    progress from either device is never lost (see unionSave). */
 var FB_VER='12.4.0';
 var ACCT={on:false,cfg:null,me:null,rev:0,state:'',last:0,fbp:null,fb:null,dirty:false,force:false,pend:null,pulling:false,busy:false,sheet:'',msg:'',tries:0};
-try{ACCT.on=location.protocol==='https:'&&/(^|\.)higgsfield\.(app|ai)$/.test(location.hostname)&&!window.claude&&typeof fetch==='function';if(BF_APP)ACCT.on=true;}catch(e){}
+try{ACCT.on=bfOnSite()&&typeof fetch==='function';if(BF_APP)ACCT.on=true;}catch(e){}
 var AKEY='babelflight.acct';
 var G_LOGO='<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
 var A_LOGO='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.47.83-.72 0-1.82-.81-3-.79-1.54.02-2.96.9-3.76 2.28-1.6 2.78-.41 6.9 1.15 9.16.76 1.1 1.67 2.34 2.86 2.3 1.15-.05 1.58-.74 2.97-.74 1.38 0 1.77.74 2.98.72 1.23-.02 2.01-1.12 2.76-2.23.87-1.28 1.23-2.52 1.25-2.58-.03-.01-2.4-.92-2.42-3.66zM14.1 5.86c.63-.77 1.06-1.83.94-2.9-.91.04-2.02.61-2.67 1.37-.58.67-1.1 1.76-.96 2.8 1.02.08 2.06-.52 2.69-1.27z"/></svg>';
@@ -4589,7 +4610,7 @@ setTimeout(acctBoot,0);
    Registers the service worker (so the app opens offline) and offers "add to home screen":
    Chrome/Edge/Android get the install prompt, iPhone/iPad get step-by-step instructions. */
 var PWA={on:false,prompt:null};
-try{PWA.on=location.protocol==='https:'&&/(^|\.)higgsfield\.(app|ai)$/.test(location.hostname)&&!window.claude&&('serviceWorker' in navigator);}catch(e){}
+try{PWA.on=bfOnSite()&&('serviceWorker' in navigator);}catch(e){}
 function pwaStandalone(){try{return window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;}catch(e){return false;}}
 function pwaIOS(){var ua=navigator.userAgent||'';return /iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1);}
 if(PWA.on){
@@ -4811,7 +4832,7 @@ var SHR_LC={ko:'#e8505b',en:'#2d6bff',es:'#f08a1c',it:'#17a068'};
 var SHR_RC=[['#b9773f','#ffffff'],['#a3adbb','#121a26'],['#e3b23c','#1b1500'],['#8cc3d3','#0d1b24'],['#55c4f0','#05202c'],['#16233f','#ffd76a']];
 var SHR_MODE={review:'復習フライト',weak:'弱点コース',ann:'機内アナウンス',lounge:'プラチナラウンジ',rem:'補習フライト',ai:'AIの例文練習',skip:'飛び級テスト'};
 
-function shrSite(){try{if(/(^|\.)higgsfield\.app$/.test(location.hostname))return location.origin;}catch(e){}return 'https://babel-flight.higgsfield.app';}
+function shrSite(){try{if(!BF_APP&&bfOnSite()&&!/(^|\.)higgsfield\.ai$/.test(location.hostname))return location.origin;}catch(e){}return BF_SITE;}
 function shrLink(){return shrSite()+'/';}
 /* phones and tablets: the share menu is enough */
 function shrMobile(){
@@ -6969,6 +6990,77 @@ document.addEventListener('click',function(e){
   if(t.hasAttribute('data-bill-portal')){if(cabinTester())billPortal(t);return;}
   if(t.hasAttribute('data-bill-retry')){BILL.err='';billRefresh();BILL.t=0;billFetch();return;}
 });
+/* ================= MOVING TO A NEW ADDRESS =================
+   At the move, BF_MOVED_TO (a0_env.js) is set to the new address. The old Higgsfield address then
+   shows only a note with a button to the new one. The button carries this browser's progress in the
+   link's #fragment (the part after # is never sent to any server), and the new address offers to add
+   it to the progress there with unionSave, so nothing from either side is lost. Accounts' progress
+   is copied server to server (lib/move.server.ts): signing in again on the new address brings it back. */
+var MOVE_TAG='#bfmove=',MOVE_INC=null;
+function moveB64(bytes){var s='';for(var i=0;i<bytes.length;i+=8192)s+=String.fromCharCode.apply(null,bytes.subarray(i,i+8192));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+function moveUnB64(t){t=t.replace(/-/g,'+').replace(/_/g,'/');while(t.length%4)t+='=';var s=atob(t),b=new Uint8Array(s.length);for(var i=0;i<s.length;i++)b[i]=s.charCodeAt(i);return b;}
+function movePack(obj){
+  var raw=new TextEncoder().encode(JSON.stringify(obj));
+  if(typeof CompressionStream!=='function')return Promise.resolve('p'+moveB64(raw));
+  return new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer().then(function(b){return 'z'+moveB64(new Uint8Array(b));});
+}
+function moveUnpack(t){
+  return Promise.resolve().then(function(){
+    var bytes=moveUnB64(t.slice(1));
+    return t.charAt(0)==='z'?new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer().then(function(b){return new Uint8Array(b);}):bytes;
+  }).then(function(b){return JSON.parse(new TextDecoder().decode(b));});
+}
+function moveHasProgress(s){return !!(s&&(s.flights>0||s.miles>0));}
+function moveOldSite(){try{return !!BF_MOVED_TO&&!BF_APP&&/(^|\.)higgsfield\.app$/.test(location.hostname)&&location.origin!==BF_MOVED_TO.replace(/\/+$/,'');}catch(e){return false;}}
+
+/* ---- the old address: a note instead of the app ---- */
+function moveNoteShow(){
+  var to=BF_MOVED_TO.replace(/\/+$/,''),host='';
+  try{host=new URL(to).host;}catch(e){return;}
+  var carry=moveHasProgress(save);
+  var el=document.createElement('div');
+  el.className='move-note';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-labelledby','moveH');
+  el.innerHTML='<div class="move-in"><span class="lbl">NEW ADDRESS</span><h2 id="moveH">Babel Flight は引っ越しました</h2>'+
+    '<p class="move-host"><span class="dim">新しいアドレス</span><b>'+esc(host)+'</b></p>'+
+    '<a class="go" id="moveGo" href="'+esc(to)+'/">新しいサイトへ</a>'+
+    '<ul class="move-list">'+
+      (carry?'<li>この端末の記録(マイル・レッスン)も、ボタンから一緒に持っていけます。</li>':'')+
+      '<li>ログインしていた人は、新しいサイトでもう一度ログインすると記録が戻ります。</li>'+
+      '<li>ホーム画面に追加していた人は、新しいサイトを追加し直してね。</li>'+
+    '</ul></div>';
+  document.body.appendChild(el);
+  if(carry)movePack(save).then(function(t){if(t.length<150000){var a=$('moveGo');if(a)a.href=to+'/'+MOVE_TAG+t;}}).catch(function(){});
+}
+
+/* ---- the new address: offer to add the progress carried in the link ---- */
+function moveIncoming(){
+  var h='';try{h=location.hash||'';}catch(e){}
+  if(h.indexOf(MOVE_TAG)!==0)return;
+  var t=h.slice(MOVE_TAG.length);
+  try{history.replaceState(history.state,'',location.pathname+location.search);}catch(e){}
+  if(!/^[pz][A-Za-z0-9_-]+$/.test(t)||t.length>200000||moveOldSite())return;
+  moveUnpack(t).then(function(raw){
+    if(!raw||typeof raw!=='object'||Array.isArray(raw))return;
+    var inc=mergeSave(raw);inc.t=+raw.t||0;
+    if(!moveHasProgress(inc))return;
+    MOVE_INC=inc;
+    $('sheetHost').innerHTML='<div class="sheet plain move-sheet" role="dialog" aria-label="前のサイトの記録"><div class="sheet-in">'+
+      '<span class="lbl">MOVED</span><h3>前のサイトの記録を引き継ぐ?</h3>'+
+      '<p class="move-sum">マイル <b>'+fmt(inc.miles||0)+'</b> ・ レッスン <b>'+fmt(inc.flights||0)+'</b>回</p>'+
+      '<p class="dim hint">この端末の記録と合わせます。どちらの記録も消えません。</p>'+
+      '<button class="go" type="button" data-move-take>引き継ぐ</button>'+
+      '<button class="ghost" type="button" data-close-sheet>引き継がない</button></div></div>';
+  }).catch(function(){});
+}
+document.addEventListener('click',function(e){
+  var t=e.target&&e.target.closest&&e.target.closest('[data-move-take]');if(!t||!MOVE_INC)return;
+  save=unionSave(save,MOVE_INC);MOVE_INC=null;
+  store();applyTheme();if(typeof applyAccent==='function')applyAccent();
+  closeSheet();
+  if(save.onboarded&&view==='onboard')view='home';
+  render();
+});
+setTimeout(function(){if(moveOldSite())moveNoteShow();else moveIncoming();},0);
 /* ================= EVENTS + BOOT ================= */
 function go(v){view=v;confirmReset=false;render();window.scrollTo(0,0);}
 document.addEventListener('click',function(e){

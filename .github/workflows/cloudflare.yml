@@ -1,0 +1,90 @@
+# Publishes the site to the owner's own Cloudflare account (the move from Higgsfield).
+#
+# Does nothing until the repository has these secrets (Settings → Secrets and variables → Actions):
+#   CLOUDFLARE_API_TOKEN   an API token made by the account owner ("Edit Cloudflare Workers" + D1 Edit)
+#   CLOUDFLARE_ACCOUNT_ID  the account's id
+# Optional:
+#   MOVE_KEY               the same random key as on the old site; copied to the Worker so the
+#                          "Move data" workflow can copy accounts and progress across
+# Other secrets (Claude API, Stripe) are set by the owner on the Worker in the Cloudflare dashboard.
+name: Deploy to Cloudflare
+
+on:
+  push:
+    branches: [main]
+    paths: ["app/**", ".github/workflows/cloudflare.yml"]
+  workflow_dispatch:
+
+concurrency:
+  group: cloudflare-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    if: github.repository_owner == 'Yoshiusagi'
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      MOVE_KEY: ${{ secrets.MOVE_KEY }}
+      WRANGLER: wrangler@4.148.0
+    steps:
+      - name: Is Cloudflare set up?
+        id: ready
+        run: |
+          if [ -n "$CLOUDFLARE_API_TOKEN" ] && [ -n "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::Cloudflare isn't set up yet (CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID). Nothing was deployed."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.ready.outputs.ok == 'true'
+
+      - uses: oven-sh/setup-bun@v2
+        if: steps.ready.outputs.ok == 'true'
+        with:
+          bun-version: 1.2.21
+
+      - name: Install
+        if: steps.ready.outputs.ok == 'true'
+        working-directory: app
+        run: bun install --frozen-lockfile
+
+      - name: Build
+        if: steps.ready.outputs.ok == 'true'
+        working-directory: app
+        run: bun run build
+
+      - name: Database (made once, then found by name)
+        if: steps.ready.outputs.ok == 'true'
+        working-directory: app
+        run: |
+          set -euo pipefail
+          find_db() { bunx "$WRANGLER" d1 list --json | jq -r '.[] | select(.name=="babel-flight-db") | .uuid'; }
+          id="$(find_db)"
+          if [ -z "$id" ]; then
+            bunx "$WRANGLER" d1 create babel-flight-db --location apac
+            id="$(find_db)"
+          fi
+          [ -n "$id" ] || { echo "::error::Could not find or create the database babel-flight-db"; exit 1; }
+          sed "s/__DB_ID__/$id/" wrangler.cloudflare.jsonc > wrangler.deploy.jsonc
+
+      - name: Database tables
+        if: steps.ready.outputs.ok == 'true'
+        working-directory: app
+        run: bunx "$WRANGLER" d1 migrations apply DB --remote --config wrangler.deploy.jsonc
+
+      - name: Publish
+        if: steps.ready.outputs.ok == 'true'
+        working-directory: app
+        run: bunx "$WRANGLER" deploy --config wrangler.deploy.jsonc
+
+      - name: Move key
+        if: steps.ready.outputs.ok == 'true' && env.MOVE_KEY != ''
+        working-directory: app
+        run: printf '%s' "$MOVE_KEY" | bunx "$WRANGLER" secret put MOVE_KEY --config wrangler.deploy.jsonc

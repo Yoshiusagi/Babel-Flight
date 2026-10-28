@@ -2,7 +2,7 @@
    Registers the service worker (so the app opens offline) and offers "add to home screen":
    Chrome/Edge/Android get the install prompt, iPhone/iPad get step-by-step instructions. */
 var PWA={on:false,prompt:null};
-try{PWA.on=location.protocol==='https:'&&/(^|\.)higgsfield\.(app|ai)$/.test(location.hostname)&&!window.claude&&('serviceWorker' in navigator);}catch(e){}
+try{PWA.on=bfOnSite()&&('serviceWorker' in navigator);}catch(e){}
 function pwaStandalone(){try{return window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;}catch(e){return false;}}
 function pwaIOS(){var ua=navigator.userAgent||'';return /iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1);}
 if(PWA.on){

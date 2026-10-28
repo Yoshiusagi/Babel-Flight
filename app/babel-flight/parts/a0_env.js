@@ -3,6 +3,13 @@
    iPhone app (Capacitor). In the app the page is loaded from the app bundle, so the server lives at
    another address: API calls go to BF_API and sign in with a bearer token instead of a cookie. */
 var BF_SITE='https://babel-flight.higgsfield.app';
+/* the website's own addresses: accounts, usage counting, install and share links run only there.
+   The Higgsfield address now; the owner's Cloudflare account (*.workers.dev, then the own domain) after the move. */
+var BF_HOSTS=/(^|\.)higgsfield\.(app|ai)$|\.workers\.dev$/;
+/* set at the move to the new address (e.g. 'https://babel-flight.app'): the old Higgsfield address then only
+   shows a note with a link there (f22_move.js) */
+var BF_MOVED_TO='';
+function bfOnSite(){try{return location.protocol==='https:'&&BF_HOSTS.test(location.hostname)&&!window.claude;}catch(e){return false;}}
 var BF_APP=false;
 try{BF_APP=!!(window.Capacitor&&typeof window.Capacitor.isNativePlatform==='function'&&window.Capacitor.isNativePlatform());}catch(e){}
 var BF_API=BF_APP?BF_SITE:'';

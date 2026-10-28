@@ -14,7 +14,7 @@ var SHR_LC={ko:'#e8505b',en:'#2d6bff',es:'#f08a1c',it:'#17a068'};
 var SHR_RC=[['#b9773f','#ffffff'],['#a3adbb','#121a26'],['#e3b23c','#1b1500'],['#8cc3d3','#0d1b24'],['#55c4f0','#05202c'],['#16233f','#ffd76a']];
 var SHR_MODE={review:'復習フライト',weak:'弱点コース',ann:'機内アナウンス',lounge:'プラチナラウンジ',rem:'補習フライト',ai:'AIの例文練習',skip:'飛び級テスト'};
 
-function shrSite(){try{if(/(^|\.)higgsfield\.app$/.test(location.hostname))return location.origin;}catch(e){}return 'https://babel-flight.higgsfield.app';}
+function shrSite(){try{if(!BF_APP&&bfOnSite()&&!/(^|\.)higgsfield\.ai$/.test(location.hostname))return location.origin;}catch(e){}return BF_SITE;}
 function shrLink(){return shrSite()+'/';}
 /* phones and tablets: the share menu is enough */
 function shrMobile(){
