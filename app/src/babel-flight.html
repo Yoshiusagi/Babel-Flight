@@ -1279,6 +1279,10 @@ html.app :where(button:not(:disabled):active){transform:scale(.97);filter:bright
    iPhone app (Capacitor). In the app the page is loaded from the app bundle, so the server lives at
    another address: API calls go to BF_API and sign in with a bearer token instead of a cookie. */
 var BF_SITE='https://babel-flight.higgsfield.app';
+/* the website's own addresses: accounts, usage counting, install and share links run only there.
+   The Higgsfield address now; the owner's Cloudflare account (*.workers.dev, then the own domain) after the move. */
+var BF_HOSTS=/(^|\.)higgsfield\.(app|ai)$|\.workers\.dev$/;
+function bfOnSite(){try{return location.protocol==='https:'&&BF_HOSTS.test(location.hostname)&&!window.claude;}catch(e){return false;}}
 var BF_APP=false;
 try{BF_APP=!!(window.Capacitor&&typeof window.Capacitor.isNativePlatform==='function'&&window.Capacitor.isNativePlatform());}catch(e){}
 var BF_API=BF_APP?BF_SITE:'';
@@ -4101,7 +4105,7 @@ document.addEventListener('click',function(e){
    in use; no names, answers or progress. Runs only on the Higgsfield site (never inside Claude). */
 var TRK=(function(){
   var on=false,vid='',KEY='babelflight.vid',VKEY='babelflight.visit',GAP=30*60*1000;
-  try{on=location.protocol==='https:'&&/(^|\.)higgsfield\.(app|ai)$/.test(location.hostname)&&typeof fetch==='function'&&!window.claude;if(BF_APP)on=true;}catch(e){}
+  try{on=bfOnSite()&&typeof fetch==='function';if(BF_APP)on=true;}catch(e){}
   function uuid(){
     if(window.crypto&&crypto.randomUUID)return crypto.randomUUID();
     var b=new Uint8Array(16);crypto.getRandomValues(b);b[6]=(b[6]&15)|64;b[8]=(b[8]&63)|128;
@@ -4155,7 +4159,7 @@ setTimeout(function(){TRK.visit();},800);
    progress from either device is never lost (see unionSave). */
 var FB_VER='12.4.0';
 var ACCT={on:false,cfg:null,me:null,rev:0,state:'',last:0,fbp:null,fb:null,dirty:false,force:false,pend:null,pulling:false,busy:false,sheet:'',msg:'',tries:0};
-try{ACCT.on=location.protocol==='https:'&&/(^|\.)higgsfield\.(app|ai)$/.test(location.hostname)&&!window.claude&&typeof fetch==='function';if(BF_APP)ACCT.on=true;}catch(e){}
+try{ACCT.on=bfOnSite()&&typeof fetch==='function';if(BF_APP)ACCT.on=true;}catch(e){}
 var AKEY='babelflight.acct';
 var G_LOGO='<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
 var A_LOGO='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.47.83-.72 0-1.82-.81-3-.79-1.54.02-2.96.9-3.76 2.28-1.6 2.78-.41 6.9 1.15 9.16.76 1.1 1.67 2.34 2.86 2.3 1.15-.05 1.58-.74 2.97-.74 1.38 0 1.77.74 2.98.72 1.23-.02 2.01-1.12 2.76-2.23.87-1.28 1.23-2.52 1.25-2.58-.03-.01-2.4-.92-2.42-3.66zM14.1 5.86c.63-.77 1.06-1.83.94-2.9-.91.04-2.02.61-2.67 1.37-.58.67-1.1 1.76-.96 2.8 1.02.08 2.06-.52 2.69-1.27z"/></svg>';
@@ -4589,7 +4593,7 @@ setTimeout(acctBoot,0);
    Registers the service worker (so the app opens offline) and offers "add to home screen":
    Chrome/Edge/Android get the install prompt, iPhone/iPad get step-by-step instructions. */
 var PWA={on:false,prompt:null};
-try{PWA.on=location.protocol==='https:'&&/(^|\.)higgsfield\.(app|ai)$/.test(location.hostname)&&!window.claude&&('serviceWorker' in navigator);}catch(e){}
+try{PWA.on=bfOnSite()&&('serviceWorker' in navigator);}catch(e){}
 function pwaStandalone(){try{return window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;}catch(e){return false;}}
 function pwaIOS(){var ua=navigator.userAgent||'';return /iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1);}
 if(PWA.on){
@@ -4811,7 +4815,7 @@ var SHR_LC={ko:'#e8505b',en:'#2d6bff',es:'#f08a1c',it:'#17a068'};
 var SHR_RC=[['#b9773f','#ffffff'],['#a3adbb','#121a26'],['#e3b23c','#1b1500'],['#8cc3d3','#0d1b24'],['#55c4f0','#05202c'],['#16233f','#ffd76a']];
 var SHR_MODE={review:'復習フライト',weak:'弱点コース',ann:'機内アナウンス',lounge:'プラチナラウンジ',rem:'補習フライト',ai:'AIの例文練習',skip:'飛び級テスト'};
 
-function shrSite(){try{if(/(^|\.)higgsfield\.app$/.test(location.hostname))return location.origin;}catch(e){}return 'https://babel-flight.higgsfield.app';}
+function shrSite(){try{if(!BF_APP&&bfOnSite()&&!/(^|\.)higgsfield\.ai$/.test(location.hostname))return location.origin;}catch(e){}return BF_SITE;}
 function shrLink(){return shrSite()+'/';}
 /* phones and tablets: the share menu is enough */
 function shrMobile(){

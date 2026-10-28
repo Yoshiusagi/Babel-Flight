@@ -1,0 +1,46 @@
+# Copies accounts, saved progress and usage stats from the old site (Higgsfield) to the new one
+# (the owner's Cloudflare account). Run it by hand: Actions → Move data → Run workflow, type MOVE.
+# Safe to run more than once (see app/src/lib/move.server.ts). Only row counts are printed.
+#
+# Needs: secret MOVE_KEY (the same key as the old site's website secret MOVE_KEY) and
+# variable NEW_SITE (the new address, e.g. https://babel-flight.example.workers.dev).
+name: Move data
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: "Type MOVE to copy the data from the old site to the new one"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  move:
+    if: github.repository_owner == 'Yoshiusagi' && inputs.confirm == 'MOVE'
+    runs-on: ubuntu-latest
+    env:
+      MOVE_KEY: ${{ secrets.MOVE_KEY }}
+      NEW_SITE: ${{ vars.NEW_SITE }}
+    steps:
+      - name: Copy, table by table
+        run: |
+          set -euo pipefail
+          if [ -z "$MOVE_KEY" ] || [ -z "$NEW_SITE" ]; then
+            echo "::error::Set the secret MOVE_KEY and the variable NEW_SITE first."; exit 1
+          fi
+          for t in bf_users bf_saves bf_entitlements bf_billing bf_auth bf_visitors bf_events; do
+            after=""; total=0; pages=0
+            while :; do
+              body="$(jq -nc --arg t "$t" --arg a "$after" '{table:$t, after:$a}')"
+              res="$(curl -sS --fail-with-body --max-time 60 -X POST "$NEW_SITE/api/move/import" \
+                -H "authorization: Bearer $MOVE_KEY" -H "content-type: application/json" -d "$body" \
+                | jq -c '{ok, n, skipped, next, error, status}')" || { echo "::error::$t failed: $res"; exit 1; }
+              total=$((total + $(jq -r '.n // 0' <<<"$res")))
+              pages=$((pages + 1))
+              after="$(jq -r '.next // empty' <<<"$res")"
+              if [ -z "$after" ] || [ "$pages" -ge 500 ]; then break; fi
+            done
+            echo "$t: $total rows"
+          done

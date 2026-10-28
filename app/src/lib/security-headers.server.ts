@@ -2,8 +2,13 @@
  * Security headers applied to every Worker response. Import in app/src/server.ts
  * and wrap the final response: `return applySecurityHeaders(response)`.
  */
+import { bindings } from "./bindings.server";
+
 export function applySecurityHeaders(response: Response): Response {
   const headers = new Headers(response.headers);
+  // On the owner's own Cloudflare account (HOSTING=cloudflare) there is no platform to add
+  // frame-ancestors, so the page may only be framed by itself there.
+  const ownHosting = bindings().HOSTING === "cloudflare";
   // Framing: the Supercomputer Design-mode inspector + preview render this app
   // cross-origin inside an iframe. The Higgsfield hosting platform injects the
   // canonical `frame-ancestors` allowlist on every app response, so this app
@@ -22,8 +27,10 @@ export function applySecurityHeaders(response: Response): Response {
       "font-src 'self' https://fonts.gstatic.com; " +
       "img-src 'self' data: https:; media-src 'self' https:; " +
       "connect-src 'self' https:; " +
-      "base-uri 'self'; form-action 'self'",
+      "base-uri 'self'; form-action 'self'" +
+      (ownHosting ? "; frame-ancestors 'self'" : ""),
   );
+  if (ownHosting) headers.set('X-Frame-Options', 'SAMEORIGIN');
   headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
   headers.set('X-Content-Type-Options', 'nosniff');
   headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');

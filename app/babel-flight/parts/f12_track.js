@@ -3,7 +3,7 @@
    in use; no names, answers or progress. Runs only on the Higgsfield site (never inside Claude). */
 var TRK=(function(){
   var on=false,vid='',KEY='babelflight.vid',VKEY='babelflight.visit',GAP=30*60*1000;
-  try{on=location.protocol==='https:'&&/(^|\.)higgsfield\.(app|ai)$/.test(location.hostname)&&typeof fetch==='function'&&!window.claude;if(BF_APP)on=true;}catch(e){}
+  try{on=bfOnSite()&&typeof fetch==='function';if(BF_APP)on=true;}catch(e){}
   function uuid(){
     if(window.crypto&&crypto.randomUUID)return crypto.randomUUID();
     var b=new Uint8Array(16);crypto.getRandomValues(b);b[6]=(b[6]&15)|64;b[8]=(b[8]&63)|128;

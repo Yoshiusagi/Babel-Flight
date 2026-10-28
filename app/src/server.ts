@@ -7,6 +7,7 @@ import { handleAi } from "./lib/ai.server";
 import { handleAnalytics } from "./lib/analytics.server";
 import { handleBilling } from "./lib/billing.server";
 import { appPreflight, withAppCors } from "./lib/http.server";
+import { handleMove } from "./lib/move.server";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
@@ -72,6 +73,9 @@ export default {
     // AI for the standalone site (Claude API, signed-in accounts, daily limits; see lib/ai.server.ts).
     const ai = await handleAi(request, url);
     if (ai) return applySecurityHeaders(withAppCors(request, ai));
+    // Copying the data to the new address when the site moves (see lib/move.server.ts).
+    const move = await handleMove(request, url);
+    if (move) return applySecurityHeaders(move);
     // Paid classes through Stripe, website only and test mode only for now (see lib/billing.server.ts).
     // No app CORS on purpose: the iPhone app doesn't sell plans (App Store rules).
     const billing = await handleBilling(request, url);

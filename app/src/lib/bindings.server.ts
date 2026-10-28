@@ -28,6 +28,12 @@ type AppEnv = {
   // Website secrets for paid classes through Stripe (see lib/billing.server.ts).
   STRIPE_SECRET_KEY?: string;
   STRIPE_WEBHOOK_SECRET?: string;
+  // Moving to the owner's Cloudflare account (see lib/move.server.ts): the same secret on both
+  // sites, and on the new site the old site's address.
+  MOVE_KEY?: string;
+  MOVE_FROM?: string;
+  // "cloudflare" on the owner's own Cloudflare account (wrangler.cloudflare.jsonc); unset on Higgsfield.
+  HOSTING?: string;
   APP_SLUG?: string;
 };
 

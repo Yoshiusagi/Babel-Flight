@@ -1,0 +1,35 @@
+{
+  // ── THE OWNER'S OWN CLOUDFLARE ACCOUNT (the move from Higgsfield) ──
+  // Used only by .github/workflows/cloudflare.yml in the GitHub repo. Higgsfield's deploy
+  // ignores this file (it generates its own wrangler.jsonc). The workflow fills in
+  // __DB_ID__ with the id of the D1 database "babel-flight-db" (it creates it the first time).
+  //
+  // Secrets are NOT here. Set them on the Worker (Cloudflare dashboard → Workers & Pages →
+  // babel-flight → Settings → Variables and Secrets): ANTHROPIC_API_KEY, STRIPE_SECRET_KEY,
+  // STRIPE_WEBHOOK_SECRET. MOVE_KEY is copied from the GitHub secret by the workflow.
+  "name": "babel-flight",
+  "main": "dist/server/server.js",
+  "compatibility_date": "2025-05-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "workers_dev": true,
+  "assets": {
+    "directory": "./dist/client",
+    "binding": "ASSETS",
+    "not_found_handling": "none"
+  },
+  "vars": {
+    "HOSTING": "cloudflare",
+    "APP_SLUG": "babel-flight",
+    // where lib/move.server.ts copies the data from
+    "MOVE_FROM": "https://babel-flight.higgsfield.app"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "babel-flight-db",
+      "database_id": "__DB_ID__",
+      "migrations_dir": "migrations"
+    }
+  ]
+}
