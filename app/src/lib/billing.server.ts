@@ -15,7 +15,9 @@
 // Website secrets (Higgsfield website settings): STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET.
 // Prices and the customer-portal settings are created here on first use (found again by lookup
 // key / metadata), so the only thing to set up in the Stripe dashboard is the webhook endpoint.
-// Prices are monthly and include consumption tax.
+// Each plan has a monthly and a yearly price (both include consumption tax). A payment that fails
+// on renewal (past_due / unpaid) drops the account to エコノミー at once; it comes back by itself
+// when Stripe's retry succeeds.
 import type { D1Database } from "@cloudflare/workers-types";
 
 import { accountUid } from "./account.server";
@@ -23,8 +25,9 @@ import { bindings } from "./bindings.server";
 import { fullAccess } from "./entitlements.server";
 import { appOrigin, isSameOrigin, json, num, readJsonBody, type Row } from "./http.server";
 import {
-  ACTIVE_STATUSES,
+  GRANT_STATUSES,
   LIVE_ALLOWED,
+  LIVE_STATUSES,
   stripe,
   StripeError,
   stripeKeys,
@@ -33,63 +36,82 @@ import {
 } from "./stripe.server";
 
 export const PLANS = {
-  premium: { name: "プレミアムエコノミー", amount: 500, level: 1 },
-  business: { name: "ビジネス", amount: 800, level: 2 },
-  first: { name: "ファースト", amount: 1280, level: 3 },
+  // yearly: 12% / 17% / 22% off twelve months (the higher the class, the bigger the saving)
+  premium: { name: "プレミアムエコノミー", amount: 500, yearly: 5280, level: 1 },
+  business: { name: "ビジネス", amount: 800, yearly: 7980, level: 2 },
+  first: { name: "ファースト", amount: 1280, yearly: 11980, level: 3 },
 } as const;
 export type PlanKey = keyof typeof PLANS;
+export type Interval = "month" | "year";
 const PLAN_KEYS = Object.keys(PLANS) as PlanKey[];
+const INTERVALS: Interval[] = ["month", "year"];
 const MAX_WEBHOOK_BODY = 262_144;
 
-export function lookupKey(plan: PlanKey): string {
-  return `bf_${plan}_jpy${PLANS[plan].amount}_monthly`;
+function priceAmount(plan: PlanKey, iv: Interval): number {
+  return iv === "year" ? PLANS[plan].yearly : PLANS[plan].amount;
 }
-function planFromLookup(key: unknown): PlanKey | null {
-  return PLAN_KEYS.find((p) => lookupKey(p) === key) ?? null;
+export function lookupKey(plan: PlanKey, iv: Interval = "month"): string {
+  return `bf_${plan}_jpy${priceAmount(plan, iv)}_${iv === "year" ? "yearly" : "monthly"}`;
+}
+function priceFromLookup(key: unknown): { plan: PlanKey; iv: Interval } | null {
+  for (const plan of PLAN_KEYS) for (const iv of INTERVALS) if (lookupKey(plan, iv) === key) return { plan, iv };
+  return null;
 }
 function isPlan(v: unknown): v is PlanKey {
   return typeof v === "string" && (PLAN_KEYS as string[]).includes(v);
 }
+/** Percent saved by paying yearly instead of twelve months. */
+function yearlySaving(plan: PlanKey): number {
+  return Math.round((1 - PLANS[plan].yearly / (PLANS[plan].amount * 12)) * 100);
+}
 
 type PriceRef = { price: string; product: string };
-let PRICES: { secret: string; map: Record<PlanKey, PriceRef> } | null = null;
+type PlanPrices = Record<Interval, PriceRef>;
+let PRICES: { secret: string; map: Record<PlanKey, PlanPrices> } | null = null;
 let PORTAL: { secret: string; id: string } | null = null;
 
-/** The Stripe price of each plan, created the first time it is needed. */
-async function ensurePrices(keys: StripeKeys): Promise<Record<PlanKey, PriceRef>> {
+/** The monthly and yearly Stripe prices of each plan, created the first time they are needed. */
+async function ensurePrices(keys: StripeKeys): Promise<Record<PlanKey, PlanPrices>> {
   if (PRICES && PRICES.secret === keys.secret) return PRICES.map;
-  const found = await stripe(keys, "GET", "prices", { lookup_keys: PLAN_KEYS.map(lookupKey), active: "true", limit: 10 });
-  const map: Partial<Record<PlanKey, PriceRef>> = {};
+  const wanted = PLAN_KEYS.flatMap((p) => INTERVALS.map((iv) => lookupKey(p, iv)));
+  const found = await stripe(keys, "GET", "prices", { lookup_keys: wanted, active: "true", limit: 20 });
+  const map: Partial<Record<PlanKey, Partial<PlanPrices>>> = {};
   for (const p of (Array.isArray(found.data) ? found.data : []) as Row[]) {
-    const plan = planFromLookup(p.lookup_key);
-    if (plan) map[plan] = { price: String(p.id), product: String(p.product) };
+    const hit = priceFromLookup(p.lookup_key);
+    if (hit) (map[hit.plan] ??= {})[hit.iv] = { price: String(p.id), product: String(p.product) };
   }
   for (const plan of PLAN_KEYS) {
-    if (map[plan]) continue;
-    const p = await stripe(
-      keys,
-      "POST",
-      "prices",
-      {
-        currency: "jpy",
-        unit_amount: PLANS[plan].amount,
-        recurring: { interval: "month" },
-        lookup_key: lookupKey(plan),
-        product_data: { name: `Babel Flight ${PLANS[plan].name}` },
-        metadata: { app: "babel-flight", plan },
-      },
-      `bf-price-${lookupKey(plan)}`,
-    );
-    map[plan] = { price: String(p.id), product: String(p.product) };
+    const have = (map[plan] ??= {});
+    for (const iv of INTERVALS) {
+      if (have[iv]) continue;
+      // Both prices live on one product, so the portal can switch between monthly and yearly.
+      const product = have.month?.product ?? have.year?.product;
+      const p = await stripe(
+        keys,
+        "POST",
+        "prices",
+        {
+          currency: "jpy",
+          unit_amount: priceAmount(plan, iv),
+          recurring: { interval: iv },
+          lookup_key: lookupKey(plan, iv),
+          product: product || undefined,
+          product_data: product ? undefined : { name: `Babel Flight ${PLANS[plan].name}` },
+          metadata: { app: "babel-flight", plan, interval: iv },
+        },
+        `bf-price-${lookupKey(plan, iv)}${product ? `-${product}` : ""}`,
+      );
+      have[iv] = { price: String(p.id), product: String(p.product) };
+    }
   }
-  PRICES = { secret: keys.secret, map: map as Record<PlanKey, PriceRef> };
+  PRICES = { secret: keys.secret, map: map as Record<PlanKey, PlanPrices> };
   return PRICES.map;
 }
 
 /** Settings for Stripe's customer portal: switch between the three plans, cancel at period end, card, receipts. */
-async function ensurePortal(keys: StripeKeys, prices: Record<PlanKey, PriceRef>): Promise<string> {
+async function ensurePortal(keys: StripeKeys, prices: Record<PlanKey, PlanPrices>): Promise<string> {
   if (PORTAL && PORTAL.secret === keys.secret) return PORTAL.id;
-  const tag = `babel-flight-${PLAN_KEYS.map((p) => PLANS[p].amount).join("-")}`;
+  const tag = `babel-flight-${PLAN_KEYS.map((p) => PLANS[p].amount).join("-")}-y${PLAN_KEYS.map((p) => PLANS[p].yearly).join("-")}`;
   const list = await stripe(keys, "GET", "billing_portal/configurations", { active: "true", limit: 50 });
   let id = "";
   for (const c of (Array.isArray(list.data) ? list.data : []) as Row[]) {
@@ -111,7 +133,10 @@ async function ensurePortal(keys: StripeKeys, prices: Record<PlanKey, PriceRef>)
             enabled: true,
             default_allowed_updates: ["price"],
             proration_behavior: "create_prorations",
-            products: PLAN_KEYS.map((p) => ({ product: prices[p].product, prices: [prices[p].price] })),
+            products: PLAN_KEYS.map((p) => ({
+              product: prices[p].month.product,
+              prices: [prices[p].month.price, prices[p].year.price],
+            })),
           },
         },
         metadata: { app: tag },
@@ -141,7 +166,10 @@ export async function saveSubscription(db: D1Database, sub: Row, uidHint: string
   const items = (sub.items as Row | undefined)?.data;
   const item = (Array.isArray(items) ? items[0] : undefined) as Row | undefined;
   const price = (item?.price ?? {}) as Row;
-  const plan = planFromLookup(price.lookup_key) ?? (isPlan(meta.plan) ? meta.plan : "");
+  const hit = priceFromLookup(price.lookup_key);
+  const plan = hit?.plan ?? (isPlan(meta.plan) ? meta.plan : "");
+  const recurring = (price.recurring ?? {}) as Row;
+  const iv: Interval = hit?.iv ?? (recurring.interval === "year" ? "year" : "month");
   const status = String(sub.status ?? "");
   const periodEnd = num(item?.current_period_end ?? sub.current_period_end) * 1000;
   const cancelAt = sub.cancel_at ? num(sub.cancel_at) * 1000 : sub.cancel_at_period_end ? periodEnd : 0;
@@ -151,19 +179,20 @@ export async function saveSubscription(db: D1Database, sub: Row, uidHint: string
     existing &&
     existing.subscription &&
     existing.subscription !== sub.id &&
-    ACTIVE_STATUSES.includes(String(existing.status)) &&
-    !ACTIVE_STATUSES.includes(status)
+    LIVE_STATUSES.includes(String(existing.status)) &&
+    !LIVE_STATUSES.includes(status)
   ) {
     return uid;
   }
   await db
     .prepare(
-      "INSERT INTO bf_billing (uid, customer, subscription, plan, status, period_end, cancel_at, livemode, updated_at) " +
-        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(uid) DO UPDATE SET customer = excluded.customer, " +
+      "INSERT INTO bf_billing (uid, customer, subscription, plan, status, period_end, cancel_at, livemode, updated_at, billing_interval) " +
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(uid) DO UPDATE SET customer = excluded.customer, " +
         "subscription = excluded.subscription, plan = excluded.plan, status = excluded.status, " +
+        "billing_interval = excluded.billing_interval, " +
         "period_end = excluded.period_end, cancel_at = excluded.cancel_at, livemode = excluded.livemode, updated_at = excluded.updated_at",
     )
-    .bind(uid, customer, String(sub.id ?? ""), plan, status, periodEnd, cancelAt, sub.livemode ? 1 : 0, Date.now())
+    .bind(uid, customer, String(sub.id ?? ""), plan, status, periodEnd, cancelAt, sub.livemode ? 1 : 0, Date.now(), iv)
     .run();
   return uid;
 }
@@ -173,8 +202,12 @@ function subView(row: Row | null) {
   const status = String(row.status);
   return {
     plan: String(row.plan),
+    interval: row.billing_interval === "year" ? "year" : "month",
     status,
-    active: ACTIVE_STATUSES.includes(status),
+    // active = the class is given now; failed = the renewal payment didn't go through, so the
+    // account flies エコノミー until the card is fixed (the subscription itself still exists)
+    active: GRANT_STATUSES.includes(status),
+    failed: status === "past_due" || status === "unpaid",
     periodEnd: num(row.period_end),
     cancelAt: num(row.cancel_at),
   };
@@ -192,7 +225,14 @@ async function handleStatus(request: Request, db: D1Database): Promise<Response>
     ok: true,
     enabled: true,
     test: keys.test,
-    plans: PLAN_KEYS.map((p) => ({ key: p, name: PLANS[p].name, amount: PLANS[p].amount, level: PLANS[p].level })),
+    plans: PLAN_KEYS.map((p) => ({
+      key: p,
+      name: PLANS[p].name,
+      amount: PLANS[p].amount,
+      yearly: PLANS[p].yearly,
+      saving: yearlySaving(p),
+      level: PLANS[p].level,
+    })),
     sub: subView(await billingRow(db, uid)),
   });
 }
@@ -204,18 +244,20 @@ async function handleCheckout(request: Request, url: URL, db: D1Database): Promi
   if (!keys || !(await fullAccess(db, uid))) return json({ ok: false, error: "closed" }, 403);
   const body = await readJsonBody(request, 1000);
   if (!isPlan(body?.plan)) return json({ ok: false, error: "bad_request" }, 400);
+  const iv: Interval = body?.interval === "year" ? "year" : "month";
   // The final confirmation screen: terms accepted and, for anyone under 18, a guardian's consent.
   if (body?.agree !== true || body?.guardian !== true) return json({ ok: false, error: "consent" }, 400);
   const plan = body.plan;
   const row = await billingRow(db, uid);
-  if (row && ACTIVE_STATUSES.includes(String(row.status))) return json({ ok: false, error: "active" }, 409);
+  // A subscription that still exists (even one waiting for a failed payment) is changed in the portal, never bought twice.
+  if (row && LIVE_STATUSES.includes(String(row.status))) return json({ ok: false, error: "active" }, 409);
   const prices = await ensurePrices(keys);
   const session = await stripe(keys, "POST", "checkout/sessions", {
     mode: "subscription",
-    line_items: [{ price: prices[plan].price, quantity: 1 }],
+    line_items: [{ price: prices[plan][iv].price, quantity: 1 }],
     client_reference_id: uid,
     customer: row && typeof row.customer === "string" && row.customer ? row.customer : undefined,
-    metadata: { uid, plan },
+    metadata: { uid, plan, interval: iv },
     subscription_data: { metadata: { uid, plan } },
     success_url: `${url.origin}/?billing=success`,
     cancel_url: `${url.origin}/?billing=cancel`,

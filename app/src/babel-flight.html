@@ -1252,6 +1252,13 @@ html.app :where(button:not(:disabled):active){transform:scale(.97);filter:bright
 .bill-plan .bp-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
 .bill-plan b{font-size:15px}
 .bill-plan>small{font-size:12px;color:var(--ink2);line-height:1.45}
+.bill-plan .bp-year{font-size:12px;color:var(--ink2)}
+.bill-save{color:var(--good);font-weight:700}
+.bill-iv{font-size:12px;opacity:.75}
+.bill-iv-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:12px;padding:4px;border-radius:12px;background:var(--surface2)}
+.bill-iv-tabs button{display:flex;flex-direction:column;align-items:center;gap:1px;padding:8px 6px;border:0;border-radius:9px;background:transparent;color:var(--ink2);font:700 14px var(--f-body);transition:background .2s,color .2s}
+.bill-iv-tabs button small{font:600 10.5px var(--f-body);color:var(--good)}
+.bill-iv-tabs button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .bill-plan:active{transform:translateY(1px)}
 .bill-plan:disabled{opacity:.5}
 .bill-card .ghost{display:block;width:100%;margin-top:8px}
@@ -6978,7 +6985,8 @@ document.addEventListener('change',function(e){
    Changing plan, cancelling, the card and receipts are in Stripe's customer portal.
    Every other account sees nothing new; the server refuses them too (/api/billing/*).
    Website only: in the iPhone app cabinTester() is off (f20_native.js), so none of this shows there. */
-var BILL={st:null,t:0,loading:false,err:'',msg:'',msgKind:'',ret:'',tries:0,busy:false,scroll:false};
+var BILL={st:null,t:0,loading:false,err:'',msg:'',msgKind:'',ret:'',tries:0,busy:false,scroll:false,iv:'month'};
+var BILL_FAIL_KEY='babelflight.billFailed';
 (function(){
   try{
     var u=new URL(location.href),r=u.searchParams.get('billing');
@@ -6993,6 +7001,25 @@ var BILL={st:null,t:0,loading:false,err:'',msg:'',msgKind:'',ret:'',tries:0,busy
 function billYen(n){return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
 function billDay(ms){var d=new Date(ms);return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日';}
 function billPlan(key){var p=null;((BILL.st&&BILL.st.plans)||[]).forEach(function(x){if(x.key===key)p=x;});return p;}
+/* the price of a plan for 月額 (month) or 年額 (year) */
+function billPrice(p,iv){return iv==='year'?(p.yearly||p.amount*12):p.amount;}
+function billPriceHTML(p,iv){
+  if(iv==='year')return '<span class="bill-yen">年'+billYen(billPrice(p,'year'))+'円<small>(税込)</small></span>';
+  return '<span class="bill-yen">月'+billYen(p.amount)+'円<small>(税込)</small></span>';
+}
+function billYearNote(p){return '月あたり約'+billYen(Math.floor(billPrice(p,'year')/12))+'円'+(p.saving?' ・ <b class="bill-save">'+p.saving+'%お得</b>':'');}
+/* a renewal that couldn't be paid: エコノミー until the card is fixed, then the class comes back by itself */
+function billClassSync(st){
+  var s=st&&st.enabled?st.sub:null;if(!s)return;
+  var failed=lsGet(BILL_FAIL_KEY)==='1';
+  if(s.failed){
+    if(!failed){lsSet(BILL_FAIL_KEY,'1');lsSet(CAB_KEY,'0');lsSet(CAB_DKEY,'0');applyCabin();if(view==='record')setTimeout(render,0);}
+  }else if(failed){
+    try{localStorage.removeItem(BILL_FAIL_KEY);}catch(e){}
+    var p=s.active?billPlan(s.plan):null;
+    if(p&&p.level>=1&&p.level<=3){lsSet(CAB_KEY,String(p.level));lsSet(CAB_DKEY,String(p.level));applyCabin();if(view==='record')setTimeout(render,0);}
+  }
+}
 function billFeats(lv){
   return CAB_FEAT.filter(function(f){return f[1][lv]&&f[1][lv]!=='—';}).map(function(f){
     var v=f[1][lv];return v==='◯'?f[0]:f[0]+'('+v.replace(/^\+/,'')+')';});
@@ -7013,7 +7040,7 @@ function billFetch(){
   BILL.loading=true;
   billApi('GET','/api/billing/status').then(function(j){
     BILL.loading=false;BILL.t=Date.now();
-    if(j&&j.ok){BILL.st=j;BILL.err='';}else{BILL.err=billErrText(j);}
+    if(j&&j.ok){BILL.st=j;BILL.err='';if(j.sub&&j.sub.interval)BILL.iv=j.sub.interval;billClassSync(j);}else{BILL.err=billErrText(j);}
     billAfterFetch();
     billRefresh();
   });
@@ -7045,8 +7072,9 @@ function billRefresh(){
 }
 
 function billSubHTML(s,st){
-  var p=billPlan(s.plan),h='<div class="bill-now"><span class="lbl">ご利用中</span><b>'+esc(p?p.name:s.plan)+'</b>'+(p?'<span class="bill-yen">月'+billYen(p.amount)+'円</span>':'')+'</div>';
-  if(s.status==='past_due')h+='<p class="bill-note bad">お支払いが確認できていません。「契約の管理」でカードを確認してね。</p>';
+  var iv=s.interval==='year'?'year':'month',p=billPlan(s.plan);
+  var h='<div class="bill-now"><span class="lbl">'+(s.failed?'契約中(お支払い待ち)':'ご利用中')+'</span><b>'+esc(p?p.name:s.plan)+'</b><span class="bill-iv">'+(iv==='year'?'年額プラン':'月額プラン')+'</span>'+(p?billPriceHTML(p,iv):'')+'</div>';
+  if(s.failed)h+='<p class="bill-note bad">お支払いに失敗したため、いまは<b>エコノミー</b>で搭乗中です。「契約の管理」でカードを更新すると、支払いが終わりしだい元のクラスに戻ります。</p>';
   if(s.cancelAt)h+='<p class="bill-note">解約の手続きずみ ・ <b>'+billDay(s.cancelAt)+'</b>まで使えます。それ以降の請求はありません。</p>';
   else if(s.periodEnd)h+='<p class="bill-note">次の更新日 <b>'+billDay(s.periodEnd)+'</b>(自動で更新されます)</p>';
   return h;
@@ -7062,14 +7090,19 @@ function billBodyHTML(){
   if(st.test)h+='<div class="bill-test" role="note"><b>🧪 テストモード</b><span>本物のお金は動きません。カード番号 <code>4242 4242 4242 4242</code> ・ 有効期限は未来の日付 ・ セキュリティコードは好きな3桁で試せます。</span></div>';
   if(BILL.msg)h+='<p class="bill-msg '+BILL.msgKind+'" role="status">'+esc(BILL.msg)+'</p>';
   var s=st.sub;
-  if(s&&s.active){
+  if(s&&(s.active||s.failed)){
     h+=billSubHTML(s,st);
     h+='<button class="go sm" type="button" data-bill-portal'+(BILL.busy?' disabled':'')+'>契約の管理<small>プランの変更・解約・カード・領収書</small></button>';
   }else{
     if(s)h+='<p class="bill-note">前回の契約は終了しています。</p>';
+    var iv=BILL.iv==='year'?'year':'month';
+    h+='<div class="bill-iv-tabs" role="group" aria-label="支払いの間隔">'+
+      '<button type="button" data-bill-iv="month" aria-pressed="'+(iv==='month')+'">月額</button>'+
+      '<button type="button" data-bill-iv="year" aria-pressed="'+(iv==='year')+'">年額<small>最大22%お得</small></button></div>';
     h+='<div class="bill-plans">'+(st.plans||[]).map(function(p){
       var f=billFeats(p.level);
-      return '<button class="bill-plan" type="button" data-bill-plan="'+esc(p.key)+'"'+(BILL.busy?' disabled':'')+'><span class="bp-top"><b>'+esc(p.name)+'</b><span class="bill-yen">月'+billYen(p.amount)+'円<small>(税込)</small></span></span>'+
+      return '<button class="bill-plan" type="button" data-bill-plan="'+esc(p.key)+'"'+(BILL.busy?' disabled':'')+'><span class="bp-top"><b>'+esc(p.name)+'</b>'+billPriceHTML(p,iv)+'</span>'+
+        (iv==='year'?'<span class="bp-year">'+billYearNote(p)+'</span>':'')+
         '<small>'+esc(f.slice(1,4).join(' ・ '))+'</small></button>';
     }).join('')+'</div>';
     if(s)h+='<button class="ghost" type="button" data-bill-portal'+(BILL.busy?' disabled':'')+'>これまでの領収書を見る</button>';
@@ -7090,19 +7123,20 @@ function billBodyHTML(){
 /* ---- the final confirmation screen (最終確認画面) ---- */
 function billConfirmSheet(key){
   var p=billPlan(key);if(!p||!BILL.st||!BILL.st.enabled)return;
-  var test=BILL.st.test;
+  var test=BILL.st.test,yr=BILL.iv==='year',price=billPrice(p,yr?'year':'month');
   $('sheetHost').innerHTML='<div class="sheet plain bill-sheet" role="dialog" aria-label="申し込み内容の確認"><div class="sheet-in">'+
     '<span class="lbl">最終確認</span><h3>'+esc(p.name)+'に申し込む</h3>'+
     (test?'<p class="bill-test sm"><b>🧪 テストモード</b><span>本物のお金は動きません。</span></p>':'')+
     '<dl class="bill-dl">'+
-      '<dt>商品</dt><dd>Babel Flight「'+esc(p.name)+'」クラス(月額プラン)</dd>'+
+      '<dt>商品</dt><dd>Babel Flight「'+esc(p.name)+'」クラス('+(yr?'年額':'月額')+'プラン)</dd>'+
       '<dt>内容</dt><dd><ul>'+billFeats(p.level).map(function(f){return '<li>'+esc(f)+'</li>';}).join('')+'</ul></dd>'+
-      '<dt>価格</dt><dd><b>月額 '+billYen(p.amount)+'円(税込)</b></dd>'+
-      '<dt>支払い時期</dt><dd>申し込んだときに1か月分。その後は毎月、申し込んだ日と同じ日に自動で支払い</dd>'+
+      '<dt>価格</dt><dd><b>'+(yr?'年額':'月額')+' '+billYen(price)+'円(税込)</b>'+(yr?'<br><small>'+billYearNote(p).replace(/<[^>]+>/g,'')+'(月額で1年払うより'+billYen(p.amount*12-price)+'円安い)</small>':'')+'</dd>'+
+      '<dt>支払い時期</dt><dd>'+(yr?'申し込んだときに1年分。その後は毎年、申し込んだ日と同じ日に自動で支払い':'申し込んだときに1か月分。その後は毎月、申し込んだ日と同じ日に自動で支払い')+'</dd>'+
       '<dt>支払い方法</dt><dd>クレジットカード・デビットカード(Stripe)</dd>'+
       '<dt>使える時期</dt><dd>支払いが終わるとすぐ</dd>'+
-      '<dt>契約期間</dt><dd>1か月ごとに自動で更新</dd>'+
-      '<dt>解約</dt><dd>「記録」→「契約の管理」からいつでもできます。解約しても次の更新日までは使えて、それ以降の請求はありません。月の途中で解約しても、日割りの返金はありません。</dd>'+
+      '<dt>契約期間</dt><dd>'+(yr?'1年':'1か月')+'ごとに自動で更新</dd>'+
+      '<dt>解約</dt><dd>「記録」→「契約の管理」からいつでもできます。解約しても次の更新日までは使えて、それ以降の請求はありません。'+(yr?'年の途中で解約しても、残りの期間の返金はありません。':'月の途中で解約しても、日割りの返金はありません。')+'</dd>'+
+      '<dt>支払いの失敗</dt><dd>更新のときに支払いができなかった場合は、すぐエコノミーに戻ります。カードを更新して支払いが終わると、元のクラスに戻ります。</dd>'+
     '</dl>'+
     '<label class="bill-ck"><input type="checkbox" id="billAgree"><span>利用規約と、上の内容を確認して同意します</span></label>'+
     '<label class="bill-ck"><input type="checkbox" id="billGuard"><span>18歳以上です。または、保護者の方が内容を確認して申し込みに同意しています</span></label>'+
@@ -7119,7 +7153,7 @@ function billCheckout(key,btn){
   var a=$('billAgree'),g=$('billGuard'),er=$('billErr');
   if(BILL.busy||!(a&&a.checked&&g&&g.checked))return;
   BILL.busy=true;btn.disabled=true;btn.textContent='Stripeに移動中…';if(er)er.hidden=true;
-  billApi('POST','/api/billing/checkout',{plan:key,agree:true,guardian:true}).then(function(j){
+  billApi('POST','/api/billing/checkout',{plan:key,interval:BILL.iv==='year'?'year':'month',agree:true,guardian:true}).then(function(j){
     if(j&&j.ok&&typeof j.url==='string'&&/^https:\/\//.test(j.url)){location.assign(j.url);return;}
     BILL.busy=false;btn.textContent='支払い画面へ進む';billCkSync();
     if(er){er.textContent=billErrText(j);er.hidden=false;}
@@ -7140,6 +7174,7 @@ window.addEventListener('pageshow',function(e){if(e.persisted&&BILL.busy){BILL.b
 document.addEventListener('change',function(e){var id=e.target&&e.target.id;if(id==='billAgree'||id==='billGuard')billCkSync();});
 document.addEventListener('click',function(e){
   var t=e.target&&e.target.closest&&e.target.closest('button');if(!t)return;
+  if(t.hasAttribute('data-bill-iv')){var v=t.getAttribute('data-bill-iv');if(v==='month'||v==='year'){BILL.iv=v;billRefresh();}return;}
   if(t.hasAttribute('data-bill-plan')){if(cabinTester())billConfirmSheet(t.getAttribute('data-bill-plan'));return;}
   if(t.hasAttribute('data-bill-go')){if(cabinTester())billCheckout(t.getAttribute('data-bill-go'),t);return;}
   if(t.hasAttribute('data-bill-portal')){if(cabinTester())billPortal(t);return;}

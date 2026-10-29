@@ -13,8 +13,10 @@ export const STRIPE_VERSION = "2025-03-31.basil";
  * owner decides to start. Until then a live key is ignored, as if no key were set.
  */
 export const LIVE_ALLOWED = false;
-/** Subscription states that still give the paid class. */
-export const ACTIVE_STATUSES: readonly string[] = ["active", "trialing", "past_due"];
+/** Subscription states that give the paid class. A failed renewal (past_due) does not: エコノミー until it's paid. */
+export const GRANT_STATUSES: readonly string[] = ["active", "trialing"];
+/** Subscription states where the subscription still exists at Stripe (and may still charge). */
+export const LIVE_STATUSES: readonly string[] = ["active", "trialing", "past_due", "unpaid"];
 
 export type StripeKeys = { secret: string; webhook: string; test: boolean };
 
@@ -122,7 +124,7 @@ export async function cancelBillingOnDelete(db: D1Database, uid: string): Promis
   }
   if (!row) return true;
   const sub = typeof row.subscription === "string" ? row.subscription : "";
-  if (sub && ACTIVE_STATUSES.includes(String(row.status))) {
+  if (sub && LIVE_STATUSES.includes(String(row.status))) {
     const keys = stripeKeys();
     if (!keys) return false;
     try {
