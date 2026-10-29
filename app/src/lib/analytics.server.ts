@@ -33,7 +33,7 @@ import {
 } from "./http.server";
 
 const LANGS = new Set(["ko", "en", "es", "it"]);
-const MODES = new Set(["daily", "job", "study"]);
+const MODES = new Set(["daily", "job", "study", "exam"]);
 const KINDS = new Set(["visit", "lesson"]);
 const TRACK_RE = /^[a-z0-9-]{1,24}$/;
 const VID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;

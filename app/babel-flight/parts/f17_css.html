@@ -1,5 +1,5 @@
 <style>
-/* classes (standalone site, test account only) */
+/* classes (standalone site: everyone エコノミー, the test account can switch) */
 .modesw.four{grid-template-columns:repeat(4,minmax(0,1fr))}
 .modesw.four .modesw-ind{width:calc((100% - 8px) / 4)}
 .modesw.four .modesw-ind.exam{transform:translateX(300%)}
@@ -19,6 +19,16 @@
 .cabin-feat li{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:8px 10px;border-radius:10px;background:var(--surface2);font-size:13.5px}
 .cabin-feat li b{font-size:13px;text-align:right}
 .cabin-feat li.off{opacity:.6}
+/* エコノミー card (everyone): the class you fly + what the paid classes will add */
+.cab-now{display:flex;align-items:baseline;gap:10px;margin-top:8px}
+.cab-now b{font:700 22px/1.2 var(--f-disp)}
+.cab-now small{font-size:12.5px;color:var(--ink2)}
+.cabin-up{margin-top:14px;display:grid;gap:6px}
+.cu-row{padding:9px 11px;border:1.5px dashed var(--line);border-radius:12px}
+.cu-h{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.cu-h b{font-size:14px}
+.cu-soon{flex:none;font:700 10.5px/1 var(--f-mono);letter-spacing:.08em;padding:4px 7px;border-radius:999px;background:var(--surface2);color:var(--ink2)}
+.cu-row small{display:block;margin-top:3px;font-size:12px;line-height:1.55;color:var(--ink2)}
 .cabin-design{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:6px}
 .cabin-design button{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:8px;align-items:center;padding:8px 10px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);text-align:left}
 .cabin-design button b{font-size:13.5px}

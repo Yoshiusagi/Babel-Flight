@@ -1,8 +1,10 @@
-/* ================= CLASSES (standalone site; test account only for now) =================
-   Only the test account (full access) sees any of this. It can switch between エコノミー /
-   プレミアムエコノミー / ビジネス / ファースト in 記録 to try what each class would get:
-   発音チェック (every class), 検定モード, 模試 (ファースト), AI会話ロールプレイ, 弱点レポート and
-   the class designs. Every other account sees the app exactly as before. */
+/* ================= CLASSES (standalone site) =================
+   Everyone on the website flies エコノミー (free, signed in or not): 発音チェック and the 検定 tab, with the
+   paid classes' features shown locked (🔒 プレエコ〜) until billing goes live. cabinPlanLv() is where a
+   paid account's class will come from; for now it is always エコノミー.
+   The test account (full access) can switch between エコノミー / プレミアムエコノミー / ビジネス / ファースト
+   in 記録 to try what each class gets: 検定コース, 模試 (ファースト), AI会話ロールプレイ, 弱点レポート and
+   the class designs. The iPhone app (BF_APP) has no classes at all (cabinLv() is -1 there). */
 var CABINS=[['economy','エコノミー','ECONOMY','無料','エコノミー'],['premium','プレミアムエコノミー','PREMIUM ECONOMY','月500円(予定)','プレエコ'],
             ['business','ビジネス','BUSINESS','月800円(予定)','ビジネス'],['first','ファースト','FIRST','月1,280円(予定)','ファースト']];
 var CAB_DESIGN=[['','いつもの','今のデザイン'],['window','窓側の席','丸い窓を横にスワイプ'],['lounge','ラウンジ','紺と金・スワイプ操作'],['suite','スイート','黒と金・縦に1画面ずつ']];
@@ -18,7 +20,20 @@ var CAB_KEY='babelflight.cabin',CAB_DKEY='babelflight.cabinDesign';
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
 function cabinTester(){try{return typeof entitled==='function'&&entitled();}catch(e){return false;}}
-function cabinLv(){if(!cabinTester())return -1;var v=parseInt(lsGet(CAB_KEY),10);return v>=0&&v<=3?v:3;}
+function cabinOn(){return !(typeof BF_APP!=='undefined'&&BF_APP);}
+/* the class an ordinary account flies: エコノミー until paid plans open */
+function cabinPlanLv(){return 0;}
+function cabinLv(){
+  if(!cabinOn())return -1;
+  if(!cabinTester())return cabinPlanLv();
+  var v=parseInt(lsGet(CAB_KEY),10);return v>=0&&v<=3?v:3;
+}
+var CAB_SOON='プレミアムエコノミー以上は準備中です。もうすぐ申し込めるようになります。';
+/* what each paid class adds, for the エコノミー card */
+var CAB_PITCH=['',
+  '検定コース(英検5級〜準2級など) ・ AI会話ロールプレイ 1日5回 ・ 弱点レポート ・ 授業の用語(くわしく) ・ 窓側の席デザイン',
+  'プレエコの全部 ＋ すべての検定 ・ ロールプレイ 1日15回 ・ 詳しい弱点レポート ・ ラウンジデザイン',
+  'ビジネスの全部 ＋ 本番形式の模試 ・ ロールプレイ 1日30回 ・ AIコーチ ・ スイートデザイン'];
 function cabinName(lv){return CABINS[lv]?CABINS[lv][1]:'';}
 function cabinDesign(){var lv=cabinLv();if(lv<0)return -1;var d=parseInt(lsGet(CAB_DKEY),10);if(!(d>=0&&d<=lv))d=lv;return d;}
 function applyCabin(){
@@ -28,21 +43,31 @@ function applyCabin(){
   else rootEl.removeAttribute('data-sky');
 }
 (function(){var e0=entSet;entSet=function(){var r=e0.apply(this,arguments);applyCabin();return r;};})();
+function cabinFeatHTML(lv){
+  return '<ul class="cabin-feat">'+CAB_FEAT.map(function(f){var v=f[1][lv];return '<li class="'+(v==='—'?'off':'on')+'"><span>'+f[0]+'</span><b>'+(v==='—'?'🔒':esc(v))+'</b></li>';}).join('')+'</ul>';
+}
 function cabinCardHTML(){
   var lv=cabinLv();if(lv<0)return '';
+  if(!cabinTester()){
+    return '<section class="card cabin-card eco"><div class="card-h"><h2 class="jh">搭乗クラス</h2><span class="lbl">'+CABINS[lv][2]+'</span></div>'+
+      '<div class="cab-now"><b>'+CABINS[lv][1]+'</b><small>'+(lv?'':'無料 ・ ')+'いまのクラス</small></div>'+cabinFeatHTML(lv)+
+      '<div class="cabin-up"><span class="lbl">もうすぐ ・ 上のクラス</span>'+CABINS.slice(lv+1).map(function(c,j){
+        return '<div class="cu-row"><div class="cu-h"><b>'+c[1]+'</b><span class="cu-soon">準備中</span></div><small>'+esc(CAB_PITCH[lv+1+j])+'</small></div>';}).join('')+'</div>'+
+      '<p class="dim hint">'+CAB_SOON+'</p></section>';
+  }
   var d=cabinDesign();
   return '<section class="card cabin-card"><div class="card-h"><h2 class="jh">搭乗クラス</h2><span class="lbl">テスト用アカウントだけ</span></div>'+
-    '<p class="dim hint">切り替えると、そのクラスで使える機能だけになります。ほかのアカウントには表示されません。</p>'+
+    '<p class="dim hint">切り替えると、そのクラスで使える機能だけになります。ほかのアカウントは、切り替えなしのエコノミーです。</p>'+
     '<div class="cabin-seg" role="group" aria-label="搭乗クラス">'+CABINS.map(function(c,i){
       return '<button type="button" data-cabin-set="'+i+'" aria-pressed="'+(i===lv)+'"><b>'+c[1]+'</b><small>'+c[3]+'</small></button>';}).join('')+'</div>'+
-    '<ul class="cabin-feat">'+CAB_FEAT.map(function(f){var v=f[1][lv];return '<li class="'+(v==='—'?'off':'on')+'"><span>'+f[0]+'</span><b>'+(v==='—'?'🔒':esc(v))+'</b></li>';}).join('')+'</ul>'+
+    cabinFeatHTML(lv)+
     (lv>0?'<div class="set-block"><span class="lbl">デザイン</span><div class="cabin-design" role="group" aria-label="デザイン">'+CAB_DESIGN.slice(0,lv+1).map(function(x,i){
       return '<button type="button" data-cabin-design="'+i+'" aria-pressed="'+(i===d)+'"><i class="cd-sw cd-'+(x[0]||'base')+'" aria-hidden="true"></i><b>'+x[1]+'</b><small>'+x[2]+'</small></button>';}).join('')+'</div></div>':'')+
     '<p class="dim hint">ステータス特典とAIの回数制限は、テスト用アカウントなのでどのクラスでも解放されたままです。</p></section>';
 }
 
 /* ---- 検定モード ---- */
-function examModeOn(){return cabinTester();}
+function examModeOn(){return cabinLv()>=0;}
 /* 目標 (one per language), kept on this device in the test version */
 var XG_KEY='babelflight.examTarget';
 function xgLoad(){try{var o=JSON.parse(lsGet(XG_KEY)||'{}');return o&&typeof o==='object'?o:{};}catch(e){return {};}}
@@ -86,7 +111,7 @@ function examLockText(L,uid){
 function lockSheetHTML(title,t){
   return '<div class="sheet plain" role="dialog" aria-label="ロック中"><div class="sheet-in"><h3>🔒 '+esc(title)+'</h3>'+
     '<p style="font-size:14.5px">「'+CABINS[t][1]+'」から使えます。</p>'+
-    '<p class="dim hint">テスト用: 「記録」の「搭乗クラス」で切り替えられます。</p>'+
+    '<p class="dim hint">'+(cabinTester()?'テスト用: 「記録」の「搭乗クラス」で切り替えられます。':'いまはエコノミー(無料)で搭乗中。'+CAB_SOON)+'</p>'+
     '<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
 }
 function examLockSheet(L,uid){
@@ -150,7 +175,8 @@ function examHomeHTML(L){
     h+='<div class="xg-head"><h2 class="jh">'+esc(t.name)+'</h2><button class="xg-chg" type="button" data-xgoal>目標を変える</button></div>'+trainBlockHTML(t.bank);
   }else{
     h+='<h2 class="jh">検定コース</h2><p class="dim" style="font-size:13.5px;margin-top:4px">目標の級やスコアを選ぶと、その問題集が地図に並びます。'+(lv<1?'':'今は検定ごとの最初のレッスンを一覧で表示中。')+'</p>'+
-       '<button class="go sm" type="button" data-xgoal>目標を選ぶ<small>英検の級・TOEICのスコアなど</small></button>';
+       (lv<1?'<button class="ghost" type="button" data-xgoal>どんな目標があるか見る<small>英検の級・TOEICのスコアなど</small></button>'
+            :'<button class="go sm" type="button" data-xgoal>目標を選ぶ<small>英検の級・TOEICのスコアなど</small></button>');
     if(lv<1)h+='<p class="dim hint">🔒 検定コースは「プレミアムエコノミー」から</p>';
   }
   h+=(lv>=3?'<button class="ghost" type="button" data-mock-open>本番形式の模試に挑戦<small>時間制限つき ・ 合格ラインの目安つき</small></button>'
@@ -171,6 +197,9 @@ var STUDY_MORE=[{bank:'sd-math',title:'数学の用語(くわしく)',sub:'数�
   };
   var uk0=unitKind;
   unitKind=function(L,uid){if(/^sd-/.test(uid))return '用語';if(/^x-/.test(uid))return '検定';return uk0.apply(this,arguments);};
+  /* 検定 with every lesson locked (エコノミー): the map's NEXT STOP has no lesson to name */
+  var ut0=unitTitle;
+  unitTitle=function(uid){if(uid==null&&save.mode==='exam'&&examModeOn())return '🔒 検定コースは'+CABINS[1][4]+'から';return ut0.apply(this,arguments);};
 })();
 function studyMoreHTML(L){
   var lv=cabinLv();
@@ -319,7 +348,7 @@ function sayScore(target,heard,L){
 }
 function micIcon(){return '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg>';}
 function pronBoxHTML(){
-  if(!cabinTester()||!srCtor()||!F||!F.cur)return '';
+  if(cabinLv()<0||!srCtor()||!F||!F.cur)return '';
   return '<div class="pron"><button class="ghost pron-go" type="button" data-pron>'+micIcon()+'<span>発音チェック<small>ボタンを押して、言ってみよう</small></span></button><div id="pronOut" class="pron-out" aria-live="polite"></div></div>';
 }
 function pronRun(btn){
@@ -348,7 +377,7 @@ var REP_KEY='babelflight.report.v1';
 var KIND_JP={t2j:'意味を選ぶ',j2t:'言い方を選ぶ',listen:'聞き取り',listenjp:'聞いて意味を選ぶ',build:'並べ替え',type:'入力',cloze:'穴埋め',aiq:'AIの例文'};
 function repLoad(){try{var o=JSON.parse(lsGet(REP_KEY)||'{}');return o&&typeof o==='object'?o:{};}catch(e){return {};}}
 function repNote(L,k,ok){
-  if(!cabinTester()||!LANGS[L])return;
+  if(cabinLv()<0||!LANGS[L])return;
   var o=repLoad(),r=o[L]||(o[L]={d:{},k:{}}),day=dayStr();
   var d=r.d[day]||(r.d[day]=[0,0]);d[0]++;if(ok)d[1]++;
   var kk=r.k[k]||(r.k[k]=[0,0]);kk[0]++;if(ok)kk[1]++;
@@ -378,9 +407,7 @@ function repKindsHTML(r){
       '<span class="rk-bar"><i style="width:'+Math.max(2,x.p)+'%"></i></span><b>'+x.p+'%</b><small>'+x.n+'問</small></li>';}).join('')+'</ul>';
 }
 function reportCardHTML(L){
-  var lv=cabinLv();if(lv<0)return '';
-  if(lv<1)return '<section class="card report off"><span class="lbl">WEAKNESS REPORT</span><h2 class="jh">弱点レポート</h2>'+
-    '<p class="dim" style="font-size:13.5px;margin-top:4px">🔒 プレミアムエコノミーから使えます。苦手なフレーズや、正答率の変化をまとめて見られます。</p></section>';
+  var lv=cabinLv();if(lv<1)return ''; /* エコノミー: the locked card sits lower, next to ロールプレイ (roleCardHTML) */
   var r=repLoad()[L]||{d:{},k:{}},weak=weakList(L).slice(0,5),now=Date.now(),wk=[0,0],pw=[0,0];
   for(var i=0;i<14;i++){var v=r.d[dayStr(new Date(now-i*864e5))];if(v){var t=i<7?wk:pw;t[0]+=v[0];t[1]+=v[1];}}
   var acc=wk[0]?Math.round(wk[1]/wk[0]*100):null,pacc=pw[0]?Math.round(pw[1]/pw[0]*100):null,diff=acc!==null&&pacc!==null?acc-pacc:null;
@@ -447,7 +474,9 @@ function roleCardHTML(L){
   var lv=cabinLv();if(lv<0)return '';
   var h='<section class="card mode role-card"><span class="lbl">AI ROLEPLAY ・ '+esc(LANGS[L].name)+'</span><h2 class="jh">AI会話ロールプレイ</h2>'+
     '<p class="dim">機内のCA、入国審査官、ホテルの人などの役をAIが演じます。'+esc(LANGS[L].name)+'で返事をすると、採点とお手本が出ます。</p>';
-  if(lv<1)return h+'<p class="warn">🔒 プレミアムエコノミーから使えます</p></section>';
+  if(lv<1)return h+'<p class="dim hint">🔒 プレミアムエコノミーから使えます</p></section>'+
+    '<section class="card mode report off"><span class="lbl">WEAKNESS REPORT</span><h2 class="jh">弱点レポート</h2>'+
+    '<p class="dim">苦手なフレーズや、問題の形式ごとの正答率の変化をまとめて見られます。</p><p class="dim hint">🔒 プレミアムエコノミーから使えます</p></section>';
   if(!roleAiOn())return h+'<p class="warn">'+(typeof SAI==='object'&&!SAI.enabled?'AIは準備中です(サイトのAIキーの設定待ち)。':'ログインすると使えます。')+'</p></section>';
   var left=roleLeft();
   return h+(left>0?'<button class="go sm" type="button" data-role>はじめる</button>':'<p class="warn">今日のロールプレイはここまで。また明日ね！</p>')+

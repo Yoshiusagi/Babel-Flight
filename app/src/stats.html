@@ -19,13 +19,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=B612+Mono:wght@400;700&family=IBM+Plex+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 /* Owner-only usage dashboard for Babel Flight. Same terminal palette as the app;
-   chart colors are the validated categorical slots 1-2 (checked against both surfaces). */
+   chart colors are validated categorical slots (s1-s4 in this order, checked against both surfaces;
+   s4's low light-mode contrast is covered by the legend labels and the table view). */
 :root{
   color-scheme:light;
   --bg:#e9edf2; --surface:#ffffff; --surface2:#f2f5f9;
   --ink:#0b1626; --ink2:#46586d; --muted:#5f6e80; --line:#cbd5e0;
   --grid:#e6ebf1; --axis:#b4c0ce; --hl:rgba(11,22,38,.06);
-  --s1:#2a78d6; --s2:#eb6834; --s3:#b0418e;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#b0418e; --s4:#eda100;
   --bad:#cf3342;
   --signal:#ffcf26; --on-signal:#1b1500;
   --board:#080a0f; --flap:#ffd23f; --board-edge:transparent;
@@ -40,7 +41,7 @@
     --bg:#060a12; --surface:#101828; --surface2:#16213a;
     --ink:#e8eefb; --ink2:#9aabc6; --muted:#8a9bb6; --line:#243350;
     --grid:#1c2740; --axis:#33425f; --hl:rgba(255,255,255,.06);
-    --s1:#3987e5; --s2:#d95926; --s3:#c4559f;
+    --s1:#3987e5; --s2:#d95926; --s3:#c4559f; --s4:#c98500;
     --bad:#ff7b86;
     --edge:rgba(255,255,255,.05); --shadow:rgba(0,0,0,.6); --board-edge:rgba(255,255,255,.1);
   }
@@ -50,7 +51,7 @@
   --bg:#060a12; --surface:#101828; --surface2:#16213a;
   --ink:#e8eefb; --ink2:#9aabc6; --muted:#8a9bb6; --line:#243350;
   --grid:#1c2740; --axis:#33425f; --hl:rgba(255,255,255,.06);
-  --s1:#3987e5; --s2:#d95926; --s3:#c4559f;
+  --s1:#3987e5; --s2:#d95926; --s3:#c4559f; --s4:#c98500;
   --bad:#ff7b86;
   --edge:rgba(255,255,255,.05); --shadow:rgba(0,0,0,.6); --board-edge:rgba(255,255,255,.1);
 }
@@ -225,7 +226,7 @@ var ST={range:'30d',data:null,anim:true,lastW:0};
 var D={};
 var reduce=false;try{reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}
 var LANG_JP={ko:'韓国語',en:'英語',es:'スペイン語',it:'イタリア語'},LANG_ORDER=['ko','en','es','it'];
-var MODE_JP={daily:'日常会話モード',job:'職業モード',study:'留学モード'},MODE_ORDER=['daily','job','study'],MODE_COLOR=['--s1','--s2','--s3'];
+var MODE_JP={daily:'日常会話モード',job:'職業モード',study:'留学モード',exam:'検定モード'},MODE_ORDER=['daily','job','study','exam'],MODE_COLOR=['--s1','--s2','--s3','--s4'];
 var RANGE_SUB={'30d':'直近30日 ・ 1日ごと','12m':'直近12か月 ・ 1か月ごと','all':'1年ごと'};
 var RANGE_SHORT={'30d':'直近30日','12m':'直近12か月','all':'全期間'};
 var WD='日月火水木金土';

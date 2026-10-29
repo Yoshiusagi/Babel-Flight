@@ -44,6 +44,15 @@ and the AI routes skip the daily limits (`left` is reported as 999). Miles and s
 **Any future paid feature must check `entitled()` in the page and `fullAccess()` on the server**, so the test
 account keeps getting everything automatically.
 
+## Classes (搭乗クラス)
+
+`parts/f17_cabin.js` + `f17_css.html` (検定 data in `f17_exam.js`). `cabinLv()`: -1 in the iPhone app (no classes
+there), the test account's chosen class (switcher in 記録), otherwise `cabinPlanLv()`, which is エコノミー (0) for
+everyone until paid plans open. エコノミー (website, signed in or not) gets 発音チェック and the 検定 tab; the paid
+classes' features (検定コース, 模試, AI会話ロールプレイ, 弱点レポート, 授業の用語(くわしく), designs) show locked with
+「もうすぐ申し込めます」. When billing goes live, `cabinPlanLv()` should return the class the account has paid for
+(server-checked, like `entitled()`), and the plan card in `f21_billing.js` opens to everyone signed in.
+
 ## iPhone app (Capacitor)
 
 `parts/a0_env.js` runs first: `BF_APP` is true inside the app, `BF_API` is the website's address there, and
@@ -56,7 +65,7 @@ switch the class / paid-plan screens off. The native project and its build live 
 
 ## Full-format mock tests (英検 5級〜1級)
 
-`parts/f23_mx.js` + `parts/f23_css.html` (test account, ファースト class; English only). The real exam's order,
+`parts/f23_mx.js` + `parts/f23_css.html` (ファースト class — the test account for now; English only). The real exam's order,
 question counts and timing: 筆記 (reading, then writing, one timer) → listening read aloud by the browser,
 once or twice like the real test, with the real answer time. Original questions only.
 
