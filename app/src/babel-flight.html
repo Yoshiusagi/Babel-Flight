@@ -4200,11 +4200,15 @@ var PERKS=[
 var LOUNGE_N=10,LOUNGE_BONUS=30;
 /* ---- full access: the test account (later also paid plans) gets every feature ----
    Set from the server after sign-in (f13_account.js). Any future paid feature should check entitled(). */
-var ENT={all:false,plan:''};
-function entitled(){return !!(ENT&&ENT.all);}
+var ENT={all:false,plan:'',family:false};
+/* every feature: the test account ("all") and the family account ("family", the owner's brother) */
+function entitled(){return !!(ENT&&(ENT.all||ENT.family));}
+/* the owner's own test account only (the Stripe purchase test) */
+function entOwner(){return !!(ENT&&ENT.all);}
 function entSet(e){
-  var all=!!(e&&e.all),changed=all!==ENT.all;
-  ENT={all:all,plan:(e&&typeof e.plan==='string')?e.plan:''};
+  var before=entitled();
+  ENT={all:!!(e&&e.all),plan:(e&&typeof e.plan==='string')?e.plan:'',family:!!(e&&(e.family||e.plan==='family'))};
+  var changed=entitled()!==before;
   if(changed){if(typeof applyAccent==='function')applyAccent();if(typeof render==='function'&&view!=='flight'&&view!=='atc'&&view!=='scene')render();}
 }
 /* the highest status ever reached (perks you keep) and the status held now (perks while it lasts) */
@@ -5883,6 +5887,8 @@ var CAB_KEY='babelflight.cabin',CAB_DKEY='babelflight.cabinDesign';
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
 function cabinTester(){try{return typeof entitled==='function'&&entitled();}catch(e){return false;}}
+/* the plan-purchase test (Stripe) is the owner's test account only, not the family account */
+function billTester(){try{return cabinTester()&&entOwner();}catch(e){return false;}}
 function cabinOn(){return !(typeof BF_APP!=='undefined'&&BF_APP);}
 /* the class an ordinary account flies: エコノミー until paid plans open */
 function cabinPlanLv(){return 0;}
@@ -5919,7 +5925,7 @@ function cabinCardHTML(){
       '<p class="dim hint">'+CAB_SOON+'</p></section>';
   }
   var d=cabinDesign();
-  return '<section class="card cabin-card"><div class="card-h"><h2 class="jh">搭乗クラス</h2><span class="lbl">テスト用アカウントだけ</span></div>'+
+  return '<section class="card cabin-card"><div class="card-h"><h2 class="jh">搭乗クラス</h2><span class="lbl">'+(entOwner()?'テスト用アカウントだけ':'ファミリー')+'</span></div>'+
     '<p class="dim hint">切り替えると、そのクラスで使える機能だけになります。ほかのアカウントは、切り替えなしのエコノミーです。</p>'+
     '<div class="cabin-seg" role="group" aria-label="搭乗クラス">'+CABINS.map(function(c,i){
       return '<button type="button" data-cabin-set="'+i+'" aria-pressed="'+(i===lv)+'"><b>'+c[1]+'</b><small>'+c[3]+'</small></button>';}).join('')+'</div>'+
@@ -7036,7 +7042,7 @@ function billErrText(j){return BILL_ERR[j&&j.error]||(j&&j._s===0?'通信でき�
 function billApi(method,path,body){return acctApi(method,path,body).catch(function(){return {_s:0};});}
 
 function billFetch(){
-  if(BILL.loading||!ACCT.me||!cabinTester())return;
+  if(BILL.loading||!ACCT.me||!billTester())return;
   BILL.loading=true;
   billApi('GET','/api/billing/status').then(function(j){
     BILL.loading=false;BILL.t=Date.now();
@@ -7114,7 +7120,7 @@ function billBodyHTML(){
   var c0=cabinCardHTML;
   cabinCardHTML=function(){
     var h=c0.apply(this,arguments);
-    if(!h||!ACCT.on||!cabinTester())return h;
+    if(!h||!ACCT.on||!billTester())return h;
     if(ACCT.me&&!BILL.loading&&(!BILL.st||Date.now()-BILL.t>30000))setTimeout(billFetch,0);
     return h+'<section class="card bill-card" id="billCard"><div class="card-h"><h2 class="jh">プランの購入</h2><span class="lbl">テスト用アカウントだけ</span></div><div id="billBody">'+billBodyHTML()+'</div></section>';
   };
@@ -7175,9 +7181,9 @@ document.addEventListener('change',function(e){var id=e.target&&e.target.id;if(i
 document.addEventListener('click',function(e){
   var t=e.target&&e.target.closest&&e.target.closest('button');if(!t)return;
   if(t.hasAttribute('data-bill-iv')){var v=t.getAttribute('data-bill-iv');if(v==='month'||v==='year'){BILL.iv=v;billRefresh();}return;}
-  if(t.hasAttribute('data-bill-plan')){if(cabinTester())billConfirmSheet(t.getAttribute('data-bill-plan'));return;}
-  if(t.hasAttribute('data-bill-go')){if(cabinTester())billCheckout(t.getAttribute('data-bill-go'),t);return;}
-  if(t.hasAttribute('data-bill-portal')){if(cabinTester())billPortal(t);return;}
+  if(t.hasAttribute('data-bill-plan')){if(billTester())billConfirmSheet(t.getAttribute('data-bill-plan'));return;}
+  if(t.hasAttribute('data-bill-go')){if(billTester())billCheckout(t.getAttribute('data-bill-go'),t);return;}
+  if(t.hasAttribute('data-bill-portal')){if(billTester())billPortal(t);return;}
   if(t.hasAttribute('data-bill-retry')){BILL.err='';billRefresh();BILL.t=0;billFetch();return;}
 });
 /* ================= MOVING TO A NEW ADDRESS =================

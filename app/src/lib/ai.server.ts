@@ -16,7 +16,7 @@
 import type { D1Database, D1PreparedStatement } from "@cloudflare/workers-types";
 
 import { accountUid } from "./account.server";
-import { fullAccess } from "./entitlements.server";
+import { aiTier, type AiTier } from "./entitlements.server";
 import { bindings } from "./bindings.server";
 import { FIREBASE_WEB_CONFIG } from "./firebase-config";
 import { isSameOrigin, json, num, readJsonBody, type Row } from "./http.server";
@@ -29,6 +29,9 @@ const ATC_TURNS_PER_DAY = 60;
 const DRILL_PER_DAY = 10;
 const ATC_MAX_HISTORY = 8;
 const SITE_CALLS_PER_DAY = 3000;
+// The family account (the owner's brother) gets First-class limits: 30 role-play / ATC sessions a day.
+const FAMILY = { ask: 40, atc: 30, turn: 360, drill: 20 } as const;
+const FREE = { ask: ASK_PER_DAY, atc: ATC_SESSIONS_PER_DAY, turn: ATC_TURNS_PER_DAY, drill: DRILL_PER_DAY } as const;
 // Accounts with full access (the test account) have no daily limits; "left" is reported as this number.
 const UNLIMITED = 999;
 const NO_LIMIT = 1_000_000_000;
@@ -150,12 +153,17 @@ async function usage(db: D1Database, uid: string, day: string): Promise<Usage> {
   return { ask: num(r?.ask), atcStart: num(r?.atc_start), atcTurn: num(r?.atc_turn), drill: num(r?.drill) };
 }
 
-function leftOf(u: Usage, unlimited = false) {
-  if (unlimited) return { ask: UNLIMITED, atc: UNLIMITED, drill: UNLIMITED };
+function limitsOf(tier: AiTier) {
+  return tier === "family" ? FAMILY : FREE;
+}
+
+function leftOf(u: Usage, tier: AiTier = "free") {
+  if (tier === "all") return { ask: UNLIMITED, atc: UNLIMITED, drill: UNLIMITED };
+  const l = limitsOf(tier);
   return {
-    ask: Math.max(0, ASK_PER_DAY - u.ask),
-    atc: Math.max(0, ATC_SESSIONS_PER_DAY - u.atcStart),
-    drill: Math.max(0, DRILL_PER_DAY - u.drill),
+    ask: Math.max(0, l.ask - u.ask),
+    atc: Math.max(0, l.atc - u.atcStart),
+    drill: Math.max(0, l.drill - u.drill),
   };
 }
 
@@ -174,8 +182,10 @@ async function reserve(
   day: string,
   kind: "ask" | "atc" | "drill",
   start: boolean,
-  unlimited = false,
+  tier: AiTier = "free",
 ): Promise<Usage | null> {
+  const unlimited = tier === "all";
+  const l = limitsOf(tier);
   const lim = (n: number) => (unlimited ? NO_LIMIT : n);
   let stmt: D1PreparedStatement;
   if (kind === "drill") {
@@ -184,14 +194,14 @@ async function reserve(
         "INSERT INTO bf_ai_usage (uid, day, drill) VALUES (?, ?, 1) ON CONFLICT(uid, day) DO UPDATE " +
           "SET drill = bf_ai_usage.drill + 1 WHERE bf_ai_usage.drill < ? RETURNING ask, atc_start, atc_turn, drill",
       )
-      .bind(uid, day, lim(DRILL_PER_DAY));
+      .bind(uid, day, lim(l.drill));
   } else if (kind === "ask") {
     stmt = db
       .prepare(
         "INSERT INTO bf_ai_usage (uid, day, ask) VALUES (?, ?, 1) ON CONFLICT(uid, day) DO UPDATE " +
           "SET ask = bf_ai_usage.ask + 1 WHERE bf_ai_usage.ask < ? RETURNING ask, atc_start, atc_turn, drill",
       )
-      .bind(uid, day, lim(ASK_PER_DAY));
+      .bind(uid, day, lim(l.ask));
   } else if (start) {
     stmt = db
       .prepare(
@@ -199,14 +209,14 @@ async function reserve(
           "SET atc_start = bf_ai_usage.atc_start + 1, atc_turn = bf_ai_usage.atc_turn + 1 " +
           "WHERE bf_ai_usage.atc_start < ? AND bf_ai_usage.atc_turn < ? RETURNING ask, atc_start, atc_turn, drill",
       )
-      .bind(uid, day, lim(ATC_SESSIONS_PER_DAY), lim(ATC_TURNS_PER_DAY));
+      .bind(uid, day, lim(l.atc), lim(l.turn));
   } else {
     stmt = db
       .prepare(
         "INSERT INTO bf_ai_usage (uid, day, atc_turn) VALUES (?, ?, 1) ON CONFLICT(uid, day) DO UPDATE " +
           "SET atc_turn = bf_ai_usage.atc_turn + 1 WHERE bf_ai_usage.atc_turn < ? RETURNING ask, atc_start, atc_turn, drill",
       )
-      .bind(uid, day, lim(ATC_TURNS_PER_DAY));
+      .bind(uid, day, lim(l.turn));
   }
   const r = await stmt.first<Row>();
   return r ? { ask: num(r.ask), atcStart: num(r.atc_start), atcTurn: num(r.atc_turn), drill: num(r.drill) } : null;
@@ -286,8 +296,9 @@ async function handleStatus(request: Request, db: D1Database, enabled: boolean):
   if (!enabled) return json({ enabled: false, signedIn: false });
   const uid = await accountUid(request, db);
   if (!uid) return json({ enabled: true, signedIn: false });
-  const all = await fullAccess(db, uid);
-  return json({ enabled: true, signedIn: true, unlimited: all, left: leftOf(await usage(db, uid, jstDay(Date.now())), all) });
+  const tier = await aiTier(db, uid);
+  const all = tier === "all";
+  return json({ enabled: true, signedIn: true, unlimited: all, left: leftOf(await usage(db, uid, jstDay(Date.now())), tier) });
 }
 
 async function handleAsk(request: Request, db: D1Database, key: string): Promise<Response> {
@@ -305,10 +316,11 @@ async function handleAsk(request: Request, db: D1Database, key: string): Promise
   }
 
   const day = jstDay(Date.now());
-  const all = await fullAccess(db, uid);
+  const tier = await aiTier(db, uid);
+  const all = tier === "all";
   if (!all && (await siteBusy(db, day))) return json({ ok: false, error: "busy" }, 429);
-  const used = await reserve(db, uid, day, "ask", false, all);
-  if (!used) return json({ ok: false, error: "quota", left: leftOf(await usage(db, uid, day)) }, 429);
+  const used = await reserve(db, uid, day, "ask", false, tier);
+  if (!used) return json({ ok: false, error: "quota", left: leftOf(await usage(db, uid, day), tier) }, 429);
 
   const system =
     "あなたは語学学習アプリ「Babel Flight」の中で、学習者の質問に答えるAIの語学の先生です。" +
@@ -342,7 +354,7 @@ async function handleAsk(request: Request, db: D1Database, key: string): Promise
     headers: {
       "content-type": "text/plain; charset=utf-8",
       "cache-control": "no-store",
-      "x-ai-left": String(leftOf(used, all).ask),
+      "x-ai-left": String(leftOf(used, tier).ask),
     },
   });
 }
@@ -417,11 +429,12 @@ async function handleAtc(request: Request, db: D1Database, key: string): Promise
 
   const day = jstDay(Date.now());
   const start = history.length === 0;
-  const all = await fullAccess(db, uid);
-  if (role && !all) return json({ ok: false, error: "plan" }, 403);
+  const tier = await aiTier(db, uid);
+  const all = tier === "all";
+  if (role && tier === "free") return json({ ok: false, error: "plan" }, 403);
   if (!all && (await siteBusy(db, day))) return json({ ok: false, error: "busy" }, 429);
-  const used = await reserve(db, uid, day, "atc", start, all);
-  if (!used) return json({ ok: false, error: "quota", left: leftOf(await usage(db, uid, day)) }, 429);
+  const used = await reserve(db, uid, day, "atc", start, tier);
+  if (!used) return json({ ok: false, error: "quota", left: leftOf(await usage(db, uid, day), tier) }, 429);
 
   const messages: { role: "user" | "assistant"; content: string }[] = [];
   const said = role ? "Learner" : "Pilot transmission";
@@ -463,7 +476,7 @@ async function handleAtc(request: Request, db: D1Database, key: string): Promise
     }
     return json({ ok: false, error: "invalid_json" }, 502);
   }
-  return json({ ok: true, ...reply, left: leftOf(used, all) });
+  return json({ ok: true, ...reply, left: leftOf(used, tier) });
 }
 
 /* ---------- AI example drill ---------- */
@@ -520,10 +533,11 @@ async function handleDrill(request: Request, db: D1Database, key: string): Promi
   }
 
   const day = jstDay(Date.now());
-  const all = await fullAccess(db, uid);
+  const tier = await aiTier(db, uid);
+  const all = tier === "all";
   if (!all && (await siteBusy(db, day))) return json({ ok: false, error: "busy" }, 429);
-  const used = await reserve(db, uid, day, "drill", false, all);
-  if (!used) return json({ ok: false, error: "quota", left: leftOf(await usage(db, uid, day)) }, 429);
+  const used = await reserve(db, uid, day, "drill", false, tier);
+  if (!used) return json({ ok: false, error: "quota", left: leftOf(await usage(db, uid, day), tier) }, 429);
 
   const language = lang === "en" ? `${variant} English` : LANG_EN[lang];
   const system =
@@ -557,7 +571,7 @@ async function handleDrill(request: Request, db: D1Database, key: string): Promi
     await refund(db, uid, day, "drill", false);
     return json({ ok: false, error: upstreamOk ? "invalid_json" : "upstream" }, 502);
   }
-  return json({ ok: true, qs, left: leftOf(used, all) });
+  return json({ ok: true, qs, left: leftOf(used, tier) });
 }
 
 /* ---------- dispatcher ---------- */

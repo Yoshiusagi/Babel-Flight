@@ -21,9 +21,18 @@ const TESTER_EMAIL_HASHES: readonly string[] = [
   "4733d10e34943cbf467e60ecf8991ff99a5eb26b0e5cbfcd436bc9fc5f7a49b7",
 ];
 
-export type Entitlements = { plan: string; all: boolean };
+/**
+ * sha256(SALT + lower-case email) of family accounts (the owner's brother): every class feature,
+ * but the AI keeps First-class daily limits and the Stripe purchase test stays the owner's only.
+ */
+const FAMILY_EMAIL_HASHES: readonly string[] = [
+  "da9591957bf899abe62d880c2d86fa1739233e9029071eab23870a51c716ec27",
+];
 
-const FREE: Entitlements = { plan: "", all: false };
+export type Entitlements = { plan: string; all: boolean; family: boolean };
+export type AiTier = "all" | "family" | "free";
+
+const FREE: Entitlements = { plan: "", all: false, family: false };
 
 /** Called when someone signs in: records the "all" plan for the test account. */
 export async function grantOnSignIn(db: D1Database, claims: FirebaseClaims): Promise<void> {
@@ -31,6 +40,17 @@ export async function grantOnSignIn(db: D1Database, claims: FirebaseClaims): Pro
   // Email sign-up keeps one account per address, so the owner's existing account is the only match.
   if (!claims.emailVerified && claims.provider !== "password") return;
   const hash = await sha256Hex(SALT + claims.email);
+  if (FAMILY_EMAIL_HASHES.includes(hash)) {
+    // never lowers an account that already has "all"
+    await db
+      .prepare(
+        "INSERT INTO bf_entitlements (uid, plan, source, granted_at) VALUES (?, 'family', 'family', ?) " +
+          "ON CONFLICT(uid) DO UPDATE SET plan = 'family', source = 'family' WHERE bf_entitlements.plan <> 'all'",
+      )
+      .bind(claims.uid, Date.now())
+      .run();
+    return;
+  }
   if (!TESTER_EMAIL_HASHES.includes(hash)) return;
   await db
     .prepare(
@@ -44,7 +64,13 @@ export async function grantOnSignIn(db: D1Database, claims: FirebaseClaims): Pro
 export async function entitlementsOf(db: D1Database, uid: string): Promise<Entitlements> {
   const row = await db.prepare("SELECT plan FROM bf_entitlements WHERE uid = ?").bind(uid).first<Row>();
   if (!row || typeof row.plan !== "string") return FREE;
-  return { plan: row.plan, all: row.plan === "all" };
+  return { plan: row.plan, all: row.plan === "all", family: row.plan === "family" };
+}
+
+/** How much AI the account gets per day: unlimited (test account), First-class (family) or free. */
+export async function aiTier(db: D1Database, uid: string): Promise<AiTier> {
+  const e = await entitlementsOf(db, uid);
+  return e.all ? "all" : e.family ? "family" : "free";
 }
 
 /** True when the account may use every feature, including paid ones and unlimited AI. */
