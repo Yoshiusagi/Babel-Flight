@@ -53,3 +53,17 @@ in the app, where the page's origin is `capacitor://localhost`). Server side: `a
 `parts/f20_native.js` + `f20_css.html` hold the app-only features (daily reminder, haptics, swipe back,
 offline note, native share, links in an in-app browser, AI consent sheet, native Google / Apple sign-in) and
 switch the class / paid-plan screens off. The native project and its build live in `ios-app/` (see its README).
+
+## Full-format mock tests (英検 5級〜1級)
+
+`parts/f23_mx.js` + `parts/f23_css.html` (test account, ファースト class; English only). The real exam's order,
+question counts and timing: 筆記 (reading, then writing, one timer) → listening read aloud by the browser,
+once or twice like the real test, with the real answer time. Original questions only.
+
+The tests are written in `mock/<key>.py` (helpers in `mock/mxh.py`) and built into `public/mx/<key>.json`,
+which the page loads only when a test is opened:
+
+    python3 babel-flight/mock/build.py
+
+`build.py` checks every test against the real format (`SPEC`: parts, question counts, option counts,
+listening plays, writing word limits incl. the model answers) and stops with a list of problems.
