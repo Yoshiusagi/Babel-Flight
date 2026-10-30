@@ -1,0 +1,22 @@
+Xcode 26.3
+Build version 17C529
+babel-flight-ios@1.0.0 /Users/runner/work/Babel-Flight/Babel-Flight/ios-app
+├── @capacitor-firebase/authentication@7.5.0
+├── @capacitor/browser@7.0.5
+├── @capacitor/cli@7.6.10
+├── @capacitor/core@7.6.10
+├── @capacitor/filesystem@7.1.9
+├── @capacitor/haptics@7.0.5
+├── @capacitor/ios@7.6.10
+├── @capacitor/local-notifications@7.0.7
+├── @capacitor/preferences@7.0.4
+├── @capacitor/share@7.0.4
+├── @capacitor/splash-screen@7.0.5
+├── @capacitor/status-bar@7.0.6
+└── playwright@1.64.1
+
+fonts: 725 font files, 12.3 MB
+www/index.html 1119 KB
+GoogleService-Info.plist missing: using a placeholder (sign-in won't work in this build)
+configured io.github.yoshiusagi.babelflight 1.0.0 (18)
+simulator build: OK
