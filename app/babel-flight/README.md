@@ -53,6 +53,21 @@ classes' features (検定コース, 模試, AI会話ロールプレイ, 弱点�
 「もうすぐ申し込めます」. When billing goes live, `cabinPlanLv()` should return the class the account has paid for
 (server-checked, like `entitled()`), and the plan card in `f21_billing.js` opens to everyone signed in.
 
+## 筆記体なぞり (cursive tracing)
+
+`parts/f24_cursive.js` + `f24_css.html`, letters in `parts/f24_cdata.js`. Entry: the 「筆記体なぞり」 card in 復習.
+Steps: 小文字 a–z and 大文字 A–Z (free), つなげ書き (short words in the learning language) and 自分の名前
+(プレミアムエコノミーから; not shown in the iPhone app). Results (◎◯△ per letter) stay on the device.
+
+The letters are Hershey "Script Simplex" (`cursive/scripts.jhf`). `python3 babel-flight/cursive/build.py`
+rebuilds `f24_cdata.js`: its `SPEC` joins and reorders the font's plotter strokes into handwriting order
+(one pen movement per letter where cursive has one; i/j dots and t/x crosses last). Words are joined at
+run time (`curLayout`), with the over-the-top connector before a c d g o q. Tracing (`curMove`): the pen
+moves the progress forward only while it stays within the tolerance of the current stroke, so the
+direction and the start point matter; lifting keeps the progress. A pen switches on pen-only mode
+(touches are ignored). The Hershey acknowledgement the font data requires is in `f24_cdata.js` and in
+このアプリについて.
+
 ## iPhone app (Capacitor)
 
 `parts/a0_env.js` runs first: `BF_APP` is true inside the app, `BF_API` is the website's address there, and

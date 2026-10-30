@@ -1,0 +1,10 @@
+/* ================= 筆記体 (cursive) letter strokes =================
+   Built by babel-flight/cursive/build.py from Hershey "Script Simplex" (scripts.jhf), with the strokes
+   joined and reordered into the order they are written by hand (one pen movement per letter where real
+   cursive has one; i/j dots and the t/x crosses come last). Units: x from the letter's left edge,
+   y down; 4 lines of an English notebook: top -12, x-height 0, baseline 9, descender 21; letters join at y 4.
+   - The Hershey Fonts were originally created by Dr. A. V. Hershey while working at the
+     U. S. National Bureau of Standards.
+   - The format of the Font data in this distribution was originally created by
+     James Hurt, Cognition, Inc., 900 Technology Park Drive, Billerica, MA 01821
+     (mit-eddie!ci-dandelion!hurt) */

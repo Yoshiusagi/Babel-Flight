@@ -1252,13 +1252,6 @@ html.app :where(button:not(:disabled):active){transform:scale(.97);filter:bright
 .bill-plan .bp-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
 .bill-plan b{font-size:15px}
 .bill-plan>small{font-size:12px;color:var(--ink2);line-height:1.45}
-.bill-plan .bp-year{font-size:12px;color:var(--ink2)}
-.bill-save{color:var(--good);font-weight:700}
-.bill-iv{font-size:12px;opacity:.75}
-.bill-iv-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:12px;padding:4px;border-radius:12px;background:var(--surface2)}
-.bill-iv-tabs button{display:flex;flex-direction:column;align-items:center;gap:1px;padding:8px 6px;border:0;border-radius:9px;background:transparent;color:var(--ink2);font:700 14px var(--f-body);transition:background .2s,color .2s}
-.bill-iv-tabs button small{font:600 10.5px var(--f-body);color:var(--good)}
-.bill-iv-tabs button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .bill-plan:active{transform:translateY(1px)}
 .bill-plan:disabled{opacity:.5}
 .bill-card .ghost{display:block;width:100%;margin-top:8px}
@@ -1403,6 +1396,51 @@ html.app :where(button:not(:disabled):active){transform:scale(.97);filter:bright
 .mx-gb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:52px;padding:6px 4px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
 .mx-gb b{font-size:13.5px;line-height:1.25;text-align:center}
 .mx-gb small{font-size:10.5px;color:var(--ink2)}
+</style>
+<style>
+/* 筆記体なぞり */
+.cur .fl-top{margin-bottom:6px}
+.cur-note{font-size:13.5px;line-height:1.65;color:var(--ink2);margin:8px 2px 0}
+.cur-note b{color:var(--ink)}
+.cur-note .cur-g{color:var(--good)}
+.cur-step .card-h h2 small{font-size:12.5px;font-weight:500;color:var(--ink2);margin-left:4px}
+.cur-step.locked{opacity:.85}
+.cur-step .go.sm,.cur-step .ghost{margin-top:10px}
+.cur-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:6px;margin-top:10px}
+.cur-cell{display:flex;flex-direction:column;align-items:center;gap:0;padding:4px 2px 3px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+.cur-cell svg{width:100%;height:34px;overflow:visible}
+.cur-cell svg path{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.cur-cell small{font:700 10.5px/1.2 var(--f-mono);color:var(--ink2)}
+.cur-cell.g3{border-color:var(--good)}
+.cur-cell.g3 small{color:var(--good)}
+.cur-cell.g2{border-color:color-mix(in srgb,var(--good) 45%,var(--line))}
+.cur-words{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px;margin-top:10px}
+.cur-w{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);text-align:left}
+.cur-w b{font-size:14.5px}
+.cur-w small{font-size:11.5px;color:var(--ink2)}
+.cur-w.g3{border-color:var(--good)}
+.cur-name{margin-top:8px}
+.cur-name .lbl{display:block;margin-bottom:4px}
+.cur-name .row2{gap:8px}
+.cur-name input{flex:1;min-width:0}
+.cur-pen{flex:none;border:1.5px solid var(--good);color:var(--good);background:var(--surface);border-radius:999px;padding:6px 10px;font-size:12px;font-weight:700}
+.cur-pad{margin-top:10px;background:var(--surface);border:1.5px solid var(--line);border-radius:16px;overflow:hidden;
+  touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.cur-pad canvas{display:block;touch-action:none}
+.cur-msg{min-height:1.6em;margin:8px 2px 0;font-size:14px;font-weight:600;color:var(--ink2);text-align:center}
+.cur-msg.bad{color:var(--bad)}
+.cur-acts{display:flex;gap:8px;margin-top:8px}
+.cur-acts .sq{flex:1}
+.cur-res{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:12px;padding:12px;border-radius:14px;background:var(--surface);border:1.5px solid var(--line);text-align:center}
+.cur-res b{font:700 22px/1.3 var(--f-body)}
+.cur-res span{font-size:13.5px;color:var(--ink2)}
+.cur-res.g3{border-color:var(--good)}
+.cur-res.g3 b{color:var(--good)}
+#curRes .row2{margin-top:10px;gap:8px}
+.cur-sum-row{display:flex;gap:14px;justify-content:center;margin:10px 0 4px;font:700 20px var(--f-body)}
+.cur-sum-row .g3{color:var(--good)}
+.cur-sum .go,.cur-sum .ghost{margin-top:10px}
+.credits .cr-note{margin:12px 0 0;font-size:11px;line-height:1.55;color:var(--ink2)}
 </style>
 </head>
 <body>
@@ -2839,6 +2877,7 @@ function reviewHTML(){
   var annOK=!!UNITS[L]['pilot-ann']&&ttsAvail(LG.tts);
   h+='<section class="card mode"><span class="lbl">LISTENING</span><h2 class="jh">リスニング特訓</h2><p class="dim">機長アナウンスを'+esc(LG.name)+'で聞いて、内容を当てよう。長い文の聞き取り練習です。</p><div class="mcount mono">8<small> 問</small></div>'+
      (annOK?'<button class="go sm" type="button" data-mode="ann">はじめる</button>':'<p class="warn">この端末では'+esc(LG.name)+'の音声が使えません</p>')+'</section>';
+  if(typeof cursiveCardHTML==='function')h+=cursiveCardHTML(L);
   h+='<section class="card mode atc-card"><span class="lbl">AI ROLEPLAY ・ 英語</span><h2 class="jh">AI管制官と交信練習</h2><p class="dim">管制官役のAIと英語で無線交信。あなたの返答を採点して、お手本も教えてくれます。</p>'+
      (typeof aiAtcEntryHTML==='function'?aiAtcEntryHTML():AI.ok?'<button class="go sm" type="button" data-atc>交信をはじめる</button>':'<p class="warn">'+(AI.checked?'この環境ではAI機能が使えません(Claudeで開くと使えます)':'AI機能を確認中…')+'</p>')+'</section>';
   if(typeof roleCardHTML==='function')h+=roleCardHTML(L);
@@ -4200,15 +4239,11 @@ var PERKS=[
 var LOUNGE_N=10,LOUNGE_BONUS=30;
 /* ---- full access: the test account (later also paid plans) gets every feature ----
    Set from the server after sign-in (f13_account.js). Any future paid feature should check entitled(). */
-var ENT={all:false,plan:'',family:false};
-/* every feature: the test account ("all") and the family account ("family", the owner's brother) */
-function entitled(){return !!(ENT&&(ENT.all||ENT.family));}
-/* the owner's own test account only (the Stripe purchase test) */
-function entOwner(){return !!(ENT&&ENT.all);}
+var ENT={all:false,plan:''};
+function entitled(){return !!(ENT&&ENT.all);}
 function entSet(e){
-  var before=entitled();
-  ENT={all:!!(e&&e.all),plan:(e&&typeof e.plan==='string')?e.plan:'',family:!!(e&&(e.family||e.plan==='family'))};
-  var changed=entitled()!==before;
+  var all=!!(e&&e.all),changed=all!==ENT.all;
+  ENT={all:all,plan:(e&&typeof e.plan==='string')?e.plan:''};
   if(changed){if(typeof applyAccent==='function')applyAccent();if(typeof render==='function'&&view!=='flight'&&view!=='atc'&&view!=='scene')render();}
 }
 /* the highest status ever reached (perks you keep) and the status held now (perks while it lasts) */
@@ -5887,8 +5922,6 @@ var CAB_KEY='babelflight.cabin',CAB_DKEY='babelflight.cabinDesign';
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
 function cabinTester(){try{return typeof entitled==='function'&&entitled();}catch(e){return false;}}
-/* the plan-purchase test (Stripe) is the owner's test account only, not the family account */
-function billTester(){try{return cabinTester()&&entOwner();}catch(e){return false;}}
 function cabinOn(){return !(typeof BF_APP!=='undefined'&&BF_APP);}
 /* the class an ordinary account flies: エコノミー until paid plans open */
 function cabinPlanLv(){return 0;}
@@ -5925,7 +5958,7 @@ function cabinCardHTML(){
       '<p class="dim hint">'+CAB_SOON+'</p></section>';
   }
   var d=cabinDesign();
-  return '<section class="card cabin-card"><div class="card-h"><h2 class="jh">搭乗クラス</h2><span class="lbl">'+(entOwner()?'テスト用アカウントだけ':'ファミリー')+'</span></div>'+
+  return '<section class="card cabin-card"><div class="card-h"><h2 class="jh">搭乗クラス</h2><span class="lbl">テスト用アカウントだけ</span></div>'+
     '<p class="dim hint">切り替えると、そのクラスで使える機能だけになります。ほかのアカウントは、切り替えなしのエコノミーです。</p>'+
     '<div class="cabin-seg" role="group" aria-label="搭乗クラス">'+CABINS.map(function(c,i){
       return '<button type="button" data-cabin-set="'+i+'" aria-pressed="'+(i===lv)+'"><b>'+c[1]+'</b><small>'+c[3]+'</small></button>';}).join('')+'</div>'+
@@ -6991,8 +7024,7 @@ document.addEventListener('change',function(e){
    Changing plan, cancelling, the card and receipts are in Stripe's customer portal.
    Every other account sees nothing new; the server refuses them too (/api/billing/*).
    Website only: in the iPhone app cabinTester() is off (f20_native.js), so none of this shows there. */
-var BILL={st:null,t:0,loading:false,err:'',msg:'',msgKind:'',ret:'',tries:0,busy:false,scroll:false,iv:'month'};
-var BILL_FAIL_KEY='babelflight.billFailed';
+var BILL={st:null,t:0,loading:false,err:'',msg:'',msgKind:'',ret:'',tries:0,busy:false,scroll:false};
 (function(){
   try{
     var u=new URL(location.href),r=u.searchParams.get('billing');
@@ -7007,25 +7039,6 @@ var BILL_FAIL_KEY='babelflight.billFailed';
 function billYen(n){return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
 function billDay(ms){var d=new Date(ms);return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日';}
 function billPlan(key){var p=null;((BILL.st&&BILL.st.plans)||[]).forEach(function(x){if(x.key===key)p=x;});return p;}
-/* the price of a plan for 月額 (month) or 年額 (year) */
-function billPrice(p,iv){return iv==='year'?(p.yearly||p.amount*12):p.amount;}
-function billPriceHTML(p,iv){
-  if(iv==='year')return '<span class="bill-yen">年'+billYen(billPrice(p,'year'))+'円<small>(税込)</small></span>';
-  return '<span class="bill-yen">月'+billYen(p.amount)+'円<small>(税込)</small></span>';
-}
-function billYearNote(p){return '月あたり約'+billYen(Math.floor(billPrice(p,'year')/12))+'円'+(p.saving?' ・ <b class="bill-save">'+p.saving+'%お得</b>':'');}
-/* a renewal that couldn't be paid: エコノミー until the card is fixed, then the class comes back by itself */
-function billClassSync(st){
-  var s=st&&st.enabled?st.sub:null;if(!s)return;
-  var failed=lsGet(BILL_FAIL_KEY)==='1';
-  if(s.failed){
-    if(!failed){lsSet(BILL_FAIL_KEY,'1');lsSet(CAB_KEY,'0');lsSet(CAB_DKEY,'0');applyCabin();if(view==='record')setTimeout(render,0);}
-  }else if(failed){
-    try{localStorage.removeItem(BILL_FAIL_KEY);}catch(e){}
-    var p=s.active?billPlan(s.plan):null;
-    if(p&&p.level>=1&&p.level<=3){lsSet(CAB_KEY,String(p.level));lsSet(CAB_DKEY,String(p.level));applyCabin();if(view==='record')setTimeout(render,0);}
-  }
-}
 function billFeats(lv){
   return CAB_FEAT.filter(function(f){return f[1][lv]&&f[1][lv]!=='—';}).map(function(f){
     var v=f[1][lv];return v==='◯'?f[0]:f[0]+'('+v.replace(/^\+/,'')+')';});
@@ -7042,11 +7055,11 @@ function billErrText(j){return BILL_ERR[j&&j.error]||(j&&j._s===0?'通信でき�
 function billApi(method,path,body){return acctApi(method,path,body).catch(function(){return {_s:0};});}
 
 function billFetch(){
-  if(BILL.loading||!ACCT.me||!billTester())return;
+  if(BILL.loading||!ACCT.me||!cabinTester())return;
   BILL.loading=true;
   billApi('GET','/api/billing/status').then(function(j){
     BILL.loading=false;BILL.t=Date.now();
-    if(j&&j.ok){BILL.st=j;BILL.err='';if(j.sub&&j.sub.interval)BILL.iv=j.sub.interval;billClassSync(j);}else{BILL.err=billErrText(j);}
+    if(j&&j.ok){BILL.st=j;BILL.err='';}else{BILL.err=billErrText(j);}
     billAfterFetch();
     billRefresh();
   });
@@ -7078,9 +7091,8 @@ function billRefresh(){
 }
 
 function billSubHTML(s,st){
-  var iv=s.interval==='year'?'year':'month',p=billPlan(s.plan);
-  var h='<div class="bill-now"><span class="lbl">'+(s.failed?'契約中(お支払い待ち)':'ご利用中')+'</span><b>'+esc(p?p.name:s.plan)+'</b><span class="bill-iv">'+(iv==='year'?'年額プラン':'月額プラン')+'</span>'+(p?billPriceHTML(p,iv):'')+'</div>';
-  if(s.failed)h+='<p class="bill-note bad">お支払いに失敗したため、いまは<b>エコノミー</b>で搭乗中です。「契約の管理」でカードを更新すると、支払いが終わりしだい元のクラスに戻ります。</p>';
+  var p=billPlan(s.plan),h='<div class="bill-now"><span class="lbl">ご利用中</span><b>'+esc(p?p.name:s.plan)+'</b>'+(p?'<span class="bill-yen">月'+billYen(p.amount)+'円</span>':'')+'</div>';
+  if(s.status==='past_due')h+='<p class="bill-note bad">お支払いが確認できていません。「契約の管理」でカードを確認してね。</p>';
   if(s.cancelAt)h+='<p class="bill-note">解約の手続きずみ ・ <b>'+billDay(s.cancelAt)+'</b>まで使えます。それ以降の請求はありません。</p>';
   else if(s.periodEnd)h+='<p class="bill-note">次の更新日 <b>'+billDay(s.periodEnd)+'</b>(自動で更新されます)</p>';
   return h;
@@ -7096,19 +7108,14 @@ function billBodyHTML(){
   if(st.test)h+='<div class="bill-test" role="note"><b>🧪 テストモード</b><span>本物のお金は動きません。カード番号 <code>4242 4242 4242 4242</code> ・ 有効期限は未来の日付 ・ セキュリティコードは好きな3桁で試せます。</span></div>';
   if(BILL.msg)h+='<p class="bill-msg '+BILL.msgKind+'" role="status">'+esc(BILL.msg)+'</p>';
   var s=st.sub;
-  if(s&&(s.active||s.failed)){
+  if(s&&s.active){
     h+=billSubHTML(s,st);
     h+='<button class="go sm" type="button" data-bill-portal'+(BILL.busy?' disabled':'')+'>契約の管理<small>プランの変更・解約・カード・領収書</small></button>';
   }else{
     if(s)h+='<p class="bill-note">前回の契約は終了しています。</p>';
-    var iv=BILL.iv==='year'?'year':'month';
-    h+='<div class="bill-iv-tabs" role="group" aria-label="支払いの間隔">'+
-      '<button type="button" data-bill-iv="month" aria-pressed="'+(iv==='month')+'">月額</button>'+
-      '<button type="button" data-bill-iv="year" aria-pressed="'+(iv==='year')+'">年額<small>最大22%お得</small></button></div>';
     h+='<div class="bill-plans">'+(st.plans||[]).map(function(p){
       var f=billFeats(p.level);
-      return '<button class="bill-plan" type="button" data-bill-plan="'+esc(p.key)+'"'+(BILL.busy?' disabled':'')+'><span class="bp-top"><b>'+esc(p.name)+'</b>'+billPriceHTML(p,iv)+'</span>'+
-        (iv==='year'?'<span class="bp-year">'+billYearNote(p)+'</span>':'')+
+      return '<button class="bill-plan" type="button" data-bill-plan="'+esc(p.key)+'"'+(BILL.busy?' disabled':'')+'><span class="bp-top"><b>'+esc(p.name)+'</b><span class="bill-yen">月'+billYen(p.amount)+'円<small>(税込)</small></span></span>'+
         '<small>'+esc(f.slice(1,4).join(' ・ '))+'</small></button>';
     }).join('')+'</div>';
     if(s)h+='<button class="ghost" type="button" data-bill-portal'+(BILL.busy?' disabled':'')+'>これまでの領収書を見る</button>';
@@ -7120,7 +7127,7 @@ function billBodyHTML(){
   var c0=cabinCardHTML;
   cabinCardHTML=function(){
     var h=c0.apply(this,arguments);
-    if(!h||!ACCT.on||!billTester())return h;
+    if(!h||!ACCT.on||!cabinTester())return h;
     if(ACCT.me&&!BILL.loading&&(!BILL.st||Date.now()-BILL.t>30000))setTimeout(billFetch,0);
     return h+'<section class="card bill-card" id="billCard"><div class="card-h"><h2 class="jh">プランの購入</h2><span class="lbl">テスト用アカウントだけ</span></div><div id="billBody">'+billBodyHTML()+'</div></section>';
   };
@@ -7129,20 +7136,19 @@ function billBodyHTML(){
 /* ---- the final confirmation screen (最終確認画面) ---- */
 function billConfirmSheet(key){
   var p=billPlan(key);if(!p||!BILL.st||!BILL.st.enabled)return;
-  var test=BILL.st.test,yr=BILL.iv==='year',price=billPrice(p,yr?'year':'month');
+  var test=BILL.st.test;
   $('sheetHost').innerHTML='<div class="sheet plain bill-sheet" role="dialog" aria-label="申し込み内容の確認"><div class="sheet-in">'+
     '<span class="lbl">最終確認</span><h3>'+esc(p.name)+'に申し込む</h3>'+
     (test?'<p class="bill-test sm"><b>🧪 テストモード</b><span>本物のお金は動きません。</span></p>':'')+
     '<dl class="bill-dl">'+
-      '<dt>商品</dt><dd>Babel Flight「'+esc(p.name)+'」クラス('+(yr?'年額':'月額')+'プラン)</dd>'+
+      '<dt>商品</dt><dd>Babel Flight「'+esc(p.name)+'」クラス(月額プラン)</dd>'+
       '<dt>内容</dt><dd><ul>'+billFeats(p.level).map(function(f){return '<li>'+esc(f)+'</li>';}).join('')+'</ul></dd>'+
-      '<dt>価格</dt><dd><b>'+(yr?'年額':'月額')+' '+billYen(price)+'円(税込)</b>'+(yr?'<br><small>'+billYearNote(p).replace(/<[^>]+>/g,'')+'(月額で1年払うより'+billYen(p.amount*12-price)+'円安い)</small>':'')+'</dd>'+
-      '<dt>支払い時期</dt><dd>'+(yr?'申し込んだときに1年分。その後は毎年、申し込んだ日と同じ日に自動で支払い':'申し込んだときに1か月分。その後は毎月、申し込んだ日と同じ日に自動で支払い')+'</dd>'+
+      '<dt>価格</dt><dd><b>月額 '+billYen(p.amount)+'円(税込)</b></dd>'+
+      '<dt>支払い時期</dt><dd>申し込んだときに1か月分。その後は毎月、申し込んだ日と同じ日に自動で支払い</dd>'+
       '<dt>支払い方法</dt><dd>クレジットカード・デビットカード(Stripe)</dd>'+
       '<dt>使える時期</dt><dd>支払いが終わるとすぐ</dd>'+
-      '<dt>契約期間</dt><dd>'+(yr?'1年':'1か月')+'ごとに自動で更新</dd>'+
-      '<dt>解約</dt><dd>「記録」→「契約の管理」からいつでもできます。解約しても次の更新日までは使えて、それ以降の請求はありません。'+(yr?'年の途中で解約しても、残りの期間の返金はありません。':'月の途中で解約しても、日割りの返金はありません。')+'</dd>'+
-      '<dt>支払いの失敗</dt><dd>更新のときに支払いができなかった場合は、すぐエコノミーに戻ります。カードを更新して支払いが終わると、元のクラスに戻ります。</dd>'+
+      '<dt>契約期間</dt><dd>1か月ごとに自動で更新</dd>'+
+      '<dt>解約</dt><dd>「記録」→「契約の管理」からいつでもできます。解約しても次の更新日までは使えて、それ以降の請求はありません。月の途中で解約しても、日割りの返金はありません。</dd>'+
     '</dl>'+
     '<label class="bill-ck"><input type="checkbox" id="billAgree"><span>利用規約と、上の内容を確認して同意します</span></label>'+
     '<label class="bill-ck"><input type="checkbox" id="billGuard"><span>18歳以上です。または、保護者の方が内容を確認して申し込みに同意しています</span></label>'+
@@ -7159,7 +7165,7 @@ function billCheckout(key,btn){
   var a=$('billAgree'),g=$('billGuard'),er=$('billErr');
   if(BILL.busy||!(a&&a.checked&&g&&g.checked))return;
   BILL.busy=true;btn.disabled=true;btn.textContent='Stripeに移動中…';if(er)er.hidden=true;
-  billApi('POST','/api/billing/checkout',{plan:key,interval:BILL.iv==='year'?'year':'month',agree:true,guardian:true}).then(function(j){
+  billApi('POST','/api/billing/checkout',{plan:key,agree:true,guardian:true}).then(function(j){
     if(j&&j.ok&&typeof j.url==='string'&&/^https:\/\//.test(j.url)){location.assign(j.url);return;}
     BILL.busy=false;btn.textContent='支払い画面へ進む';billCkSync();
     if(er){er.textContent=billErrText(j);er.hidden=false;}
@@ -7180,10 +7186,9 @@ window.addEventListener('pageshow',function(e){if(e.persisted&&BILL.busy){BILL.b
 document.addEventListener('change',function(e){var id=e.target&&e.target.id;if(id==='billAgree'||id==='billGuard')billCkSync();});
 document.addEventListener('click',function(e){
   var t=e.target&&e.target.closest&&e.target.closest('button');if(!t)return;
-  if(t.hasAttribute('data-bill-iv')){var v=t.getAttribute('data-bill-iv');if(v==='month'||v==='year'){BILL.iv=v;billRefresh();}return;}
-  if(t.hasAttribute('data-bill-plan')){if(billTester())billConfirmSheet(t.getAttribute('data-bill-plan'));return;}
-  if(t.hasAttribute('data-bill-go')){if(billTester())billCheckout(t.getAttribute('data-bill-go'),t);return;}
-  if(t.hasAttribute('data-bill-portal')){if(billTester())billPortal(t);return;}
+  if(t.hasAttribute('data-bill-plan')){if(cabinTester())billConfirmSheet(t.getAttribute('data-bill-plan'));return;}
+  if(t.hasAttribute('data-bill-go')){if(cabinTester())billCheckout(t.getAttribute('data-bill-go'),t);return;}
+  if(t.hasAttribute('data-bill-portal')){if(cabinTester())billPortal(t);return;}
   if(t.hasAttribute('data-bill-retry')){BILL.err='';billRefresh();BILL.t=0;billFetch();return;}
 });
 /* ================= MOVING TO A NEW ADDRESS =================
@@ -7737,6 +7742,441 @@ document.addEventListener('input',function(e){
   clearTimeout(MX.wt);MX.wt=setTimeout(mxKeep,600);
 });
 document.addEventListener('visibilitychange',function(){if(document.hidden&&view==='mx'&&MX.stage==='listen'&&!MX.paused){mxHush();MX.paused=true;render();}});
+/* ================= 筆記体 (cursive) letter strokes =================
+   Built by babel-flight/cursive/build.py from Hershey "Script Simplex" (scripts.jhf), with the strokes
+   joined and reordered into the order they are written by hand (one pen movement per letter where real
+   cursive has one; i/j dots and the t/x crosses come last). Units: x from the letter's left edge,
+   y down; 4 lines of an English notebook: top -12, x-height 0, baseline 9, descender 21; letters join at y 4.
+   - The Hershey Fonts were originally created by Dr. A. V. Hershey while working at the
+     U. S. National Bureau of Standards.
+   - The format of the Font data in this distribution was originally created by
+     James Hurt, Cognition, Inc., 900 Technology Park Drive, Billerica, MA 01821
+     (mit-eddie!ci-dandelion!hurt) */
+var CUR_G={"a":{"w":16,"s":[[9,3,8,1,6,0,4,0,2,1,1,2,0,4,0,6,1,8,3,9,5,9,7,8,8,6,10,0,9,5,9,8,10,9,11,9,13,8,14,7,16,4]],"d":[]},"b":{"w":14,"s":[[0,4,2,1,5,-4,6,-6,7,-9,7,-11,6,-12,4,-11,3,-9,2,-5,1,2,1,8,2,9,3,9,5,8,7,6,8,3,8,0,9,4,10,5,12,5,14,4]],"d":[]},"c":{"w":11,"s":[[7,2,7,1,6,0,4,0,2,1,1,2,0,4,0,6,1,8,3,9,6,9,9,7,11,4]],"d":[]},"d":{"w":16,"s":[[9,3,8,1,6,0,4,0,2,1,1,2,0,4,0,6,1,8,3,9,5,9,7,8,8,6,14,-12,8,6,7,8,5,9,3,9,1,8,0,6,0,4,1,2,2,1,4,0,6,0,8,1,10,0,9,5,9,8,10,9,11,9,13,8,14,7,16,4]],"d":[]},"e":{"w":10,"s":[[1,7,3,6,4,5,5,3,5,1,4,0,3,0,1,1,0,3,0,6,1,8,3,9,5,9,7,8,8,7,10,4]],"d":[]},"f":{"w":8,"s":[[0,4,4,-1,6,-4,7,-6,8,-9,8,-11,7,-12,5,-11,4,-9,2,-1,-1,8,-4,15,-5,18,-5,20,-4,21,-2,20,-1,17,0,8,1,9,3,9,5,8,6,7,8,4]],"d":[]},"g":{"w":15,"s":[[9,3,8,1,6,0,4,0,2,1,1,2,0,4,0,6,1,8,3,9,5,9,7,8,8,7,10,0,8,7,4,18,3,20,1,21,0,20,0,18,1,15,4,12,7,10,9,9,12,7,15,4]],"d":[]},"h":{"w":15,"s":[[0,4,2,1,5,-4,6,-6,7,-9,7,-11,6,-12,4,-11,3,-9,2,-5,1,1,0,9,1,6,2,4,4,1,6,0,8,0,9,1,9,3,8,6,8,8,9,9,10,9,12,8,13,7,15,4]],"d":[]},"i":{"w":7,"s":[[0,4,2,0,0,6,0,8,1,9,2,9,4,8,5,7,7,4],[3,-5,3,-4,4,-4,4,-5,3,-5]],"d":[1]},"j":{"w":7,"s":[[0,4,2,0,-4,18,-5,20,-7,21,-8,20,-8,18,-7,15,-4,12,-1,10,1,9,4,7,7,4],[3,-5,3,-4,4,-4,4,-5,3,-5]],"d":[1]},"k":{"w":14,"s":[[0,4,2,1,5,-4,6,-6,7,-9,7,-11,6,-12,4,-11,3,-9,2,-5,1,1,0,9,1,6,2,4,4,1,6,0,8,0,9,1,9,3,7,4,4,4,6,5,7,8,8,9,9,9,11,8,12,7,14,4]],"d":[]},"l":{"w":8,"s":[[0,4,2,1,5,-4,6,-6,7,-9,7,-11,6,-12,4,-11,3,-9,2,-5,1,2,1,8,2,9,3,9,5,8,6,7,8,4]],"d":[]},"m":{"w":25,"s":[[0,4,2,1,4,0,5,1,5,2,4,6,3,9,4,6,5,4,7,1,9,0,11,0,12,1,12,2,11,6,10,9,11,6,12,4,14,1,16,0,18,0,19,1,19,3,18,6,18,8,19,9,20,9,22,8,23,7,25,4]],"d":[]},"n":{"w":18,"s":[[0,4,2,1,4,0,5,1,5,2,4,6,3,9,4,6,5,4,7,1,9,0,11,0,12,1,12,3,11,6,11,8,12,9,13,9,15,8,16,7,18,4]],"d":[]},"o":{"w":14,"s":[[6,0,4,0,2,1,1,2,0,4,0,6,1,8,3,9,5,9,7,8,8,7,9,5,9,3,8,1,6,0,5,1,5,3,6,5,8,6,11,6,13,5,14,4]],"d":[]},"p":{"w":15,"s":[[0,4,2,1,3,-1,2,3,-4,21,2,3,3,1,5,0,7,0,9,1,10,3,10,5,9,7,8,8,6,9,2,8,4,9,7,9,10,8,12,7,15,4]],"d":[]},"q":{"w":15,"s":[[9,3,8,1,6,0,4,0,2,1,1,2,0,4,0,6,1,8,3,9,5,9,7,8,10,0,9,3,7,8,4,15,3,18,3,20,4,21,6,20,7,17,7,10,9,9,12,7,15,4]],"d":[]},"r":{"w":13,"s":[[0,4,2,1,3,-1,3,1,6,1,7,2,7,4,6,7,6,8,7,9,8,9,10,8,11,7,13,4]],"d":[]},"s":{"w":11,"s":[[0,4,2,1,3,-1,3,1,5,4,6,6,6,8,4,9,0,8,2,9,6,9,8,8,9,7,11,4]],"d":[]},"t":{"w":9,"s":[[0,4,2,1,4,-3,7,-12,1,6,1,8,2,9,4,9,6,8,7,7,9,4],[1,-4,8,-4]],"d":[]},"u":{"w":15,"s":[[0,4,2,0,0,6,0,8,1,9,3,9,5,8,7,6,9,3,10,0,8,6,8,8,9,9,10,9,12,8,13,7,15,4]],"d":[]},"v":{"w":15,"s":[[0,4,2,0,1,5,1,8,2,9,3,9,6,8,8,6,9,3,9,0,10,4,11,5,13,5,15,4]],"d":[]},"w":{"w":21,"s":[[3,0,1,2,0,5,0,7,1,9,3,9,5,8,7,6,9,0,7,6,7,8,8,9,10,9,12,8,14,6,15,3,15,0,16,4,17,5,19,5,21,4]],"d":[]},"x":{"w":16,"s":[[0,4,2,1,4,0,6,0,7,1,7,8,8,9,11,9,14,7,16,4],[13,1,12,0,10,0,9,1,5,8,4,9,2,9,1,8]],"d":[]},"y":{"w":15,"s":[[0,4,2,0,0,6,0,8,1,9,3,9,5,8,7,6,9,3,10,0,4,18,3,20,1,21,0,20,0,18,1,15,4,12,7,10,9,9,12,7,15,4]],"d":[]},"z":{"w":14,"s":[[0,4,2,1,4,0,6,0,8,2,8,4,7,6,5,8,2,9,4,10,5,12,5,15,4,18,3,20,1,21,0,20,0,18,1,15,4,12,7,10,11,7,14,4]],"d":[]},"A":{"w":20,"s":[[0,9,2,8,5,5,8,1,12,-6,15,-12,15,9,14,6,12,3,10,1,7,-1,5,-1,4,0,4,2,5,4,7,6,10,8,13,9,18,9]],"d":[]},"B":{"w":23,"s":[[13,-10,14,-9,14,-6,13,-2,12,1,11,3,9,6,7,8,5,9,4,9,3,8,3,5,4,0,5,-3,6,-5,8,-8,10,-10,12,-11,15,-12,18,-12,20,-11,21,-9,21,-7,20,-5,19,-4,17,-3,14,-2,13,-2,14,-2,17,-1,18,0,19,2,19,5,18,7,17,8,15,9,12,9,10,8,9,6]],"d":[]},"C":{"w":20,"s":[[12,-6,12,-5,13,-4,15,-4,17,-5,18,-7,18,-9,17,-11,15,-12,12,-12,9,-11,7,-9,5,-6,4,-4,3,0,3,4,4,7,5,8,7,9,9,9,12,8,14,6,15,4]],"d":[]},"D":{"w":23,"s":[[13,-12,11,-11,10,-9,9,-5,8,1,7,4,6,6,4,8,2,9,0,9,-1,8,-1,6,0,5,2,5,4,6,6,8,9,9,12,9,15,8,17,6,19,2,20,-3,20,-7,19,-10,18,-11,16,-12,13,-12,11,-10,11,-8,12,-5,14,-2,16,0,19,2,21,3]],"d":[]},"E":{"w":20,"s":[[14,-8,14,-7,15,-6,17,-6,18,-7,18,-9,17,-11,14,-12,10,-12,7,-11,6,-9,6,-6,7,-4,8,-3,11,-2,8,-2,5,-1,4,0,3,2,3,5,4,7,5,8,8,9,11,9,14,8,16,6,17,4]],"d":[]},"F":{"w":20,"s":[[10,-6,8,-6,6,-7,5,-9,6,-11,9,-12,12,-12,16,-11,19,-11,21,-12],[16,-11,14,-4,12,2,10,6,8,8,6,9,4,9,2,8,1,6,1,4,2,3,4,3,6,4],[9,-2,18,-2]],"d":[]},"G":{"w":23,"s":[[0,9,2,8,6,4,9,-1,10,-4,11,-8,11,-11,10,-12,9,-12,8,-11,7,-9,7,-6,8,-4,10,-3,14,-3,17,-4,18,-5,19,-7,19,-1,18,4,17,6,15,8,12,9,8,9,5,8,3,6,2,4,2,2]],"d":[]},"H":{"w":24,"s":[[7,-5,5,-6,4,-8,4,-9,5,-11,7,-12,8,-12,10,-11,11,-9,11,-7,10,-3,8,3,6,7,4,9,2,9,1,8,1,6],[7,0,16,-3,18,-4,21,-6,23,-8,24,-10,24,-11,23,-12,22,-12,20,-10,18,-6,16,0,15,5,15,8,16,9,17,9,19,8,20,7,22,4]],"d":[]},"I":{"w":17,"s":[[14,4,12,2,10,-1,9,-3,8,-6,8,-9,9,-11,10,-12,12,-12,13,-11,14,-9,14,-6,13,-1,11,4,10,6,8,8,6,9,4,9,2,8,1,6,1,4,2,3,4,3,6,4]],"d":[]},"J":{"w":15,"s":[[10,12,8,9,6,4,5,-2,5,-8,6,-11,8,-12,10,-12,11,-11,12,-8,12,-5,11,0,8,9,6,15,5,18,4,20,2,21,1,20,1,18,2,15,4,12,6,10,9,8,13,6]],"d":[]},"K":{"w":24,"s":[[7,-5,5,-6,4,-8,4,-9,5,-11,7,-12,8,-12,10,-11,11,-9,11,-7,10,-3,8,3,6,7,4,9,2,9,1,8,1,6],[24,-9,24,-11,23,-12,22,-12,20,-11,18,-9,16,-6,14,-4,12,-3,10,-3,12,-3,13,-1,13,6,14,8,15,9,16,9,18,8,19,7,21,4]],"d":[]},"L":{"w":19,"s":[[4,0,6,0,10,-1,13,-3,15,-5,16,-7,16,-10,15,-12,13,-12,12,-11,11,-9,10,-4,9,1,8,4,7,6,5,8,3,9,1,9,0,8,0,6,1,5,3,5,5,6,8,8,11,9,13,9,16,8,18,6]],"d":[]},"M":{"w":33,"s":[[5,-5,3,-6,2,-8,2,-9,3,-11,5,-12,6,-12,8,-11,9,-9,9,-7,8,-2,7,2,5,9,7,2,10,-6,12,-10,13,-11,15,-12,16,-12,18,-11,19,-9,19,-7,18,-2,17,2,15,9,17,2,20,-6,22,-10,23,-11,25,-12,26,-12,28,-11,29,-9,29,-7,28,-2,26,5,26,8,27,9,28,9,30,8,31,7,33,4]],"d":[]},"N":{"w":24,"s":[[5,-5,3,-6,2,-8,2,-9,3,-11,5,-12,6,-12,8,-11,9,-9,9,-7,8,-2,7,2,5,9,7,2,10,-6,12,-10,13,-11,15,-12,17,-12,19,-11,20,-9,20,-7,19,-2,17,5,17,8,18,9,19,9,21,8,22,7,24,4]],"d":[]},"O":{"w":21,"s":[[12,-12,9,-11,7,-9,5,-6,4,-4,3,0,3,4,4,7,5,8,7,9,9,9,12,8,14,6,16,3,17,1,18,-3,18,-7,17,-10,16,-11,14,-12,12,-12,10,-10,10,-7,11,-4,13,-1,15,1,18,3,20,4]],"d":[]},"P":{"w":25,"s":[[13,-10,14,-9,14,-6,13,-2,12,1,11,3,9,6,7,8,5,9,4,9,3,8,3,5,4,0,5,-3,6,-5,8,-8,10,-10,12,-11,15,-12,20,-12,22,-11,23,-10,24,-8,24,-5,23,-3,22,-2,20,-1,17,-1,15,-2,14,-3]],"d":[]},"Q":{"w":22,"s":[[13,-6,12,-4,11,-3,9,-2,7,-2,6,-4,6,-6,7,-9,9,-11,12,-12,15,-12,17,-11,18,-9,18,-5,17,-2,15,1,11,5,8,7,6,8,3,9,1,9,0,8,0,6,1,5,3,5,5,6,8,8,11,9,14,9,17,8,19,6]],"d":[]},"R":{"w":25,"s":[[13,-10,14,-9,14,-6,13,-2,12,1,11,3,9,6,7,8,5,9,4,9,3,8,3,5,4,0,5,-3,6,-5,8,-8,10,-10,12,-11,15,-12,19,-12,21,-11,22,-10,23,-8,23,-5,22,-3,21,-2,19,-1,16,-1,13,-2,14,-1,15,1,15,6,16,8,18,9,20,8,21,7,23,4]],"d":[]},"S":{"w":20,"s":[[0,9,2,8,4,6,7,2,9,-1,11,-5,12,-8,12,-11,11,-12,10,-12,9,-11,8,-9,8,-7,9,-5,11,-3,14,-1,16,1,17,3,17,5,16,7,15,8,12,9,8,9,5,8,3,6,2,4,2,2]],"d":[]},"T":{"w":19,"s":[[10,-6,8,-6,6,-7,5,-9,6,-11,9,-12,12,-12,16,-11,19,-11,21,-12],[16,-11,14,-4,12,2,10,6,8,8,6,9,4,9,2,8,1,6,1,4,2,3,4,3,6,4]],"d":[]},"U":{"w":24,"s":[[5,-5,3,-6,2,-8,2,-9,3,-11,5,-12,6,-12,8,-11,9,-9,9,-7,8,-3,7,0,6,4,6,6,7,8,9,9,11,9,13,8,14,7,16,3,19,-5,21,-12,19,-5,18,-1,17,5,17,8,18,9,19,9,21,8,22,7,24,4]],"d":[]},"V":{"w":23,"s":[[5,-5,3,-6,2,-8,2,-9,3,-11,5,-12,6,-12,8,-11,9,-9,9,-7,8,-3,7,0,6,4,6,7,7,9,9,9,11,8,14,5,16,2,18,-2,19,-5,20,-9,20,-11,19,-12,18,-12,17,-11,16,-9,16,-7,17,-4,19,-2,21,-1]],"d":[]},"W":{"w":28,"s":[[5,-5,3,-6,2,-8,2,-9,3,-11,5,-12,6,-12,8,-11,9,-9,9,-6,8,9,18,-12,16,9,19,2,22,-4,25,-8,28,-11,30,-12]],"d":[]},"X":{"w":24,"s":[[8,-6,6,-6,5,-7,5,-9,6,-11,8,-12,10,-12,12,-11,13,-9,13,-6,11,3,11,6,12,8,14,9,16,9,18,8,19,6,19,4,18,3,16,3],[23,-9,23,-11,22,-12,20,-12,18,-11,16,-9,14,-6,10,3,8,6,6,8,4,9,2,9,1,8,1,6]],"d":[]},"Y":{"w":23,"s":[[5,-5,3,-6,2,-8,2,-9,3,-11,5,-12,6,-12,8,-11,9,-9,9,-7,8,-3,7,0,6,4,6,6,7,8,8,9,10,9,12,8,14,6,16,3,17,1,19,-5,21,-12,19,-5,16,5,14,11,12,16,10,20,8,21,7,20,7,18,8,15,10,12,13,9,16,7,21,4]],"d":[]},"Z":{"w":21,"s":[[13,-6,12,-4,11,-3,9,-2,7,-2,6,-4,6,-6,7,-9,9,-11,12,-12,15,-12,17,-11,18,-9,18,-5,17,-2,15,2,12,5,8,8,6,9,3,9,2,8,2,6,3,5,6,5,8,6,9,7,10,9,10,12,9,15,8,17,6,20,4,21,3,20,3,18,4,15,6,12,9,9,12,7,18,4]],"d":[]}};
+var CUR_M={"space":16,"top":-12,"xh":0,"base":9,"desc":21,"join":4};
+/* ================= 筆記体なぞり (cursive tracing) =================
+   復習 → 「筆記体なぞり」. 4 steps: 小文字 a〜z and 大文字 A〜Z (free), つなげ書き and 自分の名前
+   (プレミアムエコノミーから; not shown in the iPhone app, which has no classes). The letters come from
+   f24_cdata.js (CUR_G / CUR_M, in font units). The learner traces the current stroke from its green
+   start dot in the arrow's direction: the pen only moves the progress forward along the stroke when it
+   stays near it, so a wrong direction or a jump doesn't count. Lifting the pen keeps the progress.
+   A pen (Apple Pencil, stylus) switches on pen-only mode: touches (a resting palm) are ignored.
+   Results (◎◯△ per letter) are kept on this device. */
+var CUR_KEY='babelflight.cursive';
+var CUR_STEPS=[
+  {k:'lo',t:'小文字',sub:'a〜z',tier:0},
+  {k:'up',t:'大文字',sub:'A〜Z',tier:0},
+  {k:'wd',t:'つなげ書き',sub:'短い単語を続けて',tier:1},
+  {k:'nm',t:'自分の名前',sub:'ローマ字で',tier:1}
+];
+var CUR_WORDS={
+  en:[['hello','こんにちは'],['sky','空'],['fly','飛ぶ'],['plane','飛行機'],['pilot','パイロット'],['cloud','雲'],['Tokyo','東京'],['London','ロンドン']],
+  es:[['hola','こんにちは'],['cielo','空'],['vuelo','フライト'],['playa','ビーチ'],['amigo','友だち'],['Madrid','マドリード']],
+  it:[['ciao','こんにちは'],['cielo','空'],['volo','フライト'],['grazie','ありがとう'],['amico','友だち'],['Roma','ローマ']]
+};
+var CUR_GR=['','△','◯','◎'];
+var CUR={stage:'menu',step:'lo',items:[],i:0,st:null,pen:false,demo:0,raf:0,res:null};
+
+function curLoad(){try{var o=JSON.parse(localStorage.getItem(CUR_KEY)||'{}');return o&&typeof o==='object'?o:{};}catch(e){return {};}}
+function curStore(o){try{localStorage.setItem(CUR_KEY,JSON.stringify(o));}catch(e){}}
+function curGrade(id){var g=(curLoad().g||{})[id];return g>=1&&g<=3?g:0;}
+function curKeepGrade(id,gr){var o=curLoad();o.g=o.g||{};if(!(o.g[id]>=gr))o.g[id]=gr;curStore(o);}
+/* 'hide' (the iPhone app) / 'lock' (エコノミー) / 'open' */
+function curStepState(s){
+  if(!s.tier)return 'open';
+  var lv=typeof cabinLv==='function'?cabinLv():-1;
+  return lv<0?'hide':lv>=s.tier?'open':'lock';
+}
+function curStep(k){return CUR_STEPS.filter(function(s){return s.k===k;})[0]||null;}
+function curNameFix(s){
+  s=String(s||'').replace(/[^A-Za-z ]+/g,' ').replace(/\s+/g,' ').trim().slice(0,24);
+  if(s&&s===s.toUpperCase())s=s.toLowerCase().replace(/(^|\s)[a-z]/g,function(c){return c.toUpperCase();});
+  return s;
+}
+function curName(){var o=curLoad();return curNameFix(o.nm!==undefined?o.nm:save.name);}
+function curItems(k){
+  if(k==='lo')return 'abcdefghijklmnopqrstuvwxyz'.split('').map(function(c){return {id:'lo:'+c,txt:c};});
+  if(k==='up')return 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(function(c){return {id:'up:'+c,txt:c};});
+  if(k==='wd')return (CUR_WORDS[save.lang]||CUR_WORDS.en).map(function(w){return {id:'wd:'+w[0],txt:w[0],jp:w[1]};});
+  if(k==='nm')return curName().split(' ').filter(Boolean).slice(0,3).map(function(w){return {id:'nm:'+w,txt:w.slice(0,12)};});
+  return [];
+}
+
+/* ---- letters → strokes (font units). Letters join at y=CUR_M.join; a letter that starts inside its bowl
+   (a c d g o q …) gets the over-the-top connector cursive uses. Lowercase dots / crosses come last. ---- */
+function curPts(f,dx){var o=[];for(var i=0;i<f.length;i+=2)o.push([f[i]+dx,f[i+1]]);return o;}
+function curConnector(e,p,bowl){
+  if(!bowl){var d=Math.abs(e[0]-p[0][0])+Math.abs(e[1]-p[0][1]);return d<0.5?p.slice(1):p;}
+  var n=Math.max(1,Math.floor(p.length*0.4)),ti=0,i;
+  for(i=1;i<n;i++)if(p[i][1]<p[ti][1])ti=i;
+  var T=p[ti],C=[T[0]-0.45*(T[0]-e[0]),T[1]],arc=[];
+  for(i=1;i<=8;i++){var t=i/8,a=(1-t)*(1-t),b=2*(1-t)*t,c=t*t;arc.push([a*e[0]+b*C[0]+c*T[0],a*e[1]+b*C[1]+c*T[1]]);}
+  return arc.concat(p.slice(0,ti).reverse()).concat(p.slice(1));
+}
+function curLayout(text){
+  var x=0,out=[],extra=[],chain=null,right=0;
+  for(var c=0;c<text.length;c++){
+    var ch=text.charAt(c),g=CUR_G[ch];
+    if(ch===' '){x+=CUR_M.space;chain=null;continue;}
+    if(!g)continue;
+    var lower=ch>='a'&&ch<='z',bowl=g.s[0][0]>3,e=chain&&chain.p[chain.p.length-1];
+    var join=!!e&&e[0]>=right-3&&Math.abs(e[1]-CUR_M.join)<=2;
+    if(join&&bowl)x+=3;
+    g.s.forEach(function(f,k){
+      var p=curPts(f,x),dot=g.d.indexOf(k)>=0;
+      if(k===0){
+        if(join)chain.p=chain.p.concat(curConnector(e,p,bowl));
+        else{chain={p:p,dot:dot};out.push(chain);}
+      }else if(lower)extra.push({p:p,dot:dot});
+      else{chain={p:p,dot:dot};out.push(chain);}
+    });
+    x+=g.w;right=x;
+  }
+  return {w:x,strokes:out.concat(extra)};
+}
+/* rounder curves than the font's straight segments (Chaikin, ends kept) */
+function curSmooth(p,n){
+  for(var r=0;r<n;r++){
+    if(p.length<3)return p;
+    var q=[p[0]];
+    for(var i=0;i<p.length-1;i++){var a=p[i],b=p[i+1];q.push([0.75*a[0]+0.25*b[0],0.75*a[1]+0.25*b[1]],[0.25*a[0]+0.75*b[0],0.25*a[1]+0.75*b[1]]);}
+    q.push(p[p.length-1]);p=q;
+  }
+  return p;
+}
+function curResample(p,sp){
+  var out=[p[0]],carry=0;
+  for(var i=0;i<p.length-1;i++){
+    var a=p[i],b=p[i+1],dx=b[0]-a[0],dy=b[1]-a[1],L=Math.sqrt(dx*dx+dy*dy),t=sp-carry;
+    while(t<=L){out.push([a[0]+dx*t/L,a[1]+dy*t/L]);t+=sp;}
+    carry=L-(t-sp);
+  }
+  var last=p[p.length-1],z=out[out.length-1];
+  if(Math.abs(z[0]-last[0])+Math.abs(z[1]-last[1])>sp*0.3)out.push(last);
+  return out;
+}
+function curDist(a,b){var dx=a[0]-b[0],dy=a[1]-b[1];return Math.sqrt(dx*dx+dy*dy);}
+
+/* ---- screen size → scale (px per font unit). The 4 lines span -12..21; a little room around them. ---- */
+var CUR_TOP=-16,CUR_BOT=25;
+function curFit(W,lay,word){
+  var uh=CUR_BOT-CUR_TOP,H0=word?Math.min(300,W*0.62):Math.min(430,W*1.04);
+  var sc=Math.min(H0/uh,(W-20)/(lay.w+8));
+  var H=Math.round(uh*sc);
+  return {W:W,H:H,sc:sc,ox:(W-lay.w*sc)/2,oy:-CUR_TOP*sc};
+}
+function curItemStart(){
+  var it=CUR.items[CUR.i];if(!it)return;
+  var lay=curLayout(it.txt);
+  CUR.st={it:it,lay:lay,k:0,prog:0,ink:[],on:0,off:0,dsum:0,miss:0,act:null,track:false,lift:false,stray:0,back:0,last:null,done:false,msg:'',word:CUR.step==='wd'||CUR.step==='nm'};
+  CUR.res=null;
+}
+/* built when the canvas knows its width (curMount) */
+function curPrepare(W){
+  var st=CUR.st;if(!st)return;
+  var fit=curFit(W,st.lay,st.word);
+  if(st.fit&&Math.abs(st.fit.sc-fit.sc)<0.01){st.fit=fit;return;}
+  st.fit=fit;st.tol=Math.max(10,Math.min(20,fit.sc*1.7))/fit.sc;
+  if(!st.strokes){
+    var sp=st.sp=3/fit.sc;
+    st.strokes=st.lay.strokes.map(function(s){
+      if(s.dot){var cx=0,cy=0;s.p.forEach(function(q){cx+=q[0];cy+=q[1];});return {dot:true,c:[cx/s.p.length,cy/s.p.length],pts:s.p};}
+      var sm=curSmooth(s.p,2);return {dot:false,pts:curResample(sm,sp),raw:sm};
+    });
+  }
+}
+
+/* ---- drawing ---- */
+function curColors(){
+  var cs=getComputedStyle(document.documentElement),g=function(n,d){return (cs.getPropertyValue(n)||'').trim()||d;};
+  return {ink:g('--ink','#0b1626'),ink2:g('--ink2','#46586d'),line:g('--line','#cbd5e0'),bad:g('--bad','#cf3342'),good:g('--good','#0f8a52'),lc:g('--c-'+save.lang,'#2a78d6')};
+}
+function curPath(x,p,f,from,to){
+  from=from||0;to=to===undefined?p.length-1:to;if(to-from<1)return;
+  x.beginPath();x.moveTo(f.ox+p[from][0]*f.sc,f.oy+p[from][1]*f.sc);
+  for(var i=from+1;i<=to;i++)x.lineTo(f.ox+p[i][0]*f.sc,f.oy+p[i][1]*f.sc);
+  x.stroke();
+}
+function curArrow(x,f,a,b,col){
+  var ax=f.ox+a[0]*f.sc,ay=f.oy+a[1]*f.sc,bx=f.ox+b[0]*f.sc,by=f.oy+b[1]*f.sc,an=Math.atan2(by-ay,bx-ax),l=7;
+  x.strokeStyle=col;x.lineWidth=2.4;x.beginPath();
+  x.moveTo(bx-l*Math.cos(an-0.55),by-l*Math.sin(an-0.55));x.lineTo(bx,by);x.lineTo(bx-l*Math.cos(an+0.55),by-l*Math.sin(an+0.55));x.stroke();
+}
+function curDraw(demoLen){
+  var cv=$('curCv'),st=CUR.st;if(!cv||!st||!st.fit)return;
+  var f=st.fit,x=cv.getContext('2d'),C=curColors(),dpr=window.devicePixelRatio||1;
+  x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,f.W,f.H);x.lineCap='round';x.lineJoin='round';
+  /* the 4 lines of an English notebook; the 3rd (baseline) in red */
+  [CUR_M.top,CUR_M.xh,CUR_M.base,CUR_M.desc].forEach(function(u,i){
+    var y=Math.round(f.oy+u*f.sc)+0.5;x.strokeStyle=i===2?C.bad:C.line;x.globalAlpha=i===2?0.55:1;x.lineWidth=i===2?1.5:1;
+    if(i===1){x.setLineDash([6,5]);}x.beginPath();x.moveTo(6,y);x.lineTo(f.W-6,y);x.stroke();x.setLineDash([]);
+  });
+  x.globalAlpha=1;
+  var gw=Math.max(7,st.tol*f.sc*0.9),iw=Math.max(3.5,f.sc*0.85);
+  /* the model letters, faint */
+  st.strokes.forEach(function(s,i){
+    x.strokeStyle=C.ink2;x.globalAlpha=(demoLen===undefined&&i===st.k&&!st.done)?0.3:0.16;x.lineWidth=gw;
+    if(s.dot){x.fillStyle=C.ink2;x.beginPath();x.arc(f.ox+s.c[0]*f.sc,f.oy+s.c[1]*f.sc,gw*0.55,0,7);x.fill();}
+    else curPath(x,s.pts,f);
+  });
+  x.globalAlpha=1;
+  if(demoLen!==undefined){curDrawDemo(x,f,C,iw,demoLen);return;}
+  /* traced so far */
+  x.strokeStyle=C.lc;x.fillStyle=C.lc;x.lineWidth=iw;
+  st.strokes.forEach(function(s,i){
+    if(i>st.k&&!st.done)return;
+    var end=i<st.k||st.done?s.pts.length-1:st.prog;
+    if(s.dot){if(i<st.k||st.done){x.beginPath();x.arc(f.ox+s.c[0]*f.sc,f.oy+s.c[1]*f.sc,iw*0.9,0,7);x.fill();}}
+    else curPath(x,s.pts,f,0,end);
+  });
+  /* the learner's own ink */
+  x.strokeStyle=C.ink;x.globalAlpha=0.5;x.lineWidth=2;
+  st.ink.forEach(function(p){if(p.length>1)curPath(x,p,f);});
+  x.globalAlpha=1;
+  if(st.done)return;
+  /* where to go next: arrows ahead on the current stroke, and the start dot */
+  var s=st.strokes[st.k];
+  if(s.dot){
+    var cx=f.ox+s.c[0]*f.sc,cy=f.oy+s.c[1]*f.sc;
+    x.strokeStyle=C.good;x.lineWidth=2.5;x.setLineDash([4,4]);x.beginPath();x.arc(cx,cy,Math.max(12,gw),0,7);x.stroke();x.setLineDash([]);
+    return;
+  }
+  var gap=Math.max(10,Math.round(46/(st.sp*f.sc))),col=C.ink2;
+  for(var j=st.prog+gap,na=0;j<s.pts.length-2&&na<3;j+=gap,na++)curArrow(x,f,s.pts[j-2],s.pts[j],col);
+  var P=s.pts[st.prog],px=f.ox+P[0]*f.sc,py=f.oy+P[1]*f.sc,r=Math.max(10,gw*0.75);
+  x.fillStyle=C.good;x.beginPath();x.arc(px,py,r,0,7);x.fill();
+  if(st.prog===0){x.fillStyle='#fff';x.font='700 '+Math.round(r*1.1)+'px system-ui,sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(String(st.k+1),px,py+0.5);}
+}
+/* お手本: a pen draws every stroke in order */
+function curDrawDemo(x,f,C,iw,len){
+  var st=CUR.st,left=len;x.strokeStyle=C.lc;x.fillStyle=C.lc;x.lineWidth=iw;
+  for(var i=0;i<st.strokes.length&&left>0;i++){
+    var s=st.strokes[i];
+    if(s.dot){x.beginPath();x.arc(f.ox+s.c[0]*f.sc,f.oy+s.c[1]*f.sc,iw*0.9,0,7);x.fill();left-=12;continue;}
+    var n=Math.min(s.pts.length-1,Math.floor(left/st.sp));
+    curPath(x,s.pts,f,0,n);left-=s.pts.length*st.sp+10;
+    if(left<=0||i===st.strokes.length-1){var P=s.pts[Math.max(0,n)];x.fillStyle=C.ink;x.beginPath();x.arc(f.ox+P[0]*f.sc,f.oy+P[1]*f.sc,Math.max(5,iw*0.8),0,7);x.fill();x.fillStyle=C.lc;}
+  }
+}
+function curDemoStop(){if(CUR.demo){cancelAnimationFrame(CUR.demo);CUR.demo=0;}}
+function curDemo(){
+  curDemoStop();var st=CUR.st;if(!st||!st.fit)return;
+  if(reduceMotion){curDraw();return;}
+  var total=0;st.strokes.forEach(function(s){total+=s.dot?12:s.pts.length*st.sp+10;});
+  var speed=(st.word?95:60)/1000,t0=0;
+  function step(ts){
+    if(!t0)t0=ts;var len=(ts-t0)*speed;
+    if(len>=total+8){CUR.demo=0;curDraw();return;}
+    curDraw(len);CUR.demo=requestAnimationFrame(step);
+  }
+  CUR.demo=requestAnimationFrame(step);
+}
+
+/* ---- the pen ---- */
+function curMsg(t,bad){var st=CUR.st;if(st)st.msg=t;var m=$('curMsg');if(m){m.textContent=t;m.classList.toggle('bad',!!bad);}}
+function curPenAt(e){var cv=$('curCv'),f=CUR.st.fit,r=cv.getBoundingClientRect();return [((e.clientX-r.left)-f.ox)/f.sc,((e.clientY-r.top)-f.oy)/f.sc];}
+function curRedraw(){if(CUR.raf)return;CUR.raf=requestAnimationFrame(function(){CUR.raf=0;curDraw();});}
+function curDown(e){
+  var st=CUR.st;if(!st||st.done||!st.fit)return;
+  if(e.pointerType==='pen'&&!CUR.pen){CUR.pen=true;curPenChip();}
+  if(CUR.pen&&e.pointerType==='touch')return;
+  if(st.act!==null)return;
+  e.preventDefault();curDemoStop();
+  st.act=e.pointerId;try{e.target.setPointerCapture(e.pointerId);}catch(x){}
+  var P=curPenAt(e),s=st.strokes[st.k];st.ink.push([P]);st.last=P;st.lift=false;st.stray=0;st.back=0;
+  if(s.dot){
+    if(curDist(P,s.c)<=st.tol*1.7)curStrokeDone();
+    else{st.miss++;curMsg('点はここ。緑の○の中をタッチしよう',true);}
+    curRedraw();return;
+  }
+  st.track=curDist(P,s.pts[st.prog])<=st.tol*1.5;
+  if(!st.track){st.miss++;curMsg(st.prog?'続きは緑の●から書こう':'緑の●から書きはじめよう',true);}
+  curRedraw();
+}
+function curMove(e){
+  var st=CUR.st;if(!st||st.act!==e.pointerId||st.done)return;
+  e.preventDefault();
+  var evs=e.getCoalescedEvents?e.getCoalescedEvents():[];if(!evs.length)evs=[e];
+  var ink=st.ink[st.ink.length-1];
+  for(var q=0;q<evs.length;q++){
+    var P=curPenAt(evs[q]);ink.push(P);
+    var mv=st.last?curDist(P,st.last):0;st.last=P;
+    if(st.lift)continue;
+    var s=st.strokes[st.k];if(s.dot)continue;
+    if(!st.track){if(curDist(P,s.pts[st.prog])<=st.tol){st.track=true;curMsg('');}else st.off++;continue;}
+    var n=s.pts.length,allow=Math.ceil(mv/st.sp)*2+6,best=st.prog,bd=1e9;
+    for(var j=st.prog;j<=Math.min(n-1,st.prog+allow);j++){var d=curDist(P,s.pts[j]);if(d<bd){bd=d;best=j;}}
+    if(bd<=st.tol){
+      st.on++;st.dsum+=bd;st.stray=0;
+      if(best>st.prog){st.prog=best;st.back=0;}else if(mv>st.sp*0.5&&++st.back>28){st.back=0;curMsg('矢印の向きに書こう',true);}
+      if(st.prog>=n-1-Math.ceil(st.tol/st.sp*0.5)){st.prog=n-1;curStrokeDone();if(st.done)break;st.lift=true;}
+    }else{
+      st.off++;
+      if(++st.stray>10){st.track=false;st.miss++;curMsg('線からはみ出したよ。緑の●からもう一度',true);}
+    }
+  }
+  curRedraw();
+}
+function curUp(e){
+  var st=CUR.st;if(!st||st.act!==e.pointerId)return;
+  st.act=null;st.track=false;st.lift=false;
+  if(!st.done&&st.prog>0&&!st.strokes[st.k].dot&&!/はみ出し|向き/.test(st.msg))curMsg('続きは緑の●から');
+  curRedraw();
+}
+function curStrokeDone(){
+  var st=CUR.st;st.k++;st.prog=0;st.track=false;
+  if(typeof clack==='function')clack();
+  if(st.k>=st.strokes.length){curFinish();return;}
+  var s=st.strokes[st.k];
+  curMsg(s.dot?'さいごに点を打とう':(st.k+1)+'画目: 緑の●から書こう');
+}
+function curFinish(){
+  var st=CUR.st;st.done=true;
+  var tot=st.on+st.off,r=tot?st.off/tot:0,md=st.on?st.dsum/st.on/st.tol:1;
+  var gr=r<=0.07&&md<=0.42&&st.miss<=1?3:r<=0.22&&md<=0.75?2:1;
+  CUR.res={gr:gr};curKeepGrade(st.it.id,gr);
+  if(gr===3&&typeof chimeOK==='function')chimeOK();
+  if(typeof buzz==='function')buzz(gr===3?14:8);
+  var box=$('curRes');if(box)box.innerHTML=curResHTML();
+  curMsg('');curDraw();
+  var nb=document.querySelector('[data-cur-next]');if(nb)try{nb.focus({preventScroll:true});}catch(x){}
+}
+function curPenChip(){var c=$('curPen');if(c){c.hidden=!CUR.pen;}}
+
+/* ---- screens ---- */
+function curGlyphSVG(ch){
+  var g=CUR_G[ch];if(!g)return '';
+  var d=g.s.map(function(f){var p=curPts(f,0);return 'M'+p.map(function(q){return q[0]+' '+q[1];}).join('L');}).join('');
+  return '<svg viewBox="-3 -14 '+(g.w+6)+' 37" aria-hidden="true"><path d="'+d+'"/></svg>';
+}
+function cursiveCardHTML(L){
+  var o=curLoad().g||{},n=0;Object.keys(o).forEach(function(k){if(/^(lo|up):/.test(k))n++;});
+  return '<section class="card mode cur-card"><span class="lbl">CURSIVE ・ アルファベット</span><h2 class="jh">筆記体なぞり</h2>'+
+    '<p class="dim">お手本の線をなぞって、筆記体を練習しよう。✍️ タッチペン推奨(指でもできます)</p>'+
+    '<div class="mcount mono">'+n+'<small> / 52 文字</small></div><button class="go sm" type="button" data-cur-open>はじめる</button></section>';
+}
+function curMenuHTML(){
+  var g=curLoad().g||{},h='<div class="fl-top"><button class="x" type="button" data-cur-close aria-label="閉じる">'+closeIcon()+'</button><div class="fl-id"><span class="lbl">CURSIVE</span><b>筆記体なぞり</b></div></div>'+
+    '<p class="cur-note">✍️ <b>タッチペン推奨</b>(指でもできます)。お手本の線を、<b class="cur-g">緑の●</b>から矢印の向きになぞろう。</p>';
+  CUR_STEPS.forEach(function(s,si){
+    var state=curStepState(s);if(state==='hide')return;
+    var items=state==='open'?curItems(s.k):[],done=items.filter(function(it){return g[it.id];}).length,next=items.filter(function(it){return !g[it.id];})[0];
+    h+='<section class="card cur-step'+(state==='lock'?' locked':'')+'"><div class="card-h"><h2 class="jh">'+(si+1)+'. '+s.t+' <small>'+s.sub+'</small></h2>'+(state==='open'&&items.length?'<span class="lbl">'+done+'/'+items.length+'</span>':'')+'</div>';
+    if(state==='lock'){
+      h+='<p class="dim hint">🔒 「'+CABINS[s.tier][1]+'」から使えます</p><button class="ghost" type="button" data-cur-step="'+s.k+'">どんな練習か見る</button></section>';return;
+    }
+    if(s.k==='lo'||s.k==='up'){
+      h+='<div class="cur-grid">'+items.map(function(it,i){var gr=g[it.id]||0;
+        return '<button type="button" class="cur-cell g'+gr+'" data-cur-item="'+s.k+':'+i+'" aria-label="'+it.txt+(gr?' '+CUR_GR[gr]:'')+'">'+curGlyphSVG(it.txt)+'<small>'+it.txt+(gr?' '+CUR_GR[gr]:'')+'</small></button>';}).join('')+'</div>';
+    }else if(s.k==='wd'){
+      h+='<div class="cur-words">'+items.map(function(it,i){var gr=g[it.id]||0;
+        return '<button type="button" class="cur-w g'+gr+'" data-cur-item="wd:'+i+'"><b>'+esc(it.txt)+'</b><small>'+esc(it.jp)+(gr?' ・ '+CUR_GR[gr]:'')+'</small></button>';}).join('')+'</div>';
+    }else{
+      h+='<div class="cur-name"><label class="lbl" for="curName">書く名前(ローマ字)</label><div class="row2"><input id="curName" class="typebox" maxlength="24" value="'+esc(curName())+'" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Yossi"><button class="go" type="button" data-cur-name style="width:auto;margin:0;padding:12px 16px">練習する</button></div>'+
+        '<p class="dim hint">ローマ字(A〜Z)だけ使えます。全部大文字の名前は、最初の文字だけ大文字にしています。</p></div>';
+      h+='</section>';return;
+    }
+    h+='<button class="go sm" type="button" data-cur-step="'+s.k+'">'+(done&&next?'つづきから<small>次は '+esc(next.txt)+'</small>':done?'もう一度はじめから':'はじめる')+'</button></section>';
+  });
+  h+='<p class="dim hint">練習の記録はこの端末に保存されます。お手本の文字は Hershey の筆記体フォント(A. V. Hershey)をもとにしています。</p>';
+  return h+'<div class="pad-b"></div>';
+}
+function curTraceHTML(){
+  var st=CUR.st,s=curStep(CUR.step),it=st.it;
+  return '<div class="fl-top"><button class="x" type="button" data-cur-back aria-label="戻る">'+closeIcon()+'</button><div class="fl-id"><span class="lbl">'+s.t+' ・ '+(CUR.i+1)+' / '+CUR.items.length+'</span><b>'+esc(it.txt)+(it.jp?' <small class="dim">'+esc(it.jp)+'</small>':'')+'</b></div>'+
+    '<button class="cur-pen" id="curPen" type="button" data-cur-pen'+(CUR.pen?'':' hidden')+' aria-label="ペンだけモード。タップで解除">🖊 ペンだけ</button></div>'+
+    '<div class="cur-pad" id="curPad"><canvas id="curCv" role="img" aria-label="なぞり書きの練習エリア: '+esc(it.txt)+'"></canvas></div>'+
+    '<p class="cur-msg" id="curMsg" aria-live="polite">'+esc(st.msg||'緑の●から、矢印の向きになぞろう')+'</p>'+
+    '<div class="cur-acts"><button class="sq" type="button" data-cur-demo>お手本を見る</button><button class="sq" type="button" data-cur-redo>書き直す</button></div>'+
+    '<div id="curRes">'+(st.done?curResHTML():'')+'</div><div class="pad-b"></div>';
+}
+function curResHTML(){
+  var r=CUR.res;if(!r)return '';
+  var msg=r.gr===3?['◎ きれい！','お手本どおりに書けたね。']:r.gr===2?['◯ いい感じ！','線からはみ出したところに気をつけると、もっときれいになるよ。']:['△ 書けたね！','もう一回なぞると、手が形を覚えていくよ。'];
+  var last=CUR.i>=CUR.items.length-1,nx=last?'':CUR.items[CUR.i+1].txt;
+  return '<div class="cur-res g'+r.gr+'" role="status"><b>'+msg[0]+'</b><span>'+msg[1]+'</span></div>'+
+    '<div class="row2"><button class="ghost" type="button" data-cur-redo style="flex:1">もう一回</button><button class="go" type="button" data-cur-next style="flex:1;margin-top:0">'+(last?'おわり':'次へ<small>'+esc(nx)+'</small>')+'</button></div>';
+}
+function curDoneHTML(){
+  var g=curLoad().g||{},c=[0,0,0,0];CUR.items.forEach(function(it){c[g[it.id]||0]++;});
+  var weak=CUR.items.filter(function(it){return (g[it.id]||0)<3;}).length,s=curStep(CUR.step);
+  return '<div class="fl-top"><button class="x" type="button" data-cur-back aria-label="戻る">'+closeIcon()+'</button><div class="fl-id"><span class="lbl">'+s.t+'</span><b>おつかれさま！</b></div></div>'+
+    '<section class="card cur-sum"><h2 class="jh">'+s.t+'を1周したよ</h2><div class="cur-sum-row"><span class="g3">◎ '+c[3]+'</span><span class="g2">◯ '+c[2]+'</span><span class="g1">△ '+c[1]+'</span></div>'+
+    (weak?'<button class="go" type="button" data-cur-weak>◎じゃない文字だけ、もう一度<small>'+weak+'個</small></button>':'<p class="dim">全部◎！ すごい！</p>')+
+    '<button class="ghost" type="button" data-cur-back>メニューに戻る</button></section><div class="pad-b"></div>';
+}
+function curHTML(){
+  if(CUR.stage==='trace'&&CUR.st)return curTraceHTML();
+  if(CUR.stage==='done')return curDoneHTML();
+  return curMenuHTML();
+}
+function curMount(){
+  var pad=$('curPad'),cv=$('curCv'),st=CUR.st;if(!pad||!cv||!st)return;
+  var W=Math.floor(pad.clientWidth);curPrepare(W);
+  var dpr=window.devicePixelRatio||1;cv.width=Math.round(W*dpr);cv.height=Math.round(st.fit.H*dpr);cv.style.width=W+'px';cv.style.height=st.fit.H+'px';
+  cv.addEventListener('pointerdown',curDown);cv.addEventListener('pointermove',curMove);
+  cv.addEventListener('pointerup',curUp);cv.addEventListener('pointercancel',curUp);
+  cv.addEventListener('contextmenu',function(e){e.preventDefault();});
+  curDraw();
+}
+function curOpen(){curDemoStop();CUR.stage='menu';CUR.st=null;go('cursive');}
+function curStart(k,i,list){
+  var s=curStep(k);if(!s)return;
+  var state=curStepState(s);
+  if(state==='hide')return;
+  if(state==='lock'){$('sheetHost').innerHTML=lockSheetHTML(s.t+'の筆記体',s.tier);return;}
+  var items=list||curItems(k);if(!items.length){var m=$('curName');if(m){m.focus();}return;}
+  CUR.step=k;CUR.items=items;CUR.i=Math.max(0,Math.min(items.length-1,i||0));CUR.stage='trace';
+  curItemStart();go('cursive');curDemo();
+  if(typeof TRK==='object'&&TRK.lesson)try{TRK.lesson(save.lang,'cursive');}catch(e){}
+}
+(function(){
+  var r0=render;
+  render=function(){
+    if(view!=='cursive'){curDemoStop();return r0.apply(this,arguments);}
+    $('tabs').hidden=true;
+    var main=$('main');main.innerHTML='<div class="cur">'+curHTML()+'</div>';
+    main.classList.remove('enter','enter-l','enter-r');void main.offsetWidth;main.classList.add('enter');PREVVIEW=view;
+    if(CUR.stage==='trace')curMount();
+  };
+})();
+window.addEventListener('resize',function(){
+  if(view!=='cursive'||CUR.stage!=='trace'||!CUR.st)return;
+  clearTimeout(CUR.rt);CUR.rt=setTimeout(function(){var pad=$('curPad');if(!pad||!CUR.st)return;if(Math.abs(pad.clientWidth-CUR.st.fit.W)>4){curDemoStop();render();}},200);
+});
+document.addEventListener('click',function(e){
+  var t=e.target&&e.target.closest&&e.target.closest('button');if(!t)return;
+  var a=function(n){return t.hasAttribute(n);},g=function(n){return t.getAttribute(n);};
+  if(a('data-cur-open')){curOpen();return;}
+  if(view!=='cursive')return;
+  if(a('data-cur-close')){curDemoStop();CUR.st=null;go('review');return;}
+  if(a('data-cur-back')){curDemoStop();CUR.stage='menu';CUR.st=null;render();window.scrollTo(0,0);return;}
+  if(a('data-cur-step')){var k=g('data-cur-step'),gg=curLoad().g||{},its=curItems(k),i=0;its.some(function(it,j){if(!gg[it.id]){i=j;return true;}return false;});curStart(k,i);return;}
+  if(a('data-cur-item')){var sp=g('data-cur-item').split(':');curStart(sp[0],parseInt(sp[1],10)||0);return;}
+  if(a('data-cur-name')){
+    var inp=$('curName'),v=curNameFix(inp&&inp.value);
+    if(!v){curMsgMenu('ローマ字で名前を入れてね');return;}
+    var o=curLoad();o.nm=v;curStore(o);curStart('nm',0);return;
+  }
+  if(a('data-cur-demo')){if(CUR.st&&!CUR.st.done)curDemo();else if(CUR.st){curItemStart();render();curDemo();}return;}
+  if(a('data-cur-redo')){curDemoStop();curItemStart();render();return;}
+  if(a('data-cur-next')){
+    curDemoStop();
+    if(CUR.i>=CUR.items.length-1){CUR.stage='done';CUR.st=null;render();window.scrollTo(0,0);return;}
+    CUR.i++;curItemStart();render();curDemo();return;
+  }
+  if(a('data-cur-weak')){var g2=curLoad().g||{},w=CUR.items.filter(function(it){return (g2[it.id]||0)<3;});if(w.length)curStart(CUR.step,0,w);return;}
+  if(a('data-cur-pen')){CUR.pen=false;curPenChip();return;}
+});
+function curMsgMenu(t){var inp=$('curName');if(inp){inp.setAttribute('aria-invalid','true');inp.placeholder=t;inp.value='';inp.focus();}}
+document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target&&e.target.id==='curName'&&!e.isComposing){e.preventDefault();var b=document.querySelector('[data-cur-name]');if(b)b.click();}});
+/* the Hershey Fonts acknowledgement the font data asks for, in このアプリについて */
+(function(){
+  var c0=creditsHTML;
+  creditsHTML=function(){
+    return c0.apply(this,arguments).replace('<p class="cr-copy"','<p class="cr-note">筆記体のお手本: Hershey Fonts — originally created by Dr. A. V. Hershey while working at the U. S. National Bureau of Standards; data format originally created by James Hurt, Cognition, Inc.</p><p class="cr-copy"');
+  };
+})();
 /* ================= EVENTS + BOOT ================= */
 function go(v){view=v;confirmReset=false;render();window.scrollTo(0,0);}
 document.addEventListener('click',function(e){
