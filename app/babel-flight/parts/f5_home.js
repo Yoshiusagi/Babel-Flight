@@ -29,7 +29,7 @@ function stopStatus(L,uid,nextId){
    all the others are one tap away in 言語を選ぶ (langPickSheet) */
 function langStarted(k){var p=save.prog&&save.prog[k],u=p&&p.units;if(!u)return false;for(var id in u)if(u[id]&&u[id].n>0)return true;return false;}
 function myLangs(){return ORDER.filter(function(k){return k===save.lang||langStarted(k);});}
-var LANG_SOON=['ロシア語','トルコ語','インドネシア語','アラビア語'];
+var LANG_SOON=['トルコ語','インドネシア語','アラビア語'];
 function heroLangs(){
   return '<div class="hero-langs" role="group" aria-label="学ぶ言語">'+myLangs().map(function(k){
     return '<button class="hl" type="button" data-lang="'+k+'" style="--dc:var(--c-'+k+')" aria-pressed="'+(k===save.lang)+'"><b class="mono">'+LANGS[k].code+'</b><small>'+esc(LANGS[k].name)+'</small></button>';

@@ -23,6 +23,7 @@ p3c_zh.js
 p3c_fr.js
 p3c_de.js
 p3c_pt.js
+p3c_ru.js
 d1_prof.js
 d2_prof.js
 d3_prof.js
@@ -34,6 +35,7 @@ e3g_zh.js
 e3g_fr.js
 e3g_de.js
 e3g_pt.js
+e3g_ru.js
 e3e_reg.js
 e3f_enuk.js
 d4_more1.js
