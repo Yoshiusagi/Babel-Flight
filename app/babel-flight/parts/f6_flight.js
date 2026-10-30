@@ -173,7 +173,7 @@ function drawBuild(){
   $('bank').innerHTML=b.tokens.map(function(t,ti){var used=b.placed.indexOf(ti)>=0;return '<button class="tile'+ko+(used?' used':'')+'" type="button" data-tile="'+ti+'"'+(used?' tabindex="-1" aria-hidden="true"':'')+'>'+esc(t)+'</button>';}).join('');
   $('chk').disabled=b.placed.length===0;
 }
-function normAns(s){return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' ').trim();}
+function normAns(s){return s.toLowerCase().replace(/ı/g,'i').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' ').trim();}
 function pushRetry(q){
   if(F.mode==='skip'||F.mode==='ai')return;
   var key=ik(q.it.uid,q.it.i);

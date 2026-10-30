@@ -44,7 +44,7 @@
   --good:#0f8a52; --bad:#cf3342; --info:#2563eb;
   --shadow:rgba(11,22,38,.16);
   --board:#080a0f; --flap:#ffd23f; --led:#ff9f2e;
-  --c-ko:#e8505b; --c-en:#2d6bff; --c-es:#f08a1c; --c-it:#17a068; --c-zh:#9b5de5; --c-fr:#d6457f; --c-de:#0f8b8d; --c-pt:#4c8f00; --c-ru:#8d6e63;
+  --c-ko:#e8505b; --c-en:#2d6bff; --c-es:#f08a1c; --c-it:#17a068; --c-zh:#9b5de5; --c-fr:#d6457f; --c-de:#0f8b8d; --c-pt:#4c8f00; --c-ru:#8d6e63; --c-tr:#c0392b; --c-id:#457b9d;
   --lc:var(--c-ko);
   --f-disp:'Barlow Condensed','BF Pinyin','BF Cyrillic','IBM Plex Sans JP',system-ui,sans-serif;
   --f-body:'BF Pinyin','BF Cyrillic','IBM Plex Sans JP','Hiragino Sans','Yu Gothic',system-ui,sans-serif;
@@ -2214,6 +2214,136 @@ LANGS.ru={name:'ロシア語',native:'Русский',city:'モスクワ',cityEn
   ])
  ]};
 ORDER.push('ru');
+/* ================= トルコ語 — starter course =================
+   Travel phrases here; daily phrases, scenes and the route map in e3g_tr.js. Readings in katakana. */
+LANGS.tr={name:'トルコ語',native:'Türkçe',city:'イスタンブール',cityEn:'ISTANBUL',code:'IST',tts:'tr-TR',km:8950,letter:'J',hasYomi:true,starter:true,units:[
+  U("checkin",[
+   ["こんにちは", "Merhaba.", "メルハバ", "いつでも使える「こんにちは」。"],
+   ["チェックインしたいのですが", "Check-in yapmak istiyorum.", "チェックイン ヤプマク イスティヨルム", "「〜istiyorum」=〜したいです。"],
+   ["こちらが私のパスポートです", "Buyurun, pasaportum.", "ブユルン パサポルトゥム", "「Buyurun」=どうぞ(物を渡すとき)。"],
+   ["窓側の席をお願いします", "Cam kenarı bir koltuk lütfen.", "ジャム ケナル ビル コルトゥク リュトフェン", "「lütfen」=お願いします。トルコ語の「c」は「ジ」と読みます。"],
+   ["預ける荷物が1つあります", "Bir valizim var.", "ビル ヴァリズィム ヴァル", "「〜var」=〜がある。"],
+   ["搭乗口はどこですか", "Biniş kapısı nerede?", "ビニシュ カプス ネレデ", "「nerede」=どこ。「ş」は「シュ」の音です。"],
+   ["搭乗は何時ですか", "Biniş saat kaçta?", "ビニシュ サアト カチタ", "「saat kaçta」=何時に。"],
+   ["便は定刻通りですか", "Uçuş zamanında mı?", "ウチュシュ ザマヌンダ ム", "文の最後に「mı / mi」をつけると質問になります。"]
+  ]),
+  U("inflight",[
+   ["水を一杯お願いします", "Bir bardak su lütfen.", "ビル バルダク ス リュトフェン", ""],
+   ["ブランケットをいただけますか", "Bir battaniye alabilir miyim?", "ビル バッタニイェ アラビリル ミイム", "「〜alabilir miyim?」=〜をもらえますか。"],
+   ["チキンをお願いします", "Tavuk lütfen.", "タヴク リュトフェン", "機内食で「Tavuk mu, et mi?(チキンとお肉、どちら?)」と聞かれたときに。"],
+   ["お手洗いはどこですか", "Tuvalet nerede?", "トゥヴァレト ネレデ", ""],
+   ["すみません、通ってもいいですか", "Pardon, geçebilir miyim?", "パルドン ゲチェビリル ミイム", ""],
+   ["気分が悪いです", "Kendimi iyi hissetmiyorum.", "ケンディミ イイ ヒッセトミヨルム", ""],
+   ["着陸まであとどれくらいですか", "İnişe ne kadar var?", "イニシェ ネ カダル ヴァル", "「ne kadar」=どのくらい・いくら。"],
+   ["電気を消していただけますか", "Işığı kapatabilir misiniz?", "ウシュウ カパタビリル ミスィニズ", "「ı」(点のないi)は「ウ」に近い音です。"]
+  ]),
+  U("immigration",[
+   ["観光で来ました", "Turistik amaçlı geldim.", "トゥリスティク アマチル ゲルディム", ""],
+   ["5日間滞在します", "Beş gün kalacağım.", "ベシュ ギュン カラジャウム", "「ğ」はほとんど発音せず、前の母音をのばします。"],
+   ["市内のホテルに泊まります", "Şehir merkezinde bir otelde kalacağım.", "シェヒル メルケズィンデ ビル オテルデ カラジャウム", ""],
+   ["日本から来ました", "Japonya'dan geldim.", "ジャポンヤダン ゲルディム", "「〜dan / 〜den」=〜から。"],
+   ["帰りの航空券があります", "Dönüş biletim var.", "ドニュシュ ビレティム ヴァル", ""],
+   ["申告するものはありません", "Beyan edecek bir şeyim yok.", "ベヤン エデジェク ビル シェイム ヨク", "「yok」=ない。"],
+   ["一人で旅行しています", "Yalnız seyahat ediyorum.", "ヤルヌズ セヤハト エディヨルム", ""],
+   ["もう一度言っていただけますか", "Tekrar eder misiniz?", "テクラル エデル ミスィニズ", ""]
+  ]),
+  U("hotel",[
+   ["予約しています", "Rezervasyonum var.", "レゼルヴァスヨヌム ヴァル", ""],
+   ["一泊いくらですか", "Bir gece ne kadar?", "ビル ゲジェ ネ カダル", ""],
+   ["朝食は含まれていますか", "Kahvaltı dahil mi?", "カフヴァルトゥ ダーヒル ミ", "トルコの朝食(kahvaltı)は品数が多くて有名です。"],
+   ["Wi-Fiのパスワードは何ですか", "Wi-Fi şifresi ne?", "ワイファイ シフレスィ ネ", "「şifre」=パスワード。"],
+   ["チェックアウトは何時ですか", "Check-out saat kaçta?", "チェックアウト サアト カチタ", ""],
+   ["エアコンが動きません", "Klima çalışmıyor.", "クリマ チャルシュムヨル", ""],
+   ["荷物を預かっていただけますか", "Bavulumu bırakabilir miyim?", "バヴルム ブラカビリル ミイム", ""],
+   ["タオルがもう一枚必要です", "Bir havlu daha lazım.", "ビル ハヴル ダハ ラーズム", "「daha」=もう(1つ)。"]
+  ]),
+  U("restaurant",[
+   ["2名でお願いします", "İki kişilik bir masa lütfen.", "イキ キシリク ビル マサ リュトフェン", ""],
+   ["メニューをお願いします", "Menüyü alabilir miyim?", "メニュユ アラビリル ミイム", ""],
+   ["おすすめは何ですか", "Ne tavsiye edersiniz?", "ネ タヴスィエ エデルスィニズ", ""],
+   ["ナッツアレルギーがあります", "Kuruyemişe alerjim var.", "クルイェミシェ アレルジム ヴァル", ""],
+   ["とてもおいしいです！", "Çok lezzetli!", "チョク レッゼトリ", ""],
+   ["お会計をお願いします", "Hesap lütfen.", "ヘサプ リュトフェン", ""],
+   ["カードで払えますか", "Kartla ödeyebilir miyim?", "カルトラ オデイェビリル ミイム", ""],
+   ["辛くしないでください", "Acısız olsun lütfen.", "アジュスズ オルスン リュトフェン", "「acı」=辛い。「-sız」=〜なし。"]
+  ]),
+  U("city",[
+   ["駅へはどう行けばいいですか", "İstasyona nasıl gidebilirim?", "イスタスヨナ ナスル ギデビリリム", "「nasıl」=どうやって。"],
+   ["道に迷いました", "Kayboldum.", "カイボルドゥム", ""],
+   ["写真を撮っていただけますか", "Fotoğrafımızı çekebilir misiniz?", "フォトーラフムズ チェケビリル ミスィニズ", ""],
+   ["助けて！", "İmdat!", "イムダト", "命が危ないときの「助けて!」。"],
+   ["財布をなくしました", "Cüzdanımı kaybettim.", "ジュズダヌム カイベッティム", ""],
+   ["一番近い薬局はどこですか", "En yakın eczane nerede?", "エン ヤクン エジザーネ ネレデ", "「eczane」=薬局。"],
+   ["医者が必要です", "Doktora ihtiyacım var.", "ドクトラ イフティヤジュム ヴァル", ""],
+   ["もっとゆっくり話してください", "Daha yavaş konuşur musunuz?", "ダハ ヤヴァシュ コヌシュル ムスヌズ", ""]
+  ])
+ ]};
+ORDER.push('tr');
+/* ================= インドネシア語 — starter course =================
+   Travel phrases here; daily phrases, scenes and the route map in e3g_id.js. Readings in katakana. */
+LANGS.id={name:'インドネシア語',native:'Bahasa Indonesia',city:'ジャカルタ',cityEn:'JAKARTA',code:'CGK',tts:'id-ID',km:5800,letter:'K',hasYomi:true,starter:true,units:[
+  U("checkin",[
+   ["こんにちは", "Selamat siang.", "スラマッ シアン", "昼のあいさつ。朝は「Selamat pagi」、夕方は「Selamat sore」。"],
+   ["チェックインしたいのですが", "Saya mau check-in.", "サヤ マウ チェックイン", "「mau」=〜したい。"],
+   ["こちらが私のパスポートです", "Ini paspor saya.", "イニ パスポル サヤ", "「ini」=これ。「saya」=私(の)。言葉の順番は「パスポート+私」。"],
+   ["窓側の席をお願いします", "Saya mau kursi dekat jendela.", "サヤ マウ クルシ ドゥカッ ジェンデラ", "「dekat」=〜の近く。"],
+   ["預ける荷物が1つあります", "Saya punya satu koper untuk bagasi.", "サヤ プニャ サトゥ コペル ウントゥッ バガシ", "「punya」=持っている。"],
+   ["搭乗口はどこですか", "Gerbang keberangkatan di mana?", "グルバン クブランカタン ディ マナ", "「di mana」=どこ。"],
+   ["搭乗は何時ですか", "Jam berapa boarding?", "ジャム ブラパ ボーディン", "「Jam berapa」=何時。"],
+   ["便は定刻通りですか", "Apakah penerbangannya tepat waktu?", "アパカ プヌルバンガンニャ トゥパッ ワクトゥ", "「Apakah〜?」=〜ですか。"]
+  ]),
+  U("inflight",[
+   ["水を一杯お願いします", "Minta segelas air.", "ミンタ スグラス アイル", "「Minta〜」=〜をください。"],
+   ["ブランケットをいただけますか", "Boleh minta selimut?", "ボレ ミンタ スリムッ", "「Boleh〜?」=〜してもいいですか。"],
+   ["チキンをお願いします", "Ayam, ya.", "アヤム ヤ", "最後に「ya」をつけると、やわらかい言い方になります。"],
+   ["お手洗いはどこですか", "Toiletnya di mana?", "トイレッニャ ディ マナ", "「-nya」=その〜。"],
+   ["すみません、通ってもいいですか", "Permisi, boleh lewat?", "プルミシ ボレ レワッ", "「Permisi」=失礼します。"],
+   ["気分が悪いです", "Saya merasa tidak enak badan.", "サヤ ムラサ ティダッ エナッ バダン", "「tidak」=〜ない(否定)。"],
+   ["着陸まであとどれくらいですか", "Berapa lama lagi kita mendarat?", "ブラパ ラマ ラギ キタ ムンダラッ", ""],
+   ["電気を消していただけますか", "Tolong matikan lampunya.", "トロン マティカン ランプニャ", "「Tolong〜」=〜してください。"]
+  ]),
+  U("immigration",[
+   ["観光で来ました", "Saya datang untuk berwisata.", "サヤ ダタン ウントゥッ ブルウィサタ", ""],
+   ["5日間滞在します", "Saya tinggal lima hari.", "サヤ ティンガル リマ ハリ", "「tinggal」=滞在する・住む。"],
+   ["市内のホテルに泊まります", "Saya menginap di hotel di pusat kota.", "サヤ ムンギナッ ディ ホテル ディ プサッ コタ", "「menginap」=泊まる。"],
+   ["日本から来ました", "Saya dari Jepang.", "サヤ ダリ ジュパン", "「dari」=〜から。"],
+   ["帰りの航空券があります", "Saya punya tiket pulang.", "サヤ プニャ ティケッ プラン", "「pulang」=帰る。"],
+   ["申告するものはありません", "Tidak ada yang perlu dilaporkan.", "ティダッ アダ ヤン プルル ディラポルカン", ""],
+   ["一人で旅行しています", "Saya bepergian sendiri.", "サヤ ブプルギアン スンディリ", ""],
+   ["もう一度言っていただけますか", "Bisa diulang?", "ビサ ディウラン", ""]
+  ]),
+  U("hotel",[
+   ["予約しています", "Saya sudah pesan kamar.", "サヤ スダ プサン カマル", "「sudah」=もう〜した。"],
+   ["一泊いくらですか", "Berapa harganya per malam?", "ブラパ ハルガニャ プル マラム", ""],
+   ["朝食は含まれていますか", "Sudah termasuk sarapan?", "スダ トゥルマスッ サラパン", ""],
+   ["Wi-Fiのパスワードは何ですか", "Kata sandi Wi-Fi-nya apa?", "カタ サンディ ワイファイニャ アパ", ""],
+   ["チェックアウトは何時ですか", "Check-out jam berapa?", "チェックアウト ジャム ブラパ", ""],
+   ["エアコンが動きません", "AC-nya tidak berfungsi.", "アーセーニャ ティダッ ブルフンシ", "インドネシアではエアコンを「AC(アーセー)」と呼びます。"],
+   ["荷物を預かっていただけますか", "Boleh titip tas?", "ボレ ティティッ タス", "「titip」=預ける。"],
+   ["タオルがもう一枚必要です", "Saya perlu satu handuk lagi.", "サヤ プルル サトゥ ハンドゥッ ラギ", "「lagi」=もう(1つ)。"]
+  ]),
+  U("restaurant",[
+   ["2名でお願いします", "Meja untuk dua orang.", "メジャ ウントゥッ ドゥア オラン", ""],
+   ["メニューをお願いします", "Minta menunya.", "ミンタ メヌニャ", ""],
+   ["おすすめは何ですか", "Apa yang direkomendasikan?", "アパ ヤン ディレコメンダシカン", ""],
+   ["ナッツアレルギーがあります", "Saya alergi kacang.", "サヤ アレルギ カチャン", ""],
+   ["とてもおいしいです！", "Enak sekali!", "エナッ スカリ", "「sekali」=とても。"],
+   ["お会計をお願いします", "Minta bonnya.", "ミンタ ボンニャ", "「bon」=お会計の伝票。"],
+   ["カードで払えますか", "Bisa bayar pakai kartu?", "ビサ バヤル パカイ カルトゥ", ""],
+   ["辛くしないでください", "Jangan pedas, ya.", "ジャンガン プダス ヤ", "「Jangan〜」=〜しないで。"]
+  ]),
+  U("city",[
+   ["駅へはどう行けばいいですか", "Bagaimana cara ke stasiun?", "バガイマナ チャラ ク スタシウン", ""],
+   ["道に迷いました", "Saya tersesat.", "サヤ トゥルスサッ", ""],
+   ["写真を撮っていただけますか", "Boleh minta tolong fotokan kami?", "ボレ ミンタ トロン フォトカン カミ", ""],
+   ["助けて！", "Tolong!", "トロン", "命が危ないときの「助けて!」。"],
+   ["財布をなくしました", "Dompet saya hilang.", "ドンペッ サヤ ヒラン", ""],
+   ["一番近い薬局はどこですか", "Apotek terdekat di mana?", "アポテッ トゥルドゥカッ ディ マナ", ""],
+   ["医者が必要です", "Saya perlu dokter.", "サヤ プルル ドクトゥル", ""],
+   ["もっとゆっくり話してください", "Tolong bicara lebih pelan.", "トロン ビチャラ ルビ プラン", ""]
+  ])
+ ]};
+ORDER.push('id');
 /* ================= PROFESSION DATA ================= */
 var PU={ko:{},en:{},es:{},it:{}};ORDER.forEach(function(l){if(!PU[l])PU[l]={};});
 function PJ(uid,jp,lat,jpList,by){
@@ -2912,6 +3042,158 @@ SC('ru',"sc-booking",[["Извините, я не нахожу вашу брон
 /* route map: Moscow and the Golden Ring, the Volga and the south, St Petersburg and the north, then the Trans-Siberian to Vladivostok */
 CITIES.ru=[["MOSCOW", "モスクワ", 55.76, 37.62], ["SERGIEV POSAD", "セルギエフ・ポサード", 56.31, 38.13], ["YAROSLAVL", "ヤロスラヴリ", 57.63, 39.87], ["VLADIMIR", "ウラジーミル", 56.13, 40.41], ["SUZDAL", "スーズダリ", 56.42, 40.45], ["NIZHNY NOVGOROD", "ニジニ・ノヴゴロド", 56.3, 43.94], ["KAZAN", "カザン", 55.8, 49.11], ["SAMARA", "サマーラ", 53.2, 50.15], ["VOLGOGRAD", "ヴォルゴグラード", 48.71, 44.51], ["SOCHI", "ソチ", 43.6, 39.73], ["ROSTOV", "ロストフ", 47.24, 39.71], ["VORONEZH", "ヴォロネジ", 51.67, 39.18], ["TULA", "トゥーラ", 54.19, 37.62], ["NOVGOROD", "ノヴゴロド", 58.52, 31.27], ["ST PETERSBURG", "サンクトペテルブルク", 59.94, 30.31], ["PETROZAVODSK", "ペトロザヴォーツク", 61.79, 34.36], ["MURMANSK", "ムルマンスク", 68.97, 33.08], ["ARKHANGELSK", "アルハンゲリスク", 64.54, 40.54], ["PERM", "ペルミ", 58.01, 56.25], ["YEKATERINBURG", "エカテリンブルク", 56.84, 60.61], ["TYUMEN", "チュメニ", 57.15, 65.53], ["OMSK", "オムスク", 54.99, 73.37], ["NOVOSIBIRSK", "ノヴォシビルスク", 55.03, 82.92], ["KRASNOYARSK", "クラスノヤルスク", 56.01, 92.87], ["IRKUTSK", "イルクーツク", 52.29, 104.3], ["ULAN-UDE", "ウラン・ウデ", 51.83, 107.58], ["KHABAROVSK", "ハバロフスク", 48.48, 135.08], ["VLADIVOSTOK", "ウラジオストク", 43.12, 131.89]];
 REGIONS.ru={b:[26,142,40,71],H:160,polys:[[26, 40, 26, 59.4, 28.0, 59.45, 29.2, 59.85, 30.3, 59.95, 29.4, 60.2, 28.0, 60.55, 26.0, 60.45, 26, 71, 28.5, 71, 30.8, 70.0, 33.0, 69.45, 36.5, 69.1, 41.0, 67.8, 40.0, 66.3, 35.0, 66.6, 32.4, 67.1, 33.5, 65.8, 34.8, 64.5, 36.5, 64.0, 38.1, 63.9, 40.5, 64.55, 39.8, 65.2, 41.0, 66.0, 44.0, 66.1, 43.5, 68.6, 46.0, 68.0, 53.5, 68.6, 58.0, 68.9, 60.0, 69.8, 66.0, 69.1, 68.5, 71, 142, 71, 142, 59.3, 141.0, 59.0, 140.0, 58.2, 138.8, 57.2, 138.2, 56.45, 136.5, 54.6, 138.0, 53.9, 140.6, 53.2, 141.4, 52.1, 140.8, 50.0, 140.4, 48.5, 139.0, 47.3, 137.5, 45.8, 135.5, 43.9, 133.2, 42.8, 132.0, 43.2, 131.0, 42.6, 130.7, 42.3, 129.7, 40.8, 129.3, 40.0, 53.0, 40.0, 52.8, 41.6, 51.3, 43.2, 51.0, 44.5, 53.0, 45.3, 52.8, 46.6, 51.9, 47.1, 50.0, 46.6, 48.0, 46.0, 47.3, 45.0, 47.6, 43.0, 48.4, 42.0, 49.6, 40.6, 49.3, 40.0, 41.6, 40.0, 41.6, 41.6, 41.0, 43.0, 39.7, 43.6, 37.8, 44.7, 36.5, 45.3, 34.5, 44.5, 33.5, 44.5, 32.8, 45.3, 33.5, 46.0, 31.5, 46.6, 30.7, 46.5, 29.7, 45.2, 28.7, 44.0, 28.0, 43.0, 28.0, 42.0, 29.0, 41.1, 31.5, 41.3, 33.0, 42.0, 35.0, 42.0, 37.0, 41.1, 39.0, 41.0, 41.5, 41.3, 41.5, 40.0], [140.0, 41.4, 141.2, 41.8, 141.7, 42.6, 142, 42.5, 142, 45.4, 141.6, 45.4, 141.2, 43.3, 140.3, 43.3, 139.9, 42.2], [139.9, 40.0, 142, 40.0, 141.4, 41.5, 140.3, 41.2, 139.9, 40.6]]};
+/* ================= トルコ語: daily phrases, travel scenes, route map ================= */
+DU.tr=[
+  U("greet",[
+   ["こんばんは", "İyi akşamlar.", "イイ アクシャムラル", ""],
+   ["はじめまして", "Memnun oldum.", "メムヌン オルドゥム", "直訳は「うれしくなりました」。"],
+   ["元気？", "Nasılsın?", "ナスルスン", ""],
+   ["元気だよ、ありがとう。君は？", "İyiyim, teşekkürler. Sen?", "イイイム テシェッキュルレル セン", ""],
+   ["久しぶり！", "Görüşmeyeli çok oldu!", "ギョリュシメイェリ チョク オルドゥ", ""],
+   ["じゃあね！", "Hoşça kal!", "ホシチャ カル", "去る人が言う「さようなら」。見送る人は「Güle güle」と言います。"],
+   ["またあとで", "Sonra görüşürüz!", "ソンラ ギョリュシュリュズ", ""],
+   ["よい一日を", "İyi günler!", "イイ ギュンレル", ""]
+  ]),
+  U("intro",[
+   ["日本人です", "Japonum.", "ジャポヌム", "「Japon」=日本人。「-um」=私は〜です。"],
+   ["東京に住んでいます", "Tokyo'da yaşıyorum.", "トーキョダ ヤシュヨルム", ""],
+   ["学生です", "Öğrenciyim.", "オーレンジイム", ""],
+   ["音楽が大好きです", "Müziği çok seviyorum.", "ミュズィイ チョク セヴィヨルム", ""],
+   ["トルコ語を勉強しています", "Türkçe öğreniyorum.", "テュルクチェ オーレニヨルム", ""],
+   ["名前は何ていうの？", "Adın ne?", "アドゥン ネ", ""],
+   ["どこの出身？", "Nerelisin?", "ネレリスィン", ""],
+   ["友だちになろう！", "Arkadaş olalım!", "アルカダシュ オララム", ""]
+  ]),
+  U("num",[
+   ["これはいくらですか", "Bu ne kadar?", "ブ ネ カダル", ""],
+   ["100リラです", "Yüz lira.", "ユズ リラ", "トルコのお金は「lira(リラ)」。"],
+   ["高すぎます", "Çok pahalı.", "チョク パハル", ""],
+   ["もっと安いのはありますか", "Daha ucuzu var mı?", "ダハ ウジュズ ヴァル ム", ""],
+   ["これを2つください", "Bundan iki tane lütfen.", "ブンダン イキ ターネ リュトフェン", "「tane」=〜個。"],
+   ["全部でいくらですか", "Hepsi ne kadar?", "ヘプスィ ネ カダル", ""],
+   ["おつりはとっておいてください", "Üstü kalsın.", "ユステュ カルスン", ""],
+   ["レシートをもらえますか", "Fiş alabilir miyim?", "フィシュ アラビリル ミイム", ""]
+  ]),
+  U("time",[
+   ["何時ですか", "Saat kaç?", "サアト カチ", ""],
+   ["3時半です", "Üç buçuk.", "ユチ ブチュク", "「buçuk」=半。"],
+   ["今日は何曜日？", "Bugün günlerden ne?", "ブギュン ギュンレルデン ネ", ""],
+   ["また明日", "Yarın görüşürüz!", "ヤルン ギョリュシュリュズ", ""],
+   ["今週末はひまだよ", "Bu hafta sonu boşum.", "ブ ハフタ ソヌ ボシュム", ""],
+   ["何時に会う？", "Saat kaçta buluşalım?", "サアト カチタ ブルシャルム", ""],
+   ["少し遅れます", "Biraz geç kalacağım.", "ビラズ ゲチ カラジャウム", ""],
+   ["遅れてごめん", "Geç kaldığım için özür dilerim.", "ゲチ カルドゥウム イチン オズュル ディレリム", ""]
+  ]),
+  U("feel",[
+   ["すごくうれしい！", "Çok mutluyum!", "チョク ムトゥルユム", ""],
+   ["疲れました", "Yorgunum.", "ヨルグヌム", ""],
+   ["お腹がすきました", "Acıktım.", "アジュクトゥム", ""],
+   ["頭が痛いです", "Başım ağrıyor.", "バシュム アールヨル", "直訳は「私の頭が痛んでいる」。"],
+   ["大丈夫です", "İyiyim.", "イイイム", ""],
+   ["ごめんなさい", "Özür dilerim.", "オズュル ディレリム", ""],
+   ["楽しかった！", "Çok eğlenceliydi!", "チョク エーレンジェリイディ", ""],
+   ["心配しないで", "Merak etme.", "メラク エトメ", ""]
+  ]),
+  U("chat",[
+   ["趣味は何？", "Hobilerin neler?", "ホビレリン ネレル", ""],
+   ["K-POPが好きです", "K-pop'u seviyorum.", "ケイポプ セヴィヨルム", ""],
+   ["週末は何してる？", "Hafta sonu ne yapıyorsun?", "ハフタ ソヌ ネ ヤプヨルスン", ""],
+   ["映画に行かない？", "Sinemaya gidelim mi?", "スィネマヤ ギデリム ミ", ""],
+   ["いいよ！", "Olur!", "オルル", ""],
+   ["番号を交換しない？", "Numaralarımızı paylaşalım mı?", "ヌマララルムズ パイラシャルム ム", ""],
+   ["本当に？", "Gerçekten mi?", "ゲルチェクテン ミ", ""],
+   ["すごい！", "Harika!", "ハーリカ", ""]
+  ])
+];
+
+SC('tr',"sc-imm",[["Merhaba. Pasaportunuz lütfen.", "こんにちは。パスポートをお願いします", "Buyurun.", "はい、どうぞ", "ブユルン", ""], ["Ziyaretinizin amacı nedir?", "訪問の目的は何ですか", "Turizm.", "観光です", "トゥリズム", ""], ["Ne kadar kalacaksınız?", "どのくらい滞在しますか", "Bir hafta.", "1週間です", "ビル ハフタ", ""], ["Nerede kalacaksınız?", "どこに泊まりますか", "Şehir merkezinde bir otelde.", "中心街のホテルです", "シェヒル メルケズィンデ ビル オテルデ", ""]],["Tamam. Türkiye'ye hoş geldiniz!", "わかりました。トルコへようこそ!"]);
+SC('tr',"sc-cafe",[["Merhaba! Ne alırsınız?", "こんにちは!何にしますか", "Bir simit lütfen.", "シミットを1つください", "ビル スィミト リュトフェン", "「simit」はゴマのついた輪っかのパン。トルコの定番です。"], ["İçecek olarak?", "お飲み物は?", "Bir çay lütfen.", "チャイ(紅茶)をお願いします", "ビル チャイ リュトフェン", "トルコでは小さなグラスで紅茶(çay)を飲みます。"], ["Burada mı, paket mi?", "ここで食べますか、持ち帰りですか", "Paket lütfen.", "持ち帰りでお願いします", "パケト リュトフェン", ""], ["Toplam altmış lira.", "全部で60リラです", "Kartla ödeyebilir miyim?", "カードで払えますか", "カルトラ オデイェビリル ミイム", ""]],["Tabii. İyi günler!", "もちろん。よい一日を!"]);
+SC('tr',"sc-hotel",[["İyi akşamlar. Nasıl yardımcı olabilirim?", "こんばんは。ご用件を伺います", "İyi akşamlar, rezervasyonum var.", "こんばんは、予約しています", "イイ アクシャムラル レゼルヴァスヨヌム ヴァル", ""], ["Hangi isimle?", "どなたのお名前で?", "Sato adına.", "佐藤の名前です", "サトー アドゥナ", ""], ["Pasaportunuzu alabilir miyim?", "パスポートをお願いできますか", "Tabii, buyurun.", "はい、どうぞ", "タービー ブユルン", ""], ["Odanız beş yüz on iki. Kahvaltı saat yedide başlıyor.", "お部屋は512号室です。朝食は7時からです", "Check-out saat kaçta?", "チェックアウトは何時ですか", "チェックアウト サアト カチタ", ""]],["Saat on ikide. İyi konaklamalar!", "12時です。ごゆっくりどうぞ!"]);
+SC('tr',"sc-rest",[["İyi akşamlar. Kaç kişisiniz?", "こんばんは。何名様ですか", "İki kişiyiz.", "2人です", "イキ キシイズ", ""], ["Seçtiniz mi?", "お決まりですか", "Ne tavsiye edersiniz?", "おすすめは何ですか", "ネ タヴスィエ エデルスィニズ", ""], ["Bugün İskender kebabımız çok güzel.", "今日はイスケンデルケバブがおすすめですよ", "O zaman bir İskender lütfen.", "じゃあ、イスケンデルをお願いします", "オ ザマン ビル イスケンデル リュトフェン", ""], ["Başka bir şey?", "ほかには?", "Hayır, teşekkürler. Hesap lütfen.", "いいえ、結構です。お会計をお願いします", "ハユル テシェッキュルレル ヘサプ リュトフェン", ""]],["Hemen getiriyorum.", "すぐにお持ちします"]);
+SC('tr',"sc-card",[["Üzgünüm, kartınız geçmedi.", "申し訳ありません、カードが通りません", "Tekrar dener misiniz?", "もう一度試してもらえますか", "テクラル デネル ミスィニズ", ""], ["Yine geçmedi.", "やっぱり通りません", "Başka bir kart kullanabilir miyim?", "別のカードを使ってもいいですか", "バシュカ ビル カルト クッラナビリル ミイム", ""], ["Bu da geçmedi.", "こちらも通りません", "Yakında bankamatik var mı?", "近くにATMはありますか", "ヤクンダ バンカマティク ヴァル ム", ""], ["Evet, girişin yanında.", "はい、入口の横です", "Teşekkürler. Hemen dönüyorum.", "ありがとう。すぐ戻ります", "テシェッキュルレル ヘメン ドニュヨルム", ""]],["Sorun değil. Bekliyorum.", "大丈夫ですよ。お待ちしています"]);
+SC('tr',"sc-wc",[["", "", "Affedersiniz, tuvalet nerede?", "すみません、お手洗いはどこですか", "アッフェデルスィニズ トゥヴァレト ネレデ", "「Affedersiniz」は話しかけるときの「すみません」。"], ["Düz gidin, sonunda sola dönün.", "まっすぐ行って、突き当たりを左です", "Pardon, tekrar eder misiniz?", "すみません、もう一度言ってもらえますか", "パルドン テクラル エデル ミスィニズ", ""], ["Düz, sonra sol. Asansörün yanında.", "まっすぐ行って左。エレベーターの横です", "Asansörün yanında. Anladım.", "エレベーターの横ですね。わかりました", "アサンソリュン ヤヌンダ アンラドゥム", ""], ["Başka bir şey var mı?", "ほかに何かありますか", "Yok, çok teşekkür ederim!", "いいえ、本当にありがとうございます!", "ヨク チョク テシェッキュル エデリム", ""]],["Rica ederim. İyi yolculuklar!", "どういたしまして。よい旅を!"]);
+SC('tr',"sc-wallet",[["", "", "Affedersiniz, cüzdanımı kaybettim.", "すみません、財布をなくしました", "アッフェデルスィニズ ジュズダヌム カイベッティム", ""], ["Geçmiş olsun. Nerede kaybettiniz?", "それは大変でしたね。どこでなくしましたか", "Sanırım otobüste.", "バスの中だと思います", "サヌルム オトビュステ", ""], ["Nasıl bir cüzdan?", "どんな財布ですか", "Siyah ve küçük.", "黒くて小さいです", "スィヤフ ヴェ キュチュク", ""], ["Lütfen bu formu doldurun.", "この用紙に記入してください", "Tutanağın bir kopyasını alabilir miyim?", "届け出の控えをもらえますか", "トゥタナウン ビル コピヤスヌ アラビリル ミイム", "警察への届け出の控えは、海外旅行保険の請求に必要です。"]],["Tabii. Bulursak sizi ararız.", "もちろん。見つかったら連絡します"]);
+SC('tr',"sc-booking",[["Üzgünüm, rezervasyonunuzu bulamıyorum.", "申し訳ありません、ご予約が見つかりません", "İşte onay e-postası.", "これが予約確認のメールです", "イシテ オナイ エポスタス", ""], ["Bu rezervasyon gelecek ay için.", "このご予約は来月になっています", "Eyvah! Bu gece için boş odanız var mı?", "えっ!今夜泊まれる部屋はありますか", "エイヴァフ ブ ゲジェ イチン ボシュ オダヌズ ヴァル ム", ""], ["Üç bin liraya çift kişilik bir odamız var.", "ダブルルームが3000リラで空いています", "Kahvaltı dahil mi?", "朝食は付いていますか", "カフヴァルトゥ ダーヒル ミ", ""], ["Evet, dahil.", "はい、付いています", "Tamam, onu alıyorum.", "わかりました、その部屋にします", "タマム オヌ アルヨルム", ""]],["Harika. İşte anahtarınız.", "承知しました。こちらが鍵です"]);
+
+/* route map: Istanbul, the Aegean and the Mediterranean coast, Cappadocia, the south-east, the Black Sea and Ankara */
+CITIES.tr=[["ISTANBUL", "イスタンブール", 41.01, 28.98], ["EDIRNE", "エディルネ", 41.68, 26.56], ["CANAKKALE", "チャナッカレ", 40.15, 26.41], ["TRUVA", "トロイ遺跡", 39.96, 26.24], ["BURSA", "ブルサ", 40.19, 29.06], ["IZMIR", "イズミル", 38.42, 27.14], ["EFES", "エフェソス遺跡", 37.94, 27.34], ["PAMUKKALE", "パムッカレ", 37.92, 29.12], ["BODRUM", "ボドルム", 37.03, 27.43], ["MARMARIS", "マルマリス", 36.85, 28.27], ["FETHIYE", "フェティエ", 36.62, 29.12], ["KAS", "カシュ", 36.2, 29.64], ["ANTALYA", "アンタルヤ", 36.9, 30.7], ["ALANYA", "アランヤ", 36.54, 32.0], ["KONYA", "コンヤ", 37.87, 32.48], ["KAPADOKYA", "カッパドキア", 38.64, 34.83], ["KAYSERI", "カイセリ", 38.73, 35.48], ["ADANA", "アダナ", 37.0, 35.32], ["GAZIANTEP", "ガズィアンテプ", 37.07, 37.38], ["SANLIURFA", "シャンルウルファ", 37.16, 38.79], ["MARDIN", "マルディン", 37.31, 40.73], ["VAN", "ヴァン", 38.5, 43.38], ["ERZURUM", "エルズルム", 39.9, 41.27], ["TRABZON", "トラブゾン", 41.0, 39.72], ["SAMSUN", "サムスン", 41.29, 36.33], ["SAFRANBOLU", "サフランボル", 41.25, 32.69], ["ANKARA", "アンカラ", 39.93, 32.86], ["ESKISEHIR", "エスキシェヒル", 39.78, 30.52]];
+REGIONS.tr={b:[25,45.5,35.5,42.5],H:150,polys:[[45.5, 35.5, 45.5, 42.5, 41.8, 42.5, 41.67, 42.15, 41.63, 41.64, 40.52, 41.03, 39.72, 41.0, 38.39, 40.92, 37.88, 40.98, 36.33, 41.29, 35.15, 42.02, 33.76, 41.98, 32.39, 41.75, 31.79, 41.45, 31.42, 41.28, 29.6, 41.18, 29.1, 41.22, 28.6, 41.35, 28.1, 41.63, 28.0, 42.0, 27.9, 42.5, 25.0, 42.5, 25.0, 40.95, 25.9, 40.85, 26.08, 40.72, 26.18, 40.05, 26.4, 40.2, 26.7, 40.42, 27.5, 40.97, 28.6, 40.97, 29.0, 41.0, 29.4, 40.75, 29.9, 40.75, 29.1, 40.65, 28.9, 40.4, 27.9, 40.35, 27.0, 40.4, 26.4, 40.15, 26.2, 40.0, 26.15, 39.9, 26.07, 39.48, 26.8, 39.55, 26.7, 39.3, 26.9, 38.95, 26.75, 38.67, 27.1, 38.45, 26.3, 38.32, 26.6, 38.1, 27.25, 37.86, 27.27, 37.38, 27.43, 37.03, 27.7, 36.73, 28.27, 36.85, 29.12, 36.62, 29.64, 36.2, 30.4, 36.25, 30.6, 36.85, 31.5, 36.75, 32.0, 36.54, 32.8, 36.05, 33.6, 36.15, 34.6, 36.8, 35.5, 36.6, 36.17, 36.58, 35.95, 36.08, 35.78, 35.5], [32.27, 35.03, 32.9, 35.39, 33.6, 35.35, 34.6, 35.69, 34.0, 35.1, 34.0, 34.97, 33.0, 34.6, 32.5, 34.7], [25.85, 39.0, 26.6, 39.0, 26.6, 39.4, 25.85, 39.3], [25.85, 38.15, 26.15, 38.15, 26.15, 38.6, 25.85, 38.55], [26.6, 37.65, 27.05, 37.65, 27.05, 37.8, 26.6, 37.8], [27.7, 35.88, 28.25, 36.1, 28.25, 36.46, 27.75, 36.2]]};
+/* ================= インドネシア語: daily phrases, travel scenes, route map ================= */
+DU.id=[
+  U("greet",[
+   ["こんばんは", "Selamat malam.", "スラマッ マラム", ""],
+   ["はじめまして", "Senang bertemu dengan Anda.", "スナン ブルトゥム ドゥンガン アンダ", "直訳は「あなたに会えてうれしい」。"],
+   ["元気？", "Apa kabar?", "アパ カバル", ""],
+   ["元気だよ、ありがとう。君は？", "Baik, terima kasih. Kamu?", "バイッ トゥリマ カシ カム", ""],
+   ["久しぶり！", "Lama tidak bertemu!", "ラマ ティダッ ブルトゥム", ""],
+   ["じゃあね！", "Dah!", "ダー", "友だちどうしの「じゃあね」。"],
+   ["またあとで", "Sampai nanti!", "サンパイ ナンティ", ""],
+   ["よい一日を", "Semoga harimu menyenangkan!", "スモガ ハリム ムニュナンカン", ""]
+  ]),
+  U("intro",[
+   ["日本人です", "Saya orang Jepang.", "サヤ オラン ジュパン", "「orang」=人。"],
+   ["東京に住んでいます", "Saya tinggal di Tokyo.", "サヤ ティンガル ディ トキョ", ""],
+   ["学生です", "Saya pelajar.", "サヤ プラジャル", "中高生は「pelajar」、大学生は「mahasiswa」。"],
+   ["音楽が大好きです", "Saya suka sekali musik.", "サヤ スカ スカリ ムシッ", ""],
+   ["インドネシア語を勉強しています", "Saya sedang belajar bahasa Indonesia.", "サヤ スダン ブラジャル バハサ インドネシア", "「sedang」=〜している(進行中)。"],
+   ["名前は何ていうの？", "Siapa namamu?", "シアパ ナマム", ""],
+   ["どこの出身？", "Kamu dari mana?", "カム ダリ マナ", ""],
+   ["友だちになろう！", "Ayo berteman!", "アヨ ブルトゥマン", "「Ayo〜」=〜しよう。"]
+  ]),
+  U("num",[
+   ["これはいくらですか", "Ini berapa?", "イニ ブラパ", ""],
+   ["1万ルピアです", "Sepuluh ribu rupiah.", "スプル リブ ルピア", "インドネシアのお金は「rupiah(ルピア)」。"],
+   ["高すぎます", "Terlalu mahal.", "トゥルラル マハル", ""],
+   ["もっと安いのはありますか", "Ada yang lebih murah?", "アダ ヤン ルビ ムラ", ""],
+   ["これを2つください", "Saya mau dua.", "サヤ マウ ドゥア", ""],
+   ["全部でいくらですか", "Semuanya berapa?", "スムアニャ ブラパ", ""],
+   ["おつりはとっておいてください", "Kembaliannya ambil saja.", "クンバリアンニャ アンビル サジャ", ""],
+   ["レシートをもらえますか", "Boleh minta struknya?", "ボレ ミンタ ストゥルッニャ", ""]
+  ]),
+  U("time",[
+   ["何時ですか", "Jam berapa sekarang?", "ジャム ブラパ スカラン", ""],
+   ["3時半です", "Jam setengah empat.", "ジャム ストゥンガ ウンパッ", "「setengah empat」は「4時に向かって半分」=3時半。"],
+   ["今日は何曜日？", "Hari ini hari apa?", "ハリ イニ ハリ アパ", ""],
+   ["また明日", "Sampai besok!", "サンパイ ベソッ", ""],
+   ["今週末はひまだよ", "Akhir pekan ini aku kosong.", "アヒル プカン イニ アク コソン", "「aku」=ぼく・わたし(友だちに)。"],
+   ["何時に会う？", "Kita ketemu jam berapa?", "キタ クトゥム ジャム ブラパ", ""],
+   ["少し遅れます", "Aku agak terlambat.", "アク アガッ トゥルランバッ", ""],
+   ["遅れてごめん", "Maaf terlambat.", "マアフ トゥルランバッ", ""]
+  ]),
+  U("feel",[
+   ["すごくうれしい！", "Aku senang sekali!", "アク スナン スカリ", ""],
+   ["疲れました", "Saya capek.", "サヤ チャペッ", ""],
+   ["お腹がすきました", "Saya lapar.", "サヤ ラパル", ""],
+   ["頭が痛いです", "Kepala saya sakit.", "クパラ サヤ サキッ", "直訳は「私の頭が痛い」。"],
+   ["大丈夫です", "Saya baik-baik saja.", "サヤ バイッバイッ サジャ", ""],
+   ["ごめんなさい", "Maaf.", "マアフ", ""],
+   ["楽しかった！", "Seru sekali!", "スル スカリ", ""],
+   ["心配しないで", "Jangan khawatir.", "ジャンガン ハワティル", ""]
+  ]),
+  U("chat",[
+   ["趣味は何？", "Hobimu apa?", "ホビム アパ", ""],
+   ["K-POPが好きです", "Aku suka K-pop.", "アク スカ ケイポップ", ""],
+   ["週末は何してる？", "Biasanya kamu ngapain di akhir pekan?", "ビアサニャ カム ンガパイン ディ アヒル プカン", "「ngapain」=何してる(話し言葉)。"],
+   ["映画に行かない？", "Mau nonton film?", "マウ ノントン フィルム", ""],
+   ["いいよ！", "Boleh!", "ボレ", ""],
+   ["番号を交換しない？", "Boleh minta nomor WhatsApp-mu?", "ボレ ミンタ ノモル ワッツアップム", "インドネシアではWhatsAppで連絡を取るのが一般的です。"],
+   ["本当に？", "Serius?", "スリウス", ""],
+   ["すごい！", "Keren!", "クレン", ""]
+  ])
+];
+
+SC('id',"sc-imm",[["Selamat siang. Paspornya, silakan.", "こんにちは。パスポートをどうぞ", "Ini paspor saya.", "これが私のパスポートです", "イニ パスポル サヤ", ""], ["Apa tujuan kunjungan Anda?", "訪問の目的は何ですか", "Berwisata.", "観光です", "ブルウィサタ", ""], ["Berapa lama Anda tinggal?", "どのくらい滞在しますか", "Satu minggu.", "1週間です", "サトゥ ミング", ""], ["Anda menginap di mana?", "どこに泊まりますか", "Di hotel di pusat kota.", "中心街のホテルです", "ディ ホテル ディ プサッ コタ", ""]],["Baik. Selamat datang di Indonesia!", "わかりました。インドネシアへようこそ!"]);
+SC('id',"sc-cafe",[["Selamat siang! Mau pesan apa?", "こんにちは!ご注文は?", "Nasi goreng satu, ya.", "ナシゴレンを1つください", "ナシ ゴレン サトゥ ヤ", "「nasi goreng」=インドネシアの焼き飯。"], ["Minumnya apa?", "お飲み物は?", "Es teh manis.", "甘いアイスティーで", "エス テー マニス", "インドネシアの定番の飲み物です。"], ["Makan di sini atau dibungkus?", "ここで食べますか、持ち帰りますか", "Dibungkus, ya.", "持ち帰りでお願いします", "ディブンクス ヤ", ""], ["Semuanya tiga puluh lima ribu.", "全部で3万5千ルピアです", "Bisa bayar pakai kartu?", "カードで払えますか", "ビサ バヤル パカイ カルトゥ", ""]],["Bisa. Terima kasih!", "できます。ありがとうございます!"]);
+SC('id',"sc-hotel",[["Selamat malam. Ada yang bisa saya bantu?", "こんばんは。ご用件を伺います", "Selamat malam, saya sudah pesan kamar.", "こんばんは、予約しています", "スラマッ マラム サヤ スダ プサン カマル", ""], ["Atas nama siapa?", "どなたのお名前で?", "Atas nama Sato.", "佐藤の名前です", "アタス ナマ サトー", ""], ["Boleh lihat paspornya?", "パスポートを見せていただけますか", "Ya, ini.", "はい、これです", "ヤ イニ", ""], ["Kamar lima satu dua. Sarapan mulai jam tujuh.", "512号室です。朝食は7時からです", "Check-out jam berapa?", "チェックアウトは何時ですか", "チェックアウト ジャム ブラパ", ""]],["Jam dua belas siang. Selamat beristirahat!", "お昼の12時です。ごゆっくりどうぞ!"]);
+SC('id',"sc-rest",[["Selamat malam. Berapa orang?", "こんばんは。何名様ですか", "Dua orang.", "2人です", "ドゥア オラン", ""], ["Sudah mau pesan?", "ご注文はお決まりですか", "Apa yang direkomendasikan?", "おすすめは何ですか", "アパ ヤン ディレコメンダシカン", ""], ["Sate ayam kami enak sekali.", "うちのサテ・アヤム(焼き鳥)はとてもおいしいですよ", "Kalau begitu, sate ayam satu, ya.", "じゃあ、サテ・アヤムを1つください", "カラウ ブギトゥ サテ アヤム サトゥ ヤ", ""], ["Ada lagi?", "ほかには?", "Tidak, terima kasih. Minta bonnya.", "いいえ、大丈夫です。お会計をお願いします", "ティダッ トゥリマ カシ ミンタ ボンニャ", ""]],["Baik, segera.", "かしこまりました。すぐに"]);
+SC('id',"sc-card",[["Maaf, kartu Anda ditolak.", "申し訳ありません、カードが通りません", "Bisa dicoba lagi?", "もう一度試してもらえますか", "ビサ ディチョバ ラギ", ""], ["Masih tidak bisa.", "やっぱりだめです", "Boleh pakai kartu lain?", "別のカードを使ってもいいですか", "ボレ パカイ カルトゥ ライン", ""], ["Yang ini juga tidak bisa.", "こちらもだめです", "Ada ATM di dekat sini?", "近くにATMはありますか", "アダ アーテーエム ディ ドゥカッ シニ", ""], ["Ada, di sebelah pintu masuk.", "入口の横にあります", "Terima kasih. Saya segera kembali.", "ありがとう。すぐ戻ります", "トゥリマ カシ サヤ スグラ クンバリ", ""]],["Tidak apa-apa. Saya tunggu.", "大丈夫ですよ。お待ちしています"]);
+SC('id',"sc-wc",[["", "", "Permisi, toiletnya di mana?", "すみません、お手洗いはどこですか", "プルミシ トイレッニャ ディ マナ", "「Permisi」は話しかけるときの「すみません」。"], ["Lurus saja, lalu belok kiri di ujung.", "まっすぐ行って、突き当たりを左です", "Maaf, bisa diulang?", "すみません、もう一度言ってもらえますか", "マアフ ビサ ディウラン", ""], ["Lurus, lalu kiri. Di sebelah lift.", "まっすぐ行って左。エレベーターの横です", "Di sebelah lift. Baik, mengerti.", "エレベーターの横ですね。わかりました", "ディ スブラ リフ バイッ ムングルティ", ""], ["Ada lagi?", "ほかに何かありますか", "Tidak, terima kasih banyak!", "いいえ、本当にありがとうございます!", "ティダッ トゥリマ カシ バニャッ", ""]],["Sama-sama. Selamat jalan!", "どういたしまして。よい旅を!"]);
+SC('id',"sc-wallet",[["", "", "Permisi, dompet saya hilang.", "すみません、財布をなくしました", "プルミシ ドンペッ サヤ ヒラン", ""], ["Hilangnya di mana?", "どこでなくしましたか", "Sepertinya di bus.", "バスの中だと思います", "スプルティニャ ディ ブス", ""], ["Dompetnya seperti apa?", "どんな財布ですか", "Hitam dan kecil.", "黒くて小さいです", "ヒタム ダン クチル", ""], ["Tolong isi formulir ini.", "この用紙に記入してください", "Boleh minta salinan laporannya?", "届け出の控えをもらえますか", "ボレ ミンタ サリナン ラポランニャ", "警察への届け出の控えは、海外旅行保険の請求に必要です。"]],["Tentu. Kami akan menghubungi Anda kalau ketemu.", "もちろん。見つかったら連絡します"]);
+SC('id',"sc-booking",[["Maaf, saya tidak menemukan pesanan Anda.", "申し訳ありません、ご予約が見つかりません", "Ini email konfirmasinya.", "これが予約確認のメールです", "イニ イーメール コンフィルマシニャ", ""], ["Pesanan ini untuk bulan depan.", "このご予約は来月になっています", "Wah! Ada kamar kosong untuk malam ini?", "えっ!今夜泊まれる部屋はありますか", "ワー アダ カマル コソン ウントゥッ マラム イニ", ""], ["Ada kamar double, satu juta rupiah.", "ダブルルームが100万ルピアで空いています", "Sudah termasuk sarapan?", "朝食は付いていますか", "スダ トゥルマスッ サラパン", ""], ["Ya, sudah termasuk.", "はい、付いています", "Baik, saya ambil.", "わかりました、その部屋にします", "バイッ サヤ アンビル", ""]],["Baik. Ini kunci Anda.", "承知しました。こちらが鍵です"]);
+
+/* route map: Jakarta across Java to Bali and Flores, Sulawesi, Borneo, then Sumatra */
+CITIES.id=[["JAKARTA", "ジャカルタ", -6.21, 106.85], ["BOGOR", "ボゴール", -6.6, 106.8], ["BANDUNG", "バンドン", -6.92, 107.61], ["CIREBON", "チルボン", -6.73, 108.55], ["SEMARANG", "スマラン", -6.97, 110.42], ["YOGYAKARTA", "ジョグジャカルタ", -7.8, 110.36], ["BOROBUDUR", "ボロブドゥール", -7.61, 110.2], ["SOLO", "ソロ", -7.57, 110.82], ["SURABAYA", "スラバヤ", -7.25, 112.75], ["MALANG", "マラン", -7.98, 112.63], ["BROMO", "ブロモ山", -7.94, 112.95], ["BANYUWANGI", "バニュワンギ", -8.22, 114.37], ["DENPASAR", "デンパサール", -8.65, 115.22], ["UBUD", "ウブド", -8.51, 115.26], ["LOMBOK", "ロンボク", -8.58, 116.12], ["LABUAN BAJO", "ラブアンバジョ", -8.5, 119.89], ["MAKASSAR", "マカッサル", -5.15, 119.43], ["MANADO", "マナド", 1.47, 124.84], ["BALIKPAPAN", "バリクパパン", -1.27, 116.83], ["PONTIANAK", "ポンティアナック", -0.03, 109.33], ["BATAM", "バタム", 1.13, 104.05], ["PEKANBARU", "プカンバル", 0.51, 101.45], ["MEDAN", "メダン", 3.6, 98.67], ["LAKE TOBA", "トバ湖", 2.62, 98.83], ["BUKITTINGGI", "ブキティンギ", -0.3, 100.37], ["PADANG", "パダン", -0.95, 100.35], ["PALEMBANG", "パレンバン", -2.99, 104.76], ["LAMPUNG", "ランプン", -5.43, 105.26]];
+REGIONS.id={b:[95,127,-11,6],H:180,polys:[[95.3, 5.55, 97.1, 5.2, 98.7, 3.6, 99.8, 3.0, 101.4, 1.7, 103.0, 0.5, 104.0, -1.0, 105.0, -2.5, 105.9, -3.9, 105.8, -5.8, 104.6, -5.9, 103.0, -4.5, 102.3, -3.8, 100.35, -0.95, 99.0, 0.3, 98.8, 1.7, 96.1, 4.1], [105.2, -6.8, 106.1, -6.0, 106.85, -6.1, 108.3, -6.25, 110.4, -6.95, 111.4, -6.6, 112.7, -6.9, 114.4, -7.8, 114.4, -8.6, 113.0, -8.3, 110.5, -8.15, 108.5, -7.8, 106.5, -7.4, 105.4, -6.85], [112.7, -6.9, 114.1, -6.9, 114.1, -7.15, 112.8, -7.2], [114.45, -8.1, 115.2, -8.05, 115.7, -8.4, 115.2, -8.85, 114.6, -8.45], [115.85, -8.3, 116.6, -8.3, 116.7, -8.9, 115.85, -8.8], [116.8, -8.2, 119.1, -8.1, 119.0, -8.75, 116.9, -8.95], [119.8, -8.3, 122.9, -8.1, 123.0, -8.5, 119.9, -8.85], [118.9, -9.4, 120.8, -9.5, 120.6, -10.3, 119.1, -9.85], [123.5, -10.3, 125.2, -9.2, 127.0, -8.4, 127.0, -8.9, 124.5, -10.0], [109.6, 2.1, 110.3, 1.6, 113.0, 3.2, 114.0, 4.4, 115.0, 5.0, 116.1, 6.0, 117.0, 6.0, 118.1, 5.85, 119.3, 5.1, 117.9, 4.25, 117.6, 3.3, 118.9, 1.0, 116.8, -1.25, 116.4, -3.4, 114.6, -4.1, 114.6, -3.3, 113.0, -3.2, 111.6, -2.9, 110.2, -2.9, 109.3, 0.0, 108.9, 1.0], [119.8, 0.6, 121.0, 1.3, 123.0, 1.0, 125.2, 1.6, 124.8, 0.6, 123.0, 0.4, 121.0, 0.4, 120.6, -0.8, 121.6, -0.8, 123.3, -0.9, 123.0, -1.6, 121.5, -1.9, 122.8, -3.2, 122.3, -4.6, 121.3, -4.3, 120.9, -2.6, 120.4, -2.9, 120.4, -5.6, 119.4, -5.6, 119.4, -5.1, 119.0, -3.5, 119.8, -0.5], [100.3, 6.0, 102.3, 6.0, 103.4, 4.9, 103.4, 3.8, 104.3, 1.4, 103.5, 1.3, 102.2, 2.2, 101.3, 3.0, 100.6, 4.2, 100.3, 5.4]]};
 /* ---- register daily, study and scene units ---- */
 var DAILY_IDS=['greet','intro','num','time','feel','chat'];
 var TRAVEL_SC=['sc-imm','sc-cafe','sc-hotel','sc-rest','sc-card','sc-wc','sc-wallet','sc-booking'];
@@ -3887,7 +4169,7 @@ function stopStatus(L,uid,nextId){
    all the others are one tap away in 言語を選ぶ (langPickSheet) */
 function langStarted(k){var p=save.prog&&save.prog[k],u=p&&p.units;if(!u)return false;for(var id in u)if(u[id]&&u[id].n>0)return true;return false;}
 function myLangs(){return ORDER.filter(function(k){return k===save.lang||langStarted(k);});}
-var LANG_SOON=['トルコ語','インドネシア語','アラビア語'];
+var LANG_SOON=['アラビア語'];
 function heroLangs(){
   return '<div class="hero-langs" role="group" aria-label="学ぶ言語">'+myLangs().map(function(k){
     return '<button class="hl" type="button" data-lang="'+k+'" style="--dc:var(--c-'+k+')" aria-pressed="'+(k===save.lang)+'"><b class="mono">'+LANGS[k].code+'</b><small>'+esc(LANGS[k].name)+'</small></button>';
@@ -4016,14 +4298,18 @@ function mapMount(){
   cv.width=Math.round(cw*dpr);cv.height=Math.round(heroH*dpr);cv.style.height=heroH+'px';
   var vw=cw/s,vh=heroH/s,follow=vw<bw*0.98;
   var X0=bx[0]-padx,X1=bx[1]+padx,Y0=bx[2]-pady-28,Y1=bx[3]+pady+12;
+  /* keep the next stop (and its name above it) on screen: clear of the HUD at the top, the language chips at
+     the bottom and the side edges, whatever the route's shape */
+  function keepNext(c){
+    var nx=nextI>=0?pts[nextI]:null;if(!nx)return c;
+    var sx=(nx.x-c.x)*s+cw/2,sy=(nx.y-c.y)*s+heroH/2,mx=72,top=138,bot=heroH-112;
+    if(sx<mx)c.x-=(mx-sx)/s;else if(sx>cw-mx)c.x+=(sx-(cw-mx))/s;
+    if(bot>top){if(sy>bot)c.y+=(sy-bot)/s;else if(sy<top)c.y-=(top-sy)/s;}
+    return c;
+  }
   function camAt(focus){
-    if(!follow){
-      /* the whole route fits: keep the next stop out from under the HUD (top) and the language chips (bottom) */
-      var c={x:(X0+X1)/2,y:(Y0+Y1)/2},nx=nextI>=0?pts[nextI]:null;
-      if(nx){var sy=(nx.y-c.y)*s+heroH/2,lo=heroH-108,hi=118;if(lo>hi){if(sy>lo)c.y+=(sy-lo)/s;else if(sy<hi)c.y-=(hi-sy)/s;}}
-      return c;
-    }
-    return {x:clamp(focus.x,X0+vw/2,X1-vw/2),y:clamp(focus.y,Math.min(Y0+vh/2,(Y0+Y1)/2),Math.max(Y1-vh/2,(Y0+Y1)/2))};
+    if(!follow)return keepNext({x:(X0+X1)/2,y:(Y0+Y1)/2});
+    return keepNext({x:clamp(focus.x,X0+vw/2,X1-vw/2),y:clamp(focus.y,Math.min(Y0+vh/2,(Y0+Y1)/2),Math.max(Y1-vh/2,(Y0+Y1)/2))});
   }
   var tk=proj(L,TOKYO[2],TOKYO[3]),nextI=ids.indexOf(nextPathUnit(L));
   function focusFor(cur){var a=cur>=0?pts[cur]:tk,b=nextI>=0?pts[nextI]:a;return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
@@ -4295,7 +4581,7 @@ function drawBuild(){
   $('bank').innerHTML=b.tokens.map(function(t,ti){var used=b.placed.indexOf(ti)>=0;return '<button class="tile'+ko+(used?' used':'')+'" type="button" data-tile="'+ti+'"'+(used?' tabindex="-1" aria-hidden="true"':'')+'>'+esc(t)+'</button>';}).join('');
   $('chk').disabled=b.placed.length===0;
 }
-function normAns(s){return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' ').trim();}
+function normAns(s){return s.toLowerCase().replace(/ı/g,'i').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' ').trim();}
 function pushRetry(q){
   if(F.mode==='skip'||F.mode==='ai')return;
   var key=ik(q.it.uid,q.it.i);
@@ -5847,7 +6133,7 @@ try{SHR.on=!window.claude&&!!document.createElement('canvas').getContext;}catch(
 var SHR_W=1080,SHR_H=1920,SHR_CARD={x:90,y:410,w:900,h:1060};
 var SHR_F={disp:'"Barlow Condensed","IBM Plex Sans JP",sans-serif',body:'"IBM Plex Sans JP","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif',mono:'"B612 Mono",ui-monospace,Menlo,monospace',emoji:'"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'};
 var SHR_INK='#101a2b',SHR_SUB='#5b6676',SHR_PAPER='#fffaf0',SHR_TRACK='#ebe3d1';
-var SHR_LC={ko:'#e8505b',en:'#2d6bff',es:'#f08a1c',it:'#17a068',zh:'#9b5de5',fr:'#d6457f',de:'#0f8b8d',pt:'#4c8f00',ru:'#8d6e63'};
+var SHR_LC={ko:'#e8505b',en:'#2d6bff',es:'#f08a1c',it:'#17a068',zh:'#9b5de5',fr:'#d6457f',de:'#0f8b8d',pt:'#4c8f00',ru:'#8d6e63',tr:'#c0392b',id:'#457b9d'};
 /* status colours on the picture: [strip colour, text on the strip] */
 var SHR_RC=[['#b9773f','#ffffff'],['#a3adbb','#121a26'],['#e3b23c','#1b1500'],['#8cc3d3','#0d1b24'],['#55c4f0','#05202c'],['#16233f','#ffd76a']];
 var SHR_MODE={review:'復習フライト',weak:'弱点コース',ann:'機内アナウンス',lounge:'プラチナラウンジ',rem:'補習フライト',ai:'AIの例文練習',skip:'飛び級テスト'};
@@ -7205,21 +7491,21 @@ function coachRun(){
 /* ---- AI会話ロールプレイ (on top of the AI管制官 engine) ---- */
 var ROLE_SC=[
  {id:'cabin',jp:'機内でCAと話す',sub:'飲み物や毛布をお願いする',who:'CABIN CREW',sit:'国際線の機内。食事の時間です。客室乗務員に話しかけて、飲み物を頼んだり、困っていることを伝えよう。',
-  hint:{en:'Excuse me, could I have some water, please?',ko:'저기요, 물 좀 주시겠어요?',es:'Perdone, ¿me puede traer un poco de agua, por favor?',it:"Scusi, potrei avere un po' d'acqua, per favore?",zh:'不好意思，可以给我一杯水吗？',fr:"Excusez-moi, je pourrais avoir de l'eau, s'il vous plaît ?",de:"Entschuldigung, könnte ich bitte ein Glas Wasser haben?",pt:"Com licença, pode me dar um copo de água, por favor?",ru:"Извините, можно стакан воды?"}},
+  hint:{en:'Excuse me, could I have some water, please?',ko:'저기요, 물 좀 주시겠어요?',es:'Perdone, ¿me puede traer un poco de agua, por favor?',it:"Scusi, potrei avere un po' d'acqua, per favore?",zh:'不好意思，可以给我一杯水吗？',fr:"Excusez-moi, je pourrais avoir de l'eau, s'il vous plaît ?",de:"Entschuldigung, könnte ich bitte ein Glas Wasser haben?",pt:"Com licença, pode me dar um copo de água, por favor?",ru:"Извините, можно стакан воды?",tr:"Affedersiniz, bir bardak su alabilir miyim?",id:"Permisi, boleh minta segelas air?"}},
  {id:'immigration',jp:'入国審査',sub:'目的・日数・泊まる場所を答える',who:'IMMIGRATION',sit:'空港の入国審査。係官にあいさつしてパスポートを渡し、質問に答えて入国しよう。',
-  hint:{en:'Hello. Here is my passport.',ko:'안녕하세요. 여기 여권이요.',es:'Hola. Aquí tiene mi pasaporte.',it:'Buongiorno. Ecco il mio passaporto.',zh:'你好，这是我的护照。',fr:"Bonjour. Voici mon passeport.",de:"Guten Tag. Hier ist mein Reisepass.",pt:"Bom dia. Aqui está o meu passaporte.",ru:"Здравствуйте. Вот мой паспорт."}},
+  hint:{en:'Hello. Here is my passport.',ko:'안녕하세요. 여기 여권이요.',es:'Hola. Aquí tiene mi pasaporte.',it:'Buongiorno. Ecco il mio passaporto.',zh:'你好，这是我的护照。',fr:"Bonjour. Voici mon passeport.",de:"Guten Tag. Hier ist mein Reisepass.",pt:"Bom dia. Aqui está o meu passaporte.",ru:"Здравствуйте. Вот мой паспорт.",tr:"Merhaba. Buyurun, pasaportum.",id:"Selamat siang. Ini paspor saya."}},
  {id:'hotel',jp:'ホテルのチェックイン',sub:'予約を伝えて、朝食やWi-Fiを聞く',who:'FRONT DESK',sit:'ホテルのフロント。予約していることを伝えて、チェックインしよう。',
-  hint:{en:'Hi, I have a reservation under the name Sato.',ko:'안녕하세요. 사토 이름으로 예약했어요.',es:'Hola, tengo una reserva a nombre de Sato.',it:'Buonasera, ho una prenotazione a nome Sato.',zh:'你好，我用佐藤的名字预订了房间。',fr:"Bonsoir, j'ai une réservation au nom de Sato.",de:"Guten Abend, ich habe eine Reservierung auf den Namen Sato.",pt:"Boa noite, tenho uma reserva em nome de Sato.",ru:"Добрый вечер, у меня бронь на имя Сато."}},
+  hint:{en:'Hi, I have a reservation under the name Sato.',ko:'안녕하세요. 사토 이름으로 예약했어요.',es:'Hola, tengo una reserva a nombre de Sato.',it:'Buonasera, ho una prenotazione a nome Sato.',zh:'你好，我用佐藤的名字预订了房间。',fr:"Bonsoir, j'ai une réservation au nom de Sato.",de:"Guten Abend, ich habe eine Reservierung auf den Namen Sato.",pt:"Boa noite, tenho uma reserva em nome de Sato.",ru:"Добрый вечер, у меня бронь на имя Сато.",tr:"İyi akşamlar, Sato adına rezervasyonum var.",id:"Selamat malam, saya sudah pesan kamar atas nama Sato."}},
  {id:'restaurant',jp:'レストランで注文',sub:'席・注文・アレルギー・お会計',who:'SERVER',sit:'レストランに入りました。席をお願いして、料理と飲み物を注文しよう。',
-  hint:{en:'Hi, a table for one, please.',ko:'안녕하세요. 한 명이에요.',es:'Hola, una mesa para uno, por favor.',it:'Buonasera, un tavolo per uno, per favore.',zh:'你好，一位。',fr:"Bonsoir, une table pour une personne, s'il vous plaît.",de:"Guten Abend, einen Tisch für eine Person, bitte.",pt:"Boa noite, uma mesa para um, por favor.",ru:"Добрый вечер, столик на одного, пожалуйста."}},
+  hint:{en:'Hi, a table for one, please.',ko:'안녕하세요. 한 명이에요.',es:'Hola, una mesa para uno, por favor.',it:'Buonasera, un tavolo per uno, per favore.',zh:'你好，一位。',fr:"Bonsoir, une table pour une personne, s'il vous plaît.",de:"Guten Abend, einen Tisch für eine Person, bitte.",pt:"Boa noite, uma mesa para um, por favor.",ru:"Добрый вечер, столик на одного, пожалуйста.",tr:"İyi akşamlar, bir kişilik masa lütfen.",id:"Selamat malam, meja untuk satu orang."}},
  {id:'directions',jp:'道をたずねる',sub:'駅への行き方を聞く',who:'LOCAL',sit:'街で道に迷いました。近くの人に、駅への行き方をたずねよう。',
-  hint:{en:'Excuse me, how can I get to the station?',ko:'실례합니다. 역에 어떻게 가요?',es:'Perdone, ¿cómo puedo llegar a la estación?',it:'Scusi, come arrivo alla stazione?',zh:'不好意思，请问去火车站怎么走？',fr:"Excusez-moi, pour aller à la gare, s'il vous plaît ?",de:"Entschuldigung, wie komme ich zum Bahnhof?",pt:"Com licença, como chego à estação?",ru:"Извините, как пройти к вокзалу?"}},
+  hint:{en:'Excuse me, how can I get to the station?',ko:'실례합니다. 역에 어떻게 가요?',es:'Perdone, ¿cómo puedo llegar a la estación?',it:'Scusi, come arrivo alla stazione?',zh:'不好意思，请问去火车站怎么走？',fr:"Excusez-moi, pour aller à la gare, s'il vous plaît ?",de:"Entschuldigung, wie komme ich zum Bahnhof?",pt:"Com licença, como chego à estação?",ru:"Извините, как пройти к вокзалу?",tr:"Affedersiniz, istasyona nasıl gidebilirim?",id:"Permisi, bagaimana cara ke stasiun?"}},
  {id:'homestay',jp:'ホームステイ初日',sub:'あいさつ・家のルール・好きな食べ物',who:'HOST',sit:'ホームステイ先に着きました。ホストファミリーにあいさつして、自己紹介しよう。',
-  hint:{en:"Hi, nice to meet you! I'm Ken from Japan.",ko:'안녕하세요! 일본에서 온 켄이에요.',es:'¡Hola, mucho gusto! Soy Ken, de Japón.',it:'Ciao, piacere! Sono Ken, vengo dal Giappone.',zh:'你好！很高兴认识你，我是从日本来的健。',fr:"Bonjour, enchanté ! Je m'appelle Ken, je viens du Japon.",de:"Hallo, freut mich! Ich bin Ken aus Japan.",pt:"Oi, prazer! Eu sou o Ken, do Japão.",ru:"Здравствуйте! Очень приятно, я Кен из Японии."}},
+  hint:{en:"Hi, nice to meet you! I'm Ken from Japan.",ko:'안녕하세요! 일본에서 온 켄이에요.',es:'¡Hola, mucho gusto! Soy Ken, de Japón.',it:'Ciao, piacere! Sono Ken, vengo dal Giappone.',zh:'你好！很高兴认识你，我是从日本来的健。',fr:"Bonjour, enchanté ! Je m'appelle Ken, je viens du Japon.",de:"Hallo, freut mich! Ich bin Ken aus Japan.",pt:"Oi, prazer! Eu sou o Ken, do Japão.",ru:"Здравствуйте! Очень приятно, я Кен из Японии.",tr:"Merhaba, memnun oldum! Ben Japonya'dan Ken.",id:"Halo, senang bertemu! Saya Ken dari Jepang."}},
  {id:'class',jp:'授業で先生に質問',sub:'宿題や授業の内容を聞く',who:'TEACHER',sit:'留学先の授業のあと。先生に話しかけて、宿題について質問しよう。',
-  hint:{en:'Excuse me, I have a question about the homework.',ko:'선생님, 숙제에 대해 질문이 있어요.',es:'Perdone, profesor, tengo una pregunta sobre los deberes.',it:'Scusi, professore, ho una domanda sui compiti.',zh:'老师，我有一个关于作业的问题。',fr:"Excusez-moi, j'ai une question sur les devoirs.",de:"Entschuldigung, ich habe eine Frage zu den Hausaufgaben.",pt:"Com licença, professor, tenho uma dúvida sobre a lição de casa.",ru:"Извините, у меня вопрос по домашнему заданию."}},
+  hint:{en:'Excuse me, I have a question about the homework.',ko:'선생님, 숙제에 대해 질문이 있어요.',es:'Perdone, profesor, tengo una pregunta sobre los deberes.',it:'Scusi, professore, ho una domanda sui compiti.',zh:'老师，我有一个关于作业的问题。',fr:"Excusez-moi, j'ai une question sur les devoirs.",de:"Entschuldigung, ich habe eine Frage zu den Hausaufgaben.",pt:"Com licença, professor, tenho uma dúvida sobre a lição de casa.",ru:"Извините, у меня вопрос по домашнему заданию.",tr:"Affedersiniz, ödev hakkında bir sorum var.",id:"Permisi, Bu Guru, saya mau tanya tentang PR."}},
  {id:'interview',jp:'スピーキング試験・面接',sub:'自分のことを話す',who:'EXAMINER',sit:'スピーキング試験の部屋に入りました。試験官にあいさつして、質問に答えよう。',
-  hint:{en:'Good morning. Nice to meet you.',ko:'안녕하세요. 만나서 반갑습니다.',es:'Buenos días. Encantado de conocerle.',it:'Buongiorno. Piacere di conoscerla.',zh:'早上好，很高兴见到您。',fr:"Bonjour. Enchanté de vous rencontrer.",de:"Guten Morgen. Freut mich, Sie kennenzulernen.",pt:"Bom dia. Muito prazer.",ru:"Доброе утро. Очень приятно."}}
+  hint:{en:'Good morning. Nice to meet you.',ko:'안녕하세요. 만나서 반갑습니다.',es:'Buenos días. Encantado de conocerle.',it:'Buongiorno. Piacere di conoscerla.',zh:'早上好，很高兴见到您。',fr:"Bonjour. Enchanté de vous rencontrer.",de:"Guten Morgen. Freut mich, Sie kennenzulernen.",pt:"Bom dia. Muito prazer.",ru:"Доброе утро. Очень приятно.",tr:"Günaydın. Tanıştığımıza memnun oldum.",id:"Selamat pagi. Senang bertemu dengan Anda."}}
 ];
 var ROLE_LIM=[0,5,15,30],ROLE_KEY='babelflight.roleDay';
 var ROLE={sc:null,L:'en',log:[],ex:[],busy:false,done:false,ctl:null,counted:false,hint:false};
@@ -8630,6 +8916,8 @@ var CUR_WORDS={
   fr:[['bonjour','こんにちは'],['ciel','空'],['avion','飛行機'],['merci','ありがとう'],['ami','友だち'],['Paris','パリ']],
   de:[['hallo','こんにちは'],['Himmel','空'],['Flug','フライト'],['danke','ありがとう'],['Freund','友だち'],['Berlin','ベルリン']],
   pt:[['oi','やあ'],['obrigado','ありがとう'],['amigo','友だち'],['praia','ビーチ'],['viagem','旅'],['Rio','リオ']],
+  tr:[['merhaba','こんにちは'],['deniz','海'],['kedi','ねこ'],['simit','シミット'],['bulut','雲'],['Ankara','アンカラ']],
+  id:[['halo','こんにちは'],['langit','空'],['pesawat','飛行機'],['teman','友だち'],['pantai','ビーチ'],['Bali','バリ']],
   it:[['ciao','こんにちは'],['cielo','空'],['volo','フライト'],['grazie','ありがとう'],['amico','友だち'],['Roma','ローマ']]
 };
 var CUR_GR=['','△','◯','◎'];

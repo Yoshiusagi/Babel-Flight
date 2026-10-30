@@ -29,7 +29,7 @@ function stopStatus(L,uid,nextId){
    all the others are one tap away in 言語を選ぶ (langPickSheet) */
 function langStarted(k){var p=save.prog&&save.prog[k],u=p&&p.units;if(!u)return false;for(var id in u)if(u[id]&&u[id].n>0)return true;return false;}
 function myLangs(){return ORDER.filter(function(k){return k===save.lang||langStarted(k);});}
-var LANG_SOON=['トルコ語','インドネシア語','アラビア語'];
+var LANG_SOON=['アラビア語'];
 function heroLangs(){
   return '<div class="hero-langs" role="group" aria-label="学ぶ言語">'+myLangs().map(function(k){
     return '<button class="hl" type="button" data-lang="'+k+'" style="--dc:var(--c-'+k+')" aria-pressed="'+(k===save.lang)+'"><b class="mono">'+LANGS[k].code+'</b><small>'+esc(LANGS[k].name)+'</small></button>';
@@ -158,14 +158,18 @@ function mapMount(){
   cv.width=Math.round(cw*dpr);cv.height=Math.round(heroH*dpr);cv.style.height=heroH+'px';
   var vw=cw/s,vh=heroH/s,follow=vw<bw*0.98;
   var X0=bx[0]-padx,X1=bx[1]+padx,Y0=bx[2]-pady-28,Y1=bx[3]+pady+12;
+  /* keep the next stop (and its name above it) on screen: clear of the HUD at the top, the language chips at
+     the bottom and the side edges, whatever the route's shape */
+  function keepNext(c){
+    var nx=nextI>=0?pts[nextI]:null;if(!nx)return c;
+    var sx=(nx.x-c.x)*s+cw/2,sy=(nx.y-c.y)*s+heroH/2,mx=72,top=138,bot=heroH-112;
+    if(sx<mx)c.x-=(mx-sx)/s;else if(sx>cw-mx)c.x+=(sx-(cw-mx))/s;
+    if(bot>top){if(sy>bot)c.y+=(sy-bot)/s;else if(sy<top)c.y-=(top-sy)/s;}
+    return c;
+  }
   function camAt(focus){
-    if(!follow){
-      /* the whole route fits: keep the next stop out from under the HUD (top) and the language chips (bottom) */
-      var c={x:(X0+X1)/2,y:(Y0+Y1)/2},nx=nextI>=0?pts[nextI]:null;
-      if(nx){var sy=(nx.y-c.y)*s+heroH/2,lo=heroH-108,hi=118;if(lo>hi){if(sy>lo)c.y+=(sy-lo)/s;else if(sy<hi)c.y-=(hi-sy)/s;}}
-      return c;
-    }
-    return {x:clamp(focus.x,X0+vw/2,X1-vw/2),y:clamp(focus.y,Math.min(Y0+vh/2,(Y0+Y1)/2),Math.max(Y1-vh/2,(Y0+Y1)/2))};
+    if(!follow)return keepNext({x:(X0+X1)/2,y:(Y0+Y1)/2});
+    return keepNext({x:clamp(focus.x,X0+vw/2,X1-vw/2),y:clamp(focus.y,Math.min(Y0+vh/2,(Y0+Y1)/2),Math.max(Y1-vh/2,(Y0+Y1)/2))});
   }
   var tk=proj(L,TOKYO[2],TOKYO[3]),nextI=ids.indexOf(nextPathUnit(L));
   function focusFor(cur){var a=cur>=0?pts[cur]:tk,b=nextI>=0?pts[nextI]:a;return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}

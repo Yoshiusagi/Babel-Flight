@@ -32,7 +32,7 @@ import {
   type Row,
 } from "./http.server";
 
-const LANGS = new Set(["ko", "en", "es", "it", "zh", "fr", "de", "pt", "ru"]);
+const LANGS = new Set(["ko", "en", "es", "it", "zh", "fr", "de", "pt", "ru", "tr", "id"]);
 const MODES = new Set(["daily", "job", "study", "exam"]);
 const KINDS = new Set(["visit", "lesson"]);
 const TRACK_RE = /^[a-z0-9-]{1,24}$/;
