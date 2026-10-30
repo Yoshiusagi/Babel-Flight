@@ -31,8 +31,8 @@ function cabinLv(){
 var CAB_SOON='プレミアムエコノミー以上は準備中です。もうすぐ申し込めるようになります。';
 /* what each paid class adds, for the エコノミー card */
 var CAB_PITCH=['',
-  '検定コース(英検5級〜準2級など) ・ AI会話ロールプレイ 1日5回 ・ 弱点レポート ・ 授業の用語(くわしく) ・ 窓側の席デザイン',
-  'プレエコの全部 ＋ すべての検定 ・ ロールプレイ 1日15回 ・ 詳しい弱点レポート ・ ラウンジデザイン',
+  '検定コース(英検5級〜準2級など) ・ 面接練習(3級・準2級) ・ AI会話ロールプレイ 1日5回 ・ 弱点レポート ・ 授業の用語(くわしく) ・ 筆記体のつなげ書き・名前 ・ 窓側の席デザイン',
+  'プレエコの全部 ＋ すべての検定と面接練習 ・ ロールプレイ 1日15回 ・ 詳しい弱点レポート ・ ラウンジデザイン',
   'ビジネスの全部 ＋ 本番形式の模試 ・ ロールプレイ 1日30回 ・ AIコーチ ・ スイートデザイン'];
 function cabinName(lv){return CABINS[lv]?CABINS[lv][1]:'';}
 function cabinDesign(){var lv=cabinLv();if(lv<0)return -1;var d=parseInt(lsGet(CAB_DKEY),10);if(!(d>=0&&d<=lv))d=lv;return d;}

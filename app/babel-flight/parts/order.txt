@@ -13,6 +13,7 @@ f21_css.html
 f22_css.html
 f23_css.html
 f24_css.html
+f25_css.html
 @HEADEND
 e2_body.html
 a0_env.js
@@ -58,5 +59,6 @@ f22_move.js
 f23_mx.js
 f24_cdata.js
 f24_cursive.js
+f25_iv.js
 f7_boot.js
 @END

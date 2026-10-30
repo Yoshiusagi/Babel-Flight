@@ -1,0 +1,68 @@
+<style>
+/* 面接練習 (英検 二次試験) */
+.iv-entry{margin-top:12px}
+.iv-gs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:6px}
+.iv-gb{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);text-align:left}
+.iv-gb b{font-size:13.5px}
+.iv-gb small{font-size:11px;color:var(--ink2)}
+.iv-gb.locked{opacity:.65}
+.iv .fl-top{margin-bottom:8px}
+.iv-flow{margin:8px 0 4px;padding-left:1.3em;font-size:14px;line-height:1.7}
+.iv-subt{margin-top:10px;font-size:13.5px}
+.iv-subt input{width:20px;height:20px;accent-color:var(--good)}
+.iv-ex{display:flex;align-items:flex-start;gap:10px;margin-top:6px}
+.iv-av{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:26px;background:var(--surface);border:1.5px solid var(--line)}
+.iv-line{flex:1;min-width:0;padding:10px 12px;border-radius:14px;background:var(--surface);border:1.5px solid var(--line);font-size:15px;line-height:1.55}
+.iv-win{margin-top:10px;padding:12px;border-radius:14px;background:var(--surface);border:1.5px solid var(--line)}
+.iv-win.ans{border-color:var(--good)}
+.iv-win.ask p{margin:0 0 8px;font-weight:700;text-align:center}
+.iv-win.prep{display:flex;flex-direction:column;align-items:center;gap:4px}
+.iv-cd{font:700 40px/1 var(--f-disp);font-variant-numeric:tabular-nums}
+.iv-bar{width:100%;height:6px;border-radius:3px;background:var(--surface2);overflow:hidden;margin-top:6px}
+.iv-bar i{display:block;height:100%;background:var(--good);transition:width .2s linear}
+.iv-mic{display:flex;align-items:center;gap:8px}
+.iv-mic b{flex:1;font-size:14px}
+.iv-mic .mono{font-size:12.5px;color:var(--ink2)}
+.iv-dot{width:12px;height:12px;border-radius:50%;background:var(--bad);animation:ivPulse 1.2s ease-in-out infinite}
+@keyframes ivPulse{50%{opacity:.35;transform:scale(.8)}}
+@media (prefers-reduced-motion:reduce){.iv-dot{animation:none}}
+.iv-tr{min-height:2.8em;margin:8px 0 0;font-size:15px;line-height:1.55}
+.iv-tr i{color:var(--ink2)}
+.iv-win .go{margin-top:10px}
+.iv-win .ghost.sm{margin-top:8px;padding:8px 14px;font-size:13px}
+.iv-pardon{display:flex;align-items:baseline;gap:8px;margin-left:auto;margin-right:auto}
+.iv-pardon small{font-size:11.5px;color:var(--ink2)}
+.iv-card{margin-top:12px}
+.iv-pt{margin:0 0 6px;font-size:16px;text-align:center}
+.iv-pass{font-size:15.5px;line-height:1.75;margin:0}
+.iv-pass.marks .hit{color:var(--good)}
+.iv-pass.marks .miss{color:var(--bad);text-decoration:underline dotted}
+.iv-pic{display:block;width:100%;height:auto;border-radius:10px;margin-top:10px;border:1px solid var(--line)}
+.iv-ab{display:grid;gap:8px}
+.iv-ab .lbl{display:block;margin-top:8px}
+.iv-start{font-size:13.5px;line-height:1.6;margin:6px 0 0}
+.iv-panels{display:grid;gap:8px;margin-top:6px}
+.iv-panel{position:relative}
+.iv-cap{display:block;margin-top:8px;font:700 12px var(--f-mono);color:var(--ink2)}
+.iv-panel .iv-pic{margin-top:4px}
+.iv-topics{margin:6px 0 0;padding-left:1.4em;display:grid;gap:6px}
+.iv-topics button{width:100%;text-align:left;padding:9px 11px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font-size:14px;line-height:1.45}
+.iv-topics button[aria-pressed="true"]{border-color:var(--good);box-shadow:0 0 0 2px color-mix(in srgb,var(--good) 35%,transparent)}
+.iv-down{text-align:center;margin-top:14px}
+.iv-quit{margin-top:14px}
+.iv-q .iv-qq{font-size:15px;line-height:1.55;margin:4px 0 0;font-weight:600}
+.iv-said{margin-top:10px;padding:8px 10px;border-radius:10px;background:var(--surface2)}
+.iv-said p{margin:2px 0 0;font-size:14.5px;line-height:1.55}
+.iv-model{position:relative;margin-top:8px;padding:8px 44px 8px 10px;border-radius:10px;border:1.5px dashed var(--line)}
+.iv-model p{margin:2px 0 0;font-size:14.5px;line-height:1.55}
+.iv-model .mini{position:absolute;right:6px;top:8px}
+.iv-pts{margin:8px 0 0;padding-left:1.2em;font-size:13px;line-height:1.6;color:var(--ink2)}
+.iv-rate{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:10px}
+.iv-rate button{padding:9px 4px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font-size:13px;font-weight:700}
+.iv-rate button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.iv-att{display:flex;gap:10px;align-items:flex-start;margin-top:10px;font-size:14px;line-height:1.5}
+.iv-att input{flex:none;width:20px;height:20px;margin-top:1px;accent-color:var(--good)}
+.iv-sum{text-align:center}
+.iv-pct{display:block;font:700 40px/1.1 var(--f-disp);margin-top:4px}
+@media (min-width:560px){.iv-ab{grid-template-columns:1fr 1fr}.iv-panels.n3{grid-template-columns:repeat(3,1fr)}.iv-panels.n4{grid-template-columns:repeat(2,1fr)}}
+</style>

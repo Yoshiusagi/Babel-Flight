@@ -375,7 +375,7 @@ function mxIntroHTML(){
   h+='<section class="card mx-intro"><h2 class="jh">本番と同じ順番・問題数</h2><ol class="mx-flow">'+
     '<li><b>'+esc(R.title)+'</b><span>'+nR+'問'+(nW?' + 英作文'+nW+'問':'')+' ・ '+(R.time/60)+'分</span></li>'+
     '<li><b>リスニング</b><span>'+nL+'問 ・ 約'+lmin+'分</span></li>'+
-    (['ek5','ek4'].indexOf(MX.key)<0?'<li class="soon"><b>二次試験(面接)</b><span>面接練習ができたらここにつながります</span></li>':'')+'</ol>'+
+    (['ek5','ek4'].indexOf(MX.key)<0?'<li><b>二次試験(面接)</b><span>結果のあとで、本番と同じ流れの面接へ</span></li>':'')+'</ol>'+
     '<p class="dim hint">問題はすべてBabel Flightのオリジナルです(本番の形式・難しさをまねています)。</p>';
   if(run&&run.key===MX.key)h+='<button type="button" class="go" data-mx-resume>続きから('+(run.stage==='test'?'筆記 残り'+fmtSec(run.left):'リスニング No.'+((run.lp||0)+1))+')</button>';
   h+='<button type="button" class="'+(run&&run.key===MX.key?'ghost':'go')+'" data-mx-start="full">フル模試を始める<small>筆記 → リスニング</small></button>'+

@@ -13,6 +13,7 @@ var CUR_STEPS=[
   {k:'wd',t:'つなげ書き',sub:'短い単語を続けて',tier:1},
   {k:'nm',t:'自分の名前',sub:'ローマ字で',tier:1}
 ];
+if(typeof CAB_FEAT==='object')CAB_FEAT.splice(1,0,['筆記体なぞり',['小文字・大文字','+つなげ書き・名前','+つなげ書き・名前','+つなげ書き・名前']]);
 var CUR_WORDS={
   en:[['hello','こんにちは'],['sky','空'],['fly','飛ぶ'],['plane','飛行機'],['pilot','パイロット'],['cloud','雲'],['Tokyo','東京'],['London','ロンドン']],
   es:[['hola','こんにちは'],['cielo','空'],['vuelo','フライト'],['playa','ビーチ'],['amigo','友だち'],['Madrid','マドリード']],

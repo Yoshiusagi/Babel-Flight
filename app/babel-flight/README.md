@@ -53,6 +53,21 @@ classes' features (検定コース, 模試, AI会話ロールプレイ, 弱点�
 「もうすぐ申し込めます」. When billing goes live, `cabinPlanLv()` should return the class the account has paid for
 (server-checked, like `entitled()`), and the plan card in `f21_billing.js` opens to everyone signed in.
 
+## 面接練習 (英検 二次試験 3級〜1級)
+
+`parts/f25_iv.js` + `f25_css.html`. Entry: the 検定 card (English) and the 模試 result (「続けて二次試験(面接)へ」).
+Classes like 検定コース: 3級・準2級 from プレミアムエコノミー, 準2級プラス〜1級 from ビジネス; not in the iPhone app.
+
+The cards are written in `iv/cards.py` (original passages, emoji pictures, examiner lines, model answers) and
+built into `public/iv/<key>.json` by `python3 babel-flight/iv/build.py`, which checks them against the real
+format (`SPEC`: passage length, 20 s silent reading before reading aloud, the questions of each grade, the card
+turned over after the same question as in the real test, yes/no model answers). Each card is a list of steps:
+`say` (examiner, browser voice), `card` / `hide`, `prep` (silent reading / preparation countdown), `read`,
+`ans`, `yn` (Yes/No, then "Why?" / "Why not?" / "Please tell me more."), `topics` + `tq` (1級). Answers are
+transcribed by the browser's speech recognition (en-US) where available; the result screen marks the words
+heard while reading aloud and the learner rates each answer against the model answers (an estimate, not
+the CSE score). History is kept on the device. AI marking can be added once the AI key is set.
+
 ## 筆記体なぞり (cursive tracing)
 
 `parts/f24_cursive.js` + `f24_css.html`, letters in `parts/f24_cdata.js`. Entry: the 「筆記体なぞり」 card in 復習.
