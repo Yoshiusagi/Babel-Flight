@@ -60,5 +60,6 @@ f23_mx.js
 f24_cdata.js
 f24_cursive.js
 f25_iv.js
+f26_jobx.js
 f7_boot.js
 @END

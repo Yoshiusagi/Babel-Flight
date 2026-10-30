@@ -53,6 +53,15 @@ classes' features (検定コース, 模試, AI会話ロールプレイ, 弱点�
 「もうすぐ申し込めます」. When billing goes live, `cabinPlanLv()` should return the class the account has paid for
 (server-checked, like `entitled()`), and the plan card in `f21_billing.js` opens to everyone signed in.
 
+## 職業の資格 (検定モード)
+
+`parts/f26_jobx.js`. The third group of 検定 follows the job chosen in 職業モード (`save.prof`), replacing the
+fixed 航空英語(ICAO) group: `JOBX` maps job → language → certificates, `JOBX_C` holds each certificate's group
+title and 目標 levels. `jobxApply()` rebuilds `EXAMS` / `XGOALS` from the base lists on every render, so a job
+change shows at once (a target of the old job is simply ignored). Lessons are ordinary `XU()` units in banks
+(`XBANK`, tier 2 = ビジネス like ICAO); banks under 40 phrases stay 準備中 (no meter). Jobs without a
+certificate yet show a 準備中 line on the 検定 card.
+
 ## 面接練習 (英検 二次試験 3級〜1級)
 
 `parts/f25_iv.js` + `f25_css.html`. Entry: the 検定 card (English) and the 模試 result (「続けて二次試験(面接)へ」).
