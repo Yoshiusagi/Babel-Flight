@@ -9,7 +9,7 @@ try{SHR.on=!window.claude&&!!document.createElement('canvas').getContext;}catch(
 var SHR_W=1080,SHR_H=1920,SHR_CARD={x:90,y:410,w:900,h:1060};
 var SHR_F={disp:'"Barlow Condensed","IBM Plex Sans JP",sans-serif',body:'"IBM Plex Sans JP","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif',mono:'"B612 Mono",ui-monospace,Menlo,monospace',emoji:'"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'};
 var SHR_INK='#101a2b',SHR_SUB='#5b6676',SHR_PAPER='#fffaf0',SHR_TRACK='#ebe3d1';
-var SHR_LC={ko:'#e8505b',en:'#2d6bff',es:'#f08a1c',it:'#17a068',zh:'#9b5de5'};
+var SHR_LC={ko:'#e8505b',en:'#2d6bff',es:'#f08a1c',it:'#17a068',zh:'#9b5de5',fr:'#d6457f'};
 /* status colours on the picture: [strip colour, text on the strip] */
 var SHR_RC=[['#b9773f','#ffffff'],['#a3adbb','#121a26'],['#e3b23c','#1b1500'],['#8cc3d3','#0d1b24'],['#55c4f0','#05202c'],['#16233f','#ffd76a']];
 var SHR_MODE={review:'復習フライト',weak:'弱点コース',ann:'機内アナウンス',lounge:'プラチナラウンジ',rem:'補習フライト',ai:'AIの例文練習',skip:'飛び級テスト'};

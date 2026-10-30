@@ -17,6 +17,7 @@ if(typeof CAB_FEAT==='object')CAB_FEAT.splice(1,0,['筆記体なぞり',['小文
 var CUR_WORDS={
   en:[['hello','こんにちは'],['sky','空'],['fly','飛ぶ'],['plane','飛行機'],['pilot','パイロット'],['cloud','雲'],['Tokyo','東京'],['London','ロンドン']],
   es:[['hola','こんにちは'],['cielo','空'],['vuelo','フライト'],['playa','ビーチ'],['amigo','友だち'],['Madrid','マドリード']],
+  fr:[['bonjour','こんにちは'],['ciel','空'],['avion','飛行機'],['merci','ありがとう'],['ami','友だち'],['Paris','パリ']],
   it:[['ciao','こんにちは'],['cielo','空'],['volo','フライト'],['grazie','ありがとう'],['amico','友だち'],['Roma','ローマ']]
 };
 var CUR_GR=['','△','◯','◎'];

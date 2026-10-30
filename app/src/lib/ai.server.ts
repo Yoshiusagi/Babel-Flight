@@ -36,8 +36,8 @@ const FREE = { ask: ASK_PER_DAY, atc: ATC_SESSIONS_PER_DAY, turn: ATC_TURNS_PER_
 const UNLIMITED = 999;
 const NO_LIMIT = 1_000_000_000;
 const JST_MS = 9 * 3_600_000;
-const LANG_NAMES: Record<string, string> = { ko: "韓国語", en: "英語", es: "スペイン語", it: "イタリア語", zh: "中国語(普通話・簡体字)" };
-const LANG_EN: Record<string, string> = { ko: "Korean", en: "English", es: "Spanish (Spain)", it: "Italian", zh: "Mandarin Chinese (simplified characters)" };
+const LANG_NAMES: Record<string, string> = { ko: "韓国語", en: "英語", es: "スペイン語", it: "イタリア語", zh: "中国語(普通話・簡体字)", fr: "フランス語" };
+const LANG_EN: Record<string, string> = { ko: "Korean", en: "English", es: "Spanish (Spain)", it: "Italian", zh: "Mandarin Chinese (simplified characters)", fr: "French (France)" };
 
 const SAFETY_JA =
   "利用者には中学生・高校生(13〜17歳)も含まれます。年齢にふさわしい、やさしく安全な内容だけで答えてください。" +
@@ -83,7 +83,7 @@ const SAFETY_ROLE =
 
 /** "role:<scene>:<lang>" -> the system prompt for that conversation, or null. */
 function roleSystem(id: string): string | null {
-  const m = /^role:([a-z]+):(ko|en|es|it|zh)$/.exec(id);
+  const m = /^role:([a-z]+):(ko|en|es|it|zh|fr)$/.exec(id);
   const s = m ? ROLE_SCENES[m[1] ?? ""] : undefined;
   if (!m || !s) return null;
   const lang = LANG_EN[m[2] ?? ""] ?? "English";

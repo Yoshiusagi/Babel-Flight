@@ -12,7 +12,7 @@ Rebuild the page after editing any part:
 ## Learning languages (スターター languages)
 
 `ORDER` (end of `parts/p3b_data.js`) lists the languages. 韓国語・英語・スペイン語・イタリア語 have every mode; a
-**スターター** language (`starter:true`, first 中国語) has only 日常会話モード to begin with: 基本の日常会話, 旅行フレーズ
+**スターター** language (`starter:true`: 中国語, フランス語, …) has only 日常会話モード to begin with: 基本の日常会話, 旅行フレーズ
 and the 8 travel scenes. Its 職業 / 留学 / 検定 modes show a 準備中 card (`modeSoonHTML` in `f5_home.js`).
 
 Adding one (中国語 is the example):
