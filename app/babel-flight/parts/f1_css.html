@@ -14,7 +14,7 @@
 .hud-r b{display:block;font-size:25px;margin-top:5px}
 .hud-r b small{font-size:13px;color:#9fb3d6}
 .hud-foot{position:absolute;left:0;right:0;bottom:70px;display:flex;justify-content:space-between;gap:8px;padding:0 max(16px,env(safe-area-inset-left,0px));font-size:10.5px;letter-spacing:.04em;color:#9fb3d6;pointer-events:none;opacity:var(--hud);text-shadow:0 1px 6px #071022}
-.hero-langs{position:absolute;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:14px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.hero-langs{position:absolute;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:14px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .hl{position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 4px 8px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(8,18,40,.55);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#fff;overflow:hidden;transition:transform .2s,background .3s,color .3s}
 .hl:active{transform:scale(.96)}
 .hl b{font-size:15px;letter-spacing:.05em}
@@ -142,4 +142,22 @@
 .icon-grid button svg{width:26px;height:26px}
 .icon-grid button[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink);background:var(--bg)}
 @media (max-width:360px){.icon-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+/* language chips: the languages being learned + ほかの言語 (the 言語を選ぶ sheet) */
+.hero-langs::-webkit-scrollbar,.dests::-webkit-scrollbar{display:none}
+.hero-langs .hl{flex:1 0 58px;max-width:110px}
+.hero-langs .hl-more{flex:0 0 auto;max-width:none;padding-left:10px;padding-right:10px}
+.hl-more::after,.dest-more::before{display:none}
+.hl-more b{font-family:var(--f-body)}
+.lp-h{display:block;margin:14px 0 6px}
+.lp-list{display:grid;gap:6px}
+.lp-row{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;padding:10px 12px 10px 16px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);text-align:left;overflow:hidden}
+.lp-row::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--dc)}
+.lp-row[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink);background:var(--surface2)}
+.lp-code{font-size:17px;font-weight:700;letter-spacing:.04em;min-width:3.2em}
+.lp-nm{display:flex;flex-direction:column;gap:2px;min-width:0}
+.lp-nm b{font-size:15px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.lp-nm small{font-size:12px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lp-n{font-size:12px;color:var(--ink2)}
+.lp-tag{font:700 10.5px/1 var(--f-body);font-style:normal;letter-spacing:.02em;padding:3px 7px;border-radius:999px;background:var(--surface2);color:var(--ink2);border:1px solid var(--line)}
+.langc .lp-tag{margin-left:6px;vertical-align:2px}
 </style>

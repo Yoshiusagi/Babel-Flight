@@ -9,6 +9,29 @@ Rebuild the page after editing any part:
 
 `src/server.ts` serves `src/babel-flight.html` at `/` and fills in `%ORIGIN%`.
 
+## Learning languages (スターター languages)
+
+`ORDER` (end of `parts/p3b_data.js`) lists the languages. 韓国語・英語・スペイン語・イタリア語 have every mode; a
+**スターター** language (`starter:true`, first 中国語) has only 日常会話モード to begin with: 基本の日常会話, 旅行フレーズ
+and the 8 travel scenes. Its 職業 / 留学 / 検定 modes show a 準備中 card (`modeSoonHTML` in `f5_home.js`).
+
+Adding one (中国語 is the example):
+- `parts/p3c_<lang>.js` (after `p3b_data.js` in `order.txt`): `LANGS.<lang>={…, units:[U('checkin',…), …]}` with the
+  6 travel units, then `ORDER.push('<lang>')`. Each phrase is `[日本語, phrase, reading, note, words]`; the 5th
+  column splits the phrase into words for 並べ替え when the language has no spaces. `noType:true` turns the typing
+  questions off (they would need that language's keyboard).
+- `parts/e3g_<lang>.js` (after `e3d_geo.js`): `DU.<lang>` (6 daily units), `SC('<lang>', …)` for the 8 scenes,
+  `CITIES.<lang>` (28 stops) and `REGIONS.<lang>` (the dotted map).
+- the colour `--c-<lang>` and, if the script needs it, a font (`--f-<lang>` and `lfc()` in `e4_core.js`) in
+  `p1_head.html`; the share card colour `SHR_LC` (`f16_share.js`); the server lists in `src/lib/analytics.server.ts`
+  (`LANGS`) and `src/lib/ai.server.ts` (`LANG_NAMES`, `LANG_EN`, the role-play id pattern); `LANG_JP` /
+  `LANG_ORDER` in `src/stats.html`; role-play first-line hints (`ROLE_SC` in `f17_cabin.js`).
+
+The language chips (home hero, 復習, 記録) show the current language and every language with a lesson flown;
+「＋ ほかの言語」 opens the 言語を選ぶ sheet with all of them. Pinyin tone marks (ǎ ǐ ǒ ǔ ǚ …) come from a tiny embedded
+subset of Noto Sans CJK SC (SIL Open Font License 1.1) at the top of `p1_head.html`, because some Japanese fonts
+draw them full-width. Progress in a language an older version doesn't know is kept as it is (`mergeSave`).
+
 ## Usage counting
 
 `parts/f12_track.js` (standalone site only, never in the Claude version) sends an anonymous

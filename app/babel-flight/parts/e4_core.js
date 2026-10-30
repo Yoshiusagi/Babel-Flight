@@ -33,6 +33,8 @@ function barcodeSVG(seed){
 }
 
 /* ================= SAVE ================= */
+/* the font class for text in a learning language: Korean and Chinese need their own fonts */
+function lfc(L){return L==='ko'?'ko':L==='zh'?'zh':'';}
 var KEY='babelflight.save.v1';
 var OLD_ORDER=['checkin','inflight','immigration','hotel','restaurant','city','atc1','atc2'];
 function blankProg(){var p={};ORDER.forEach(function(k){p[k]={items:{},units:{}};});return p;}
@@ -55,6 +57,10 @@ function mergeSave(raw){
       else items[key]=p.items[key];
     });
     d.prog[k].items=items;d.prog[k].units=p.units||{};
+  });
+  /* progress in a language this version doesn't know yet (made by a newer version) is kept as it is */
+  if(raw.prog&&typeof raw.prog==='object')Object.keys(raw.prog).forEach(function(k){
+    if(ORDER.indexOf(k)<0&&/^[a-z]{2}$/.test(k)&&raw.prog[k]&&typeof raw.prog[k]==='object')d.prog[k]=raw.prog[k];
   });
   if(ORDER.indexOf(d.lang)<0)d.lang='ko';
   if(d.prof==='study'){d.prof='';if(d.mode==='job'){d.mode='study';ORDER.forEach(function(l){if(typeof d.pos[l+'-job']==='number')d.pos[l+'-study']=d.pos[l+'-job'];});}}
@@ -159,7 +165,8 @@ function pathSections(lang){
   if(save.mode==='job'){
     var p=profById(save.prof);
     if(!p)return [];
-    return [{key:p.id,title:p.jp+'の専門会話',sub:p.en+' ・ 仕事で使う会話',ids:p.units[lang].slice(),prof:p}];
+    var pids=p.units[lang].filter(function(u){return !!UNITS[lang][u];});
+    return pids.length?[{key:p.id,title:p.jp+'の専門会話',sub:p.en+' ・ 仕事で使う会話',ids:pids,prof:p}]:[];
   }
   if(save.mode==='study'){
     var has=function(ids){return ids.filter(function(u){return !!UNITS[lang][u];});};

@@ -24,8 +24,13 @@
 <title>Babel Flight</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=B612+Mono:wght@400;700&family=DotGothic16&family=IBM+Plex+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=B612+Mono:wght@400;700&family=DotGothic16&family=IBM+Plex+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@500;700&family=Noto+Sans+SC:wght@500;700&display=swap" rel="stylesheet">
 <style>
+/* pinyin tone-mark vowels (ǎ ǐ ǒ ǔ ǚ …): some Japanese fonts draw them full-width, so they come from a tiny
+   subset of Noto Sans CJK SC (SIL Open Font License 1.1) — only these letters, nothing else changes */
+@font-face{font-family:'BF Pinyin';font-style:normal;font-weight:400;font-display:swap;src:url(data:font/woff;base64,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) format('woff');unicode-range:U+0100-0101,U+0112-0113,U+011A-011B,U+012A-012B,U+014C-014D,U+016A-016B,U+01CD-01DC}
+@font-face{font-family:'BF Pinyin';font-style:normal;font-weight:500;font-display:swap;src:url(data:font/woff;base64,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) format('woff');unicode-range:U+0100-0101,U+0112-0113,U+011A-011B,U+012A-012B,U+014C-014D,U+016A-016B,U+01CD-01DC}
+@font-face{font-family:'BF Pinyin';font-style:normal;font-weight:700;font-display:swap;src:url(data:font/woff;base64,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) format('woff');unicode-range:U+0100-0101,U+0112-0113,U+011A-011B,U+012A-012B,U+014C-014D,U+016A-016B,U+01CD-01DC}
 /* Layout: phone-first single column. Gate (route + boarding pass + departures list), Connection (review), Passport (stamps), and a Flight screen built around a split-flap board.
    Palette: day terminal (cool grey, navy ink, signal yellow) and night cabin. The board and LED strip stay dark in both themes, like real hardware. */
 :root{
@@ -35,13 +40,14 @@
   --good:#0f8a52; --bad:#cf3342; --info:#2563eb;
   --shadow:rgba(11,22,38,.16);
   --board:#080a0f; --flap:#ffd23f; --led:#ff9f2e;
-  --c-ko:#e8505b; --c-en:#2d6bff; --c-es:#f08a1c; --c-it:#17a068;
+  --c-ko:#e8505b; --c-en:#2d6bff; --c-es:#f08a1c; --c-it:#17a068; --c-zh:#9b5de5;
   --lc:var(--c-ko);
-  --f-disp:'Barlow Condensed','IBM Plex Sans JP',system-ui,sans-serif;
-  --f-body:'IBM Plex Sans JP','Hiragino Sans','Yu Gothic',system-ui,sans-serif;
+  --f-disp:'Barlow Condensed','BF Pinyin','IBM Plex Sans JP',system-ui,sans-serif;
+  --f-body:'BF Pinyin','IBM Plex Sans JP','Hiragino Sans','Yu Gothic',system-ui,sans-serif;
   --f-mono:'B612 Mono','Noto Sans KR',ui-monospace,Menlo,Consolas,monospace;
-  --f-dot:'DotGothic16','IBM Plex Sans JP','Hiragino Sans',sans-serif;
+  --f-dot:'BF Pinyin','DotGothic16','IBM Plex Sans JP','Hiragino Sans',sans-serif;
   --f-ko:'Noto Sans KR','IBM Plex Sans JP',sans-serif;
+  --f-zh:'BF Pinyin','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#060a12; --bg2:#0b111d; --surface:#101828; --surface2:#16213a;
@@ -69,6 +75,7 @@ body{overflow-x:clip}
 .lbl{font:700 10.5px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink2)}
 .dim{color:var(--ink2)}
 .ko{font-family:var(--f-ko)}
+.zh{font-family:var(--f-zh)}
 svg{display:block}
 
 /* top bar */
@@ -81,7 +88,10 @@ svg{display:block}
 .pill .v{font:700 15px/1 var(--f-mono);font-variant-numeric:tabular-nums}
 
 /* destination chips */
-.dests{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+.dests{display:flex;gap:8px;margin-top:14px;overflow-x:auto;scrollbar-width:none}
+.dests .dest{flex:1 0 68px;max-width:130px}
+.dests .dest-more{flex:0 0 auto;max-width:none}
+.dest-more .code{font-family:var(--f-body)}
 .dest{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:9px 10px 8px;border:1.5px solid var(--line);background:var(--surface);border-radius:8px;text-align:left;position:relative;overflow:hidden;min-width:0}
 .dest::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--dc)}
 .dest .code{font:700 17px/1 var(--f-mono);letter-spacing:.04em;padding-left:4px}
@@ -222,6 +232,7 @@ svg{display:block}
 .opts{display:grid;gap:8px}
 .opt{display:block;width:100%;text-align:left;padding:14px;border:1.5px solid var(--line);background:var(--surface);border-radius:10px;font-size:15.5px;line-height:1.4;min-height:52px}
 .opt.ko{font-family:var(--f-ko);font-weight:500}
+.opt.zh{font-family:var(--f-zh);font-weight:500}
 .opt:active{transform:scale(.99)}
 .opt.ok{border-color:var(--good);background:color-mix(in srgb,var(--good) 14%,var(--surface))}
 .opt.no{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--surface))}
@@ -237,6 +248,7 @@ svg{display:block}
 .tile{position:relative;padding:11px 14px 11px 24px;border:1.5px solid var(--line);background:var(--surface);border-radius:8px;font-size:16px;line-height:1.2;box-shadow:0 2px 0 var(--line)}
 .tile::before{content:"";position:absolute;left:8px;top:50%;width:7px;height:7px;margin-top:-3.5px;border-radius:50%;background:var(--bg2);box-shadow:inset 0 0 0 1.5px var(--line)}
 .tile.ko{font-family:var(--f-ko);font-weight:500}
+.tile.zh{font-family:var(--f-zh);font-weight:500}
 .tile.used{visibility:hidden}
 .typebox{width:100%;padding:14px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:500 17px var(--f-mono)}
 .skel{font:400 13px var(--f-mono);letter-spacing:.14em;color:var(--ink2);word-break:break-all}
@@ -246,6 +258,7 @@ svg{display:block}
 .sheet h3{font:700 19px/1.2 var(--f-body);color:var(--sc,var(--good))}
 .sheet .ans{font-size:15px}
 .sheet .ans.ko{font-family:var(--f-ko)}
+.sheet .ans.zh{font-family:var(--f-zh)}
 @keyframes up{from{transform:translateY(40%);opacity:.4}to{transform:none;opacity:1}}
 .confirm{display:grid;gap:8px;margin-top:10px}
 .pad-b{height:150px}
@@ -524,6 +537,7 @@ body.dark-ui #sky{display:none}
 .bub.me{align-self:flex-end;background:#16325f;color:#fff;border-bottom-right-radius:5px;box-shadow:inset 0 0 0 1.5px var(--lc)}
 .bub.me.miss{box-shadow:inset 0 0 0 1.5px #ff6b79}
 .bub.ko p{font-family:var(--f-ko)}
+.bub.zh p{font-family:var(--f-zh)}
 .bub .dim{color:#93a4c4}
 .bub.typing{display:flex;gap:5px;padding:14px 16px}
 .bub.typing i{width:7px;height:7px;border-radius:50%;background:#93a4c4;animation:dots 1s ease-in-out infinite}
@@ -640,7 +654,7 @@ body.dark-ui .sheet{--sc:#ff6b79}
 .hud-r b{display:block;font-size:25px;margin-top:5px}
 .hud-r b small{font-size:13px;color:#9fb3d6}
 .hud-foot{position:absolute;left:0;right:0;bottom:70px;display:flex;justify-content:space-between;gap:8px;padding:0 max(16px,env(safe-area-inset-left,0px));font-size:10.5px;letter-spacing:.04em;color:#9fb3d6;pointer-events:none;opacity:var(--hud);text-shadow:0 1px 6px #071022}
-.hero-langs{position:absolute;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:14px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.hero-langs{position:absolute;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:14px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .hl{position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 4px 8px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(8,18,40,.55);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#fff;overflow:hidden;transition:transform .2s,background .3s,color .3s}
 .hl:active{transform:scale(.96)}
 .hl b{font-size:15px;letter-spacing:.05em}
@@ -768,6 +782,24 @@ body.dark-ui .sheet{--sc:#ff6b79}
 .icon-grid button svg{width:26px;height:26px}
 .icon-grid button[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink);background:var(--bg)}
 @media (max-width:360px){.icon-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+/* language chips: the languages being learned + ほかの言語 (the 言語を選ぶ sheet) */
+.hero-langs::-webkit-scrollbar,.dests::-webkit-scrollbar{display:none}
+.hero-langs .hl{flex:1 0 58px;max-width:110px}
+.hero-langs .hl-more{flex:0 0 auto;max-width:none;padding-left:10px;padding-right:10px}
+.hl-more::after,.dest-more::before{display:none}
+.hl-more b{font-family:var(--f-body)}
+.lp-h{display:block;margin:14px 0 6px}
+.lp-list{display:grid;gap:6px}
+.lp-row{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;padding:10px 12px 10px 16px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);text-align:left;overflow:hidden}
+.lp-row::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--dc)}
+.lp-row[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink);background:var(--surface2)}
+.lp-code{font-size:17px;font-weight:700;letter-spacing:.04em;min-width:3.2em}
+.lp-nm{display:flex;flex-direction:column;gap:2px;min-width:0}
+.lp-nm b{font-size:15px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.lp-nm small{font-size:12px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lp-n{font-size:12px;color:var(--ink2)}
+.lp-tag{font:700 10.5px/1 var(--f-body);font-style:normal;letter-spacing:.02em;padding:3px 7px;border-radius:999px;background:var(--surface2);color:var(--ink2);border:1px solid var(--line)}
+.langc .lp-tag{margin-left:6px;vertical-align:2px}
 </style>
 <style>
 /* accounts (standalone site only) */
@@ -1075,6 +1107,7 @@ body:has(#sheetHost .sheet) #hf-watermark{bottom:calc(12px + env(safe-area-inset
 [data-cabin="suite"] .cab-p{display:flex;flex-direction:column;gap:12px;padding:46px 6px 26px;min-height:200px}
 [data-cabin="suite"] .cab-p .cp-m{order:2;font:600 33px/1.25 'Cormorant Garamond','Shippori Mincho',serif;color:var(--ink);overflow-wrap:anywhere}
 [data-cabin="suite"] .cab-p .cp-m.ko{font-family:var(--f-ko);font-weight:500;font-size:28px}
+[data-cabin="suite"] .cab-p .cp-m.zh{font-family:var(--f-zh);font-weight:500;font-size:28px}
 [data-cabin="suite"] .cab-p .cp-x{order:1;font:500 15px/1.5 'Shippori Mincho','Cormorant Garamond',serif;color:#b9ab8c;letter-spacing:.04em}
 [data-cabin="suite"] .opts{counter-reset:o;gap:0;border-top:1px solid var(--line)}
 [data-cabin="suite"] .opt{display:flex;align-items:baseline;gap:14px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;min-height:60px;padding:16px 8px;font-size:15.5px;color:#ddd3bd}
@@ -1186,6 +1219,7 @@ body:has(#sheetHost .sheet) #hf-watermark{bottom:calc(12px + env(safe-area-inset
 .xp-q .cp-x{font-size:12px;font-weight:700;letter-spacing:.06em;color:#7a5c17}
 .xp-q .cp-m{font-size:21px;font-weight:700;line-height:1.4;overflow-wrap:anywhere}
 .xp-q .cp-m.ko{font-family:var(--f-ko)}
+.xp-q .cp-m.zh{font-family:var(--f-zh)}
 [data-cabin="lounge"] .opts{counter-reset:o}
 [data-cabin="lounge"] .opt{display:flex;align-items:center;gap:12px;min-height:54px;border-radius:10px;border-color:var(--line);background:var(--surface);color:#dfe5ee}
 [data-cabin="lounge"] .opt .on{display:none}
@@ -1560,7 +1594,7 @@ function bfFetch(path,o){
 function bfSiteUrl(path){return (BF_APP?BF_SITE:'')+path;}
 if(BF_APP){try{document.documentElement.classList.add('app');}catch(e){}}
 /* ================= DATA ================= */
-function U(id,a){return {id:id,items:a.map(function(x){return {jp:x[0],t:x[1],r:x[2]||'',n:x[3]||''};})};}
+function U(id,a){return {id:id,items:a.map(function(x){return {jp:x[0],t:x[1],r:x[2]||'',n:x[3]||'',s:x[4]||''};})};}
 var UM={
   checkin:{jp:'チェックイン',lat:'CHECK-IN'},
   inflight:{jp:'機内',lat:'IN-FLIGHT'},
@@ -1846,8 +1880,75 @@ var ORDER=['ko','en','es','it'];
 var RANKS=[['ブロンズ','BRONZE',0],['シルバー','SILVER',1500],['ゴールド','GOLD',4000],['プラチナ','PLATINUM',8000],['ダイヤモンド','DIAMOND',15000],['キャプテン','CAPTAIN',25000]];
 var STATUS_DAYS=182;
 var INTERVALS=[0,1,2,4,8,16,32];
+/* ================= 中国語 (普通话, simplified characters) — starter course =================
+   Travel phrases here; daily phrases, scenes and the route map in e3g_zh.js. Readings are pinyin with tone
+   marks. The 5th column splits the sentence into words for the 並べ替え questions (Chinese has no spaces).
+   No typing questions (they would need a Chinese keyboard). */
+LANGS.zh={name:'中国語',native:'中文',city:'北京',cityEn:'BEIJING',code:'PEK',tts:'zh-CN',km:2100,letter:'E',hasYomi:true,noType:true,starter:true,units:[
+  U('checkin',[
+   ["こんにちは","你好。","nǐ hǎo","一日中いつでも使えるあいさつ。目上の人には「您好(nín hǎo)」。","你好。"],
+   ["チェックインしたいのですが","我想办理登机手续。","wǒ xiǎng bànlǐ dēngjī shǒuxù","「我想〜」=〜したい。登机手续=搭乗手続き。","我 想 办理 登机 手续。"],
+   ["こちらが私のパスポートです","这是我的护照。","zhè shì wǒ de hùzhào","「的」=〜の。","这 是 我的 护照。"],
+   ["窓側の席をお願いします","我要靠窗的座位。","wǒ yào kào chuāng de zuòwèi","靠窗=窓に近い。通路側は「靠过道(kào guòdào)」。","我 要 靠窗 的 座位。"],
+   ["預ける荷物が1つあります","我有一件行李要托运。","wǒ yǒu yí jiàn xíngli yào tuōyùn","件=荷物を数える量詞。托运=(飛行機に)預ける。","我 有 一件 行李 要 托运。"],
+   ["搭乗口はどこですか","登机口在哪儿？","dēngjīkǒu zài nǎr","在哪儿=どこにありますか。","登机口 在 哪儿？"],
+   ["搭乗は何時ですか","几点登机？","jǐ diǎn dēngjī","几点=何時。","几点 登机？"],
+   ["便は定刻通りですか","航班准时吗？","hángbān zhǔnshí ma","文の最後の「吗」で「〜か?」の疑問文になります。","航班 准时 吗？"]
+  ]),
+  U('inflight',[
+   ["水を一杯お願いします","请给我一杯水。","qǐng gěi wǒ yì bēi shuǐ","请给我〜=〜をください(ていねい)。杯=コップを数える量詞。","请 给 我 一杯 水。"],
+   ["ブランケットをいただけますか","可以给我一条毯子吗？","kěyǐ gěi wǒ yì tiáo tǎnzi ma","条=毛布など細長い物の量詞。","可以 给 我 一条 毯子 吗？"],
+   ["チキンをお願いします","我要鸡肉的。","wǒ yào jīròu de","機内食で「鸡肉还是牛肉?(チキンとビーフどちら?)」と聞かれたときに。","我 要 鸡肉 的。"],
+   ["お手洗いはどこですか","洗手间在哪儿？","xǐshǒujiān zài nǎr","洗手间=お手洗い(ていねいな言い方)。","洗手间 在 哪儿？"],
+   ["すみません、通ってもいいですか","不好意思，借过一下。","bù hǎoyìsi, jièguò yíxià","借过=ちょっと通して。不好意思=すみません。","不好意思， 借过 一下。"],
+   ["気分が悪いです","我不太舒服。","wǒ bú tài shūfu","不太〜=あまり〜ない。","我 不太 舒服。"],
+   ["着陸まであとどれくらいですか","还有多久降落？","hái yǒu duō jiǔ jiàngluò","多久=どのくらいの時間。","还有 多久 降落？"],
+   ["電気を消していただけますか","可以帮我关一下灯吗？","kěyǐ bāng wǒ guān yíxià dēng ma","帮我〜=(私のために)〜してくれる。一下=ちょっと。","可以 帮 我 关 一下 灯 吗？"]
+  ]),
+  U('immigration',[
+   ["観光で来ました","我是来旅游的。","wǒ shì lái lǚyóu de","「是〜的」で、目的などを説明する形。","我 是 来 旅游 的。"],
+   ["5日間滞在します","我待五天。","wǒ dāi wǔ tiān","待=滞在する(dāi と読みます)。","我 待 五天。"],
+   ["市内のホテルに泊まります","我住在市中心的酒店。","wǒ zhù zài shì zhōngxīn de jiǔdiàn","酒店=ホテル(「酒」でもお酒の店ではありません)。","我 住在 市中心 的 酒店。"],
+   ["日本から来ました","我从日本来。","wǒ cóng Rìběn lái","从〜来=〜から来る。","我 从 日本 来。"],
+   ["帰りの航空券があります","我有回程机票。","wǒ yǒu huíchéng jīpiào","回程=帰りの。","我 有 回程 机票。"],
+   ["申告するものはありません","我没有要申报的东西。","wǒ méiyǒu yào shēnbào de dōngxi","没有=ない。申报=申告する。","我 没有 要 申报 的 东西。"],
+   ["一人で旅行しています","我一个人旅行。","wǒ yí ge rén lǚxíng","一个人=ひとりで。","我 一个人 旅行。"],
+   ["もう一度言っていただけますか","请再说一遍。","qǐng zài shuō yí biàn","再=もう一度。遍=(最初から最後まで)1回。","请 再 说 一遍。"]
+  ]),
+  U('hotel',[
+   ["予約しています","我有预订。","wǒ yǒu yùdìng","预订=予約。","我 有 预订。"],
+   ["一泊いくらですか","住一晚多少钱？","zhù yì wǎn duōshao qián","多少钱=いくら。","住 一晚 多少钱？"],
+   ["朝食は含まれていますか","含早餐吗？","hán zǎocān ma","含=含む。","含 早餐 吗？"],
+   ["Wi-Fiのパスワードは何ですか","WiFi密码是多少？","WiFi mìmǎ shì duōshao","番号やパスワードは「是多少」で聞きます。","WiFi 密码 是 多少？"],
+   ["チェックアウトは何時ですか","几点退房？","jǐ diǎn tuìfáng","退房=チェックアウト。チェックインは「入住(rùzhù)」。","几点 退房？"],
+   ["エアコンが動きません","空调坏了。","kōngtiáo huài le","坏了=壊れた。","空调 坏了。"],
+   ["荷物を預かっていただけますか","可以帮我寄存行李吗？","kěyǐ bāng wǒ jìcún xíngli ma","寄存=(一時的に)預ける。","可以 帮 我 寄存 行李 吗？"],
+   ["タオルがもう一枚必要です","我还需要一条毛巾。","wǒ hái xūyào yì tiáo máojīn","还=さらに。毛巾=タオル。","我 还 需要 一条 毛巾。"]
+  ]),
+  U('restaurant',[
+   ["2名でお願いします","两位。","liǎng wèi","店員に「几位?(何名様?)」と聞かれたら、人数+位で答えます。2は「两」。","两位。"],
+   ["メニューをお願いします","请给我菜单。","qǐng gěi wǒ càidān","菜单=メニュー。","请 给 我 菜单。"],
+   ["おすすめは何ですか","有什么推荐的？","yǒu shénme tuījiàn de","推荐=おすすめする。","有 什么 推荐 的？"],
+   ["ナッツアレルギーがあります","我对坚果过敏。","wǒ duì jiānguǒ guòmǐn","对〜过敏=〜にアレルギーがある。","我 对 坚果 过敏。"],
+   ["とてもおいしいです！","太好吃了！","tài hǎochī le","太〜了=とても〜だ。","太 好吃 了！"],
+   ["お会計をお願いします","买单。","mǎidān","お店の人に「买单!」と声をかけるのが一般的です。","买单。"],
+   ["カードで払えますか","可以刷卡吗？","kěyǐ shuā kǎ ma","刷卡=カードで払う。中国ではスマホ決済がとても多いです。","可以 刷卡 吗？"],
+   ["辛くしないでください","不要辣的。","bú yào là de","辣=辛い。少しだけ辛くしたいときは「微辣(wēi là)」。","不要 辣 的。"]
+  ]),
+  U('city',[
+   ["駅へはどう行けばいいですか","去火车站怎么走？","qù huǒchēzhàn zěnme zǒu","怎么走=どう行けばいい。地下鉄の駅は「地铁站」。","去 火车站 怎么 走？"],
+   ["道に迷いました","我迷路了。","wǒ mílù le","","我 迷路 了。"],
+   ["写真を撮っていただけますか","可以帮我们拍张照吗？","kěyǐ bāng wǒmen pāi zhāng zhào ma","拍照=写真を撮る。","可以 帮 我们 拍 张 照 吗？"],
+   ["助けて！","救命！","jiùmìng","命が危ないときの「助けて!」。","救命！"],
+   ["財布をなくしました","我的钱包丢了。","wǒ de qiánbāo diū le","丢了=なくした。","我的 钱包 丢了。"],
+   ["一番近い薬局はどこですか","最近的药店在哪儿？","zuì jìn de yàodiàn zài nǎr","最近的=いちばん近い(日本語の「最近」とはちがいます)。","最近的 药店 在 哪儿？"],
+   ["医者が必要です","我需要看医生。","wǒ xūyào kàn yīshēng","看医生=医者に診てもらう。","我 需要 看 医生。"],
+   ["もっとゆっくり話してください","请说慢一点儿。","qǐng shuō màn yìdiǎnr","慢一点儿=もう少しゆっくり。","请 说 慢 一点儿。"]
+  ])
+ ]};
+ORDER.push('zh');
 /* ================= PROFESSION DATA ================= */
-var PU={ko:{},en:{},es:{},it:{}};
+var PU={ko:{},en:{},es:{},it:{}};ORDER.forEach(function(l){if(!PU[l])PU[l]={};});
 function PJ(uid,jp,lat,jpList,by){
   UM[uid]={jp:jp,lat:lat};
   ORDER.forEach(function(l){
@@ -1982,7 +2083,7 @@ var PROF=[
  {id:'lab',code:'LAB',jp:'研究者',en:'RESEARCHER'},
  {id:'sport',code:'ATH',jp:'スポーツ選手',en:'ATHLETE'}
 ];
-PROF.forEach(function(p){if(!p.units){p.units={};ORDER.forEach(function(l){p.units[l]=[p.id];});}});
+PROF.forEach(function(p){if(!p.units){p.units={};ORDER.forEach(function(l){p.units[l]=[p.id];});}ORDER.forEach(function(l){if(!p.units[l])p.units[l]=[];});});
 function profById(id){for(var i=0;i<PROF.length;i++)if(PROF[i].id===id)return PROF[i];return null;}
 /* every unit of a language, by id */
 var UNITS={};
@@ -2064,7 +2165,7 @@ var SCENE_META={
  'sc-home':{jp:'留学: ホームステイ先で',lat:'HOMESTAY',role:'ホストマザー',ini:'母',sit:'ホームステイ先に帰宅。ホストマザーと話そう。',grp:'study'}
 };
 Object.keys(SCENE_META).forEach(function(k){UM[k]={jp:SCENE_META[k].jp,lat:SCENE_META[k].lat};});
-var SCN={ko:{},en:{},es:{},it:{}};
+var SCN={ko:{},en:{},es:{},it:{}};ORDER.forEach(function(l){if(!SCN[l])SCN[l]={};});
 function SC(lang,id,turns,end){SCN[lang][id]={turns:turns.map(function(t){return {p:t[0],pj:t[1],a:t[2],aj:t[3],r:t[4]||'',n:t[5]||''};}),end:end};}
 /* each turn: [partner line, its Japanese, your answer, its Japanese, reading, note]. Empty partner line = you speak first. */
 
@@ -2186,6 +2287,60 @@ var REGIONS={
   [-156.1,19.0,-155.0,19.6,-155.8,20.3,-156.7,20.9,-158.2,21.6,-157.6,21.2]
  ],holes:[[28,41.2,29,44.5,30.5,46.5,33.5,46,36,45.3,38,47,41.6,41.6,36,41.2,31,41.1],[47,44.5,49.5,46.6,53,45,51,42,53.9,40,54,37.4,50,37,49,38.5,47.5,42.5]]}
 };
+/* ================= 中国語: daily phrases, travel scenes, route map ================= */
+DU.zh=[
+  U('greet',[["こんばんは","晚上好。","wǎnshang hǎo","","晚上 好。"],["はじめまして","认识你很高兴。","rènshi nǐ hěn gāoxìng","直訳は「あなたと知り合えてうれしい」。","认识 你 很 高兴。"],
+    ["元気？","你好吗？","nǐ hǎo ma","会話では「最近怎么样?(最近どう?)」もよく使います。","你 好 吗？"],["元気だよ、ありがとう。君は？","我很好，谢谢。你呢？","wǒ hěn hǎo, xièxie. nǐ ne","呢=「〜は?」と聞き返す。","我 很好， 谢谢。 你呢？"],
+    ["久しぶり！","好久不见！","hǎo jiǔ bú jiàn","","好久 不见！"],["じゃあね！","拜拜！","bàibài","英語の bye-bye から(話すときは「báibái」と聞こえることも)。ていねいには「再见(zàijiàn)」。","拜拜！"],
+    ["またあとで","回头见！","huítóu jiàn","","回头 见！"],["よい一日を","祝你今天愉快！","zhù nǐ jīntiān yúkuài","祝〜=〜を祈る。","祝 你 今天 愉快！"]]),
+  U('intro',[["日本人です","我是日本人。","wǒ shì Rìběnrén","","我 是 日本人。"],["東京に住んでいます","我住在东京。","wǒ zhù zài Dōngjīng","住在〜=〜に住んでいる。","我 住在 东京。"],
+    ["学生です","我是学生。","wǒ shì xuésheng","","我 是 学生。"],["音楽が大好きです","我很喜欢音乐。","wǒ hěn xǐhuan yīnyuè","很喜欢=大好き。","我 很 喜欢 音乐。"],
+    ["中国語を勉強しています","我在学中文。","wǒ zài xué Zhōngwén","在〜=〜している(進行中)。","我 在 学 中文。"],["名前は何ていうの？","你叫什么名字？","nǐ jiào shénme míngzi","","你 叫 什么 名字？"],
+    ["どこの出身？","你是哪里人？","nǐ shì nǎli rén","","你 是 哪里 人？"],["友だちになろう！","我们做朋友吧！","wǒmen zuò péngyou ba","吧=〜しよう。","我们 做 朋友 吧！"]]),
+  U('num',[["これはいくらですか","这个多少钱？","zhège duōshao qián","","这个 多少钱？"],["10元です","十块钱。","shí kuài qián","話し言葉では「元」を「块」と言います。","十 块 钱。"],
+    ["高すぎます","太贵了。","tài guì le","","太 贵 了。"],["もっと安いのはありますか","有便宜一点儿的吗？","yǒu piányi yìdiǎnr de ma","","有 便宜 一点儿 的 吗？"],
+    ["これを2つください","我要两个。","wǒ yào liǎng ge","物の数を言うとき、2は「两」。","我 要 两个。"],["全部でいくらですか","一共多少钱？","yígòng duōshao qián","一共=全部で。","一共 多少钱？"],
+    ["おつりはとっておいてください","不用找了。","bú yòng zhǎo le","找钱=おつりを出す。","不用 找 了。"],["レシートをもらえますか","可以给我小票吗？","kěyǐ gěi wǒ xiǎopiào ma","小票=レシート。正式な領収書は「发票(fāpiào)」。","可以 给 我 小票 吗？"]]),
+  U('time',[["何時ですか","现在几点？","xiànzài jǐ diǎn","","现在 几点？"],["3時半です","三点半。","sān diǎn bàn","","三点 半。"],
+    ["今日は何曜日？","今天星期几？","jīntiān xīngqī jǐ","星期一〜星期六=月〜土曜、星期天=日曜。","今天 星期 几？"],["また明日","明天见！","míngtiān jiàn","","明天 见！"],
+    ["今週末はひまだよ","这个周末我有空。","zhège zhōumò wǒ yǒu kòng","有空=ひまがある。","这个 周末 我 有空。"],["何時に会う？","我们几点见？","wǒmen jǐ diǎn jiàn","","我们 几点 见？"],
+    ["少し遅れます","我会晚一点儿到。","wǒ huì wǎn yìdiǎnr dào","","我 会 晚 一点儿 到。"],["遅れてごめん","对不起，我来晚了。","duìbuqǐ, wǒ lái wǎn le","","对不起， 我 来 晚 了。"]]),
+  U('feel',[["すごくうれしい！","我太开心了！","wǒ tài kāixīn le","","我 太 开心 了！"],["疲れました","我累了。","wǒ lèi le","","我 累 了。"],
+    ["お腹がすきました","我饿了。","wǒ è le","","我 饿 了。"],["頭が痛いです","我头疼。","wǒ tóu téng","","我 头 疼。"],
+    ["大丈夫です","我没事。","wǒ méi shì","没事=大丈夫、何でもない。","我 没事。"],["ごめんなさい","对不起。","duìbuqǐ","","对不起。"],
+    ["楽しかった！","玩得很开心！","wán de hěn kāixīn","得=動作の様子を説明する。","玩 得 很 开心！"],["心配しないで","别担心。","bié dānxīn","别〜=〜しないで。","别 担心。"]]),
+  U('chat',[["趣味は何？","你的爱好是什么？","nǐ de àihào shì shénme","","你的 爱好 是 什么？"],["K-POPが好きです","我喜欢K-POP。","wǒ xǐhuan K-POP","","我 喜欢 K-POP。"],
+    ["週末は何してる？","你周末一般做什么？","nǐ zhōumò yìbān zuò shénme","一般=ふだん。","你 周末 一般 做 什么？"],["映画に行かない？","一起去看电影吧？","yìqǐ qù kàn diànyǐng ba","","一起 去 看 电影 吧？"],
+    ["いいよ！","好啊！","hǎo a","","好啊！"],["WeChatを交換しない？","我们加个微信吧？","wǒmen jiā ge Wēixìn ba","中国では電話番号より「微信(WeChat)」を交換するのが一般的です。","我们 加 个 微信 吧？"],
+    ["本当に？","真的吗？","zhēn de ma","","真的 吗？"],["すごい！","太厉害了！","tài lìhai le","","太 厉害 了！"]])
+];
+
+SC('zh','sc-imm',[["你好，请出示护照。","こんにちは。パスポートを見せてください","给您。","はい、どうぞ","gěi nín","您=你のていねいな形。"],["你来中国的目的是什么？","中国に来た目的は何ですか","我是来旅游的。","観光で来ました","wǒ shì lái lǚyóu de",""],["你打算待多久？","どのくらい滞在する予定ですか","一个星期。","1週間です","yí ge xīngqī",""],["你住在哪儿？","どこに泊まりますか","我住在市中心的酒店。","市の中心のホテルです","wǒ zhù zài shì zhōngxīn de jiǔdiàn",""]],["好的。欢迎来中国！","わかりました。中国へようこそ!"]);
+SC('zh','sc-cafe',[["你好！要点什么？","いらっしゃい!何にしますか","我要一个火腿三明治。","ハムサンドをください","wǒ yào yí ge huǒtuǐ sānmíngzhì",""],["喝点什么？","飲み物は?","一杯冰咖啡。","アイスコーヒーを1つ","yì bēi bīng kāfēi",""],["在这儿吃还是带走？","ここで食べますか、持ち帰りますか","带走。","持ち帰りで","dàizǒu","「打包(dǎbāo)」とも言います。"],["一共三十五块。","全部で35元です","可以用微信支付吗？","WeChat Payで払えますか","kěyǐ yòng Wēixìn zhīfù ma","中国ではスマホ決済(微信支付・支付宝)がとても一般的です。"]],["可以，扫这个码吧。","できますよ。このコードを読み取ってください"]);
+SC('zh','sc-hotel',[["晚上好，请问有什么可以帮您？","こんばんは。ご用件を伺います","我要办理入住。","チェックインをお願いします","wǒ yào bànlǐ rùzhù",""],["请问您贵姓？","お名前(名字)をうかがえますか","我姓佐藤。","佐藤です","wǒ xìng Zuǒténg","您贵姓?=ていねいに名字を聞く言い方。答えは「我姓〜」。"],["请出示一下您的护照。","パスポートを見せてください","好的，给您。","はい、どうぞ","hǎo de, gěi nín","中国のホテルでは、外国人はパスポートを見せる必要があります。"],["您的房间是五一二。早餐七点开始。","お部屋は512号室です。朝食は7時からです","几点退房？","チェックアウトは何時ですか","jǐ diǎn tuìfáng","部屋番号は数字を1つずつ読みます。1は「yāo」と読むことが多いです。"]],["中午十二点。祝您入住愉快！","お昼の12時です。ごゆっくりどうぞ!"]);
+SC('zh','sc-rest',[["欢迎光临！几位？","いらっしゃいませ!何名様ですか","两位。","2人です","liǎng wèi",""],["这是菜单。想吃点什么？","メニューです。何を召し上がりますか","有什么推荐的？","おすすめは何ですか","yǒu shénme tuījiàn de",""],["我们的宫保鸡丁很好吃。","うちの宮保鶏丁(鶏肉とピーナッツの炒め物)はおいしいですよ","那就来一个宫保鸡丁。","じゃあ、宮保鶏丁を1つ","nà jiù lái yí ge gōngbǎo jīdīng","来一个〜=〜を1つ(注文するときの言い方)。"],["还要别的吗？","ほかには?","不用了，谢谢。","いいえ、大丈夫です","bú yòng le, xièxie",""]],["好的，马上就来。","かしこまりました。すぐにお持ちします"]);
+SC('zh','sc-card',[["不好意思，您的卡刷不了。","申し訳ありません、カードが使えません","可以再试一次吗？","もう一度試してもらえますか","kěyǐ zài shì yí cì ma",""],["还是不行。","やっぱりだめです","我可以用别的卡吗？","別のカードを使ってもいいですか","wǒ kěyǐ yòng bié de kǎ ma",""],["这张也不行。","このカードもだめです","附近有取款机吗？","近くにATMはありますか","fùjìn yǒu qǔkuǎnjī ma","カードが使えない店もあるので、現金やスマホ決済も用意しておくと安心です。"],["门口旁边有一台。","入口の横に1台あります","谢谢，我马上回来。","ありがとう。すぐ戻ります","xièxie, wǒ mǎshàng huílai",""]],["没关系，我等您。","大丈夫ですよ。お待ちしています"]);
+SC('zh','sc-wc',[["","","不好意思，请问洗手间在哪儿？","すみません、お手洗いはどこですか","bù hǎoyìsi, qǐngwèn xǐshǒujiān zài nǎr","请问=おたずねしますが(ていねいな前置き)。"],["一直走，到头往左拐。","まっすぐ行って、突き当たりを左です","不好意思，能再说一遍吗？","すみません、もう一度言ってもらえますか","bù hǎoyìsi, néng zài shuō yí biàn ma",""],["一直走，然后左拐。在电梯旁边。","まっすぐ行って左。エレベーターの横です","在电梯旁边。明白了。","エレベーターの横ですね。わかりました","zài diàntī pángbiān. míngbai le",""],["还有别的事吗？","ほかに何かありますか","没有了，非常感谢！","いいえ、本当にありがとうございます!","méiyǒu le, fēicháng gǎnxiè",""]],["不客气。旅途愉快！","どういたしまして。よい旅を!"]);
+SC('zh','sc-wallet',[["","","不好意思，我的钱包丢了。","すみません、財布をなくしました","bù hǎoyìsi, wǒ de qiánbāo diū le",""],["别着急。在哪儿丢的？","落ち着いてください。どこでなくしましたか","可能是在公交车上。","バスの中だと思います","kěnéng shì zài gōngjiāochē shang","公交车=路線バス。"],["是什么样的钱包？","どんな財布ですか","黑色的，很小。","黒くて小さいです","hēisè de, hěn xiǎo",""],["请填一下这张表。","この用紙に記入してください","可以给我一份报案证明吗？","届け出の証明書をもらえますか","kěyǐ gěi wǒ yí fèn bào'àn zhèngmíng ma","报案证明=警察への届け出の証明。海外旅行保険の請求に必要です。"]],["可以。找到了我们会联系您。","はい。見つかったら連絡します"]);
+SC('zh','sc-booking',[["对不起，找不到您的预订。","申し訳ありません、ご予約が見つかりません","这是预订确认邮件。","これが予約確認のメールです","zhè shì yùdìng quèrèn yóujiàn",""],["这个预订是下个月的。","このご予約は来月になっています","啊？今晚还有房间吗？","えっ!今夜泊まれる部屋はありますか","á? jīnwǎn hái yǒu fángjiān ma",""],["还有一间大床房，六百块。","ダブルの部屋が1つ、600元で空いています","含早餐吗？","朝食は付いていますか","hán zǎocān ma","大床房=ダブルルーム、双床房=ツインルーム。"],["含早餐。","付いています","好，就要这间。","わかりました、その部屋にします","hǎo, jiù yào zhè jiān",""]],["好的。这是您的房卡。","かしこまりました。こちらがカードキーです"]);
+
+/* route map: Beijing, around the coast and back north-west, then the north-east */
+CITIES.zh=[['BEIJING','北京',39.90,116.41],['TIANJIN','天津',39.13,117.20],['JINAN','済南',36.65,117.12],['QINGDAO','青島',36.07,120.38],['NANJING','南京',32.06,118.80],
+  ['SUZHOU','蘇州',31.30,120.59],['SHANGHAI','上海',31.23,121.47],['HANGZHOU','杭州',30.27,120.16],['XIAMEN','厦門',24.48,118.09],['SHENZHEN','深圳',22.54,114.06],
+  ['HONG KONG','香港',22.32,114.17],['MACAU','マカオ',22.20,113.54],['GUANGZHOU','広州',23.13,113.26],['SANYA','三亜',18.25,109.51],['GUILIN','桂林',25.27,110.29],
+  ['KUNMING','昆明',25.04,102.71],['CHENGDU','成都',30.57,104.07],['CHONGQING','重慶',29.56,106.55],['CHANGSHA','長沙',28.23,112.94],['WUHAN','武漢',30.59,114.31],
+  ['ZHENGZHOU','鄭州',34.75,113.62],['LUOYANG','洛陽',34.62,112.45],["XI'AN",'西安',34.34,108.94],['PINGYAO','平遥',37.20,112.18],['DATONG','大同',40.08,113.30],
+  ['DALIAN','大連',38.91,121.61],['SHENYANG','瀋陽',41.80,123.43],['HARBIN','ハルビン',45.80,126.53]];
+REGIONS.zh={b:[100.5,132.5,17,47],H:300,polys:[
+  [100.5,17,100.5,47,132.5,47,132.5,42.9,131.9,43.1,131.2,42.6,130.7,42.3,130.3,42.25,129.8,41.8,129.2,40.67,128.6,40.3,127.6,39.85,127.45,39.15,128.0,38.7,128.6,38.2,128.9,37.75,129.2,37.4,129.4,37.0,129.45,36.05,129.4,35.5,129.05,35.1,
+   128.6,34.85,127.75,34.75,127.0,34.5,126.5,34.3,126.35,34.8,126.45,35.6,126.6,35.95,126.5,36.4,126.2,36.75,126.75,37.0,126.6,37.45,126.1,37.75,125.7,38.0,125.2,38.0,124.75,38.15,125.0,38.6,125.4,38.75,125.2,39.2,124.85,39.6,124.35,39.85,
+   123.7,39.8,122.9,39.5,122.2,39.1,121.3,38.8,121.7,39.3,121.9,40.0,122.1,40.4,122.25,40.7,121.8,40.95,121.1,40.85,120.85,40.7,120.3,40.2,119.6,39.9,119.0,39.2,117.75,39.0,117.6,38.6,118.2,38.1,118.95,37.8,119.1,37.2,119.5,37.15,120.3,37.65,
+   120.75,37.8,121.4,37.55,122.15,37.5,122.7,37.4,122.4,37.0,121.6,36.75,120.4,36.05,119.9,35.6,119.55,35.35,119.4,34.75,119.9,34.3,120.4,33.6,120.9,32.7,121.85,31.9,121.95,31.1,121.7,30.85,121.0,30.7,120.6,30.35,121.2,30.25,121.9,29.95,
+   121.5,28.65,120.85,27.95,120.4,27.3,119.7,26.05,119.1,25.4,118.7,24.85,118.05,24.45,117.2,23.6,116.7,23.35,116.0,22.95,115.4,22.75,114.6,22.65,114.2,22.25,113.7,22.6,113.5,22.15,113.0,21.95,112.3,21.7,111.2,21.45,110.4,21.2,110.2,20.25,
+   109.8,20.9,109.7,21.45,109.1,21.45,108.35,21.6,108.0,21.5,107.1,20.95,106.7,20.8,106.5,20.2,105.85,19.8,105.7,18.7,106.2,18.2,106.6,17.45,106.9,17.0],
+  [108.62,19.2,109.0,19.75,109.6,20.0,110.4,20.07,111.0,19.65,110.6,19.0,110.2,18.4,109.5,18.2,108.65,18.45],
+  [121.05,25.05,121.6,25.25,121.9,24.95,121.55,23.8,121.35,22.95,120.85,21.95,120.25,22.6,120.1,23.4,120.3,24.2,120.75,24.75]
+].concat(REGIONS.ko.polys.slice(1))};
 /* ---- register daily, study and scene units ---- */
 var DAILY_IDS=['greet','intro','num','time','feel','chat'];
 var TRAVEL_SC=['sc-imm','sc-cafe','sc-hotel','sc-rest','sc-card','sc-wc','sc-wallet','sc-booking'];
@@ -2574,6 +2729,8 @@ function barcodeSVG(seed){
 }
 
 /* ================= SAVE ================= */
+/* the font class for text in a learning language: Korean and Chinese need their own fonts */
+function lfc(L){return L==='ko'?'ko':L==='zh'?'zh':'';}
 var KEY='babelflight.save.v1';
 var OLD_ORDER=['checkin','inflight','immigration','hotel','restaurant','city','atc1','atc2'];
 function blankProg(){var p={};ORDER.forEach(function(k){p[k]={items:{},units:{}};});return p;}
@@ -2596,6 +2753,10 @@ function mergeSave(raw){
       else items[key]=p.items[key];
     });
     d.prog[k].items=items;d.prog[k].units=p.units||{};
+  });
+  /* progress in a language this version doesn't know yet (made by a newer version) is kept as it is */
+  if(raw.prog&&typeof raw.prog==='object')Object.keys(raw.prog).forEach(function(k){
+    if(ORDER.indexOf(k)<0&&/^[a-z]{2}$/.test(k)&&raw.prog[k]&&typeof raw.prog[k]==='object')d.prog[k]=raw.prog[k];
   });
   if(ORDER.indexOf(d.lang)<0)d.lang='ko';
   if(d.prof==='study'){d.prof='';if(d.mode==='job'){d.mode='study';ORDER.forEach(function(l){if(typeof d.pos[l+'-job']==='number')d.pos[l+'-study']=d.pos[l+'-job'];});}}
@@ -2700,7 +2861,8 @@ function pathSections(lang){
   if(save.mode==='job'){
     var p=profById(save.prof);
     if(!p)return [];
-    return [{key:p.id,title:p.jp+'の専門会話',sub:p.en+' ・ 仕事で使う会話',ids:p.units[lang].slice(),prof:p}];
+    var pids=p.units[lang].filter(function(u){return !!UNITS[lang][u];});
+    return pids.length?[{key:p.id,title:p.jp+'の専門会話',sub:p.en+' ・ 仕事で使う会話',ids:pids,prof:p}]:[];
   }
   if(save.mode==='study'){
     var has=function(ids){return ids.filter(function(u){return !!UNITS[lang][u];});};
@@ -2911,9 +3073,10 @@ function topBar(title,share){
 }
 function destChips(){
   var h='<div class="dests" role="group" aria-label="学ぶ言語">';
-  ORDER.forEach(function(k){
+  (typeof myLangs==='function'?myLangs():ORDER).forEach(function(k){
     h+='<button class="dest" type="button" data-lang="'+k+'" style="--dc:var(--c-'+k+')" aria-pressed="'+(k===save.lang)+'"><span class="code">'+LANGS[k].code+'</span><span class="nm">'+esc(LANGS[k].name)+'</span></button>';
   });
+  if(typeof myLangs==='function')h+='<button class="dest dest-more" type="button" data-lang-pick aria-label="言語を選ぶ"><span class="code">＋</span><span class="nm">ほかの言語</span></button>';
   return h+'</div>';
 }
 function passHTML(L,uid){
@@ -3014,7 +3177,7 @@ function recordHTML(){
   h+='<div class="kpis">'+
      [['マイル',fmt(save.miles)],['レッスン',fmt(save.flights)],['連続日数',streakNow()+'日'],['学習したフレーズ',fmt(totalLearned())],['定着したフレーズ',fmt(totalMastered())],['スタンプ',stamps]].map(function(k){
        return '<div class="kpi"><span class="lbl">'+k[0]+'</span><div class="v">'+k[1]+'</div></div>';}).join('')+'</div>';
-  ORDER.forEach(function(l){
+  (typeof myLangs==='function'?myLangs():ORDER).forEach(function(l){
     var LG=LANGS[l],ids=pathIdsFor(l);
     h+='<section class="card" style="--lc:var(--c-'+l+')"><div class="card-h"><h2>'+LG.cityEn+' '+LG.code+'</h2><span class="lbl">'+esc(LG.name)+' ・ '+unitsDone(l,ids)+' / '+ids.length+'</span></div><div class="stamps">';
     ids.forEach(function(uid){
@@ -3058,7 +3221,7 @@ function pathIdsFor(l){
   var ids=DAILY_IDS.concat(LANGS[l].units.map(function(u){return u.id;}),TRAVEL_SC,STUDY_ALL,UNITS[l].usuk?['usuk']:[]),p=profById(save.prof);
   if(p)ids=ids.concat(p.units[l]);
   ALL_IDS[l].forEach(function(uid){if(ids.indexOf(uid)<0&&unitRec(l,uid).n>0)ids.push(uid);});
-  return ids;
+  return ids.filter(function(uid){return !!UNITS[l][uid];}); /* a スターター language has no 職業・留学 units yet */
 }
 function profGrid(sel,attr){
   return '<div class="prof-grid">'+PROF.map(function(p){
@@ -3082,7 +3245,7 @@ function onboardHTML(){
   if(obStep===0){
     h+='<div class="brand ob-brand">'+planeIcon()+'Babel<b>Flight</b></div><h1 class="ob-h">日本から世界へ。<br>仕事で使う言葉を、フライト形式で。</h1>'+
        '<p class="dim lead">はじめに4つだけ質問させてね。あなたに合わせて学ぶ内容を組み立てます。</p>'+(typeof acctObHTML==='function'?acctObHTML():'')+'<h2 class="ob-q">どの言語を学ぶ？</h2><div class="lang-grid">'+
-       ORDER.map(function(k){var LG=LANGS[k];return '<button class="langc" type="button" data-ob-lang="'+k+'" style="--dc:var(--c-'+k+')" aria-pressed="'+(D.lang===k)+'"><span class="code">'+LG.code+'</span><b>'+esc(LG.name)+'</b><small>'+esc(LG.native)+' ・ '+esc(LG.city)+'行き</small></button>';}).join('')+'</div>';
+       ORDER.map(function(k){var LG=LANGS[k];return '<button class="langc" type="button" data-ob-lang="'+k+'" style="--dc:var(--c-'+k+')" aria-pressed="'+(D.lang===k)+'"><span class="code">'+LG.code+'</span><b>'+esc(LG.name)+(LG.starter?'<em class="lp-tag">スターター</em>':'')+'</b><small><span class="'+lfc(k)+'">'+esc(LG.native)+'</span> ・ '+esc(LG.city)+'行き</small></button>';}).join('')+'</div>';
   }else if(obStep===1){
     h+='<h2 class="ob-q">どんな仕事で活躍したい？</h2><p class="dim lead">選んだ職業の専門会話を、基本の会話にプラスして学べます。</p>'+profGrid(D.prof,'data-ob-prof');
   }else if(obStep===2){
@@ -3149,16 +3312,56 @@ function stopStatus(L,uid,nextId){
   if(uid===nextId)return {c:'next',t:'次はここ'};
   return {c:'todo',t:''};
 }
+/* the language chips show the current language and every language with a lesson flown;
+   all the others are one tap away in 言語を選ぶ (langPickSheet) */
+function langStarted(k){var p=save.prog&&save.prog[k],u=p&&p.units;if(!u)return false;for(var id in u)if(u[id]&&u[id].n>0)return true;return false;}
+function myLangs(){return ORDER.filter(function(k){return k===save.lang||langStarted(k);});}
+var LANG_SOON=['フランス語','ドイツ語','ポルトガル語','ロシア語','トルコ語','インドネシア語','アラビア語'];
 function heroLangs(){
-  return '<div class="hero-langs" role="group" aria-label="学ぶ言語">'+ORDER.map(function(k){
+  return '<div class="hero-langs" role="group" aria-label="学ぶ言語">'+myLangs().map(function(k){
     return '<button class="hl" type="button" data-lang="'+k+'" style="--dc:var(--c-'+k+')" aria-pressed="'+(k===save.lang)+'"><b class="mono">'+LANGS[k].code+'</b><small>'+esc(LANGS[k].name)+'</small></button>';
-  }).join('')+'</div>';
+  }).join('')+'<button class="hl hl-more" type="button" data-lang-pick aria-label="言語を選ぶ"><b class="mono">＋</b><small>ほかの言語</small></button></div>';
+}
+function langPickSheet(){
+  var mine=myLangs(),rest=ORDER.filter(function(k){return mine.indexOf(k)<0;});
+  function row(k){
+    var LG=LANGS[k],ids=pathIdsFor(k),on=k===save.lang;
+    return '<button class="lp-row" type="button" data-lang="'+k+'" style="--dc:var(--c-'+k+')" aria-pressed="'+on+'"><span class="lp-code mono">'+LG.code+'</span>'+
+      '<span class="lp-nm"><b>'+esc(LG.name)+(LG.starter?'<em class="lp-tag">スターター</em>':'')+'</b><small><span class="'+lfc(k)+'">'+esc(LG.native)+'</span> ・ '+esc(LG.city)+'行き</small></span>'+
+      '<span class="lp-n mono">'+(on?'学習中':unitsDone(k,ids)+'/'+ids.length)+'</span></button>';
+  }
+  $('sheetHost').innerHTML='<div class="sheet plain" role="dialog" aria-label="言語を選ぶ"><div class="sheet-in"><h3>どの言語を学ぶ？</h3>'+
+    '<p class="dim" style="font-size:13.5px">いつでも切り替えられます。進み具合は言語ごとに残ります。</p>'+
+    '<span class="lbl lp-h">学習中</span><div class="lp-list">'+mine.map(row).join('')+'</div>'+
+    (rest.length?'<span class="lbl lp-h">ほかの言語</span><div class="lp-list">'+rest.map(row).join('')+'</div>':'')+
+    (ORDER.some(function(k){return LANGS[k].starter;})?'<p class="dim hint">「スターター」の言語は、今は日常会話モード(あいさつ・旅行フレーズ・旅行の場面の会話)で学べます。職業・留学・検定のコースは準備中です。</p>':'')+
+    '<p class="dim hint">準備中: '+LANG_SOON.join('・')+'</p>'+
+    '<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
+}
+/* with many languages the chip rows scroll sideways: keep the current language in view */
+function langChipsReveal(){
+  document.querySelectorAll('.hero-langs,.dests').forEach(function(row){
+    var b=row.querySelector('[aria-pressed="true"]');if(!b||row.scrollWidth<=row.clientWidth)return;
+    var rr=row.getBoundingClientRect(),br=b.getBoundingClientRect();
+    if(br.right>rr.right)row.scrollLeft+=br.right-rr.right+24;else if(br.left<rr.left)row.scrollLeft-=rr.left-br.left+24;
+  });
+}
+(function(){var r0=render;render=function(){var x=r0.apply(this,arguments);try{langChipsReveal();}catch(e){}return x;};})();
+/* a mode the language doesn't have yet (a スターター language in 職業 / 留学 / 検定) */
+var MODE_JP={daily:'日常会話モード',job:'職業モード',study:'留学モード',exam:'検定モード'};
+function modeSoonHTML(L){
+  var LG=LANGS[L],p=profById(save.prof),what=save.mode==='job'&&p?p.jp+'の専門会話':MODE_JP[save.mode]||'このモード';
+  return '<section class="card empty-job mode-soon"><span class="lbl">'+esc(MODE_JP[save.mode]||'')+' ・ '+esc(LG.name)+'</span><h2 class="jh">'+esc(LG.name)+'の'+esc(what)+'は準備中です</h2>'+
+    '<p class="dim" style="font-size:13.5px;margin-top:4px">今は日常会話モードで、あいさつ・旅行フレーズ・旅行の場面の会話を学べます。ほかのモードも順番に増やしていきます。</p>'+
+    '<button class="go" type="button" data-mode-set="daily">日常会話モードで学ぶ</button></section>';
 }
 function homeHTML(){
   var L=save.lang,LG=LANGS[L],p=profById(save.prof),anim=!!HOME_ANIM&&!reduceMotion,h=topBar('','progress');
   var ids=pathIds(L);
   if(!ids.length){
-    h+='<section class="hero empty"><div class="hero-in"><div class="hud"><div class="hud-l"><span class="lbl">'+esc(LG.cityEn)+' ・ '+esc(LG.name)+'</span><b class="mono">職業を選ぼう</b></div></div>'+heroLangs()+'</div></section>'+modeSwitch();
+    var pick=save.mode==='job'&&!p;
+    h+='<section class="hero empty"><div class="hero-in"><div class="hud"><div class="hud-l"><span class="lbl">'+esc(LG.cityEn)+' ・ '+esc(LG.name)+'</span><b class="mono">'+(pick?'職業を選ぼう':'準備中')+'</b></div></div>'+heroLangs()+'</div></section>'+modeSwitch();
+    if(!pick){h+=modeSoonHTML(L);return h;}
     h+='<section class="card empty-job"><span class="lbl">職業モード</span><h2 class="jh">まずは職業を選ぼう</h2><p class="dim" style="font-size:13.5px;margin-top:4px">パイロット、医療、IT、美容師など13職業から選べます。選んだ職業の専門会話が、地図の上に並びます。</p><button class="go" type="button" data-picker>職業を選ぶ</button></section>';
     return h;
   }
@@ -3346,12 +3549,13 @@ var PRAISE=['正解！','ナイス！','その調子！','いい感じ！','完�
 function dat(it){return UNITS[F.lang][it.uid].items[it.i];}
 function isLong(d){return d.t.length>40;}
 function tokensOf(t){return t.split(' ');}
+function bTok(d){return tokensOf(d.s||d.t);}
 function canDo(kind,it){
   var d=dat(it),LG=LANGS[F.lang];
   if(kind==='listen')return ttsAvail(LG.tts)&&!isLong(d);
   if(kind==='listenjp')return ttsAvail(LG.tts);
-  if(kind==='build'){var n=tokensOf(d.t).length;return n>=3&&n<=8;}
-  if(kind==='type')return F.lang!=='ko'&&d.t.length<=34&&save.level!=='beg';
+  if(kind==='build'){var n=bTok(d).length;return n>=3&&n<=8;}
+  if(kind==='type')return F.lang!=='ko'&&!LANGS[F.lang].noType&&d.t.length<=34&&save.level!=='beg';
   if(kind==='cloze')return !!clozeKey(d);
   return true;
 }
@@ -3406,7 +3610,7 @@ function startFlight(opts){
     '<g id="pp" style="transition:transform .6s ease"><path d="'+PLANE_D+'" fill="var(--ink)" stroke="var(--bg)" stroke-width="1.8" paint-order="stroke"/></g></svg></div>'+
     '<div class="phase"><span id="phl">地上走行</span><span id="phr">FL000 ・ 1/'+q.length+'問</span></div>'+
     '<div id="bd" class="board"></div><div id="led" class="led"></div><div id="q" class="q"></div><div class="pad-b"></div>';
-  board=new Board($('bd'));board.minCols=F.lang==='ko'?9:13;board.set('');
+  board=new Board($('bd'));board.minCols=lfc(F.lang)?9:13;board.set('');
   window.scrollTo(0,0);
   var cc=opts.mode==='unit'?cityFor(F.lang,Math.max(0,pathIds(F.lang).indexOf(opts.uid))):null;
   cineTakeoff({no:id,code:LG.code,city:cc?cc[0]:LG.cityEn,cityJp:cc?cc[1]:LG.city,title:title},function(){if(F&&view==='flight')showStep();});
@@ -3425,7 +3629,7 @@ function updateProfile(){
   var tb=$('turb');tb.textContent='ミス '+F.mist;tb.className='turb'+(F.mist>0?' hot':'');
 }
 function ledSet(main,sub){$('led').innerHTML='<div class="m">'+esc(main)+'</div>'+(sub?'<div class="s">'+esc(sub)+'</div>':'');}
-function koCls(){return F.lang==='ko'?' ko':'';}
+function koCls(){return lfc(F.lang)?' '+lfc(F.lang):'';}
 function hearBtns(){return '<div class="row2"><button class="sq" type="button" data-hear>'+speakerIcon()+'聞く</button><button class="sq" type="button" data-slow>'+speakerIcon()+'ゆっくり</button></div>';}
 var POOL={};
 function langPool(L){
@@ -3493,8 +3697,8 @@ function showStep(){
       optsHTML(jp?'':koCls())+'<button class="sq" type="button" data-peek>音が聞こえない？ 文字を見る</button>';
     speak(d.t,LG.tts,false);
   }else if(q.k==='build'){
-    var tk=tokensOf(d.t),sh=shuffle(tk),tries=0;
-    while(sh.join(' ')===d.t&&tries++<8)sh=shuffle(tk);
+    var tk=bTok(d),sh=shuffle(tk),tries=0;
+    while(sh.join(' ')===tk.join(' ')&&tries++<8)sh=shuffle(tk);
     F.build={tokens:sh,placed:[]};
     board.set('');ledSet(d.jp,'単語を正しい順に並べよう');
     box.innerHTML='<span class="qh">並べ替え'+tag+'</span><div id="tray" class="tray"></div><div id="bank" class="bank"></div>'+
@@ -3564,7 +3768,7 @@ function onCheck(){
   var d=dat(F.cur.it),k=F.cur.k,ok=false;
   if(k==='build'){
     if(!F.build.placed.length)return;
-    ok=F.build.placed.map(function(ti){return F.build.tokens[ti];}).join(' ')===d.t;
+    ok=F.build.placed.map(function(ti){return F.build.tokens[ti];}).join(' ')===bTok(d).join(' ');
   }else if(k==='type'){
     var v=$('ans').value;if(!v.trim())return;
     ok=normAns(v)===normAns(d.t);$('ans').disabled=true;
@@ -3722,7 +3926,7 @@ function completeLesson(o){
   if(remAdded)h+='<div class="up-note rem-note">苦手が多かったので「補習フライト」を追加しました(苦手 '+remAdded+'フレーズ)</div>';
   if(o.wrong&&o.wrong.length){
     h+='<div class="card" style="text-align:left"><div class="card-h"><h2 class="jh">'+esc(o.wrongTitle)+'</h2><span class="lbl">'+esc(o.wrongNote)+'</span></div>'+
-       o.wrong.map(function(d){return '<p style="font-size:14px;margin-top:6px"><b class="'+(L==='ko'?'ko':'')+'">'+esc(d.t)+'</b><br><span class="dim" style="font-size:12.5px">'+esc(d.jp)+'</span></p>';}).join('')+'</div>';
+       o.wrong.map(function(d){return '<p style="font-size:14px;margin-top:6px"><b class="'+lfc(L)+'">'+esc(d.t)+'</b><br><span class="dim" style="font-size:12.5px">'+esc(d.jp)+'</span></p>';}).join('')+'</div>';
   }
   h+='<div class="acts">';
   if(remAdded)h+='<button class="go" type="button" data-rem="'+esc(o.uid)+'">補習フライトへ<small>苦手を別の形で練習 ・ 約'+Math.max(1,Math.round(remAdded*0.6))+'分</small></button>';
@@ -3776,7 +3980,7 @@ function sceneHTML(){
   return h;
 }
 function scLogHTML(){
-  var S=SCX,ko=S.lang==='ko'?' ko':'';
+  var S=SCX,ko=lfc(S.lang)?' '+lfc(S.lang):'';
   return S.log.map(function(m){
     if(m.who==='them'){
       if(m.typing)return '<div class="bub them typing"><i></i><i></i><i></i></div>';
@@ -3797,7 +4001,7 @@ function scPanelHTML(){
   var task='<div class="task"><span class="task-k">こう伝えよう</span><b>'+esc(t.aj)+'</b></div>';
   if(S.stage==='you'){
     if(S.mode==='call')return step+task+'<p class="dim hint">声に出して言ってみよう。言えたらボタンでお手本を確認。</p><button class="go" type="button" data-sc-reveal>言った！ お手本を聞く</button>';
-    return step+task+(S.hint?'<p class="hintline">ヒント: '+esc(t.a.split(' ').slice(0,2).join(' '))+' …</p>':'')+
+    return step+task+(S.hint?'<p class="hintline">ヒント: '+esc(/ /.test(t.a.trim())?t.a.split(' ').slice(0,2).join(' '):Array.from(t.a).slice(0,Math.max(2,Math.floor(Array.from(t.a).length/3))).join(''))+' …</p>':'')+
       '<div class="row2"><input id="scIn" class="typebox" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" lang="'+LANGS[S.lang].tts.slice(0,2)+'" placeholder="'+esc(LANGS[S.lang].name)+'で入力(マイク入力もOK)" aria-label="返事を入力"><button class="go" type="button" data-sc-send style="width:auto;margin:0;padding:12px 16px">送信</button></div>'+
       (S.hint?'':'<button class="sq" type="button" data-sc-hint>ヒントを見る</button>');
   }
@@ -5067,7 +5271,7 @@ try{SHR.on=!window.claude&&!!document.createElement('canvas').getContext;}catch(
 var SHR_W=1080,SHR_H=1920,SHR_CARD={x:90,y:410,w:900,h:1060};
 var SHR_F={disp:'"Barlow Condensed","IBM Plex Sans JP",sans-serif',body:'"IBM Plex Sans JP","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif',mono:'"B612 Mono",ui-monospace,Menlo,monospace',emoji:'"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'};
 var SHR_INK='#101a2b',SHR_SUB='#5b6676',SHR_PAPER='#fffaf0',SHR_TRACK='#ebe3d1';
-var SHR_LC={ko:'#e8505b',en:'#2d6bff',es:'#f08a1c',it:'#17a068'};
+var SHR_LC={ko:'#e8505b',en:'#2d6bff',es:'#f08a1c',it:'#17a068',zh:'#9b5de5'};
 /* status colours on the picture: [strip colour, text on the strip] */
 var SHR_RC=[['#b9773f','#ffffff'],['#a3adbb','#121a26'],['#e3b23c','#1b1500'],['#8cc3d3','#0d1b24'],['#55c4f0','#05202c'],['#16233f','#ffd76a']];
 var SHR_MODE={review:'復習フライト',weak:'弱点コース',ann:'機内アナウンス',lounge:'プラチナラウンジ',rem:'補習フライト',ai:'AIの例文練習',skip:'飛び級テスト'};
@@ -5111,7 +5315,13 @@ function shrLesson(){
 }
 function shrProgress(){
   return {streak:streakNow(),miles:save.miles,learned:totalLearned(),flights:save.flights,rank:statusIdx(),
-    langs:ORDER.map(function(l){var ids=pathIdsFor(l);return {L:l,name:LANGS[l].name,done:unitsDone(l,ids),total:ids.length};})};
+    langs:shrLangs()};
+}
+/* the card has room for 4 languages: the ones being learned, the furthest along first if there are more */
+function shrLangs(){
+  var list=(typeof myLangs==='function'?myLangs():ORDER).map(function(l){var ids=pathIdsFor(l);return {L:l,name:LANGS[l].name,done:unitsDone(l,ids),total:ids.length};});
+  if(list.length>4)list=list.slice().sort(function(a,b){return b.done-a.done||ORDER.indexOf(a.L)-ORDER.indexOf(b.L);}).slice(0,4).sort(function(a,b){return ORDER.indexOf(a.L)-ORDER.indexOf(b.L);});
+  return list;
 }
 function shrStatus(){
   var now=Date.now(),stamps=0,p=profById(save.prof),ic=ICON_MAP[save.icon];
@@ -6312,7 +6522,7 @@ function lcsLen(a,b){
 function sayScore(target,heard,L){
   var a=normSay(target,L),b=normSay(heard,L);
   if(!a||!b)return 0;
-  if(L==='ko'){a=Array.from(a.replace(/ /g,'').normalize('NFD'));b=Array.from(b.replace(/ /g,'').normalize('NFD'));}
+  if(L==='ko'||L==='zh'){a=Array.from(a.replace(/ /g,'').normalize('NFD'));b=Array.from(b.replace(/ /g,'').normalize('NFD'));}
   else{a=a.split(' ');b=b.split(' ');}
   return 2*lcsLen(a,b)/(a.length+b.length);
 }
@@ -6332,7 +6542,7 @@ function pronRun(btn){
     alts.forEach(function(a){var s=sayScore(d.t,a,L);if(s>best){best=s;heard=a;}});
     var lv=best>=0.9?['good','◎ ばっちり！ ちゃんと伝わる発音です']:best>=0.6?['ok','◯ おしい！ 聞こえた言葉と見比べてみよう']:['bad','△ もう一度！ ゆっくり、はっきり言ってみよう'];
     o.className='pron-out '+lv[0];
-    o.innerHTML='<b>'+lv[1]+'</b><span>聞こえた言葉: <q class="'+(L==='ko'?'ko':'')+'">'+esc(heard)+'</q></span>';
+    o.innerHTML='<b>'+lv[1]+'</b><span>聞こえた言葉: <q class="'+lfc(L)+'">'+esc(heard)+'</q></span>';
     if(lv[0]==='good'&&typeof chimeOK==='function')chimeOK();
   },function(on){
     btn.classList.toggle('rec',on);
@@ -6386,7 +6596,7 @@ function reportCardHTML(L){
     '<div><span class="lbl">この7日の正答率</span><b>'+(acc===null?'—':acc+'<small>%</small>')+'</b>'+(diff!==null?'<span class="rep-diff '+(diff>=0?'up':'down')+'">先週より '+(diff>=0?'+':'')+diff+'pt</span>':'')+'</div></div>'+
     '<h3 class="rep-h">苦手なフレーズ TOP5</h3>'+
     (weak.length?'<ol class="rep-weak">'+weak.map(function(x){var d=UNITS[L][x.uid]&&UNITS[L][x.uid].items[x.i];if(!d)return '';
-        return '<li><b class="'+(L==='ko'?'ko':'')+'">'+esc(d.t)+'</b><small>'+esc(d.jp)+' ・ ミス'+x.m+'回</small></li>';}).join('')+'</ol>'+
+        return '<li><b class="'+lfc(L)+'">'+esc(d.t)+'</b><small>'+esc(d.jp)+' ・ ミス'+x.m+'回</small></li>';}).join('')+'</ol>'+
         '<button class="go sm" type="button" data-mode="weak">弱点コースで練習する</button>'
       :'<p class="dim" style="font-size:13px">まだ苦手なフレーズはありません。間違えたフレーズがここに出てきます。</p>');
   if(lv>=2){
@@ -6419,21 +6629,21 @@ function coachRun(){
 /* ---- AI会話ロールプレイ (on top of the AI管制官 engine) ---- */
 var ROLE_SC=[
  {id:'cabin',jp:'機内でCAと話す',sub:'飲み物や毛布をお願いする',who:'CABIN CREW',sit:'国際線の機内。食事の時間です。客室乗務員に話しかけて、飲み物を頼んだり、困っていることを伝えよう。',
-  hint:{en:'Excuse me, could I have some water, please?',ko:'저기요, 물 좀 주시겠어요?',es:'Perdone, ¿me puede traer un poco de agua, por favor?',it:"Scusi, potrei avere un po' d'acqua, per favore?"}},
+  hint:{en:'Excuse me, could I have some water, please?',ko:'저기요, 물 좀 주시겠어요?',es:'Perdone, ¿me puede traer un poco de agua, por favor?',it:"Scusi, potrei avere un po' d'acqua, per favore?",zh:'不好意思，可以给我一杯水吗？'}},
  {id:'immigration',jp:'入国審査',sub:'目的・日数・泊まる場所を答える',who:'IMMIGRATION',sit:'空港の入国審査。係官にあいさつしてパスポートを渡し、質問に答えて入国しよう。',
-  hint:{en:'Hello. Here is my passport.',ko:'안녕하세요. 여기 여권이요.',es:'Hola. Aquí tiene mi pasaporte.',it:'Buongiorno. Ecco il mio passaporto.'}},
+  hint:{en:'Hello. Here is my passport.',ko:'안녕하세요. 여기 여권이요.',es:'Hola. Aquí tiene mi pasaporte.',it:'Buongiorno. Ecco il mio passaporto.',zh:'你好，这是我的护照。'}},
  {id:'hotel',jp:'ホテルのチェックイン',sub:'予約を伝えて、朝食やWi-Fiを聞く',who:'FRONT DESK',sit:'ホテルのフロント。予約していることを伝えて、チェックインしよう。',
-  hint:{en:'Hi, I have a reservation under the name Sato.',ko:'안녕하세요. 사토 이름으로 예약했어요.',es:'Hola, tengo una reserva a nombre de Sato.',it:'Buonasera, ho una prenotazione a nome Sato.'}},
+  hint:{en:'Hi, I have a reservation under the name Sato.',ko:'안녕하세요. 사토 이름으로 예약했어요.',es:'Hola, tengo una reserva a nombre de Sato.',it:'Buonasera, ho una prenotazione a nome Sato.',zh:'你好，我用佐藤的名字预订了房间。'}},
  {id:'restaurant',jp:'レストランで注文',sub:'席・注文・アレルギー・お会計',who:'SERVER',sit:'レストランに入りました。席をお願いして、料理と飲み物を注文しよう。',
-  hint:{en:'Hi, a table for one, please.',ko:'안녕하세요. 한 명이에요.',es:'Hola, una mesa para uno, por favor.',it:'Buonasera, un tavolo per uno, per favore.'}},
+  hint:{en:'Hi, a table for one, please.',ko:'안녕하세요. 한 명이에요.',es:'Hola, una mesa para uno, por favor.',it:'Buonasera, un tavolo per uno, per favore.',zh:'你好，一位。'}},
  {id:'directions',jp:'道をたずねる',sub:'駅への行き方を聞く',who:'LOCAL',sit:'街で道に迷いました。近くの人に、駅への行き方をたずねよう。',
-  hint:{en:'Excuse me, how can I get to the station?',ko:'실례합니다. 역에 어떻게 가요?',es:'Perdone, ¿cómo puedo llegar a la estación?',it:'Scusi, come arrivo alla stazione?'}},
+  hint:{en:'Excuse me, how can I get to the station?',ko:'실례합니다. 역에 어떻게 가요?',es:'Perdone, ¿cómo puedo llegar a la estación?',it:'Scusi, come arrivo alla stazione?',zh:'不好意思，请问去火车站怎么走？'}},
  {id:'homestay',jp:'ホームステイ初日',sub:'あいさつ・家のルール・好きな食べ物',who:'HOST',sit:'ホームステイ先に着きました。ホストファミリーにあいさつして、自己紹介しよう。',
-  hint:{en:"Hi, nice to meet you! I'm Ken from Japan.",ko:'안녕하세요! 일본에서 온 켄이에요.',es:'¡Hola, mucho gusto! Soy Ken, de Japón.',it:'Ciao, piacere! Sono Ken, vengo dal Giappone.'}},
+  hint:{en:"Hi, nice to meet you! I'm Ken from Japan.",ko:'안녕하세요! 일본에서 온 켄이에요.',es:'¡Hola, mucho gusto! Soy Ken, de Japón.',it:'Ciao, piacere! Sono Ken, vengo dal Giappone.',zh:'你好！很高兴认识你，我是从日本来的健。'}},
  {id:'class',jp:'授業で先生に質問',sub:'宿題や授業の内容を聞く',who:'TEACHER',sit:'留学先の授業のあと。先生に話しかけて、宿題について質問しよう。',
-  hint:{en:'Excuse me, I have a question about the homework.',ko:'선생님, 숙제에 대해 질문이 있어요.',es:'Perdone, profesor, tengo una pregunta sobre los deberes.',it:'Scusi, professore, ho una domanda sui compiti.'}},
+  hint:{en:'Excuse me, I have a question about the homework.',ko:'선생님, 숙제에 대해 질문이 있어요.',es:'Perdone, profesor, tengo una pregunta sobre los deberes.',it:'Scusi, professore, ho una domanda sui compiti.',zh:'老师，我有一个关于作业的问题。'}},
  {id:'interview',jp:'スピーキング試験・面接',sub:'自分のことを話す',who:'EXAMINER',sit:'スピーキング試験の部屋に入りました。試験官にあいさつして、質問に答えよう。',
-  hint:{en:'Good morning. Nice to meet you.',ko:'안녕하세요. 만나서 반갑습니다.',es:'Buenos días. Encantado de conocerle.',it:'Buongiorno. Piacere di conoscerla.'}}
+  hint:{en:'Good morning. Nice to meet you.',ko:'안녕하세요. 만나서 반갑습니다.',es:'Buenos días. Encantado de conocerle.',it:'Buongiorno. Piacere di conoscerla.',zh:'早上好，很高兴见到您。'}}
 ];
 var ROLE_LIM=[0,5,15,30],ROLE_KEY='babelflight.roleDay';
 var ROLE={sc:null,L:'en',log:[],ex:[],busy:false,done:false,ctl:null,counted:false,hint:false};
@@ -6453,7 +6663,7 @@ function roleCardHTML(L){
     '<p class="sai-left">'+cabinName(lv)+': 1日'+ROLE_LIM[lv]+'回 ・ 今日はあと'+left+'回</p></section>';
 }
 function roleLogHTML(){
-  var sc=ROLE.sc,ko=ROLE.L==='ko'?' ko':'';
+  var sc=ROLE.sc,ko=lfc(ROLE.L)?' '+lfc(ROLE.L):'';
   return ROLE.log.map(function(m,i){
     if(m.who==='ai')return '<div class="radio"><span class="lbl">'+esc(sc.who)+'</span><p class="'+ko+'" lang="'+ROLE.L+'">'+esc(m.text)+'</p><button class="mini" type="button" data-role-say="'+i+'" aria-label="もう一度聞く">'+speakerIcon()+'</button></div>';
     var fb='';
@@ -6476,7 +6686,7 @@ function roleHTML(){
     h+='<div class="card" style="text-align:center"><b>会話終了。おつかれさま！</b><div class="row2" style="margin-top:10px"><button class="ghost" type="button" data-role-sc="'+ROLE_SC.indexOf(sc)+'" style="flex:1">もう一度</button><button class="ghost" type="button" data-role-list style="flex:1">別の場面</button></div></div>';
   }else{
     h+='<div class="atc-in"><div id="roleHint" class="hintline'+(ROLE.hint?'':' hidden-hint')+'">'+(ROLE.hint?'例: '+esc(sc.hint[L]):'')+'</div>'+
-      '<div class="row2"><input id="roleIn" class="typebox'+(L==='ko'?' ko':'')+'" type="text" lang="'+L+'" placeholder="'+esc(LG.name)+'で返事を書こう" aria-label="返事" autocomplete="off" autocapitalize="none" spellcheck="false">'+
+      '<div class="row2"><input id="roleIn" class="typebox'+(lfc(L)?' '+lfc(L):'')+'" type="text" lang="'+L+'" placeholder="'+esc(LG.name)+'で返事を書こう" aria-label="返事" autocomplete="off" autocapitalize="none" spellcheck="false">'+
       (srCtor()?'<button class="sq role-mic" type="button" data-role-mic aria-label="声で入力">'+micIcon()+'</button>':'')+
       '<button class="go" type="button" data-role-send style="width:auto;margin:0;padding:12px 16px">送信</button></div>'+
       (ROLE.log.length?'':'<button class="sq" type="button" data-role-hint>最初の言い方のヒント</button>')+'</div>';
@@ -6681,7 +6891,7 @@ function promptSync(){
   var mEl=document.querySelector('#led .m'),sEl=document.querySelector('#led .s'),m=mEl?mEl.textContent:'',s=sEl?sEl.textContent:'',b=PROMPT.board,big=b||m,small=[];
   if(b&&m&&!/^[?♪\s]+$/.test(m))small.push(m);
   if(s)small.push(s);
-  p.innerHTML='<span class="cp-m'+(b&&F.lang==='ko'?' ko':'')+'"'+(b?' lang="'+LANGS[F.lang].tts.slice(0,2)+'"':'')+'>'+esc(big)+'</span>'+small.map(function(x){return '<span class="cp-x">'+esc(x)+'</span>';}).join('');
+  p.innerHTML='<span class="cp-m'+(b&&lfc(F.lang)?' '+lfc(F.lang):'')+'"'+(b?' lang="'+LANGS[F.lang].tts.slice(0,2)+'"':'')+'>'+esc(big)+'</span>'+small.map(function(x){return '<span class="cp-x">'+esc(x)+'</span>';}).join('');
   var bar=$('cabBar');
   if(!bar){$('main').insertAdjacentHTML('afterbegin','<div class="cab-bar" id="cabBar" aria-hidden="true"></div>');bar=$('cabBar');}
   bar.style.width=Math.round(F.idx/Math.max(1,F.queue.length)*100)+'%';
@@ -6782,7 +6992,7 @@ function passSync(){
     '<div class="xp-info"><div><small>PASSENGER</small>'+esc(save.name||'GUEST')+'</div><div><small>SEAT</small>'+(F.idx+1)+'A</div><div><small>LESSON</small>'+esc(title)+'</div></div>'+
     '<div class="xp-cut" aria-hidden="true"></div>'+
     '<div class="xp-q">'+small.map(function(x){return '<span class="cp-x">'+esc(x)+'</span>';}).join('')+
-    '<span class="cp-m'+(b&&F.lang==='ko'?' ko':'')+'"'+(b?' lang="'+LANGS[F.lang].tts.slice(0,2)+'"':'')+'>'+esc(big)+'</span></div>';
+    '<span class="cp-m'+(b&&lfc(F.lang)?' '+lfc(F.lang):'')+'"'+(b?' lang="'+LANGS[F.lang].tts.slice(0,2)+'"':'')+'>'+esc(big)+'</span></div>';
 }
 (function(){
   var hh1=homeHTML;
@@ -8809,7 +9019,8 @@ document.addEventListener('click',function(e){
   if(a('data-cine-skip')){cineSkip();return;}
   /* navigation */
   if(a('data-tab')){if(g('data-tab')==='home'&&view!=='home')HOME_ANIM='tab';go(g('data-tab'));return;}
-  if(a('data-lang')){if(save.lang!==g('data-lang')){save.lang=g('data-lang');HOME_ANIM='lang';store();render();}return;}
+  if(a('data-lang-pick')){langPickSheet();return;}
+  if(a('data-lang')){if(t.closest('#sheetHost'))closeSheet();if(save.lang!==g('data-lang')){save.lang=g('data-lang');HOME_ANIM='lang';store();render();}return;}
   if(a('data-mode-set')){if(save.mode!==g('data-mode-set')){save.mode=g('data-mode-set');HOME_ANIM='mode';store();render();}return;}
   if(a('data-node')){openNodeSheet(g('data-node'));return;}
   if(a('data-close-sheet')){closeSheet();return;}

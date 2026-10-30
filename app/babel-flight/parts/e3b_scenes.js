@@ -13,7 +13,7 @@ var SCENE_META={
  'sc-home':{jp:'留学: ホームステイ先で',lat:'HOMESTAY',role:'ホストマザー',ini:'母',sit:'ホームステイ先に帰宅。ホストマザーと話そう。',grp:'study'}
 };
 Object.keys(SCENE_META).forEach(function(k){UM[k]={jp:SCENE_META[k].jp,lat:SCENE_META[k].lat};});
-var SCN={ko:{},en:{},es:{},it:{}};
+var SCN={ko:{},en:{},es:{},it:{}};ORDER.forEach(function(l){if(!SCN[l])SCN[l]={};});
 function SC(lang,id,turns,end){SCN[lang][id]={turns:turns.map(function(t){return {p:t[0],pj:t[1],a:t[2],aj:t[3],r:t[4]||'',n:t[5]||''};}),end:end};}
 /* each turn: [partner line, its Japanese, your answer, its Japanese, reading, note]. Empty partner line = you speak first. */
 

@@ -10,7 +10,8 @@ document.addEventListener('click',function(e){
   if(a('data-cine-skip')){cineSkip();return;}
   /* navigation */
   if(a('data-tab')){if(g('data-tab')==='home'&&view!=='home')HOME_ANIM='tab';go(g('data-tab'));return;}
-  if(a('data-lang')){if(save.lang!==g('data-lang')){save.lang=g('data-lang');HOME_ANIM='lang';store();render();}return;}
+  if(a('data-lang-pick')){langPickSheet();return;}
+  if(a('data-lang')){if(t.closest('#sheetHost'))closeSheet();if(save.lang!==g('data-lang')){save.lang=g('data-lang');HOME_ANIM='lang';store();render();}return;}
   if(a('data-mode-set')){if(save.mode!==g('data-mode-set')){save.mode=g('data-mode-set');HOME_ANIM='mode';store();render();}return;}
   if(a('data-node')){openNodeSheet(g('data-node'));return;}
   if(a('data-close-sheet')){closeSheet();return;}

@@ -3,12 +3,13 @@ var PRAISE=['正解！','ナイス！','その調子！','いい感じ！','完�
 function dat(it){return UNITS[F.lang][it.uid].items[it.i];}
 function isLong(d){return d.t.length>40;}
 function tokensOf(t){return t.split(' ');}
+function bTok(d){return tokensOf(d.s||d.t);}
 function canDo(kind,it){
   var d=dat(it),LG=LANGS[F.lang];
   if(kind==='listen')return ttsAvail(LG.tts)&&!isLong(d);
   if(kind==='listenjp')return ttsAvail(LG.tts);
-  if(kind==='build'){var n=tokensOf(d.t).length;return n>=3&&n<=8;}
-  if(kind==='type')return F.lang!=='ko'&&d.t.length<=34&&save.level!=='beg';
+  if(kind==='build'){var n=bTok(d).length;return n>=3&&n<=8;}
+  if(kind==='type')return F.lang!=='ko'&&!LANGS[F.lang].noType&&d.t.length<=34&&save.level!=='beg';
   if(kind==='cloze')return !!clozeKey(d);
   return true;
 }
@@ -63,7 +64,7 @@ function startFlight(opts){
     '<g id="pp" style="transition:transform .6s ease"><path d="'+PLANE_D+'" fill="var(--ink)" stroke="var(--bg)" stroke-width="1.8" paint-order="stroke"/></g></svg></div>'+
     '<div class="phase"><span id="phl">地上走行</span><span id="phr">FL000 ・ 1/'+q.length+'問</span></div>'+
     '<div id="bd" class="board"></div><div id="led" class="led"></div><div id="q" class="q"></div><div class="pad-b"></div>';
-  board=new Board($('bd'));board.minCols=F.lang==='ko'?9:13;board.set('');
+  board=new Board($('bd'));board.minCols=lfc(F.lang)?9:13;board.set('');
   window.scrollTo(0,0);
   var cc=opts.mode==='unit'?cityFor(F.lang,Math.max(0,pathIds(F.lang).indexOf(opts.uid))):null;
   cineTakeoff({no:id,code:LG.code,city:cc?cc[0]:LG.cityEn,cityJp:cc?cc[1]:LG.city,title:title},function(){if(F&&view==='flight')showStep();});
@@ -82,7 +83,7 @@ function updateProfile(){
   var tb=$('turb');tb.textContent='ミス '+F.mist;tb.className='turb'+(F.mist>0?' hot':'');
 }
 function ledSet(main,sub){$('led').innerHTML='<div class="m">'+esc(main)+'</div>'+(sub?'<div class="s">'+esc(sub)+'</div>':'');}
-function koCls(){return F.lang==='ko'?' ko':'';}
+function koCls(){return lfc(F.lang)?' '+lfc(F.lang):'';}
 function hearBtns(){return '<div class="row2"><button class="sq" type="button" data-hear>'+speakerIcon()+'聞く</button><button class="sq" type="button" data-slow>'+speakerIcon()+'ゆっくり</button></div>';}
 var POOL={};
 function langPool(L){
@@ -150,8 +151,8 @@ function showStep(){
       optsHTML(jp?'':koCls())+'<button class="sq" type="button" data-peek>音が聞こえない？ 文字を見る</button>';
     speak(d.t,LG.tts,false);
   }else if(q.k==='build'){
-    var tk=tokensOf(d.t),sh=shuffle(tk),tries=0;
-    while(sh.join(' ')===d.t&&tries++<8)sh=shuffle(tk);
+    var tk=bTok(d),sh=shuffle(tk),tries=0;
+    while(sh.join(' ')===tk.join(' ')&&tries++<8)sh=shuffle(tk);
     F.build={tokens:sh,placed:[]};
     board.set('');ledSet(d.jp,'単語を正しい順に並べよう');
     box.innerHTML='<span class="qh">並べ替え'+tag+'</span><div id="tray" class="tray"></div><div id="bank" class="bank"></div>'+
@@ -221,7 +222,7 @@ function onCheck(){
   var d=dat(F.cur.it),k=F.cur.k,ok=false;
   if(k==='build'){
     if(!F.build.placed.length)return;
-    ok=F.build.placed.map(function(ti){return F.build.tokens[ti];}).join(' ')===d.t;
+    ok=F.build.placed.map(function(ti){return F.build.tokens[ti];}).join(' ')===bTok(d).join(' ');
   }else if(k==='type'){
     var v=$('ans').value;if(!v.trim())return;
     ok=normAns(v)===normAns(d.t);$('ans').disabled=true;

@@ -1,5 +1,5 @@
 /* ================= PROFESSION DATA ================= */
-var PU={ko:{},en:{},es:{},it:{}};
+var PU={ko:{},en:{},es:{},it:{}};ORDER.forEach(function(l){if(!PU[l])PU[l]={};});
 function PJ(uid,jp,lat,jpList,by){
   UM[uid]={jp:jp,lat:lat};
   ORDER.forEach(function(l){

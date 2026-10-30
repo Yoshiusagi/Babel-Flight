@@ -66,7 +66,7 @@ function passSync(){
     '<div class="xp-info"><div><small>PASSENGER</small>'+esc(save.name||'GUEST')+'</div><div><small>SEAT</small>'+(F.idx+1)+'A</div><div><small>LESSON</small>'+esc(title)+'</div></div>'+
     '<div class="xp-cut" aria-hidden="true"></div>'+
     '<div class="xp-q">'+small.map(function(x){return '<span class="cp-x">'+esc(x)+'</span>';}).join('')+
-    '<span class="cp-m'+(b&&F.lang==='ko'?' ko':'')+'"'+(b?' lang="'+LANGS[F.lang].tts.slice(0,2)+'"':'')+'>'+esc(big)+'</span></div>';
+    '<span class="cp-m'+(b&&lfc(F.lang)?' '+lfc(F.lang):'')+'"'+(b?' lang="'+LANGS[F.lang].tts.slice(0,2)+'"':'')+'>'+esc(big)+'</span></div>';
 }
 (function(){
   var hh1=homeHTML;

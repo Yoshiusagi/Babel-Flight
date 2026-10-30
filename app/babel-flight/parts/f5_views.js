@@ -22,9 +22,10 @@ function topBar(title,share){
 }
 function destChips(){
   var h='<div class="dests" role="group" aria-label="学ぶ言語">';
-  ORDER.forEach(function(k){
+  (typeof myLangs==='function'?myLangs():ORDER).forEach(function(k){
     h+='<button class="dest" type="button" data-lang="'+k+'" style="--dc:var(--c-'+k+')" aria-pressed="'+(k===save.lang)+'"><span class="code">'+LANGS[k].code+'</span><span class="nm">'+esc(LANGS[k].name)+'</span></button>';
   });
+  if(typeof myLangs==='function')h+='<button class="dest dest-more" type="button" data-lang-pick aria-label="言語を選ぶ"><span class="code">＋</span><span class="nm">ほかの言語</span></button>';
   return h+'</div>';
 }
 function passHTML(L,uid){
@@ -125,7 +126,7 @@ function recordHTML(){
   h+='<div class="kpis">'+
      [['マイル',fmt(save.miles)],['レッスン',fmt(save.flights)],['連続日数',streakNow()+'日'],['学習したフレーズ',fmt(totalLearned())],['定着したフレーズ',fmt(totalMastered())],['スタンプ',stamps]].map(function(k){
        return '<div class="kpi"><span class="lbl">'+k[0]+'</span><div class="v">'+k[1]+'</div></div>';}).join('')+'</div>';
-  ORDER.forEach(function(l){
+  (typeof myLangs==='function'?myLangs():ORDER).forEach(function(l){
     var LG=LANGS[l],ids=pathIdsFor(l);
     h+='<section class="card" style="--lc:var(--c-'+l+')"><div class="card-h"><h2>'+LG.cityEn+' '+LG.code+'</h2><span class="lbl">'+esc(LG.name)+' ・ '+unitsDone(l,ids)+' / '+ids.length+'</span></div><div class="stamps">';
     ids.forEach(function(uid){
@@ -169,7 +170,7 @@ function pathIdsFor(l){
   var ids=DAILY_IDS.concat(LANGS[l].units.map(function(u){return u.id;}),TRAVEL_SC,STUDY_ALL,UNITS[l].usuk?['usuk']:[]),p=profById(save.prof);
   if(p)ids=ids.concat(p.units[l]);
   ALL_IDS[l].forEach(function(uid){if(ids.indexOf(uid)<0&&unitRec(l,uid).n>0)ids.push(uid);});
-  return ids;
+  return ids.filter(function(uid){return !!UNITS[l][uid];}); /* a スターター language has no 職業・留学 units yet */
 }
 function profGrid(sel,attr){
   return '<div class="prof-grid">'+PROF.map(function(p){
@@ -193,7 +194,7 @@ function onboardHTML(){
   if(obStep===0){
     h+='<div class="brand ob-brand">'+planeIcon()+'Babel<b>Flight</b></div><h1 class="ob-h">日本から世界へ。<br>仕事で使う言葉を、フライト形式で。</h1>'+
        '<p class="dim lead">はじめに4つだけ質問させてね。あなたに合わせて学ぶ内容を組み立てます。</p>'+(typeof acctObHTML==='function'?acctObHTML():'')+'<h2 class="ob-q">どの言語を学ぶ？</h2><div class="lang-grid">'+
-       ORDER.map(function(k){var LG=LANGS[k];return '<button class="langc" type="button" data-ob-lang="'+k+'" style="--dc:var(--c-'+k+')" aria-pressed="'+(D.lang===k)+'"><span class="code">'+LG.code+'</span><b>'+esc(LG.name)+'</b><small>'+esc(LG.native)+' ・ '+esc(LG.city)+'行き</small></button>';}).join('')+'</div>';
+       ORDER.map(function(k){var LG=LANGS[k];return '<button class="langc" type="button" data-ob-lang="'+k+'" style="--dc:var(--c-'+k+')" aria-pressed="'+(D.lang===k)+'"><span class="code">'+LG.code+'</span><b>'+esc(LG.name)+(LG.starter?'<em class="lp-tag">スターター</em>':'')+'</b><small><span class="'+lfc(k)+'">'+esc(LG.native)+'</span> ・ '+esc(LG.city)+'行き</small></button>';}).join('')+'</div>';
   }else if(obStep===1){
     h+='<h2 class="ob-q">どんな仕事で活躍したい？</h2><p class="dim lead">選んだ職業の専門会話を、基本の会話にプラスして学べます。</p>'+profGrid(D.prof,'data-ob-prof');
   }else if(obStep===2){

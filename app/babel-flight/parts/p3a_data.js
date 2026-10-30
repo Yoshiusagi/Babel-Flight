@@ -1,5 +1,5 @@
 /* ================= DATA ================= */
-function U(id,a){return {id:id,items:a.map(function(x){return {jp:x[0],t:x[1],r:x[2]||'',n:x[3]||''};})};}
+function U(id,a){return {id:id,items:a.map(function(x){return {jp:x[0],t:x[1],r:x[2]||'',n:x[3]||'',s:x[4]||''};})};}
 var UM={
   checkin:{jp:'チェックイン',lat:'CHECK-IN'},
   inflight:{jp:'機内',lat:'IN-FLIGHT'},

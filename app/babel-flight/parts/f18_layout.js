@@ -106,7 +106,7 @@ function promptSync(){
   var mEl=document.querySelector('#led .m'),sEl=document.querySelector('#led .s'),m=mEl?mEl.textContent:'',s=sEl?sEl.textContent:'',b=PROMPT.board,big=b||m,small=[];
   if(b&&m&&!/^[?♪\s]+$/.test(m))small.push(m);
   if(s)small.push(s);
-  p.innerHTML='<span class="cp-m'+(b&&F.lang==='ko'?' ko':'')+'"'+(b?' lang="'+LANGS[F.lang].tts.slice(0,2)+'"':'')+'>'+esc(big)+'</span>'+small.map(function(x){return '<span class="cp-x">'+esc(x)+'</span>';}).join('');
+  p.innerHTML='<span class="cp-m'+(b&&lfc(F.lang)?' '+lfc(F.lang):'')+'"'+(b?' lang="'+LANGS[F.lang].tts.slice(0,2)+'"':'')+'>'+esc(big)+'</span>'+small.map(function(x){return '<span class="cp-x">'+esc(x)+'</span>';}).join('');
   var bar=$('cabBar');
   if(!bar){$('main').insertAdjacentHTML('afterbegin','<div class="cab-bar" id="cabBar" aria-hidden="true"></div>');bar=$('cabBar');}
   bar.style.width=Math.round(F.idx/Math.max(1,F.queue.length)*100)+'%';

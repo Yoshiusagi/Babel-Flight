@@ -55,7 +55,7 @@ var PROF=[
  {id:'lab',code:'LAB',jp:'研究者',en:'RESEARCHER'},
  {id:'sport',code:'ATH',jp:'スポーツ選手',en:'ATHLETE'}
 ];
-PROF.forEach(function(p){if(!p.units){p.units={};ORDER.forEach(function(l){p.units[l]=[p.id];});}});
+PROF.forEach(function(p){if(!p.units){p.units={};ORDER.forEach(function(l){p.units[l]=[p.id];});}ORDER.forEach(function(l){if(!p.units[l])p.units[l]=[];});});
 function profById(id){for(var i=0;i<PROF.length;i++)if(PROF[i].id===id)return PROF[i];return null;}
 /* every unit of a language, by id */
 var UNITS={};
