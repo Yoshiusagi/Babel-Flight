@@ -29,7 +29,7 @@ function stopStatus(L,uid,nextId){
    all the others are one tap away in 言語を選ぶ (langPickSheet) */
 function langStarted(k){var p=save.prog&&save.prog[k],u=p&&p.units;if(!u)return false;for(var id in u)if(u[id]&&u[id].n>0)return true;return false;}
 function myLangs(){return ORDER.filter(function(k){return k===save.lang||langStarted(k);});}
-var LANG_SOON=['ドイツ語','ポルトガル語','ロシア語','トルコ語','インドネシア語','アラビア語'];
+var LANG_SOON=['ロシア語','トルコ語','インドネシア語','アラビア語'];
 function heroLangs(){
   return '<div class="hero-langs" role="group" aria-label="学ぶ言語">'+myLangs().map(function(k){
     return '<button class="hl" type="button" data-lang="'+k+'" style="--dc:var(--c-'+k+')" aria-pressed="'+(k===save.lang)+'"><b class="mono">'+LANGS[k].code+'</b><small>'+esc(LANGS[k].name)+'</small></button>';
@@ -159,7 +159,12 @@ function mapMount(){
   var vw=cw/s,vh=heroH/s,follow=vw<bw*0.98;
   var X0=bx[0]-padx,X1=bx[1]+padx,Y0=bx[2]-pady-28,Y1=bx[3]+pady+12;
   function camAt(focus){
-    if(!follow)return {x:(X0+X1)/2,y:(Y0+Y1)/2};
+    if(!follow){
+      /* the whole route fits: keep the next stop out from under the HUD (top) and the language chips (bottom) */
+      var c={x:(X0+X1)/2,y:(Y0+Y1)/2},nx=nextI>=0?pts[nextI]:null;
+      if(nx){var sy=(nx.y-c.y)*s+heroH/2,lo=heroH-108,hi=118;if(lo>hi){if(sy>lo)c.y+=(sy-lo)/s;else if(sy<hi)c.y-=(hi-sy)/s;}}
+      return c;
+    }
     return {x:clamp(focus.x,X0+vw/2,X1-vw/2),y:clamp(focus.y,Math.min(Y0+vh/2,(Y0+Y1)/2),Math.max(Y1-vh/2,(Y0+Y1)/2))};
   }
   var tk=proj(L,TOKYO[2],TOKYO[3]),nextI=ids.indexOf(nextPathUnit(L));

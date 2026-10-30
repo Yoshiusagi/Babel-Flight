@@ -18,6 +18,8 @@ var CUR_WORDS={
   en:[['hello','こんにちは'],['sky','空'],['fly','飛ぶ'],['plane','飛行機'],['pilot','パイロット'],['cloud','雲'],['Tokyo','東京'],['London','ロンドン']],
   es:[['hola','こんにちは'],['cielo','空'],['vuelo','フライト'],['playa','ビーチ'],['amigo','友だち'],['Madrid','マドリード']],
   fr:[['bonjour','こんにちは'],['ciel','空'],['avion','飛行機'],['merci','ありがとう'],['ami','友だち'],['Paris','パリ']],
+  de:[['hallo','こんにちは'],['Himmel','空'],['Flug','フライト'],['danke','ありがとう'],['Freund','友だち'],['Berlin','ベルリン']],
+  pt:[['oi','やあ'],['obrigado','ありがとう'],['amigo','友だち'],['praia','ビーチ'],['viagem','旅'],['Rio','リオ']],
   it:[['ciao','こんにちは'],['cielo','空'],['volo','フライト'],['grazie','ありがとう'],['amico','友だち'],['Roma','ローマ']]
 };
 var CUR_GR=['','△','◯','◎'];

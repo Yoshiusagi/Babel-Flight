@@ -21,6 +21,8 @@ p3a_data.js
 p3b_data.js
 p3c_zh.js
 p3c_fr.js
+p3c_de.js
+p3c_pt.js
 d1_prof.js
 d2_prof.js
 d3_prof.js
@@ -30,6 +32,8 @@ e3c_scenes.js
 e3d_geo.js
 e3g_zh.js
 e3g_fr.js
+e3g_de.js
+e3g_pt.js
 e3e_reg.js
 e3f_enuk.js
 d4_more1.js

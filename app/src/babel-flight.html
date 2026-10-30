@@ -40,7 +40,7 @@
   --good:#0f8a52; --bad:#cf3342; --info:#2563eb;
   --shadow:rgba(11,22,38,.16);
   --board:#080a0f; --flap:#ffd23f; --led:#ff9f2e;
-  --c-ko:#e8505b; --c-en:#2d6bff; --c-es:#f08a1c; --c-it:#17a068; --c-zh:#9b5de5; --c-fr:#d6457f;
+  --c-ko:#e8505b; --c-en:#2d6bff; --c-es:#f08a1c; --c-it:#17a068; --c-zh:#9b5de5; --c-fr:#d6457f; --c-de:#0f8b8d; --c-pt:#4c8f00;
   --lc:var(--c-ko);
   --f-disp:'Barlow Condensed','BF Pinyin','IBM Plex Sans JP',system-ui,sans-serif;
   --f-body:'BF Pinyin','IBM Plex Sans JP','Hiragino Sans','Yu Gothic',system-ui,sans-serif;
@@ -2013,6 +2013,137 @@ LANGS.fr={name:'フランス語',native:'Français',city:'パリ',cityEn:'PARIS'
   ])
  ]};
 ORDER.push('fr');
+/* ================= ドイツ語 — starter course =================
+   Travel phrases here; daily phrases, scenes and the route map in e3g_de.js. Readings in katakana. */
+LANGS.de={name:'ドイツ語',native:'Deutsch',city:'フランクフルト',cityEn:'FRANKFURT',code:'FRA',tts:'de-DE',km:9350,letter:'G',hasYomi:true,starter:true,units:[
+  U("checkin",[
+   ["こんにちは", "Guten Tag.", "グーテン ターク", "昼間のていねいなあいさつ。南ドイツでは「Grüß Gott」もよく聞きます。"],
+   ["チェックインしたいのですが", "Ich möchte einchecken.", "イッヒ メヒテ アインチェッケン", "「Ich möchte〜」=〜したいのですが(ていねい)。"],
+   ["こちらが私のパスポートです", "Hier ist mein Reisepass.", "ヒア イスト マイン ライゼパス", "「Reisepass」は短く「Pass」とも言います。"],
+   ["窓側の席をお願いします", "Einen Fensterplatz, bitte.", "アイネン フェンスタープラッツ ビッテ", "「bitte」=お願いします。通路側は「Gangplatz」。"],
+   ["預ける荷物が1つあります", "Ich habe einen Koffer zum Aufgeben.", "イッヒ ハーベ アイネン コッファー ツム アウフゲーベン", "「aufgeben」=(荷物を)預ける。"],
+   ["搭乗口はどこですか", "Wo ist das Gate?", "ヴォー イスト ダス ゲート", "空港の搭乗口は英語と同じ「Gate」。"],
+   ["搭乗は何時ですか", "Wann ist das Boarding?", "ヴァン イスト ダス ボーディング", "「wann」=いつ。"],
+   ["便は定刻通りですか", "Ist der Flug pünktlich?", "イスト デア フルーク ピュンクトリヒ", "動詞を文の最初に出すと「〜ですか?」の質問になります。"]
+  ]),
+  U("inflight",[
+   ["水を一杯お願いします", "Ein Glas Wasser, bitte.", "アイン グラース ヴァッサー ビッテ", ""],
+   ["ブランケットをいただけますか", "Könnte ich eine Decke haben?", "ケンテ イッヒ アイネ デッケ ハーベン", "「Könnte ich〜?」=〜してもいいですか(ていねい)。"],
+   ["チキンをお願いします", "Das Hähnchen, bitte.", "ダス ヘーンヒェン ビッテ", "機内食で「Hähnchen oder Rind?(チキンとビーフ、どちら?)」と聞かれたときに。"],
+   ["お手洗いはどこですか", "Wo ist die Toilette?", "ヴォー イスト ディー トワレッテ", ""],
+   ["すみません、通ってもいいですか", "Entschuldigung, darf ich vorbei?", "エントシュルディグング ダルフ イッヒ フォアバイ", "「darf ich〜?」=〜してもいいですか。"],
+   ["気分が悪いです", "Mir ist schlecht.", "ミア イスト シュレヒト", "直訳は「私には気分が悪い」。"],
+   ["着陸まであとどれくらいですか", "Wie lange dauert es noch bis zur Landung?", "ヴィー ランゲ ダウアート エス ノッホ ビス ツーア ランドゥング", "「Wie lange〜?」=どのくらい(時間)。"],
+   ["電気を消していただけますか", "Könnten Sie bitte das Licht ausmachen?", "ケンテン ズィー ビッテ ダス リヒト アウスマッヘン", "「Sie」は知らない人へのていねいな「あなた」。"]
+  ]),
+  U("immigration",[
+   ["観光で来ました", "Ich bin als Tourist hier.", "イッヒ ビン アルス トゥリスト ヒア", "女性は「Touristin」。"],
+   ["5日間滞在します", "Ich bleibe fünf Tage.", "イッヒ ブライベ フュンフ ターゲ", "「bleiben」=とどまる・滞在する。"],
+   ["市内のホテルに泊まります", "Ich wohne in einem Hotel in der Innenstadt.", "イッヒ ヴォーネ イン アイネム ホテル イン デア インネンシュタット", "「Innenstadt」=街の中心部。"],
+   ["日本から来ました", "Ich komme aus Japan.", "イッヒ コメ アウス ヤーパン", "ドイツ語では「Japan」を「ヤーパン」と読みます。"],
+   ["帰りの航空券があります", "Ich habe ein Rückflugticket.", "イッヒ ハーベ アイン リュックフルークティケット", "「Rückflug」=帰りの便。"],
+   ["申告するものはありません", "Ich habe nichts zu verzollen.", "イッヒ ハーベ ニヒツ ツー フェアツォレン", "「nichts」=何も〜ない。"],
+   ["一人で旅行しています", "Ich reise allein.", "イッヒ ライゼ アライン", ""],
+   ["もう一度言っていただけますか", "Können Sie das bitte wiederholen?", "ケネン ズィー ダス ビッテ ヴィーダーホーレン", ""]
+  ]),
+  U("hotel",[
+   ["予約しています", "Ich habe eine Reservierung.", "イッヒ ハーベ アイネ レゼルヴィールング", ""],
+   ["一泊いくらですか", "Was kostet eine Nacht?", "ヴァス コステット アイネ ナハト", "「Was kostet〜?」=〜はいくらですか。"],
+   ["朝食は含まれていますか", "Ist das Frühstück inklusive?", "イスト ダス フリューシュテュック インクルズィーヴェ", ""],
+   ["Wi-Fiのパスワードは何ですか", "Wie ist das WLAN-Passwort?", "ヴィー イスト ダス ヴェーラン パスヴォルト", "ドイツではWi-Fiを「WLAN(ヴェーラン)」と言います。"],
+   ["チェックアウトは何時ですか", "Wann ist der Check-out?", "ヴァン イスト デア チェックアウト", ""],
+   ["エアコンが動きません", "Die Klimaanlage funktioniert nicht.", "ディー クリーマアンラーゲ フンクツィオニーアト ニヒト", "「nicht」=〜ない(否定)。"],
+   ["荷物を預かっていただけますか", "Können Sie mein Gepäck aufbewahren?", "ケネン ズィー マイン ゲペック アウフベヴァーレン", ""],
+   ["タオルがもう一枚必要です", "Ich brauche noch ein Handtuch.", "イッヒ ブラウヘ ノッホ アイン ハントゥーフ", "「noch ein〜」=もう1つの〜。"]
+  ]),
+  U("restaurant",[
+   ["2名でお願いします", "Einen Tisch für zwei, bitte.", "アイネン ティッシュ フューア ツヴァイ ビッテ", ""],
+   ["メニューをお願いします", "Die Speisekarte, bitte.", "ディー シュパイゼカルテ ビッテ", "飲み物のメニューは「Getränkekarte」。"],
+   ["おすすめは何ですか", "Was empfehlen Sie?", "ヴァス エンプフェーレン ズィー", ""],
+   ["ナッツアレルギーがあります", "Ich bin allergisch gegen Nüsse.", "イッヒ ビン アレルギッシュ ゲーゲン ニュッセ", "「allergisch gegen〜」=〜にアレルギーがある。"],
+   ["とてもおいしいです！", "Das ist sehr lecker!", "ダス イスト ゼーア レッカー", ""],
+   ["お会計をお願いします", "Die Rechnung, bitte.", "ディー レヒヌング ビッテ", "「Zahlen, bitte!(ツァーレン ビッテ)」もよく使います。"],
+   ["カードで払えますか", "Kann ich mit Karte zahlen?", "カン イッヒ ミット カルテ ツァーレン", "ドイツでは現金しか使えないお店もあります。"],
+   ["辛くしないでください", "Bitte nicht scharf.", "ビッテ ニヒト シャルフ", "「scharf」=辛い。"]
+  ]),
+  U("city",[
+   ["駅へはどう行けばいいですか", "Wie komme ich zum Bahnhof?", "ヴィー コメ イッヒ ツム バーンホーフ", "大きな中央駅は「Hauptbahnhof(Hbf)」。"],
+   ["道に迷いました", "Ich habe mich verlaufen.", "イッヒ ハーベ ミッヒ フェアラウフェン", ""],
+   ["写真を撮っていただけますか", "Könnten Sie ein Foto von uns machen?", "ケンテン ズィー アイン フォト フォン ウンス マッヘン", ""],
+   ["助けて！", "Hilfe!", "ヒルフェ", "命が危ないときの「助けて!」。"],
+   ["財布をなくしました", "Ich habe mein Portemonnaie verloren.", "イッヒ ハーベ マイン ポルトモネー フェアローレン", "財布は「Geldbeutel」とも言います。"],
+   ["一番近い薬局はどこですか", "Wo ist die nächste Apotheke?", "ヴォー イスト ディー ネーヒステ アポテーケ", "ドイツの薬局は赤い「A」の看板が目印です。"],
+   ["医者が必要です", "Ich brauche einen Arzt.", "イッヒ ブラウヘ アイネン アルツト", ""],
+   ["もっとゆっくり話してください", "Können Sie bitte langsamer sprechen?", "ケネン ズィー ビッテ ラングザーマー シュプレッヒェン", ""]
+  ])
+ ]};
+ORDER.push('de');
+/* ================= ポルトガル語 (Brazil) — starter course =================
+   Brazilian Portuguese (pt-BR). Travel phrases here; daily phrases, scenes and the route map in e3g_pt.js.
+   Readings in katakana, as spoken in Brazil (de = ヂ, -te = チ). */
+LANGS.pt={name:'ポルトガル語',native:'Português',city:'サンパウロ',cityEn:'SÃO PAULO',code:'GRU',tts:'pt-BR',km:18500,letter:'H',hasYomi:true,starter:true,units:[
+  U("checkin",[
+   ["こんにちは", "Olá!", "オラー", "いつでも使える「こんにちは」。朝は「Bom dia」、午後は「Boa tarde」。"],
+   ["チェックインしたいのですが", "Eu gostaria de fazer o check-in.", "エウ ゴスタリーア ヂ ファゼール ウ シェッキン", "「Eu gostaria de〜」=〜したいのですが(ていねい)。"],
+   ["こちらが私のパスポートです", "Aqui está o meu passaporte.", "アキ エスター ウ メウ パサポールチ", "ブラジルでは語末の「te」を「チ」と読みます。"],
+   ["窓側の席をお願いします", "Um assento na janela, por favor.", "ウン アセントゥ ナ ジャネーラ ポル ファヴォール", "「por favor」=お願いします。通路側は「no corredor」。"],
+   ["預ける荷物が1つあります", "Tenho uma mala para despachar.", "テーニョ ウマ マーラ パラ デスパシャール", "「despachar」=(荷物を)預ける。"],
+   ["搭乗口はどこですか", "Onde fica o portão de embarque?", "オンヂ フィカ ウ ポルタォン ヂ エンバルキ", "「Onde fica〜?」=〜はどこですか。"],
+   ["搭乗は何時ですか", "Que horas é o embarque?", "キ オーラス エ ウ エンバルキ", ""],
+   ["便は定刻通りですか", "O voo está no horário?", "ウ ヴォー エスター ノ オラーリオ", "「h」は読みません。"]
+  ]),
+  U("inflight",[
+   ["水を一杯お願いします", "Um copo de água, por favor.", "ウン コポ ヂ アグア ポル ファヴォール", ""],
+   ["ブランケットをいただけますか", "Pode me dar um cobertor?", "ポヂ ミ ダール ウン コベルトール", "「Pode〜?」=〜してもらえますか。"],
+   ["チキンをお願いします", "Frango, por favor.", "フランゴ ポル ファヴォール", "機内食で「Frango ou carne?(チキンとビーフ、どちら?)」と聞かれたときに。"],
+   ["お手洗いはどこですか", "Onde fica o banheiro?", "オンヂ フィカ ウ バニェイロ", ""],
+   ["すみません、通ってもいいですか", "Com licença, posso passar?", "コン リセンサ ポッソ パサール", "「Com licença」=失礼します・通してください。"],
+   ["気分が悪いです", "Não estou me sentindo bem.", "ナォン エストウ ミ センチンドゥ ベン", "「não」=〜ない(否定)。"],
+   ["着陸まであとどれくらいですか", "Quanto tempo falta para pousar?", "クアントゥ テンポ ファウタ パラ ポウザール", "「falta」=足りない・残っている。"],
+   ["電気を消していただけますか", "Pode apagar a luz, por favor?", "ポヂ アパガール ア ルース ポル ファヴォール", ""]
+  ]),
+  U("immigration",[
+   ["観光で来ました", "Vim fazer turismo.", "ヴィン ファゼール トゥリズモ", ""],
+   ["5日間滞在します", "Vou ficar cinco dias.", "ヴォウ フィカール スィンコ ヂーアス", "「ficar」=滞在する・とどまる。"],
+   ["市内のホテルに泊まります", "Vou ficar num hotel no centro.", "ヴォウ フィカール ヌン オテウ ノ セントロ", "「num」=em+um(〜の中に)。"],
+   ["日本から来ました", "Eu venho do Japão.", "エウ ヴェーニョ ド ジャパォン", ""],
+   ["帰りの航空券があります", "Tenho a passagem de volta.", "テーニョ ア パサージェン ヂ ヴォウタ", "「passagem」=航空券・乗車券。"],
+   ["申告するものはありません", "Não tenho nada a declarar.", "ナォン テーニョ ナダ ア デクララール", ""],
+   ["一人で旅行しています", "Estou viajando sozinho.", "エストウ ヴィアジャンドゥ ソズィーニョ", "女性は「sozinha」。"],
+   ["もう一度言っていただけますか", "Pode repetir, por favor?", "ポヂ ヘペチール ポル ファヴォール", "語頭の「r」は「ハ行」に近い音です。"]
+  ]),
+  U("hotel",[
+   ["予約しています", "Tenho uma reserva.", "テーニョ ウマ ヘゼルヴァ", ""],
+   ["一泊いくらですか", "Quanto custa a diária?", "クアントゥ クスタ ア ヂアーリア", "「diária」=1泊の料金。"],
+   ["朝食は含まれていますか", "O café da manhã está incluído?", "ウ カフェ ダ マニャン エスター インクルイードゥ", "「café da manhã」=朝食(直訳は「朝のコーヒー」)。"],
+   ["Wi-Fiのパスワードは何ですか", "Qual é a senha do Wi-Fi?", "クアウ エ ア セーニャ ド ワイファイ", "「senha」=パスワード・暗証番号。"],
+   ["チェックアウトは何時ですか", "Que horas é o check-out?", "キ オーラス エ ウ シェッカウチ", ""],
+   ["エアコンが動きません", "O ar-condicionado não está funcionando.", "ウ アール コンヂスィオナードゥ ナォン エスター フンスィオナンドゥ", ""],
+   ["荷物を預かっていただけますか", "Pode guardar a minha bagagem?", "ポヂ グアルダール ア ミーニャ バガージェン", ""],
+   ["タオルがもう一枚必要です", "Preciso de mais uma toalha.", "プレスィーズ ヂ マイス ウマ トアーリャ", "「precisar de〜」=〜が必要。"]
+  ]),
+  U("restaurant",[
+   ["2名でお願いします", "Uma mesa para dois, por favor.", "ウマ メーザ パラ ドイス ポル ファヴォール", ""],
+   ["メニューをお願いします", "O cardápio, por favor.", "ウ カルダーピオ ポル ファヴォール", "ブラジルでは「cardápio」。ポルトガルでは「ementa」と言います。"],
+   ["おすすめは何ですか", "O que você recomenda?", "ウ キ ヴォセ ヘコメンダ", ""],
+   ["ナッツアレルギーがあります", "Tenho alergia a castanhas.", "テーニョ アレルジーア ア カスターニャス", ""],
+   ["とてもおいしいです！", "Está uma delícia!", "エスター ウマ デリースィア", ""],
+   ["お会計をお願いします", "A conta, por favor.", "ア コンタ ポル ファヴォール", ""],
+   ["カードで払えますか", "Posso pagar com cartão?", "ポッソ パガール コン カルタォン", ""],
+   ["辛くしないでください", "Sem pimenta, por favor.", "セン ピメンタ ポル ファヴォール", "「sem〜」=〜なしで。"]
+  ]),
+  U("city",[
+   ["駅へはどう行けばいいですか", "Como chego à estação?", "コモ シェーゴ ア エスタサォン", "「Como chego a〜?」=〜へはどう行けば?"],
+   ["道に迷いました", "Estou perdido.", "エストウ ペルヂードゥ", "女性は「perdida」。"],
+   ["写真を撮っていただけますか", "Pode tirar uma foto nossa?", "ポヂ チラール ウマ フォト ノッサ", ""],
+   ["助けて！", "Socorro!", "ソコーホ", "命が危ないときの「助けて!」。"],
+   ["財布をなくしました", "Perdi a minha carteira.", "ペルヂ ア ミーニャ カルテイラ", ""],
+   ["一番近い薬局はどこですか", "Onde fica a farmácia mais próxima?", "オンヂ フィカ ア ファルマースィア マイス プロスィマ", ""],
+   ["医者が必要です", "Preciso de um médico.", "プレスィーズ ヂ ウン メヂコ", ""],
+   ["もっとゆっくり話してください", "Pode falar mais devagar?", "ポヂ ファラール マイス デヴァガール", ""]
+  ])
+ ]};
+ORDER.push('pt');
 /* ================= PROFESSION DATA ================= */
 var PU={ko:{},en:{},es:{},it:{}};ORDER.forEach(function(l){if(!PU[l])PU[l]={};});
 function PJ(uid,jp,lat,jpList,by){
@@ -2483,6 +2614,158 @@ SC('fr',"sc-booking",[["Désolé, je ne trouve pas votre réservation.", "申し
 /* route map: Paris, Normandy and Brittany, down the Atlantic coast, the south, the Alps and back north */
 CITIES.fr=[["PARIS", "パリ", 48.86, 2.35], ["VERSAILLES", "ヴェルサイユ", 48.8, 2.13], ["ROUEN", "ルーアン", 49.44, 1.1], ["LE HAVRE", "ル・アーヴル", 49.49, 0.11], ["CAEN", "カーン", 49.18, -0.37], ["MT ST-MICHEL", "モン・サン＝ミシェル", 48.64, -1.51], ["SAINT-MALO", "サン・マロ", 48.65, -2.02], ["RENNES", "レンヌ", 48.11, -1.68], ["BREST", "ブレスト", 48.39, -4.49], ["NANTES", "ナント", 47.22, -1.55], ["LA ROCHELLE", "ラ・ロシェル", 46.16, -1.15], ["BORDEAUX", "ボルドー", 44.84, -0.58], ["BIARRITZ", "ビアリッツ", 43.48, -1.56], ["TOULOUSE", "トゥールーズ", 43.6, 1.44], ["CARCASSONNE", "カルカソンヌ", 43.21, 2.35], ["MONTPELLIER", "モンペリエ", 43.61, 3.88], ["AVIGNON", "アヴィニョン", 43.95, 4.81], ["MARSEILLE", "マルセイユ", 43.3, 5.37], ["CANNES", "カンヌ", 43.55, 7.01], ["NICE", "ニース", 43.7, 7.27], ["GRENOBLE", "グルノーブル", 45.19, 5.72], ["ANNECY", "アヌシー", 45.9, 6.13], ["LYON", "リヨン", 45.76, 4.84], ["DIJON", "ディジョン", 47.32, 5.04], ["STRASBOURG", "ストラスブール", 48.57, 7.75], ["REIMS", "ランス", 49.26, 4.03], ["LILLE", "リール", 50.63, 3.06], ["AMIENS", "アミアン", 49.89, 2.3]];
 REGIONS.fr={b:[-6,10.5,41,51.5],H:310,polys:[[-6.0, 41.0, -6.0, 43.56, -5.3, 43.53, -4.5, 43.4, -3.8, 43.47, -3.0, 43.38, -2.4, 43.32, -1.78, 43.37, -1.48, 43.55, -1.3, 44.3, -1.25, 44.65, -1.18, 45.1, -1.06, 45.57, -1.2, 45.95, -1.15, 46.16, -1.4, 46.35, -1.78, 46.5, -2.05, 46.85, -2.2, 47.27, -2.55, 47.3, -3.12, 47.48, -3.37, 47.72, -3.95, 47.85, -4.37, 47.8, -4.73, 48.04, -4.6, 48.3, -4.77, 48.33, -4.79, 48.41, -4.55, 48.6, -3.98, 48.73, -3.44, 48.83, -3.0, 48.78, -2.76, 48.53, -2.3, 48.65, -2.02, 48.65, -1.51, 48.64, -1.6, 48.84, -1.62, 49.2, -1.85, 49.55, -1.94, 49.72, -1.62, 49.65, -1.26, 49.7, -1.15, 49.35, -0.6, 49.34, -0.25, 49.29, 0.1, 49.45, 0.2, 49.7, 0.37, 49.76, 1.08, 49.93, 1.55, 50.22, 1.6, 50.73, 1.85, 50.96, 2.37, 51.05, 2.92, 51.23, 3.36, 51.37, 3.8, 51.5, 10.5, 51.5, 10.5, 43.6, 10.3, 43.55, 10.25, 43.9, 9.85, 44.08, 9.4, 44.25, 8.93, 44.41, 8.48, 44.31, 8.03, 43.88, 7.77, 43.82, 7.42, 43.73, 7.27, 43.7, 7.13, 43.56, 6.95, 43.53, 6.64, 43.27, 6.2, 43.1, 5.93, 43.1, 5.37, 43.3, 5.05, 43.33, 4.6, 43.4, 4.2, 43.47, 3.7, 43.4, 3.25, 43.25, 3.05, 42.95, 3.04, 42.7, 3.17, 42.45, 3.32, 42.32, 3.18, 42.1, 3.13, 41.85, 2.7, 41.65, 2.17, 41.38, 1.81, 41.24, 1.25, 41.12, 0.95, 41.0], [9.35, 43.01, 9.47, 42.8, 9.45, 42.7, 9.55, 42.35, 9.55, 42.1, 9.4, 41.85, 9.28, 41.59, 9.16, 41.39, 8.9, 41.55, 8.74, 41.92, 8.6, 42.1, 8.58, 42.3, 8.76, 42.57, 9.05, 42.7, 9.3, 42.68, 9.33, 42.85], [-5.71, 50.07, -5.2, 49.96, -5.07, 50.15, -4.6, 50.33, -4.14, 50.37, -3.64, 50.22, -3.41, 50.62, -2.95, 50.71, -2.45, 50.52, -1.88, 50.72, -1.4, 50.8, -0.8, 50.78, -0.14, 50.82, 0.25, 50.73, 0.97, 50.91, 1.32, 51.13, 1.45, 51.38, 0.9, 51.48, 0.6, 51.5, -2.7, 51.5, -2.98, 51.35, -3.48, 51.21, -4.12, 51.21, -4.53, 51.02, -4.94, 50.54, -5.08, 50.42, -5.48, 50.21]]};
+/* ================= ドイツ語: daily phrases, travel scenes, route map ================= */
+DU.de=[
+  U("greet",[
+   ["こんばんは", "Guten Abend.", "グーテン アーベント", ""],
+   ["はじめまして", "Freut mich.", "フロイト ミッヒ", "「Freut mich, dich kennenzulernen.(知り合えてうれしい)」を短くした形。"],
+   ["元気？", "Wie geht's?", "ヴィー ゲーツ", ""],
+   ["元気だよ、ありがとう。君は？", "Gut, danke. Und dir?", "グート ダンケ ウント ディア", "ていねいには「Und Ihnen?」。"],
+   ["久しぶり！", "Lange nicht gesehen!", "ランゲ ニヒト ゲゼーエン", ""],
+   ["じゃあね！", "Tschüss!", "チュス", "友だちどうしの「じゃあね」。ていねいには「Auf Wiedersehen」。"],
+   ["またあとで", "Bis später!", "ビス シュペーター", ""],
+   ["よい一日を", "Schönen Tag noch!", "シェーネン ターク ノッホ", ""]
+  ]),
+  U("intro",[
+   ["日本人です", "Ich bin Japaner.", "イッヒ ビン ヤパーナー", "女性は「Japanerin(ヤパーネリン)」。"],
+   ["東京に住んでいます", "Ich wohne in Tokio.", "イッヒ ヴォーネ イン トーキオ", "ドイツ語で東京は「Tokio」とつづります。"],
+   ["学生です", "Ich bin Schüler.", "イッヒ ビン シューラー", "中高生は「Schüler」、大学生は「Student」。"],
+   ["音楽が大好きです", "Ich liebe Musik.", "イッヒ リーベ ムズィーク", ""],
+   ["ドイツ語を勉強しています", "Ich lerne Deutsch.", "イッヒ レルネ ドイチュ", ""],
+   ["名前は何ていうの？", "Wie heißt du?", "ヴィー ハイスト ドゥー", "「ß」は「ss」と同じ音です。"],
+   ["どこの出身？", "Woher kommst du?", "ヴォーヘア コムスト ドゥー", ""],
+   ["友だちになろう！", "Lass uns Freunde sein!", "ラス ウンス フロインデ ザイン", ""]
+  ]),
+  U("num",[
+   ["これはいくらですか", "Was kostet das?", "ヴァス コステット ダス", ""],
+   ["10ユーロです", "Das kostet zehn Euro.", "ダス コステット ツェーン オイロ", "ドイツ語でユーロは「オイロ」と読みます。"],
+   ["高すぎます", "Das ist zu teuer.", "ダス イスト ツー トイアー", ""],
+   ["もっと安いのはありますか", "Haben Sie etwas Günstigeres?", "ハーベン ズィー エトヴァス ギュンスティゲレス", ""],
+   ["これを2つください", "Zwei davon, bitte.", "ツヴァイ ダフォン ビッテ", ""],
+   ["全部でいくらですか", "Was macht das zusammen?", "ヴァス マハト ダス ツザメン", ""],
+   ["おつりはとっておいてください", "Stimmt so.", "シュティムト ゾー", "チップを含めて払うときの決まり文句です。"],
+   ["レシートをもらえますか", "Kann ich eine Quittung haben?", "カン イッヒ アイネ クヴィットゥング ハーベン", ""]
+  ]),
+  U("time",[
+   ["何時ですか", "Wie spät ist es?", "ヴィー シュペート イスト エス", ""],
+   ["3時半です", "Es ist halb vier.", "エス イスト ハルプ フィーア", "「halb vier」は「4時に向かって半分」=3時半。数字に注意!"],
+   ["今日は何曜日？", "Welcher Tag ist heute?", "ヴェルヒャー ターク イスト ホイテ", ""],
+   ["また明日", "Bis morgen!", "ビス モルゲン", ""],
+   ["今週末はひまだよ", "Am Wochenende habe ich Zeit.", "アム ヴォッヘンエンデ ハーベ イッヒ ツァイト", "「Zeit haben」=時間がある・ひま。"],
+   ["何時に会う？", "Wann treffen wir uns?", "ヴァン トレッフェン ヴィア ウンス", ""],
+   ["少し遅れます", "Ich komme etwas später.", "イッヒ コメ エトヴァス シュペーター", ""],
+   ["遅れてごめん", "Entschuldige die Verspätung.", "エントシュルディゲ ディー フェアシュペートゥング", ""]
+  ]),
+  U("feel",[
+   ["すごくうれしい！", "Ich freue mich so!", "イッヒ フロイエ ミッヒ ゾー", ""],
+   ["疲れました", "Ich bin müde.", "イッヒ ビン ミューデ", ""],
+   ["お腹がすきました", "Ich habe Hunger.", "イッヒ ハーベ フンガー", "直訳は「空腹を持っている」。"],
+   ["頭が痛いです", "Ich habe Kopfschmerzen.", "イッヒ ハーベ コプフシュメルツェン", "「Kopf(頭)」+「Schmerzen(痛み)」。"],
+   ["大丈夫です", "Mir geht's gut.", "ミア ゲーツ グート", ""],
+   ["ごめんなさい", "Es tut mir leid.", "エス トゥート ミア ライト", ""],
+   ["楽しかった！", "Das hat Spaß gemacht!", "ダス ハット シュパース ゲマハト", ""],
+   ["心配しないで", "Keine Sorge.", "カイネ ゾルゲ", ""]
+  ]),
+  U("chat",[
+   ["趣味は何？", "Was sind deine Hobbys?", "ヴァス ズィント ダイネ ホビース", ""],
+   ["K-POPが好きです", "Ich mag K-Pop.", "イッヒ マーク ケイポップ", ""],
+   ["週末は何してる？", "Was machst du am Wochenende?", "ヴァス マハスト ドゥー アム ヴォッヘンエンデ", ""],
+   ["映画に行かない？", "Wollen wir ins Kino gehen?", "ヴォレン ヴィア インス キーノ ゲーエン", ""],
+   ["いいよ！", "Gern!", "ゲルン", ""],
+   ["番号を交換しない？", "Tauschen wir Nummern?", "タウシェン ヴィア ヌマーン", ""],
+   ["本当に？", "Echt?", "エヒト", ""],
+   ["すごい！", "Super!", "ズーパー", ""]
+  ])
+];
+
+SC('de',"sc-imm",[["Guten Tag. Ihren Pass, bitte.", "こんにちは。パスポートをお願いします", "Bitte schön.", "はい、どうぞ", "ビッテ シェーン", ""], ["Was ist der Zweck Ihrer Reise?", "旅行の目的は何ですか", "Ich bin als Tourist hier.", "観光で来ました", "イッヒ ビン アルス トゥリスト ヒア", ""], ["Wie lange bleiben Sie?", "どのくらい滞在しますか", "Eine Woche.", "1週間です", "アイネ ヴォッヘ", ""], ["Wo übernachten Sie?", "どこに泊まりますか", "In einem Hotel in der Innenstadt.", "中心街のホテルです", "イン アイネム ホテル イン デア インネンシュタット", ""]],["Alles klar. Willkommen in Deutschland!", "わかりました。ドイツへようこそ!"]);
+SC('de',"sc-cafe",[["Hallo! Was darf es sein?", "こんにちは!何にしますか", "Ein Käsebrötchen, bitte.", "チーズをはさんだパンをください", "アイン ケーゼブレートヒェン ビッテ", "「Brötchen」はドイツの定番の丸い小さなパンです。"], ["Und zu trinken?", "お飲み物は?", "Einen Orangensaft, bitte.", "オレンジジュースをお願いします", "アイネン オランジェンザフト ビッテ", ""], ["Zum Hieressen oder zum Mitnehmen?", "ここで食べますか、持ち帰りますか", "Zum Mitnehmen, bitte.", "持ち帰りでお願いします", "ツム ミットネーメン ビッテ", ""], ["Das macht sieben Euro achtzig.", "7ユーロ80です", "Kann ich mit Karte zahlen?", "カードで払えますか", "カン イッヒ ミット カルテ ツァーレン", ""]],["Ja, natürlich. Schönen Tag noch!", "はい、もちろん。よい一日を!"]);
+SC('de',"sc-hotel",[["Guten Abend. Wie kann ich Ihnen helfen?", "こんばんは。ご用件を伺います", "Guten Abend, ich habe eine Reservierung.", "こんばんは、予約しています", "グーテン アーベント イッヒ ハーベ アイネ レゼルヴィールング", ""], ["Auf welchen Namen?", "どなたのお名前で?", "Auf den Namen Sato.", "佐藤の名前です", "アウフ デン ナーメン サトー", ""], ["Ihren Ausweis, bitte.", "身分証をお願いします", "Ja, hier ist mein Pass.", "はい、パスポートです", "ヤー ヒア イスト マイン パス", ""], ["Zimmer 512. Frühstück gibt es ab sieben Uhr.", "512号室です。朝食は7時からです", "Wann ist der Check-out?", "チェックアウトは何時ですか", "ヴァン イスト デア チェックアウト", ""]],["Um elf Uhr. Einen schönen Aufenthalt!", "11時です。ごゆっくりどうぞ!"]);
+SC('de',"sc-rest",[["Guten Abend. Wie viele Personen?", "こんばんは。何名様ですか", "Zwei Personen, bitte.", "2人です", "ツヴァイ ペルゾーネン ビッテ", ""], ["Haben Sie schon gewählt?", "お決まりですか", "Was empfehlen Sie?", "おすすめは何ですか", "ヴァス エンプフェーレン ズィー", ""], ["Das Schnitzel ist heute sehr gut.", "今日はシュニッツェル(カツレツ)がおいしいですよ", "Dann nehme ich das Schnitzel.", "じゃあ、シュニッツェルにします", "ダン ネーメ イッヒ ダス シュニッツェル", "「Ich nehme〜」=〜にします(注文するときの言い方)。"], ["Noch etwas?", "ほかには?", "Nein, danke. Die Rechnung, bitte.", "いいえ、結構です。お会計をお願いします", "ナイン ダンケ ディー レヒヌング ビッテ", ""]],["Kommt sofort.", "すぐにお持ちします"]);
+SC('de',"sc-card",[["Tut mir leid, Ihre Karte wurde abgelehnt.", "申し訳ありません、カードが通りません", "Können Sie es bitte noch einmal versuchen?", "もう一度試してもらえますか", "ケネン ズィー エス ビッテ ノッホ アインマール フェアズーヘン", ""], ["Es geht immer noch nicht.", "やっぱり使えません", "Kann ich eine andere Karte benutzen?", "別のカードを使ってもいいですか", "カン イッヒ アイネ アンデレ カルテ ベヌッツェン", ""], ["Die geht leider auch nicht.", "こちらも使えません", "Gibt es hier in der Nähe einen Geldautomaten?", "近くにATMはありますか", "ギプト エス ヒア イン デア ネーエ アイネン ゲルトアウトマーテン", "ドイツには現金しか使えないお店もまだあります。"], ["Ja, neben dem Eingang.", "はい、入口の横です", "Danke. Ich bin gleich zurück.", "ありがとう。すぐ戻ります", "ダンケ イッヒ ビン グライヒ ツリュック", ""]],["Kein Problem. Ich warte.", "大丈夫ですよ。お待ちしています"]);
+SC('de',"sc-wc",[["", "", "Entschuldigung, wo ist die Toilette?", "すみません、お手洗いはどこですか", "エントシュルディグング ヴォー イスト ディー トワレッテ", "「Entschuldigung」は話しかけるときの「すみません」。"], ["Geradeaus und am Ende links.", "まっすぐ行って、突き当たりを左です", "Entschuldigung, können Sie das wiederholen?", "すみません、もう一度言ってもらえますか", "エントシュルディグング ケネン ズィー ダス ヴィーダーホーレン", ""], ["Geradeaus, dann links. Neben dem Aufzug.", "まっすぐ行って左。エレベーターの横です", "Neben dem Aufzug. Alles klar.", "エレベーターの横ですね。わかりました", "ネーベン デム アウフツーク アレス クラール", ""], ["Sonst noch etwas?", "ほかに何かありますか", "Nein, vielen Dank!", "いいえ、本当にありがとうございます!", "ナイン フィーレン ダンク", ""]],["Bitte schön. Gute Reise!", "どういたしまして。よい旅を!"]);
+SC('de',"sc-wallet",[["", "", "Entschuldigung, ich habe mein Portemonnaie verloren.", "すみません、財布をなくしました", "エントシュルディグング イッヒ ハーベ マイン ポルトモネー フェアローレン", ""], ["Oh je. Wo haben Sie es verloren?", "それは大変。どこでなくしましたか", "Ich glaube, im Bus.", "バスの中だと思います", "イッヒ グラウベ イム ブス", ""], ["Wie sieht es aus?", "どんな財布ですか", "Es ist schwarz und klein.", "黒くて小さいです", "エス イスト シュヴァルツ ウント クライン", ""], ["Bitte füllen Sie dieses Formular aus.", "この用紙に記入してください", "Kann ich eine Kopie der Anzeige bekommen?", "届け出の控えをもらえますか", "カン イッヒ アイネ コピー デア アンツァイゲ ベコメン", "警察への届け出の控えは、海外旅行保険の請求に必要です。"]],["Natürlich. Wir melden uns, wenn wir es finden.", "もちろん。見つかったら連絡します"]);
+SC('de',"sc-booking",[["Tut mir leid, ich finde Ihre Reservierung nicht.", "申し訳ありません、ご予約が見つかりません", "Hier ist die Bestätigungsmail.", "これが予約確認のメールです", "ヒア イスト ディー ベシュテーティグングスメール", ""], ["Diese Reservierung ist für nächsten Monat.", "このご予約は来月になっています", "Oh nein! Haben Sie ein Zimmer für heute Nacht?", "えっ!今夜泊まれる部屋はありますか", "オー ナイン ハーベン ズィー アイン ツィマー フューア ホイテ ナハト", ""], ["Wir haben ein Doppelzimmer für hundertzwanzig Euro.", "ダブルルームが120ユーロで空いています", "Ist das Frühstück inklusive?", "朝食は付いていますか", "イスト ダス フリューシュテュック インクルズィーヴェ", ""], ["Ja, das ist inklusive.", "はい、付いています", "Gut, ich nehme es.", "わかりました、その部屋にします", "グート イッヒ ネーメ エス", ""]],["Perfekt. Hier ist Ihr Schlüssel.", "承知しました。こちらが鍵です"]);
+
+/* route map: Frankfurt, the south-west, Bavaria, the east, Berlin, the north coast and the Rhine */
+CITIES.de=[["FRANKFURT", "フランクフルト", 50.11, 8.68], ["MAINZ", "マインツ", 50.0, 8.27], ["HEIDELBERG", "ハイデルベルク", 49.4, 8.69], ["STUTTGART", "シュトゥットガルト", 48.78, 9.18], ["FREIBURG", "フライブルク", 47.99, 7.84], ["KONSTANZ", "コンスタンツ", 47.66, 9.18], ["FÜSSEN", "フュッセン", 47.57, 10.7], ["MÜNCHEN", "ミュンヘン", 48.14, 11.58], ["REGENSBURG", "レーゲンスブルク", 49.01, 12.1], ["NÜRNBERG", "ニュルンベルク", 49.45, 11.08], ["ROTHENBURG", "ローテンブルク", 49.38, 10.18], ["WÜRZBURG", "ヴュルツブルク", 49.79, 9.95], ["BAMBERG", "バンベルク", 49.89, 10.89], ["DRESDEN", "ドレスデン", 51.05, 13.74], ["LEIPZIG", "ライプツィヒ", 51.34, 12.37], ["WEIMAR", "ヴァイマル", 50.98, 11.33], ["BERLIN", "ベルリン", 52.52, 13.4], ["POTSDAM", "ポツダム", 52.39, 13.07], ["ROSTOCK", "ロストック", 54.09, 12.1], ["LÜBECK", "リューベック", 53.87, 10.69], ["HAMBURG", "ハンブルク", 53.55, 9.99], ["BREMEN", "ブレーメン", 53.08, 8.8], ["HANNOVER", "ハノーファー", 52.37, 9.74], ["MÜNSTER", "ミュンスター", 51.96, 7.63], ["DORTMUND", "ドルトムント", 51.51, 7.47], ["DÜSSELDORF", "デュッセルドルフ", 51.23, 6.77], ["KÖLN", "ケルン", 50.94, 6.96], ["BONN", "ボン", 50.74, 7.1]];
+REGIONS.de={b:[2,19,46.5,55.5],H:290,polys:[[2.0, 46.5, 2.0, 51.02, 2.55, 51.09, 3.2, 51.35, 3.6, 51.45, 4.0, 51.85, 4.12, 51.98, 4.45, 52.25, 4.58, 52.46, 4.7, 52.95, 5.42, 53.17, 6.0, 53.4, 6.8, 53.45, 7.2, 53.33, 7.2, 53.6, 8.0, 53.7, 8.1, 53.52, 8.58, 53.55, 8.7, 53.87, 8.86, 54.13, 9.05, 54.48, 8.6, 54.9, 8.45, 55.47, 8.4, 55.5, 9.75, 55.5, 9.6, 55.2, 9.6, 55.0, 9.45, 54.8, 10.15, 54.35, 10.9, 54.35, 10.85, 53.95, 11.45, 53.9, 12.1, 54.17, 12.5, 54.45, 13.1, 54.3, 13.4, 54.5, 13.8, 54.2, 14.25, 53.92, 15.0, 54.05, 15.58, 54.18, 16.5, 54.55, 17.55, 54.77, 18.6, 54.6, 18.65, 54.4, 19.0, 54.35, 19.0, 46.5], [9.85, 55.45, 10.4, 55.5, 10.8, 55.3, 10.75, 55.05, 10.25, 55.05, 9.75, 55.25], [11.1, 55.5, 12.5, 55.5, 12.45, 55.25, 12.1, 55.0, 11.7, 55.15, 11.2, 55.2], [11.0, 54.85, 11.9, 54.95, 12.1, 54.7, 11.5, 54.6, 11.0, 54.7], [12.9, 55.5, 13.0, 55.38, 13.4, 55.35, 14.2, 55.38, 14.35, 55.5], [14.7, 55.1, 15.15, 55.15, 15.1, 54.98, 14.7, 55.0]]};
+/* ================= ポルトガル語 (Brazil): daily phrases, travel scenes, route map ================= */
+DU.pt=[
+  U("greet",[
+   ["こんばんは", "Boa noite.", "ボア ノイチ", "夜のあいさつ。別れるときの「おやすみ」にも使います。"],
+   ["はじめまして", "Prazer!", "プラゼール", "「Muito prazer!」とも言います。"],
+   ["元気？", "Tudo bem?", "トゥードゥ ベン", "ブラジルでいちばんよく使うあいさつ。答えも「Tudo bem!」でOK。"],
+   ["元気だよ、ありがとう。君は？", "Tudo bem, obrigado. E você?", "トゥードゥ ベン オブリガードゥ イ ヴォセ", "「ありがとう」は男性は「obrigado」、女性は「obrigada」。"],
+   ["久しぶり！", "Quanto tempo!", "クアントゥ テンポ", ""],
+   ["じゃあね！", "Tchau!", "チャウ", "イタリア語の「Ciao」から来た言葉です。"],
+   ["またあとで", "Até mais tarde!", "アテ マイス タルヂ", "「Até logo!」とも言います。"],
+   ["よい一日を", "Tenha um bom dia!", "テーニャ ウン ボン ヂーア", ""]
+  ]),
+  U("intro",[
+   ["日本人です", "Sou japonês.", "ソウ ジャポネース", "女性は「japonesa(ジャポネーザ)」。"],
+   ["東京に住んでいます", "Moro em Tóquio.", "モーロ エン トーキオ", "ポルトガル語で東京は「Tóquio」とつづります。"],
+   ["学生です", "Sou estudante.", "ソウ エストゥダンチ", ""],
+   ["音楽が大好きです", "Adoro música.", "アドーロ ムズィカ", ""],
+   ["ポルトガル語を勉強しています", "Estou aprendendo português.", "エストウ アプレンデンドゥ ポルトゥゲース", "「estar＋〜ndo」=〜している(進行中)。"],
+   ["名前は何ていうの？", "Como você se chama?", "コモ ヴォセ スィ シャーマ", ""],
+   ["どこの出身？", "De onde você é?", "ヂ オンヂ ヴォセ エ", ""],
+   ["友だちになろう！", "Vamos ser amigos!", "ヴァモス セール アミーゴス", ""]
+  ]),
+  U("num",[
+   ["これはいくらですか", "Quanto custa isso?", "クアントゥ クスタ イッソ", ""],
+   ["10レアルです", "São dez reais.", "サォン デス ヘアイス", "ブラジルのお金は「real(ヘアウ)」。複数形は「reais」。"],
+   ["高すぎます", "Está muito caro.", "エスター ムイトゥ カーロ", ""],
+   ["もっと安いのはありますか", "Tem algum mais barato?", "テン アウグン マイス バラートゥ", ""],
+   ["これを2つください", "Quero dois desses, por favor.", "ケーロ ドイス デッスィス ポル ファヴォール", ""],
+   ["全部でいくらですか", "Quanto fica tudo?", "クアントゥ フィカ トゥードゥ", ""],
+   ["おつりはとっておいてください", "Pode ficar com o troco.", "ポヂ フィカール コン ウ トロコ", ""],
+   ["レシートをもらえますか", "Pode me dar o recibo?", "ポヂ ミ ダール ウ ヘスィーボ", ""]
+  ]),
+  U("time",[
+   ["何時ですか", "Que horas são?", "キ オーラス サォン", ""],
+   ["3時半です", "São três e meia.", "サォン トレース イ メイア", "「e meia」=半。"],
+   ["今日は何曜日？", "Que dia é hoje?", "キ ヂーア エ オージ", ""],
+   ["また明日", "Até amanhã!", "アテ アマニャン", ""],
+   ["今週末はひまだよ", "Estou livre neste fim de semana.", "エストウ リーヴリ ネスチ フィン ヂ セマーナ", ""],
+   ["何時に会う？", "Que horas a gente se encontra?", "キ オーラス ア ジェンチ スィ エンコントラ", "「a gente」=私たち(話し言葉)。"],
+   ["少し遅れます", "Vou chegar um pouco atrasado.", "ヴォウ シェガール ウン ポウコ アトラザードゥ", ""],
+   ["遅れてごめん", "Desculpa o atraso.", "デスクウパ ウ アトラーゾ", ""]
+  ]),
+  U("feel",[
+   ["すごくうれしい！", "Estou muito feliz!", "エストウ ムイトゥ フェリース", ""],
+   ["疲れました", "Estou cansado.", "エストウ カンサードゥ", "女性は「cansada」。"],
+   ["お腹がすきました", "Estou com fome.", "エストウ コン フォーミ", "直訳は「空腹と一緒にいる」。"],
+   ["頭が痛いです", "Estou com dor de cabeça.", "エストウ コン ドール ヂ カベッサ", ""],
+   ["大丈夫です", "Estou bem.", "エストウ ベン", ""],
+   ["ごめんなさい", "Desculpa.", "デスクウパ", ""],
+   ["楽しかった！", "Foi muito divertido!", "フォイ ムイトゥ ヂヴェルチードゥ", ""],
+   ["心配しないで", "Não se preocupe.", "ナォン スィ プレオクーピ", ""]
+  ]),
+  U("chat",[
+   ["趣味は何？", "Quais são seus hobbies?", "クアイス サォン セウス ホビス", ""],
+   ["K-POPが好きです", "Eu gosto de K-pop.", "エウ ゴストゥ ヂ ケイポップ", "「gostar de〜」=〜が好き。"],
+   ["週末は何してる？", "O que você faz no fim de semana?", "ウ キ ヴォセ ファス ノ フィン ヂ セマーナ", ""],
+   ["映画に行かない？", "Vamos ao cinema?", "ヴァモス アウ スィネマ", ""],
+   ["いいよ！", "Beleza!", "ベレーザ", "ブラジルの話し言葉の「OK!」。"],
+   ["番号を交換しない？", "Vamos trocar números?", "ヴァモス トロカール ヌメロス", "ブラジルではWhatsAppで連絡を取るのが一般的です。"],
+   ["本当に？", "Sério?", "セーリオ", ""],
+   ["すごい！", "Que legal!", "キ レガウ", ""]
+  ])
+];
+
+SC('pt',"sc-imm",[["Bom dia. Passaporte, por favor.", "おはようございます。パスポートをお願いします", "Aqui está.", "はい、どうぞ", "アキ エスター", ""], ["Qual é o motivo da viagem?", "旅行の目的は何ですか", "Vim fazer turismo.", "観光で来ました", "ヴィン ファゼール トゥリズモ", ""], ["Quanto tempo vai ficar?", "どのくらい滞在しますか", "Uma semana.", "1週間です", "ウマ セマーナ", ""], ["Onde vai se hospedar?", "どこに泊まりますか", "Num hotel no centro.", "中心街のホテルです", "ヌン オテウ ノ セントロ", ""]],["Tudo bem. Bem-vindo ao Brasil!", "わかりました。ブラジルへようこそ!"]);
+SC('pt',"sc-cafe",[["Oi! O que vai ser?", "こんにちは!何にしますか", "Um misto-quente, por favor.", "ハムとチーズのホットサンドをください", "ウン ミストゥ ケンチ ポル ファヴォール", "「misto-quente」はブラジルの定番ホットサンドです。"], ["E para beber?", "飲み物は?", "Um suco de laranja, por favor.", "オレンジジュースをお願いします", "ウン スーコ ヂ ラランジャ ポル ファヴォール", ""], ["Para comer aqui ou para viagem?", "ここで食べますか、持ち帰りますか", "Para viagem, por favor.", "持ち帰りでお願いします", "パラ ヴィアージェン ポル ファヴォール", "持ち帰りは「para viagem(旅行用に)」と言います。"], ["Deu vinte e cinco reais.", "25レアルです", "Posso pagar com cartão?", "カードで払えますか", "ポッソ パガール コン カルタォン", ""]],["Pode, sim. Tenha um bom dia!", "はい、どうぞ。よい一日を!"]);
+SC('pt',"sc-hotel",[["Boa noite. Posso ajudar?", "こんばんは。ご用件を伺います", "Boa noite, tenho uma reserva.", "こんばんは、予約しています", "ボア ノイチ テーニョ ウマ ヘゼルヴァ", ""], ["Em nome de quem?", "どなたのお名前で?", "Em nome de Sato.", "佐藤の名前です", "エン ノーミ ヂ サトウ", ""], ["Um documento, por favor.", "身分証をお願いします", "Claro, aqui está o meu passaporte.", "はい、パスポートです", "クラーロ アキ エスター ウ メウ パサポールチ", ""], ["Quarto 512. O café da manhã é a partir das sete.", "512号室です。朝食は7時からです", "Que horas é o check-out?", "チェックアウトは何時ですか", "キ オーラス エ ウ シェッカウチ", ""]],["Ao meio-dia. Boa estadia!", "お昼の12時です。ごゆっくりどうぞ!"]);
+SC('pt',"sc-rest",[["Boa noite. Quantas pessoas?", "こんばんは。何名様ですか", "Duas pessoas.", "2人です", "ドゥアス ペッソアス", ""], ["Já escolheram?", "お決まりですか", "O que você recomenda?", "おすすめは何ですか", "ウ キ ヴォセ ヘコメンダ", ""], ["A feijoada está ótima hoje.", "今日はフェイジョアーダ(豆と肉の煮込み)がおいしいですよ", "Então, uma feijoada, por favor.", "じゃあ、フェイジョアーダをお願いします", "エントン ウマ フェイジョアーダ ポル ファヴォール", ""], ["Mais alguma coisa?", "ほかには?", "Não, obrigado. A conta, por favor.", "いいえ、結構です。お会計をお願いします", "ナォン オブリガードゥ ア コンタ ポル ファヴォール", ""]],["Já trago.", "すぐにお持ちします"]);
+SC('pt',"sc-card",[["Desculpe, o seu cartão foi recusado.", "申し訳ありません、カードが通りません", "Pode tentar de novo, por favor?", "もう一度試してもらえますか", "ポヂ テンタール ヂ ノーヴォ ポル ファヴォール", ""], ["Ainda não passou.", "やっぱり使えません", "Posso usar outro cartão?", "別のカードを使ってもいいですか", "ポッソ ウザール オウトロ カルタォン", ""], ["Esse também não passou.", "こちらも使えません", "Tem um caixa eletrônico aqui perto?", "近くにATMはありますか", "テン ウン カイシャ エレトローニコ アキ ペルトゥ", "ブラジルでは「Pix」というスマホ送金で払う人もとても多いです。"], ["Tem, sim. Ao lado da entrada.", "はい、入口の横にあります", "Obrigado. Já volto.", "ありがとう。すぐ戻ります", "オブリガードゥ ジャー ヴォウトゥ", ""]],["Sem problema. Eu espero.", "大丈夫ですよ。お待ちしています"]);
+SC('pt',"sc-wc",[["", "", "Com licença, onde fica o banheiro?", "すみません、お手洗いはどこですか", "コン リセンサ オンヂ フィカ ウ バニェイロ", "「Com licença」は話しかけるときの「すみません」。"], ["Siga em frente e vire à esquerda no final.", "まっすぐ行って、突き当たりを左です", "Desculpe, pode repetir?", "すみません、もう一度言ってもらえますか", "デスクウピ ポヂ ヘペチール", ""], ["Em frente e à esquerda. Fica ao lado do elevador.", "まっすぐ行って左。エレベーターの横です", "Ao lado do elevador. Entendi.", "エレベーターの横ですね。わかりました", "アウ ラードゥ ド エレヴァドール エンテンヂ", ""], ["Mais alguma coisa?", "ほかに何かありますか", "Não, muito obrigado!", "いいえ、本当にありがとうございます!", "ナォン ムイトゥ オブリガードゥ", ""]],["De nada. Boa viagem!", "どういたしまして。よい旅を!"]);
+SC('pt',"sc-wallet",[["", "", "Com licença, perdi a minha carteira.", "すみません、財布をなくしました", "コン リセンサ ペルヂ ア ミーニャ カルテイラ", ""], ["Que pena. Onde você perdeu?", "それは大変。どこでなくしましたか", "Acho que foi no ônibus.", "バスの中だと思います", "アーショ キ フォイ ノ オニブス", ""], ["Como ela é?", "どんな財布ですか", "É preta e pequena.", "黒くて小さいです", "エ プレータ イ ペケーナ", ""], ["Preencha este formulário, por favor.", "この用紙に記入してください", "Posso ter uma cópia do boletim de ocorrência?", "届け出の控えをもらえますか", "ポッソ テール ウマ コーピア ド ボレチン ヂ オコヘンスィア", "「boletim de ocorrência」=警察への届け出。海外旅行保険の請求に必要です。"]],["Claro. Entraremos em contato se a encontrarmos.", "もちろん。見つかったら連絡します"]);
+SC('pt',"sc-booking",[["Desculpe, não encontro a sua reserva.", "申し訳ありません、ご予約が見つかりません", "Aqui está o e-mail de confirmação.", "これが予約確認のメールです", "アキ エスター ウ イメイウ ヂ コンフィルマサォン", ""], ["Esta reserva é para o mês que vem.", "このご予約は来月になっています", "Ah, não! Tem um quarto para hoje à noite?", "えっ!今夜泊まれる部屋はありますか", "アー ナォン テン ウン クアルトゥ パラ オージ ア ノイチ", ""], ["Temos um quarto de casal por trezentos reais.", "ダブルルームが300レアルで空いています", "O café da manhã está incluído?", "朝食は付いていますか", "ウ カフェ ダ マニャン エスター インクルイードゥ", ""], ["Sim, está incluído.", "はい、付いています", "Tudo bem, vou ficar com ele.", "わかりました、その部屋にします", "トゥードゥ ベン ヴォウ フィカール コン エリ", ""]],["Perfeito. Aqui está a sua chave.", "承知しました。こちらが鍵です"]);
+
+/* route map: São Paulo, Rio, up the coast to the north-east, the Amazon, the centre-west and the south */
+CITIES.pt=[["SÃO PAULO", "サンパウロ", -23.55, -46.63], ["SANTOS", "サントス", -23.96, -46.33], ["CAMPINAS", "カンピーナス", -22.91, -47.06], ["RIO DE JANEIRO", "リオデジャネイロ", -22.91, -43.17], ["PETRÓPOLIS", "ペトロポリス", -22.51, -43.18], ["OURO PRETO", "オウロ・プレット", -20.39, -43.5], ["BELO HORIZONTE", "ベロオリゾンテ", -19.92, -43.94], ["VITÓRIA", "ヴィトーリア", -20.32, -40.34], ["SALVADOR", "サルヴァドール", -12.97, -38.5], ["RECIFE", "レシフェ", -8.05, -34.88], ["NATAL", "ナタール", -5.79, -35.21], ["FORTALEZA", "フォルタレザ", -3.73, -38.53], ["SÃO LUÍS", "サン・ルイス", -2.53, -44.3], ["BELÉM", "ベレン", -1.46, -48.49], ["MANAUS", "マナウス", -3.12, -60.02], ["PORTO VELHO", "ポルト・ヴェーリョ", -8.76, -63.9], ["CUIABÁ", "クイアバ", -15.6, -56.1], ["BRASÍLIA", "ブラジリア", -15.79, -47.88], ["GOIÂNIA", "ゴイアニア", -16.69, -49.26], ["CAMPO GRANDE", "カンポ・グランデ", -20.47, -54.62], ["BONITO", "ボニート", -21.13, -56.48], ["FOZ DO IGUAÇU", "フォス・ド・イグアス", -25.55, -54.59], ["LONDRINA", "ロンドリーナ", -23.31, -51.16], ["CURITIBA", "クリチバ", -25.43, -49.27], ["JOINVILLE", "ジョインヴィレ", -26.3, -48.85], ["FLORIANÓPOLIS", "フロリアノポリス", -27.6, -48.55], ["GRAMADO", "グラマド", -29.38, -50.87], ["PORTO ALEGRE", "ポルト・アレグレ", -30.03, -51.23]];
+REGIONS.pt={b:[-74,-34,-34,5.5],H:340,polys:[[-74, 5.5, -54.0, 5.5, -53.0, 5.4, -52.3, 4.93, -51.6, 4.3, -51.0, 3.0, -50.6, 1.8, -50.0, 0.8, -50.3, 0.2, -49.5, -0.1, -48.6, -0.3, -48.4, -1.0, -47.5, -0.6, -46.5, -1.0, -45.3, -1.5, -44.3, -2.5, -43.3, -2.4, -42.0, -2.8, -41.0, -2.9, -39.8, -2.9, -38.5, -3.7, -37.2, -4.9, -36.0, -5.1, -35.2, -5.5, -34.85, -7.1, -34.88, -8.05, -35.3, -9.0, -35.7, -9.65, -36.4, -10.5, -37.05, -10.9, -37.7, -12.0, -38.5, -13.0, -39.03, -14.8, -39.06, -16.45, -39.2, -17.7, -39.7, -19.0, -40.3, -20.3, -40.95, -21.7, -42.0, -22.97, -43.2, -23.0, -44.5, -23.3, -45.4, -23.8, -46.3, -24.0, -47.9, -25.0, -48.5, -25.5, -48.6, -26.5, -48.5, -27.6, -48.8, -28.6, -50.0, -29.8, -51.1, -31.1, -52.1, -32.2, -53.3, -33.7, -53.9, -34.0, -74, -34.0]]};
 /* ---- register daily, study and scene units ---- */
 var DAILY_IDS=['greet','intro','num','time','feel','chat'];
 var TRAVEL_SC=['sc-imm','sc-cafe','sc-hotel','sc-rest','sc-card','sc-wc','sc-wallet','sc-booking'];
@@ -3458,7 +3741,7 @@ function stopStatus(L,uid,nextId){
    all the others are one tap away in 言語を選ぶ (langPickSheet) */
 function langStarted(k){var p=save.prog&&save.prog[k],u=p&&p.units;if(!u)return false;for(var id in u)if(u[id]&&u[id].n>0)return true;return false;}
 function myLangs(){return ORDER.filter(function(k){return k===save.lang||langStarted(k);});}
-var LANG_SOON=['ドイツ語','ポルトガル語','ロシア語','トルコ語','インドネシア語','アラビア語'];
+var LANG_SOON=['ロシア語','トルコ語','インドネシア語','アラビア語'];
 function heroLangs(){
   return '<div class="hero-langs" role="group" aria-label="学ぶ言語">'+myLangs().map(function(k){
     return '<button class="hl" type="button" data-lang="'+k+'" style="--dc:var(--c-'+k+')" aria-pressed="'+(k===save.lang)+'"><b class="mono">'+LANGS[k].code+'</b><small>'+esc(LANGS[k].name)+'</small></button>';
@@ -3588,7 +3871,12 @@ function mapMount(){
   var vw=cw/s,vh=heroH/s,follow=vw<bw*0.98;
   var X0=bx[0]-padx,X1=bx[1]+padx,Y0=bx[2]-pady-28,Y1=bx[3]+pady+12;
   function camAt(focus){
-    if(!follow)return {x:(X0+X1)/2,y:(Y0+Y1)/2};
+    if(!follow){
+      /* the whole route fits: keep the next stop out from under the HUD (top) and the language chips (bottom) */
+      var c={x:(X0+X1)/2,y:(Y0+Y1)/2},nx=nextI>=0?pts[nextI]:null;
+      if(nx){var sy=(nx.y-c.y)*s+heroH/2,lo=heroH-108,hi=118;if(lo>hi){if(sy>lo)c.y+=(sy-lo)/s;else if(sy<hi)c.y-=(hi-sy)/s;}}
+      return c;
+    }
     return {x:clamp(focus.x,X0+vw/2,X1-vw/2),y:clamp(focus.y,Math.min(Y0+vh/2,(Y0+Y1)/2),Math.max(Y1-vh/2,(Y0+Y1)/2))};
   }
   var tk=proj(L,TOKYO[2],TOKYO[3]),nextI=ids.indexOf(nextPathUnit(L));
@@ -5413,7 +5701,7 @@ try{SHR.on=!window.claude&&!!document.createElement('canvas').getContext;}catch(
 var SHR_W=1080,SHR_H=1920,SHR_CARD={x:90,y:410,w:900,h:1060};
 var SHR_F={disp:'"Barlow Condensed","IBM Plex Sans JP",sans-serif',body:'"IBM Plex Sans JP","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif',mono:'"B612 Mono",ui-monospace,Menlo,monospace',emoji:'"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'};
 var SHR_INK='#101a2b',SHR_SUB='#5b6676',SHR_PAPER='#fffaf0',SHR_TRACK='#ebe3d1';
-var SHR_LC={ko:'#e8505b',en:'#2d6bff',es:'#f08a1c',it:'#17a068',zh:'#9b5de5',fr:'#d6457f'};
+var SHR_LC={ko:'#e8505b',en:'#2d6bff',es:'#f08a1c',it:'#17a068',zh:'#9b5de5',fr:'#d6457f',de:'#0f8b8d',pt:'#4c8f00'};
 /* status colours on the picture: [strip colour, text on the strip] */
 var SHR_RC=[['#b9773f','#ffffff'],['#a3adbb','#121a26'],['#e3b23c','#1b1500'],['#8cc3d3','#0d1b24'],['#55c4f0','#05202c'],['#16233f','#ffd76a']];
 var SHR_MODE={review:'復習フライト',weak:'弱点コース',ann:'機内アナウンス',lounge:'プラチナラウンジ',rem:'補習フライト',ai:'AIの例文練習',skip:'飛び級テスト'};
@@ -6771,21 +7059,21 @@ function coachRun(){
 /* ---- AI会話ロールプレイ (on top of the AI管制官 engine) ---- */
 var ROLE_SC=[
  {id:'cabin',jp:'機内でCAと話す',sub:'飲み物や毛布をお願いする',who:'CABIN CREW',sit:'国際線の機内。食事の時間です。客室乗務員に話しかけて、飲み物を頼んだり、困っていることを伝えよう。',
-  hint:{en:'Excuse me, could I have some water, please?',ko:'저기요, 물 좀 주시겠어요?',es:'Perdone, ¿me puede traer un poco de agua, por favor?',it:"Scusi, potrei avere un po' d'acqua, per favore?",zh:'不好意思，可以给我一杯水吗？',fr:"Excusez-moi, je pourrais avoir de l'eau, s'il vous plaît ?"}},
+  hint:{en:'Excuse me, could I have some water, please?',ko:'저기요, 물 좀 주시겠어요?',es:'Perdone, ¿me puede traer un poco de agua, por favor?',it:"Scusi, potrei avere un po' d'acqua, per favore?",zh:'不好意思，可以给我一杯水吗？',fr:"Excusez-moi, je pourrais avoir de l'eau, s'il vous plaît ?",de:"Entschuldigung, könnte ich bitte ein Glas Wasser haben?",pt:"Com licença, pode me dar um copo de água, por favor?"}},
  {id:'immigration',jp:'入国審査',sub:'目的・日数・泊まる場所を答える',who:'IMMIGRATION',sit:'空港の入国審査。係官にあいさつしてパスポートを渡し、質問に答えて入国しよう。',
-  hint:{en:'Hello. Here is my passport.',ko:'안녕하세요. 여기 여권이요.',es:'Hola. Aquí tiene mi pasaporte.',it:'Buongiorno. Ecco il mio passaporto.',zh:'你好，这是我的护照。',fr:"Bonjour. Voici mon passeport."}},
+  hint:{en:'Hello. Here is my passport.',ko:'안녕하세요. 여기 여권이요.',es:'Hola. Aquí tiene mi pasaporte.',it:'Buongiorno. Ecco il mio passaporto.',zh:'你好，这是我的护照。',fr:"Bonjour. Voici mon passeport.",de:"Guten Tag. Hier ist mein Reisepass.",pt:"Bom dia. Aqui está o meu passaporte."}},
  {id:'hotel',jp:'ホテルのチェックイン',sub:'予約を伝えて、朝食やWi-Fiを聞く',who:'FRONT DESK',sit:'ホテルのフロント。予約していることを伝えて、チェックインしよう。',
-  hint:{en:'Hi, I have a reservation under the name Sato.',ko:'안녕하세요. 사토 이름으로 예약했어요.',es:'Hola, tengo una reserva a nombre de Sato.',it:'Buonasera, ho una prenotazione a nome Sato.',zh:'你好，我用佐藤的名字预订了房间。',fr:"Bonsoir, j'ai une réservation au nom de Sato."}},
+  hint:{en:'Hi, I have a reservation under the name Sato.',ko:'안녕하세요. 사토 이름으로 예약했어요.',es:'Hola, tengo una reserva a nombre de Sato.',it:'Buonasera, ho una prenotazione a nome Sato.',zh:'你好，我用佐藤的名字预订了房间。',fr:"Bonsoir, j'ai une réservation au nom de Sato.",de:"Guten Abend, ich habe eine Reservierung auf den Namen Sato.",pt:"Boa noite, tenho uma reserva em nome de Sato."}},
  {id:'restaurant',jp:'レストランで注文',sub:'席・注文・アレルギー・お会計',who:'SERVER',sit:'レストランに入りました。席をお願いして、料理と飲み物を注文しよう。',
-  hint:{en:'Hi, a table for one, please.',ko:'안녕하세요. 한 명이에요.',es:'Hola, una mesa para uno, por favor.',it:'Buonasera, un tavolo per uno, per favore.',zh:'你好，一位。',fr:"Bonsoir, une table pour une personne, s'il vous plaît."}},
+  hint:{en:'Hi, a table for one, please.',ko:'안녕하세요. 한 명이에요.',es:'Hola, una mesa para uno, por favor.',it:'Buonasera, un tavolo per uno, per favore.',zh:'你好，一位。',fr:"Bonsoir, une table pour une personne, s'il vous plaît.",de:"Guten Abend, einen Tisch für eine Person, bitte.",pt:"Boa noite, uma mesa para um, por favor."}},
  {id:'directions',jp:'道をたずねる',sub:'駅への行き方を聞く',who:'LOCAL',sit:'街で道に迷いました。近くの人に、駅への行き方をたずねよう。',
-  hint:{en:'Excuse me, how can I get to the station?',ko:'실례합니다. 역에 어떻게 가요?',es:'Perdone, ¿cómo puedo llegar a la estación?',it:'Scusi, come arrivo alla stazione?',zh:'不好意思，请问去火车站怎么走？',fr:"Excusez-moi, pour aller à la gare, s'il vous plaît ?"}},
+  hint:{en:'Excuse me, how can I get to the station?',ko:'실례합니다. 역에 어떻게 가요?',es:'Perdone, ¿cómo puedo llegar a la estación?',it:'Scusi, come arrivo alla stazione?',zh:'不好意思，请问去火车站怎么走？',fr:"Excusez-moi, pour aller à la gare, s'il vous plaît ?",de:"Entschuldigung, wie komme ich zum Bahnhof?",pt:"Com licença, como chego à estação?"}},
  {id:'homestay',jp:'ホームステイ初日',sub:'あいさつ・家のルール・好きな食べ物',who:'HOST',sit:'ホームステイ先に着きました。ホストファミリーにあいさつして、自己紹介しよう。',
-  hint:{en:"Hi, nice to meet you! I'm Ken from Japan.",ko:'안녕하세요! 일본에서 온 켄이에요.',es:'¡Hola, mucho gusto! Soy Ken, de Japón.',it:'Ciao, piacere! Sono Ken, vengo dal Giappone.',zh:'你好！很高兴认识你，我是从日本来的健。',fr:"Bonjour, enchanté ! Je m'appelle Ken, je viens du Japon."}},
+  hint:{en:"Hi, nice to meet you! I'm Ken from Japan.",ko:'안녕하세요! 일본에서 온 켄이에요.',es:'¡Hola, mucho gusto! Soy Ken, de Japón.',it:'Ciao, piacere! Sono Ken, vengo dal Giappone.',zh:'你好！很高兴认识你，我是从日本来的健。',fr:"Bonjour, enchanté ! Je m'appelle Ken, je viens du Japon.",de:"Hallo, freut mich! Ich bin Ken aus Japan.",pt:"Oi, prazer! Eu sou o Ken, do Japão."}},
  {id:'class',jp:'授業で先生に質問',sub:'宿題や授業の内容を聞く',who:'TEACHER',sit:'留学先の授業のあと。先生に話しかけて、宿題について質問しよう。',
-  hint:{en:'Excuse me, I have a question about the homework.',ko:'선생님, 숙제에 대해 질문이 있어요.',es:'Perdone, profesor, tengo una pregunta sobre los deberes.',it:'Scusi, professore, ho una domanda sui compiti.',zh:'老师，我有一个关于作业的问题。',fr:"Excusez-moi, j'ai une question sur les devoirs."}},
+  hint:{en:'Excuse me, I have a question about the homework.',ko:'선생님, 숙제에 대해 질문이 있어요.',es:'Perdone, profesor, tengo una pregunta sobre los deberes.',it:'Scusi, professore, ho una domanda sui compiti.',zh:'老师，我有一个关于作业的问题。',fr:"Excusez-moi, j'ai une question sur les devoirs.",de:"Entschuldigung, ich habe eine Frage zu den Hausaufgaben.",pt:"Com licença, professor, tenho uma dúvida sobre a lição de casa."}},
  {id:'interview',jp:'スピーキング試験・面接',sub:'自分のことを話す',who:'EXAMINER',sit:'スピーキング試験の部屋に入りました。試験官にあいさつして、質問に答えよう。',
-  hint:{en:'Good morning. Nice to meet you.',ko:'안녕하세요. 만나서 반갑습니다.',es:'Buenos días. Encantado de conocerle.',it:'Buongiorno. Piacere di conoscerla.',zh:'早上好，很高兴见到您。',fr:"Bonjour. Enchanté de vous rencontrer."}}
+  hint:{en:'Good morning. Nice to meet you.',ko:'안녕하세요. 만나서 반갑습니다.',es:'Buenos días. Encantado de conocerle.',it:'Buongiorno. Piacere di conoscerla.',zh:'早上好，很高兴见到您。',fr:"Bonjour. Enchanté de vous rencontrer.",de:"Guten Morgen. Freut mich, Sie kennenzulernen.",pt:"Bom dia. Muito prazer."}}
 ];
 var ROLE_LIM=[0,5,15,30],ROLE_KEY='babelflight.roleDay';
 var ROLE={sc:null,L:'en',log:[],ex:[],busy:false,done:false,ctl:null,counted:false,hint:false};
@@ -8194,6 +8482,8 @@ var CUR_WORDS={
   en:[['hello','こんにちは'],['sky','空'],['fly','飛ぶ'],['plane','飛行機'],['pilot','パイロット'],['cloud','雲'],['Tokyo','東京'],['London','ロンドン']],
   es:[['hola','こんにちは'],['cielo','空'],['vuelo','フライト'],['playa','ビーチ'],['amigo','友だち'],['Madrid','マドリード']],
   fr:[['bonjour','こんにちは'],['ciel','空'],['avion','飛行機'],['merci','ありがとう'],['ami','友だち'],['Paris','パリ']],
+  de:[['hallo','こんにちは'],['Himmel','空'],['Flug','フライト'],['danke','ありがとう'],['Freund','友だち'],['Berlin','ベルリン']],
+  pt:[['oi','やあ'],['obrigado','ありがとう'],['amigo','友だち'],['praia','ビーチ'],['viagem','旅'],['Rio','リオ']],
   it:[['ciao','こんにちは'],['cielo','空'],['volo','フライト'],['grazie','ありがとう'],['amico','友だち'],['Roma','ローマ']]
 };
 var CUR_GR=['','△','◯','◎'];
