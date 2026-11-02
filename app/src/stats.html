@@ -226,6 +226,7 @@ var ST={range:'30d',data:null,anim:true,lastW:0};
 var D={};
 var reduce=false;try{reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}
 var LANG_JP={ko:'韓国語',en:'英語',es:'スペイン語',it:'イタリア語',zh:'中国語',fr:'フランス語',de:'ドイツ語',pt:'ポルトガル語',ru:'ロシア語',tr:'トルコ語',id:'インドネシア語',ar:'アラビア語'},LANG_ORDER=['ko','en','es','it','zh','fr','de','pt','ru','tr','id','ar'];
+var UI_JP={ja:'日本語',en:'英語',ko:'韓国語',zh:'中国語'},UI_ORDER=['ja','en','ko','zh'];
 var MODE_JP={daily:'日常会話モード',job:'職業モード',study:'留学モード',exam:'検定モード'},MODE_ORDER=['daily','job','study','exam'],MODE_COLOR=['--s1','--s2','--s3','--s4'];
 var RANGE_SUB={'30d':'直近30日 ・ 1日ごと','12m':'直近12か月 ・ 1か月ごと','all':'1年ごと'};
 var RANGE_SHORT={'30d':'直近30日','12m':'直近12か月','all':'全期間'};
@@ -380,16 +381,18 @@ function showDash(){
   D.users=figure('users','ユーザー数(新規とリピーター)');
   D.langs=figure('langs','人気の言語');
   D.modes=figure('modes','人気のモード');
+  D.uis=figure('uis','表示言語');
   D.visits.el.style.setProperty('--i','3');D.users.el.style.setProperty('--i','4');
-  D.langs.el.style.setProperty('--i','5');D.modes.el.style.setProperty('--i','6');
-  D.charts=h('div',{class:'charts'},[D.visits.el,D.users.el,h('div',{class:'pair'},[D.langs.el,D.modes.el])]);
-  var foot=h('section',{class:'foot rv',style:'--i:7'},[
+  D.langs.el.style.setProperty('--i','5');D.modes.el.style.setProperty('--i','6');D.uis.el.style.setProperty('--i','7');
+  D.charts=h('div',{class:'charts'},[D.visits.el,D.users.el,h('div',{class:'pair'},[D.langs.el,D.modes.el]),D.uis.el]);
+  var foot=h('section',{class:'foot rv',style:'--i:8'},[
     h('h3',{text:'数え方'}),
     h('dl',null,[
       h('dt',{text:'アクセス'}),h('dd',{text:'アプリを開いた回数。30分以内の開き直しは同じ1回として数えます。'}),
       h('dt',{text:'ユーザー'}),h('dd',{text:'ブラウザ(端末)の数。同じ人でもスマホとパソコンなら2人になります。'}),
       h('dt',{text:'新規'}),h('dd',{text:'その日(月・年)に初めて来たブラウザ。前にも来たことがあればリピーター。'}),
-      h('dt',{text:'言語・モード'}),h('dd',{text:'レッスン(通話シーンを含む)を始めた回数。モードはその時に選んでいたモードです。'})
+      h('dt',{text:'言語・モード'}),h('dd',{text:'レッスン(通話シーンを含む)を始めた回数。モードはその時に選んでいたモードです。'}),
+      h('dt',{text:'表示言語'}),h('dd',{text:'アプリの画面の言語ごとのユーザー数(ブラウザの数)。2026年11月2日より前の記録はすべて日本語として数えています。'})
     ]),
     h('p',{text:'日付は日本時間。名前やIPアドレスは保存していません。Claude で開いた版は数えていません。'})
   ]);
@@ -499,7 +502,7 @@ function wire(el,show,hide){
 }
 document.addEventListener('pointerdown',function(e){
   var t=e.target;if(t&&t.closest&&t.closest('.hit,.hb-row'))return;
-  [D.visits,D.users,D.langs,D.modes].forEach(hideTip);
+  [D.visits,D.users,D.langs,D.modes,D.uis].forEach(hideTip);
 });
 
 /* column chart (single or stacked) */
@@ -624,7 +627,31 @@ function renderModes(){
   });
   box.appendChild(bar);box.appendChild(leg);
 }
-function renderCharts(){renderVisits();renderUsers();renderLangs();renderModes();}
+/* 表示言語: users per display language (bars), with visits and lessons in the table */
+function renderUis(){
+  var d=ST.data,f=D.uis,map={};
+  (d.uis||[]).forEach(function(r){map[r.k]=r;});
+  var rows=UI_ORDER.map(function(k){var r=map[k]||{u:0,v:0,l:0};return {k:k,name:UI_JP[k],u:r.u,v:r.v,l:r.l};});
+  f.sub.textContent='ユーザー数 ・ '+RANGE_SHORT[d.range];
+  table(f,['表示言語','ユーザー','アクセス','レッスン'],rows.map(function(r){return [r.name,fmt(r.u)+'人',fmt(r.v)+'回',fmt(r.l)+'回'];}));
+  var box=f.box;box.textContent='';hideTip(f);
+  var max=Math.max.apply(null,rows.map(function(r){return r.u;}).concat([0]));
+  if(!max){box.appendChild(empty('この期間にはまだ記録がありません。'));return;}
+  var list=h('div',{class:'hb'+(ST.anim&&!reduce?' anim':'')});
+  rows.forEach(function(r,i){
+    var bar=h('span',{class:'hb-bar'+(r.u?'':' z'),style:'--p:'+(r.u/max)+';animation-delay:'+(i*80)+'ms'});
+    var row=h('div',{class:'hb-row',tabindex:'0',role:'img','aria-label':r.name+' ユーザー'+r.u+'人 アクセス'+r.v+'回 レッスン'+r.l+'回'},
+      [h('span',{class:'hb-name',text:r.name}),h('span',{class:'hb-track'},[bar,h('span',{class:'hb-val',text:fmt(r.u)})])]);
+    wire(row,function(){
+      hideTip(f);row.classList.add('on');
+      var pr=f.plot.getBoundingClientRect(),br=(r.u?bar:row).getBoundingClientRect();
+      showTip(f,(r.u?br.right:br.left+60)-pr.left,br.top-pr.top,pr.width,r.name,[['--s1',fmt(r.u)+'人','ユーザー'],[null,fmt(r.v)+'回','アクセス'],[null,fmt(r.l)+'回','レッスン']]);
+    },function(){hideTip(f);});
+    list.appendChild(row);
+  });
+  box.appendChild(list);
+}
+function renderCharts(){renderVisits();renderUsers();renderLangs();renderModes();renderUis();}
 var rT=0;
 window.addEventListener('resize',function(){
   clearTimeout(rT);

@@ -224,8 +224,11 @@ function uiSet(l){
   });
 }
 /* at start (before the first render): the stored choice, or the browser's language on a first visit */
+/* the display language for the usage count: the one being opened, even while its dictionary is still loading */
+var UI_WANT='ja';
+function uiTrackLang(){return UI!=='ja'?UI:UI_WANT;}
 function uiBoot(){
-  var l=uiStored()||(save.onboarded?'ja':uiGuess());
+  var l=uiStored()||(save.onboarded?'ja':uiGuess());UI_WANT=l;
   if(l==='ja'){uiFont();return;}
   var c=uiCached(l);
   if(c){uiApply(l,c);if(c.v!==I18N_V)uiFetch(l,function(d){if(d){I18N=d;uiWalk(document.body);}});return;}

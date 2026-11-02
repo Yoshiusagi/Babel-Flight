@@ -1,5 +1,5 @@
 /* ================= ANONYMOUS USAGE COUNT (standalone site only) =================
-   Feeds the owner's /stats page. Sends only a random per-browser id plus the language / mode
+   Feeds the owner's /stats page. Sends only a random per-browser id plus the language / mode / display language
    in use; no names, answers or progress. Runs only on the Higgsfield site (never inside Claude). */
 var TRK=(function(){
   var on=false,vid='',KEY='babelflight.vid',VKEY='babelflight.visit',GAP=30*60*1000;
@@ -19,7 +19,7 @@ var TRK=(function(){
   }
   function send(o){
     if(!on)return;
-    o.vid=vid;o.mode=save.mode==='job'||save.mode==='study'||(save.mode==='exam'&&typeof examModeOn==='function'&&examModeOn())?save.mode:'daily';if(!LANGS[o.lang])o.lang=save.lang;
+    o.vid=vid;o.mode=save.mode==='job'||save.mode==='study'||(save.mode==='exam'&&typeof examModeOn==='function'&&examModeOn())?save.mode:'daily';if(!LANGS[o.lang])o.lang=save.lang;o.ui=typeof uiTrackLang==='function'?uiTrackLang():'ja';
     try{bfFetch('/api/hit',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(o),keepalive:true}).catch(function(){});}catch(e){}
   }
   /* a "visit" = first activity after 30 min of nothing in this tab */

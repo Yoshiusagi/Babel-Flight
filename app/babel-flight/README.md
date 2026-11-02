@@ -68,9 +68,10 @@ that had no translation is counted there.
 ## Usage counting
 
 `parts/f12_track.js` (standalone site only, never in the Claude version) sends an anonymous
-visit / lesson-start ping to `/api/hit`: a random per-browser id plus language and mode.
+visit / lesson-start ping to `/api/hit`: a random per-browser id plus language, mode and display language (表示言語).
 The owner reads the totals at `/stats` (passphrase chosen on first visit).
-Server side: `src/lib/analytics.server.ts`; schema: `migrations/0002_usage_stats.sql`.
+Server side: `src/lib/analytics.server.ts`; schema: `migrations/0002_usage_stats.sql` (+ `0010_ui_lang.sql`: the display
+language, shown as 表示言語 on `/stats`; rows from before it count as 日本語).
 
 ## Accounts (optional sign-in)
 

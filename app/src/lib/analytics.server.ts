@@ -1,7 +1,8 @@
 // Anonymous usage counting for Babel Flight and the passphrase-protected /stats page.
 //
 // What is stored: a random per-browser id (made in the browser, not linked to a
-// person), the Japan-time date, and which language / mode a lesson used.
+// person), the Japan-time date, which language / mode a lesson used and the display language
+// (表示言語: ja / en / ko / zh).
 // What is NOT stored: names, IP addresses, user agents, answers.
 //
 // Routes (dispatched from server.ts before the SSR handler):
@@ -35,6 +36,7 @@ import {
 const LANGS = new Set(["ko", "en", "es", "it", "zh", "fr", "de", "pt", "ru", "tr", "id", "ar"]);
 const MODES = new Set(["daily", "job", "study", "exam"]);
 const KINDS = new Set(["visit", "lesson"]);
+const UIS = new Set(["ja", "en", "ko", "zh"]);
 const TRACK_RE = /^[a-z0-9-]{1,24}$/;
 const VID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const TOKEN_RE = /^[0-9a-f]{64}$/;
@@ -117,6 +119,7 @@ async function handleHit(request: Request, db: D1Database): Promise<Response> {
   const lang = typeof body.lang === "string" ? body.lang : "";
   const mode = typeof body.mode === "string" ? body.mode : "";
   const track = typeof body.track === "string" ? body.track : "";
+  const ui = typeof body.ui === "string" && UIS.has(body.ui) ? body.ui : "ja";
   if (
     !VID_RE.test(vid) ||
     !KINDS.has(kind) ||
@@ -140,17 +143,28 @@ async function handleHit(request: Request, db: D1Database): Promise<Response> {
     return noContent();
   }
 
-  await db.batch([
-    db
-      .prepare(
-        "INSERT INTO bf_visitors (vid, first_day, last_day) VALUES (?, ?, ?) " +
-          "ON CONFLICT(vid) DO UPDATE SET last_day = excluded.last_day",
-      )
-      .bind(vid, day, day),
-    db
-      .prepare("INSERT INTO bf_events (day, ts, vid, kind, lang, mode, track) VALUES (?, ?, ?, ?, ?, ?, ?)")
-      .bind(day, now, vid, kind, lang, mode, track),
-  ]);
+  const visitor = db
+    .prepare(
+      "INSERT INTO bf_visitors (vid, first_day, last_day) VALUES (?, ?, ?) " +
+        "ON CONFLICT(vid) DO UPDATE SET last_day = excluded.last_day",
+    )
+    .bind(vid, day, day);
+  try {
+    await db.batch([
+      visitor,
+      db
+        .prepare("INSERT INTO bf_events (day, ts, vid, kind, lang, mode, track, ui) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
+        .bind(day, now, vid, kind, lang, mode, track, ui),
+    ]);
+  } catch {
+    // the ui column (migrations/0010) not there yet: count it without the display language
+    await db.batch([
+      visitor,
+      db
+        .prepare("INSERT INTO bf_events (day, ts, vid, kind, lang, mode, track) VALUES (?, ?, ?, ?, ?, ?, ?)")
+        .bind(day, now, vid, kind, lang, mode, track),
+    ]);
+  }
   return noContent();
 }
 
@@ -310,6 +324,23 @@ async function handleData(request: Request, url: URL, db: D1Database): Promise<R
   const pick = (res: { results?: Row[] } | undefined) =>
     rowsOf(res).map((r) => ({ k: String(r.k), n: num(r.n), u: num(r.u) }));
 
+  /* 表示言語: users, visits and lessons per display language (empty until migrations/0010 is applied) */
+  let uis: { k: string; u: number; v: number; l: number }[] = [];
+  try {
+    const uiRes = await db
+      .prepare(
+        "SELECT ui AS k, COUNT(DISTINCT vid) AS u, " +
+          "SUM(CASE WHEN kind = 'visit' THEN 1 ELSE 0 END) AS v, " +
+          "SUM(CASE WHEN kind = 'lesson' THEN 1 ELSE 0 END) AS l " +
+          "FROM bf_events WHERE day >= ? GROUP BY ui",
+      )
+      .bind(b.start)
+      .all<Row>();
+    uis = (uiRes.results ?? []).map((r) => ({ k: String(r.k), u: num(r.u), v: num(r.v), l: num(r.l) }));
+  } catch {
+    uis = [];
+  }
+
   const k = rowsOf(kpiRes)[0] ?? {};
   return json({
     ok: true,
@@ -327,6 +358,7 @@ async function handleData(request: Request, url: URL, db: D1Database): Promise<R
     series,
     langs: pick(langRes),
     modes: pick(modeRes),
+    uis,
   });
 }
 
