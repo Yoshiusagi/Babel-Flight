@@ -9,7 +9,7 @@ function canDo(kind,it){
   if(kind==='listen')return ttsAvail(LG.tts)&&!isLong(d);
   if(kind==='listenjp')return ttsAvail(LG.tts);
   if(kind==='build'){var n=bTok(d).length;return n>=3&&n<=8;}
-  if(kind==='type')return F.lang!=='ko'&&!LANGS[F.lang].noType&&d.t.length<=34&&save.level!=='beg';
+  if(kind==='type')return F.lang!=='ko'&&!LANGS[F.lang].noType&&d.t.length<=34&&lvOf(F.lang)!=='beg';
   if(kind==='cloze')return !!clozeKey(d);
   return true;
 }
@@ -21,8 +21,10 @@ var ROUND2={beg:['listenjp','build','j2t','listen'],mid:['listen','build','type'
 function round2Kind(it,n){
   var d=dat(it);
   if(isLong(d))return firstOK(n%2?['j2t','listenjp']:['listenjp','j2t'],it);
-  var order=ROUND2[save.level]||ROUND2.mid,k=order[n%4];
-  return canDo(k,it)?k:firstOK(['j2t','build','listen'],it);
+  /* 苦手なこと: every other question comes from the kinds that train it */
+  var order=ROUND2[lvOf(F.lang)]||ROUND2.mid,pr=kindPrefs(),k=pr.length&&n%2===0?pr[(n/2)%pr.length]:order[n%4];
+  if(canDo(k,it))return k;
+  return canDo(order[n%4],it)?order[n%4]:firstOK(['j2t','build','listen'],it);
 }
 var MODE_TITLE={review:'復習',free:'自由練習',weak:'弱点コース',ann:'リスニング特訓',skip:'飛び級テスト',rem:'補習フライト',ai:'AIの例文練習',lounge:'プラチナラウンジ'};
 function startFlight(opts){
@@ -30,7 +32,13 @@ function startFlight(opts){
   F={mode:opts.mode,lang:opts.lang,uid:opts.uid,items:items,queue:q,idx:0,mist:0,corr:0,wrong:{},retry:{},cur:null,answered:false,
      wDone:0,wTotal:0,prog:0,back:(view==='review'?'review':'home'),opts:[],optR:[],ci:-1,build:null,peeked:false};
   if(opts.mode==='unit'){
-    shuffle(items).forEach(function(it){q.push({k:'t2j',it:it,w:1});});
+    /* はじめて: shortest phrases first. A phrase never seen gets a card before its first question, or a hint on it */
+    var lvB=lvOf(opts.lang)==='beg',nw=nwStyle(opts.lang),r1=lvB?items.slice().sort(function(a,b){return dat(a).t.length-dat(b).t.length;}):shuffle(items);
+    r1.forEach(function(it){
+      var fresh=itemRec(F.lang,it.uid,it.i).b===0;
+      if(fresh&&nw==='card')q.push({k:'learn',it:it,w:0});
+      q.push({k:'t2j',it:it,w:1,nh:fresh&&nw==='hint'});
+    });
     shuffle(items).forEach(function(it,n){q.push({k:round2Kind(it,n),it:it,w:1});});
   }else if(opts.mode==='skip'||opts.mode==='lounge'){
     /* harder forms only: no "choose the meaning" warm-up */
@@ -79,7 +87,8 @@ function updateProfile(){
   var ph=t<0.1?'地上走行':t<0.35?'上昇中':t<0.66?'巡航中':t<0.9?'降下中':'着陸';
   var fl=Math.round(clamp((52-a.y)/38,0,1)*39)*10;
   $('phl').textContent=ph;
-  $('phr').textContent='FL'+('00'+fl).slice(-3)+' ・ '+Math.min(F.idx+1,F.queue.length)+'/'+F.queue.length+'問';
+  var qn=0,qi=0;F.queue.forEach(function(x,i){if(x.k!=='learn'){qn++;if(i<=F.idx)qi++;}});
+  $('phr').textContent='FL'+('00'+fl).slice(-3)+' ・ '+Math.max(1,Math.min(qi,qn))+'/'+qn+'問';
   var tb=$('turb');tb.textContent='ミス '+F.mist;tb.className='turb'+(F.mist>0?' hot':'');
 }
 function ledSet(main,sub){$('led').innerHTML='<div class="m">'+esc(main)+'</div>'+(sub?'<div class="s">'+esc(sub)+'</div>':'');}
@@ -108,16 +117,17 @@ function optsFor(it,field){
     });
   }
   /* 1-2 look-alikes from the same course keep the level; the rest come from anywhere in the language */
-  take(grpPool(F.lang,UNITS[F.lang][it.uid].track),lookAlikes(F.lang),true);
-  take(langPool(F.lang),3,true);
-  take(langPool(F.lang),3,false);
+  var n=optN(F.lang);
+  take(grpPool(F.lang,UNITS[F.lang][it.uid].track),Math.min(n,lookAlikes(F.lang)),true);
+  take(langPool(F.lang),n,true);
+  take(langPool(F.lang),n,false);
   var all=shuffle(picks.concat([d]));
   F.opts=all.map(function(x){return x[key];});
   F.optR=all.map(function(x){return field==='t'?x.r:'';});
   F.ci=all.indexOf(d);
 }
 function optsHTML(cls){
-  var showR=save.level==='beg'&&LANGS[F.lang].hasYomi;
+  var showR=showYomi(F.lang)&&LANGS[F.lang].hasYomi;
   return '<div class="opts">'+F.opts.map(function(o,i){
     return '<button class="opt'+cls+'" type="button" data-opt="'+i+'"><span class="on">'+(i+1)+'</span>'+esc(o)+(showR&&F.optR[i]?'<small class="oy">'+esc(F.optR[i])+'</small>':'')+'</button>';
   }).join('')+'</div>';
@@ -127,13 +137,22 @@ function showStep(){
   var q=F.queue[F.idx];
   if(!q){land();return;}
   F.cur=q;F.answered=false;F.build=null;F.peeked=false;F.shownAt=performance.now();closeSheet();
-  var d=dat(q.it),LG=LANGS[F.lang],box=$('q'),beg=save.level==='beg';
+  var d=dat(q.it),LG=LANGS[F.lang],box=$('q'),beg=showYomi(F.lang);
   updateProfile();
   var tag=newTag(q.it);
-  if(q.k==='t2j'){
+  if(q.k==='learn'){
+    /* a new phrase: see it, hear it, then answer it */
+    F.answered=true;board.set(d.t);ledSet(d.jp,d.r||'');
+    box.innerHTML='<div class="learn-card"><span class="qh">新しいフレーズ<span class="newtag">NEW</span></span>'+
+      '<div class="lc-t'+koCls()+'"'+(LG.rtl?' dir="rtl"':'')+'>'+esc(d.t)+'</div>'+(d.r?'<div class="lc-r">'+esc(d.r)+'</div>':'')+'<div class="lc-jp">'+esc(d.jp)+'</div>'+
+      (d.n?'<div class="note"><b>ワンポイント</b>'+esc(d.n)+'</div>':'')+hearBtns()+
+      '<button class="go" type="button" data-next>覚えた！ 問題へ</button></div>';
+    speak(d.t,LG.tts,false);
+  }else if(q.k==='t2j'){
     board.set(d.t);ledSet('? ? ?',beg&&d.r?'読み: '+d.r:'意味を選ぼう');optsFor(q.it,'jp');
-    box.innerHTML='<span class="qh">意味はどれ？'+tag+'</span>'+hearBtns()+optsHTML('');
-    if(beg)speak(d.t,LG.tts,false);
+    box.innerHTML='<span class="qh">意味はどれ？'+tag+'</span>'+hearBtns()+optsHTML('')+
+      (q.nh?'<button class="sq hint-go" type="button" data-q-hint><span aria-hidden="true">💡</span><span>ヒントを見る<small>見てもミスになりません</small></span></button>':'');
+    if(beg||q.nh)speak(d.t,LG.tts,false);
   }else if(q.k==='cloze'){
     q.ck=q.ck||clozeKey(d);var co=clozeOpts(F.lang,q.ck);F.opts=co.opts;F.optR=[];F.ci=co.ci;
     board.set('');ledSet(d.jp,'空らんに入る語はどれ？');
@@ -188,9 +207,11 @@ function pushRetry(q){
 function judge(ok){
   if(F.answered)return;F.answered=true;
   var q=F.cur,d=dat(q.it),key=ik(q.it.uid,q.it.i);
-  if(ok){F.corr++;chimeOK();fxGood();}
-  else{F.mist++;fxBad();F.wrong[key]=(F.wrong[key]||0)+1;chimeBad();buzz(40);pushRetry(q);}
+  if(ok){F.corr++;chimeOK();fxGood();F.combo=(F.combo||0)+1;if(typeof fxCombo==='function'&&COMBO_AT.indexOf(F.combo)>=0)fxCombo(F.combo);}
+  else{F.combo=0;F.mist++;fxBad();F.wrong[key]=(F.wrong[key]||0)+1;chimeBad();buzz(40);pushRetry(q);}
   if(typeof repNote==='function')repNote(F.lang,q.k,ok);
+  /* 苦手「発音」: hear it once more, slowly */
+  if(typeof hasWeak==='function'&&hasWeak('pron')){var LGp=LANGS[F.lang];setTimeout(function(){if(F&&F.cur===q&&F.answered)speak(d.t,LGp.tts,true);},450);}
   board.set(d.t);ledSet(d.jp,d.r);
   updateProfile();
   var h='<div class="sheet'+(ok?'':' bad')+'" role="status"><div class="sheet-in"><h3>'+(ok?PRAISE[Math.floor(Math.random()*PRAISE.length)]:'おしい！ 正解はこちら')+'</h3>'+

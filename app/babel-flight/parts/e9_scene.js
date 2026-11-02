@@ -13,7 +13,7 @@ function simScore(a,b){
 function startScene(uid,mode){
   var L=save.lang,u=UNITS[L][uid];if(!u)return;
   closeSheet();
-  SCX={lang:L,uid:uid,u:u,meta:SCENE_META[uid],mode:mode,idx:0,stage:'ring',grades:[],log:[],t0:0,timer:0,sub:true,tr:save.level==='beg',back:(view==='review'?'review':'home'),hint:false};
+  SCX={lang:L,uid:uid,u:u,meta:SCENE_META[uid],mode:mode,idx:0,stage:'ring',grades:[],log:[],t0:0,timer:0,sub:true,tr:lvOf(L)==='beg',back:(view==='review'?'review':'home'),hint:false};
   view='scene';render();window.scrollTo(0,0);
   ringTone();
   setTimeout(function(){if(SCX&&SCX.stage==='ring'&&view==='scene')scBegin();},reduceMotion?300:1900);

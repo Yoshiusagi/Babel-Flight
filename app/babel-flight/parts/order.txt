@@ -15,6 +15,7 @@ f23_css.html
 f24_css.html
 f25_css.html
 f27_css.html
+f28_css.html
 @HEADEND
 e2_body.html
 a0_env.js
@@ -43,6 +44,7 @@ e3g_ru.js
 e3g_tr.js
 e3g_id.js
 e3g_ar.js
+e3h_first.js
 e3e_reg.js
 e3f_enuk.js
 d4_more1.js
@@ -82,5 +84,7 @@ f27_rom.js
 f27_swap.js
 f27_i18nv.js
 f27_i18n.js
+f28_start.js
+f29_fx.js
 f7_boot.js
 @END

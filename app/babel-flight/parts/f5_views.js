@@ -140,7 +140,7 @@ function recordHTML(){
   h+='<section class="card"><div class="card-h"><h2 class="jh">学習の設定</h2></div>'+
      '<div class="set-block"><span class="lbl">表示言語 ・ Language</span>'+uiPickHTML()+'</div>'+
      '<div class="set-row"><span>職業コース<br><b>'+(p?esc(p.jp):'未設定')+'</b></span><button class="ghost" type="button" data-picker>変更</button></div>'+
-     '<div class="set-block"><span class="lbl">今のレベル</span>'+seg('data-level',save.level,LEVELS)+'<p class="dim hint">'+LEVEL_HINT[save.level]+'</p></div>'+
+     lvBlockHTML()+whyRowHTML()+
      (typeof enVarHTML==='function'?enVarHTML():'')+
      '<div class="set-block"><span class="lbl">1日の目標(レッスン数)</span>'+seg('data-goal',save.goal,GOALS)+'</div>'+
      '<div class="set-block"><span class="lbl">表示</span>'+seg('data-theme-set',save.theme,[['auto','自動'],['light','ライト'],['dark','ダーク']])+'</div>'+
@@ -165,11 +165,11 @@ function creditsHTML(){
     '<div class="cr-by"><span class="lbl">制作</span><b>'+esc(CREDITS.by)+'</b><span lang="en">('+esc(CREDITS.byEn)+')</span></div>'+
     '<span class="lbl cr-h">使ったサービス</span><ul class="cr-links">'+
     CREDITS.links.map(function(l){return '<li><a href="'+l[1]+'" target="_blank" rel="noopener noreferrer" aria-label="'+esc(l[0]+': '+l[2]+'(新しいタブで開きます)')+'"><b lang="en">'+esc(l[0])+'<i aria-hidden="true">↗</i></b><small>'+esc(l[2])+'</small></a></li>';}).join('')+
-    '</ul><p class="cr-copy" lang="en">© '+CREDITS.year+' '+esc(CREDITS.byEn)+'</p></section>';
+    '</ul>'+(typeof notamBtnHTML==='function'?notamBtnHTML():'')+'<p class="cr-copy" lang="en">© '+CREDITS.year+' '+esc(CREDITS.byEn)+'</p></section>';
 }
-var LEVEL_HINT={beg:'読み方のヒントつき。入力問題は出ません。基本の会話から始めます。',mid:'標準。並べ替えや入力問題も出ます。',adv:'入力問題が多め。職業コースが先に表示されます。'};
+var LEVEL_HINT={beg:'はじめの一歩から。新しいフレーズはカードで見てから解きます。読み方のヒントつき、選択肢は3つ。',mid:'標準。並べ替えや入力問題も出ます。',adv:'入力問題が多め。職業コースが先に表示されます。'};
 function pathIdsFor(l){
-  var ids=DAILY_IDS.concat(LANGS[l].units.map(function(u){return u.id;}),TRAVEL_SC,UI==='ja'?STUDY_ALL:[],UNITS[l].usuk&&UI==='ja'?['usuk']:[]),p=profById(save.prof);
+  var ids=(firstOn(l)?['first']:[]).concat(dailyIds(l),LANGS[l].units.map(function(u){return u.id;}),TRAVEL_SC,UI==='ja'?STUDY_ALL:[],UNITS[l].usuk&&UI==='ja'?['usuk']:[]),p=profById(save.prof);
   if(p&&UI==='ja')ids=ids.concat(p.units[l]);
   ALL_IDS[l].forEach(function(uid){if(ids.indexOf(uid)<0&&unitRec(l,uid).n>0)ids.push(uid);});
   return ids.filter(function(uid){return !!UNITS[l][uid];}); /* a スターター language has no 職業・留学 units yet */
@@ -191,25 +191,43 @@ function openIconSheet(){
       return '<button type="button" data-icon-set="'+x[0]+'" aria-pressed="'+(cur===x[0])+'" aria-label="'+x[2]+(lk?'(シルバーで解放)':'')+'"'+(lk?' class="locked" disabled':'')+'>'+avatarHTML(x[0])+(lk?'<i class="lock" aria-hidden="true">🔒</i>':'')+'</button>';}).join('')+
     '</div>'+(anyLk?'<p class="dim hint">🔒のアイコンは、シルバーになると使えます(一度なればずっと使えます)。</p>':'')+'<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
 }
+/* the first questions: 言語 → 学ぶ理由 → (仕事なら)職業 → レベル → 苦手なこと → 1日の目標 */
+function obSteps(){var s=['lang','why'];if(UI==='ja'&&obDraft&&obDraft.why==='work')s.push('job');return s.concat(['level','weak','goal']);}
 function onboardHTML(){
-  /* another display language skips the job question (職業モード is 日本語 only for now): 3 steps */
-  var D=obDraft,steps=UI==='ja'?[0,1,2,3]:[0,2,3],at=steps.indexOf(obStep),h='<div class="ob"><div class="ob-dots" aria-label="ステップ '+(at+1)+' / '+steps.length+'">'+steps.map(function(i,j){return '<i class="'+(j<=at?'on':'')+'"></i>';}).join('')+'</div>';
-  if(obStep===0){
+  var D=obDraft,steps=obSteps(),at=clamp(obStep,0,steps.length-1),st=steps[at],LG=LANGS[D.lang],h='<div class="ob"><div class="ob-dots" aria-label="ステップ '+(at+1)+' / '+steps.length+'">'+steps.map(function(i,j){return '<i class="'+(j<=at?'on':'')+'"></i>';}).join('')+'</div>';
+  if(st==='lang'){
     h+=uiPickHTML()+'<div class="brand ob-brand">'+planeIcon()+'Babel<b>Flight</b></div><h1 class="ob-h">日本から世界へ。<br>仕事で使う言葉を、フライト形式で。</h1>'+
-       '<p class="dim lead">はじめに'+steps.length+'つだけ質問させてね。あなたに合わせて学ぶ内容を組み立てます。</p>'+(typeof acctObHTML==='function'?acctObHTML():'')+'<h2 class="ob-q">どの言語を学ぶ？</h2><div class="lang-grid">'+
+       '<p class="dim lead">はじめに少しだけ質問させてね。あなたに合わせて学ぶ内容を組み立てます。</p>'+(typeof acctObHTML==='function'?acctObHTML():'')+'<h2 class="ob-q">どの言語を学ぶ？</h2><div class="lang-grid">'+
        learnOrder().map(function(k){var LG=LANGS[k];return '<button class="langc" type="button" data-ob-lang="'+k+'" style="--dc:var(--c-'+k+')" aria-pressed="'+(D.lang===k)+'"><span class="code">'+LG.code+'</span><b>'+esc(LG.name)+(LG.starter?'<em class="lp-tag">スターター</em>':'')+'</b><small><span class="'+lfc(k)+'">'+esc(LG.native)+'</span> ・ '+esc(LG.city)+'行き</small></button>';}).join('')+'</div>';
-  }else if(obStep===1){
+  }else if(st==='why'){
+    h+='<h2 class="ob-q">なぜ'+esc(LG.name)+'を学ぶ？</h2><p class="dim lead">いちばんの理由を1つ選んでね。始める場所が変わります。</p>'+whyChoicesHTML(D.why,'data-ob-why',D.lang);
+  }else if(st==='job'){
     h+='<h2 class="ob-q">どんな仕事で活躍したい？</h2><p class="dim lead">選んだ職業の専門会話を、基本の会話にプラスして学べます。</p>'+profGrid(D.prof,'data-ob-prof');
-  }else if(obStep===2){
-    h+='<h2 class="ob-q">'+esc(LANGS[D.lang].name)+'のレベルは？</h2><div class="opt-list">'+
+  }else if(st==='level'){
+    h+='<h2 class="ob-q">'+esc(LG.name)+'のレベルは？</h2><div class="opt-list">'+
        LEVELS.map(function(t){return '<button class="choice" type="button" data-ob-level="'+t[0]+'" aria-pressed="'+(D.level===t[0])+'"><b>'+t[1]+'</b><small>'+LEVEL_HINT[t[0]]+'</small></button>';}).join('')+'</div>';
+  }else if(st==='weak'){
+    h+='<h2 class="ob-q">苦手なことは？</h2><p class="dim lead">いくつでも選べます。問題の出し方を合わせます。</p>'+weakChoicesHTML(D.weak,'data-ob-weak');
   }else{
     h+='<h2 class="ob-q">1日の目標は？</h2><div class="opt-list">'+
        [[1,'気軽に','1日1レッスン ・ 約3分'],[2,'ふつう','1日2レッスン ・ 約6分'],[3,'しっかり','1日3レッスン ・ 約10分'],[5,'本気','1日5レッスン ・ 約15分']].map(function(t){return '<button class="choice" type="button" data-ob-goal="'+t[0]+'" aria-pressed="'+(D.goal===t[0])+'"><b>'+t[1]+'</b><small>'+t[2]+'</small></button>';}).join('')+'</div>';
   }
-  h+='<div class="ob-acts">'+(obStep>0?'<button class="ghost" type="button" data-ob-back>戻る</button>':'<span></span>')+
-     '<button class="go" type="button" data-ob-next>'+(obStep<3?'次へ':'はじめる')+'</button></div></div>';
+  var last=at===steps.length-1;
+  h+='<div class="ob-acts">'+(at>0?'<button class="ghost" type="button" data-ob-back>戻る</button>':'<span></span>')+
+     '<button class="go" type="button" data-ob-next'+(st==='why'&&!D.why?' disabled':'')+'>'+(last?'はじめる':'次へ')+'</button></div></div>';
   return h;
+}
+function obDraftNew(){var d={lang:save.lang,prof:save.prof,level:'beg',goal:save.goal,why:save.why,weak:(save.weak||[]).slice()};if(d.lang===UI)d.lang=learnOrder()[0];return d;}
+/* finishing the first questions */
+function obFinish(){
+  var D=obDraft;
+  save.lang=D.lang;save.prof=D.prof;save.level=D.level;save.goal=D.goal;
+  if(!save.lv)save.lv={};save.lv[D.lang]=D.level;
+  save.onboarded=true;save.mode='daily';
+  applyWhy(D.why||'hobby',D.weak,D.lang,D.prof);
+  if(typeof notamSeenAll==='function')notamSeenAll();   /* everything is new to a new user: no update notice */
+  store();go('home');
+  if(typeof bootFx==='function')bootFx({kind:'climb',text:'いってらっしゃい！'});
 }
 function render(){
   if(typeof applyEnVar==='function')applyEnVar();
@@ -222,6 +240,7 @@ function render(){
   else if(view==='record')main.innerHTML=recordHTML();
   else if(view==='picker')main.innerHTML=pickerHTML();
   else if(view==='onboard')main.innerHTML=onboardHTML();
+  else if(view==='tune')main.innerHTML=tuneHTML();
   else if(view==='atc')main.innerHTML=atcHTML();
   else if(view==='scene')main.innerHTML=sceneHTML();
   else if(view==='role'&&typeof roleHTML==='function')main.innerHTML=roleHTML();

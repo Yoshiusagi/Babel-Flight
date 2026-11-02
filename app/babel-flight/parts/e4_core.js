@@ -38,7 +38,7 @@ function lfc(L){return L==='ko'?'ko':L==='zh'?'zh':L==='ar'?'ar':'';}
 var KEY='babelflight.save.v1';
 var OLD_ORDER=['checkin','inflight','immigration','hotel','restaurant','city','atc1','atc2'];
 function blankProg(){var p={};ORDER.forEach(function(k){p[k]={items:{},units:{}};});return p;}
-function defaults(){return {v:2,t:0,name:'PASSENGER',icon:'',rz:0,lang:'ko',prof:'',level:'mid',goal:2,onboarded:false,theme:'auto',sound:true,mode:'daily',amb:false,tap:true,pos:{},
+function defaults(){return {v:2,t:0,name:'PASSENGER',icon:'',rz:0,lang:'ko',prof:'',level:'mid',lv:{},nw:'',why:'',weak:[],why0:0,seen:'',goal:2,onboarded:false,theme:'auto',sound:true,mode:'daily',amb:false,tap:true,pos:{},
   miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,daily:{d:'',n:0},mh:null,st:null,cap:0,tq:0,enVar:'us',acc:{},rem:{},stMax:0,accent:'',prog:blankProg()};}
 function mergeSave(raw){
   var d=defaults();
@@ -66,6 +66,22 @@ function mergeSave(raw){
   if(d.prof==='study'){d.prof='';if(d.mode==='job'){d.mode='study';ORDER.forEach(function(l){if(typeof d.pos[l+'-job']==='number')d.pos[l+'-study']=d.pos[l+'-job'];});}}
   if(d.prof&&!profById(d.prof))d.prof='';
   if(['beg','mid','adv'].indexOf(d.level)<0)d.level='mid';
+  /* レベルは言語ごと (lv). An older save had one level for everything: it becomes the level of every language already
+     started; a language never opened asks for its own level the first time. A はじめて language shows はじめの一歩 first,
+     so the map position of its 日常会話 path moves one stop along (unless あいさつ is already flown). */
+  var lv={};
+  if(raw.lv&&typeof raw.lv==='object')Object.keys(raw.lv).forEach(function(l){if(/^[a-z]{2}$/.test(l)&&['beg','mid','adv'].indexOf(raw.lv[l])>=0)lv[l]=raw.lv[l];});
+  else if(d.onboarded)ORDER.forEach(function(l){
+    var u=d.prog[l]&&d.prog[l].units,st=l===d.lang;if(u)for(var id in u)if(u[id]&&u[id].n>0)st=true;
+    if(!st)return;lv[l]=d.level;
+    if(d.level==='beg'&&!(u&&u.greet&&u.greet.n>0)&&d.pos&&typeof d.pos[l+'-daily']==='number'&&d.pos[l+'-daily']>=0)d.pos[l+'-daily']++;
+  });
+  d.lv=lv;
+  if(d.nw!=='card'&&d.nw!=='hint')d.nw='';
+  if(typeof d.why!=='string'||!/^[a-z]{0,8}$/.test(d.why))d.why='';
+  d.weak=Array.isArray(d.weak)?d.weak.filter(function(x,i,a){return typeof x==='string'&&/^[a-z]{1,8}$/.test(x)&&a.indexOf(x)===i;}).slice(0,8):[];
+  d.why0=+d.why0>0?+d.why0:0;
+  if(typeof d.seen!=='string'||!/^[0-9.]{0,16}$/.test(d.seen))d.seen='';
   d.goal=clamp(parseInt(d.goal,10)||2,1,5);
   if(d.mode!=='job'&&d.mode!=='study'&&d.mode!=='exam')d.mode='daily';
   if(typeof d.icon!=='string'||!ICON_MAP[d.icon])d.icon='';
@@ -176,11 +192,15 @@ function pathSections(lang){
       {key:'study-subj',title:'授業の用語',sub:'数学・理科・社会・国語・歴史・音楽・体育・情報',ids:has(STUDY_SUBJ)}
     ];
   }
-  return [
-    {key:'basic',title:'基本の日常会話',sub:'あいさつ・自己紹介・数字・気持ち',ids:DAILY_IDS.slice()},
+  var secs=[
+    {key:'basic',title:'基本の日常会話',sub:'あいさつ・自己紹介・数字・気持ち',ids:dailyIds(lang)},
     {key:'travel',title:'旅行フレーズ',sub:'空港・機内・入国・ホテル・街',ids:LANGS[lang].units.map(function(u){return u.id;})},
     {key:'scenes',title:'旅行の場面で話す',sub:'入国審査からトラブルまで、会話で練習',ids:TRAVEL_SC.slice()}
-  ].concat(lang==='en'&&UNITS.en.usuk?[{key:'usuk',title:'アメリカ英語とイギリス英語',sub:'同じ意味でも、国によって言い方やつづりが変わる',ids:['usuk']}]:[]);
+  ];
+  /* 学ぶ理由「旅行」: the travel phrases and scenes come first */
+  if(save.why==='travel')secs=[secs[1],secs[2],secs[0]];
+  if(firstOn(lang))secs.unshift({key:'first',title:'はじめの一歩',sub:'はい・いいえ・ありがとう … 短い言葉から',ids:['first']});
+  return secs.concat(lang==='en'&&UNITS.en.usuk?[{key:'usuk',title:'アメリカ英語とイギリス英語',sub:'同じ意味でも、国によって言い方やつづりが変わる',ids:['usuk']}]:[]);
 }
 function pathIds(lang){var a=[];pathSections(lang).forEach(function(s){a=a.concat(s.ids);});return a;}
 function unitsDone(lang,ids){var n=0;(ids||pathIds(lang)).forEach(function(uid){if(unitRec(lang,uid).n>0)n++;});return n;}

@@ -65,13 +65,39 @@ city names from the route data (unless `<ui>/cities.tsv` names them), and writes
 still missing, run the app with a display language and read `UI_MISS` (set it to `{}` to start recording) — every text
 that had no translation is counted there.
 
+## あなたに合わせる (level per language, reasons, weak points) — `parts/f28_start.js`
+
+- **First questions**: 言語 → 学ぶ理由 (one) → 職業 (only for 仕事, 日本語 only) → レベル → 苦手なこと (any) → 1日の目標.
+  Someone who started before sees a home card (2 questions) once; both can be changed in 記録 → 学習の設定.
+- **レベル per language** (`save.lv`): a language opened for the first time asks for its level. Older saves give their one
+  level to every language already started. 「少しわかる」 and up can take the 飛び級テスト in a new language right away.
+- **はじめて**: the `first` unit (はじめの一歩, `parts/e3h_first.js`, 8 short words in all 12 languages) comes first until
+  あいさつ is flown; lessons start with their shortest phrases; 3 choices instead of 4; readings shown.
+- **New phrases**: a card before the first question (default at はじめて) or a hint button on it that is not a mistake
+  (default from 少しわかる); 記録 → 新しいフレーズの出し方 picks either.
+- **学ぶ理由** picks the starting mode (仕事 → 職業, 留学 → 留学, 検定/学校+英語 → 検定 only where its lessons are open)
+  and the 日常会話 order (旅行: travel first; 友達・推し: 雑談・気持ち earlier). **苦手なこと** makes every other round-2
+  question train it (発音・聞き取り: listening, とっさに言えない: 言い方/並べ替え, 文法: 並べ替え/穴うめ), 単語 halves the
+  review spacing, 文字 keeps readings on, 発音 replays the answer slowly. The map position is kept on the same lesson
+  when the path changes (`keepPos`).
+
+## Animations and the update notice — `parts/f29_fx.js`
+
+- Opening the app (and coming back after 15 minutes): a plane climbs out of the bottom (under 1 s, tap to skip, none with
+  reduced motion). Sky by time of day × 8 flight paths (climb, bank, swoop, clouds, formation, loop, zig, runway).
+- Right answers in a row (3, 5, 8, 12…): a plane flies past with the count. Landing: the goal bar fills and the streak ticks.
+- **NOTAM** (アップデートのお知らせ): `NOTAM` lists what is new, newest first. After an update it shows once on the home
+  screen (`save.seen`); new users never see it; 記録 → このアプリについて keeps all of them. Items marked as paid plans
+  are never shown in the iPhone app. Add a new entry at the top of `NOTAM` with each update worth announcing.
+
 ## Usage counting
 
 `parts/f12_track.js` (standalone site only, never in the Claude version) sends an anonymous
 visit / lesson-start ping to `/api/hit`: a random per-browser id plus language, mode and display language (表示言語).
 The owner reads the totals at `/stats` (passphrase chosen on first visit).
 Server side: `src/lib/analytics.server.ts`; schema: `migrations/0002_usage_stats.sql` (+ `0010_ui_lang.sql`: the display
-language, shown as 表示言語 on `/stats`; rows from before it count as 日本語).
+language, shown as 表示言語 on `/stats`; rows from before it count as 日本語; `0011_why_weak.sql`: the ids of the
+学ぶ理由 / 苦手なこと choices, shown on `/stats` as people per answer, by each browser's latest answer in the period).
 
 ## Accounts (optional sign-in)
 

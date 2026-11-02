@@ -1,8 +1,8 @@
 // Anonymous usage counting for Babel Flight and the passphrase-protected /stats page.
 //
 // What is stored: a random per-browser id (made in the browser, not linked to a
-// person), the Japan-time date, which language / mode a lesson used and the display language
-// (表示言語: ja / en / ko / zh).
+// person), the Japan-time date, which language / mode a lesson used, the display language
+// (表示言語: ja / en / ko / zh) and the ids of the 学ぶ理由 / 苦手なこと choices (migrations/0011).
 // What is NOT stored: names, IP addresses, user agents, answers.
 //
 // Routes (dispatched from server.ts before the SSR handler):
@@ -37,6 +37,8 @@ const LANGS = new Set(["ko", "en", "es", "it", "zh", "fr", "de", "pt", "ru", "tr
 const MODES = new Set(["daily", "job", "study", "exam"]);
 const KINDS = new Set(["visit", "lesson"]);
 const UIS = new Set(["ja", "en", "ko", "zh"]);
+const WHYS = new Set(["travel", "school", "exam", "work", "study", "friends", "hobby"]);
+const WEAKS = new Set(["pron", "listen", "speak", "vocab", "grammar", "letters", "none"]);
 const TRACK_RE = /^[a-z0-9-]{1,24}$/;
 const VID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const TOKEN_RE = /^[0-9a-f]{64}$/;
@@ -120,6 +122,11 @@ async function handleHit(request: Request, db: D1Database): Promise<Response> {
   const mode = typeof body.mode === "string" ? body.mode : "";
   const track = typeof body.track === "string" ? body.track : "";
   const ui = typeof body.ui === "string" && UIS.has(body.ui) ? body.ui : "ja";
+  const why = typeof body.why === "string" && WHYS.has(body.why) ? body.why : "";
+  const weak =
+    typeof body.weak === "string"
+      ? [...new Set(body.weak.split(",").filter((w: string) => WEAKS.has(w)))].slice(0, 7).join(",")
+      : "";
   if (
     !VID_RE.test(vid) ||
     !KINDS.has(kind) ||
@@ -149,6 +156,19 @@ async function handleHit(request: Request, db: D1Database): Promise<Response> {
         "ON CONFLICT(vid) DO UPDATE SET last_day = excluded.last_day",
     )
     .bind(vid, day, day);
+  try {
+    await db.batch([
+      visitor,
+      db
+        .prepare(
+          "INSERT INTO bf_events (day, ts, vid, kind, lang, mode, track, ui, why, weak) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        )
+        .bind(day, now, vid, kind, lang, mode, track, ui, why, weak),
+    ]);
+    return noContent();
+  } catch {
+    // the why / weak columns (migrations/0011) not there yet: count it without them
+  }
   try {
     await db.batch([
       visitor,
@@ -341,6 +361,30 @@ async function handleData(request: Request, url: URL, db: D1Database): Promise<R
     uis = [];
   }
 
+  /* 学ぶ理由・苦手なこと: people (browsers) by their latest answer in the period (empty until migrations/0011) */
+  const whys: { k: string; u: number }[] = [];
+  const weaks: { k: string; u: number }[] = [];
+  try {
+    const wRes = await db
+      .prepare(
+        "SELECT vid, MAX(ts) AS t, why, weak FROM bf_events WHERE day >= ? AND (why != '' OR weak != '') GROUP BY vid",
+      )
+      .bind(b.start)
+      .all<Row>();
+    const wy = new Map<string, number>(), wk = new Map<string, number>();
+    for (const r of wRes.results ?? []) {
+      const y = String(r.why ?? "");
+      if (WHYS.has(y)) wy.set(y, (wy.get(y) ?? 0) + 1);
+      for (const w of String(r.weak ?? "").split(",")) if (WEAKS.has(w)) wk.set(w, (wk.get(w) ?? 0) + 1);
+    }
+    for (const [k2, u] of wy) whys.push({ k: k2, u });
+    for (const [k2, u] of wk) weaks.push({ k: k2, u });
+    whys.sort((a, c) => c.u - a.u);
+    weaks.sort((a, c) => c.u - a.u);
+  } catch {
+    /* columns not there yet */
+  }
+
   const k = rowsOf(kpiRes)[0] ?? {};
   return json({
     ok: true,
@@ -359,6 +403,8 @@ async function handleData(request: Request, url: URL, db: D1Database): Promise<R
     langs: pick(langRes),
     modes: pick(modeRes),
     uis,
+    whys,
+    weaks,
   });
 }
 

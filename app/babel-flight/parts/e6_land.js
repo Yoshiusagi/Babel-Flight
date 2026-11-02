@@ -26,8 +26,8 @@ function land(){
   keys.forEach(function(k){
     var rec=P.items[k]||{b:0,d:0},w=F.wrong[k]||0,wasDue=rec.b===0||rec.d<=now;
     if(w===0){
-      if(rec.b===0){rec.b=1;rec.d=now+INTERVALS[1]*DAY;}
-      else if(wasDue){rec.b=Math.min(6,rec.b+1);rec.d=now+INTERVALS[rec.b]*DAY;}
+      if(rec.b===0){rec.b=1;rec.d=now+ivlDays(1)*DAY;}
+      else if(wasDue){rec.b=Math.min(6,rec.b+1);rec.d=now+ivlDays(rec.b)*DAY;}
       if(rec.m)rec.k=(rec.k||0)+1;
     }else{rec.b=Math.max(1,rec.b-1);rec.d=now+0.5*DAY;rec.m=(rec.m||0)+w;rec.k=0;}
     P.items[k]=rec;
@@ -82,6 +82,7 @@ function completeLesson(o){
       if(from!==ix){pendingFly={key:posKey(L),from:from,to:ix};save.pos[posKey(L)]=ix;}
     }
   }
+  var streakUp=save.lastDay!==today;
   if(save.lastDay!==today){
     save.streak=(save.lastDay===yesterdayStr())?save.streak+1:1;
     save.lastDay=today;save.bestStreak=Math.max(save.bestStreak||0,save.streak);
@@ -103,6 +104,7 @@ function completeLesson(o){
      '<div class="stars">'+[1,2,3].map(function(n){return starIcon(n<=o.stars);}).join('')+'</div>';
   h+='<div class="goalbox"><div class="card-h" style="margin:0"><span>今日の目標</span><b class="mono">'+save.daily.n+' / '+save.goal+' レッスン</b></div><div class="gbar"><i style="width:'+gpct+'%"></i></div>'+
      (save.daily.n>=save.goal?'<div class="gdone">'+(goalJust?'今日の目標を達成しました！':'目標達成ずみ。おかわりフライト中')+'</div>':'')+'</div>';
+  if(streakUp&&save.streak>1)h+='<div class="streak-up" aria-label="連続'+save.streak+'日"><span class="su-fl" aria-hidden="true">🔥</span><span class="su-n mono"><i>'+(save.streak-1)+'</i><i>'+save.streak+'</i></span><span>日連続のフライト！</span></div>';
   h+='<div class="receipt" aria-label="獲得マイルの明細">'+lines.map(function(x){return '<div class="ln"><span>'+esc(x[0])+'</span><span>+'+x[1]+'</span></div>';}).join('')+
      '<div class="ln tot"><span>獲得マイル</span><span>+'+miles+' mi</span></div></div>';
   if(firstCap)h+='<div class="up-note">キャプテンに到達！ 記念のキャプテンスタンプをもらいました(ずっと残ります)</div>';
@@ -125,5 +127,6 @@ function completeLesson(o){
     var main=$('main');main.innerHTML=h;main.classList.remove('enter');void main.offsetWidth;main.classList.add('enter');
     window.scrollTo(0,0);chimeLand();
     if(goalJust)confetti();
+    if(typeof fxLand==='function')fxLand(goalJust,streakUp&&save.streak>1);
   });
 }

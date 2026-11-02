@@ -89,6 +89,7 @@ function homeHTML(){
      '<div class="hud-foot mono"><span>'+fmtCoord(nc)+'</span><span>'+(cp>=0?esc(from[1]):'東京')+'から '+fmt(dist)+' km</span></div>'+
      heroLangs()+'</div></section>';
   h+=modeSwitch();
+  if(typeof tuneCardHTML==='function')h+=tuneCardHTML();
   if(typeof examHomeHTML==='function')h+=examHomeHTML(L);
   if(save.mode==='job'){
     h+='<button class="course" type="button" data-picker><span class="ccode">'+p.code+'</span><span class="ctext"><span class="lbl">職業コース</span><b>'+esc(p.jp)+'</b><small>タップして変更 ・ 13職業から選べます</small></span><span class="chev" aria-hidden="true">›</span></button>';

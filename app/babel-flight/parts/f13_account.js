@@ -90,6 +90,11 @@ function unionSave(a,b){
   else if(od.d===out.daily.d)out.daily.n=Math.max(out.daily.n||0,od.n||0);
   out.tq=Math.max(a.tq||0,b.tq||0);
   out.stMax=Math.max(a.stMax||0,b.stMax||0);
+  /* レベル per language: a language set only on the other copy keeps its level; the update notice seen anywhere stays seen */
+  var olv=older.lv||{};if(!out.lv)out.lv={};Object.keys(olv).forEach(function(l){if(!out.lv[l])out.lv[l]=olv[l];});
+  if((older.seen||'')>(out.seen||''))out.seen=older.seen;
+  if(!out.why&&older.why){out.why=older.why;out.weak=(older.weak||[]).slice();}
+  out.why0=Math.max(a.why0||0,b.why0||0);
   ORDER.forEach(function(l){var m={};[older.rem&&older.rem[l]||[],out.rem&&out.rem[l]||[]].forEach(function(list){list.forEach(function(r){if(!m[r.u]||r.t>=m[r.u].t)m[r.u]=r;});});
     if(!out.rem)out.rem={};out.rem[l]=Object.keys(m).map(function(k){return m[k];}).sort(function(x,y){return y.t-x.t;}).slice(0,6);});
   out.cap=(a.cap&&b.cap)?Math.min(a.cap,b.cap):(a.cap||b.cap||0);
@@ -131,7 +136,7 @@ function acctMerge(remote,replace){
 /* after adopting another copy, make sure the screen matches it (e.g. a reset on another device) */
 function acctFixView(){
   if(save.onboarded&&view==='onboard')view='home';
-  else if(!save.onboarded&&view!=='onboard'){view='onboard';obStep=0;obDraft={lang:save.lang,prof:save.prof,level:save.level,goal:save.goal};}
+  else if(!save.onboarded&&view!=='onboard'){view='onboard';obStep=0;obDraft=obDraftNew();}
 }
 (function(){
   var r0=render;

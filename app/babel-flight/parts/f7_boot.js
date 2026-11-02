@@ -11,7 +11,7 @@ document.addEventListener('click',function(e){
   /* navigation */
   if(a('data-tab')){if(g('data-tab')==='home'&&view!=='home')HOME_ANIM='tab';go(g('data-tab'));return;}
   if(a('data-lang-pick')){langPickSheet();return;}
-  if(a('data-lang')){if(t.closest('#sheetHost'))closeSheet();if(save.lang!==g('data-lang')){save.lang=g('data-lang');HOME_ANIM='lang';store();render();}return;}
+  if(a('data-lang')){if(t.closest('#sheetHost'))closeSheet();if(save.lang!==g('data-lang')){save.lang=g('data-lang');if(save.lv&&save.lv[save.lang])save.level=save.lv[save.lang];HOME_ANIM='lang';store();render();if(lvNeed(save.lang))lvSheet(save.lang);}return;}
   if(a('data-mode-set')){if(save.mode!==g('data-mode-set')){save.mode=g('data-mode-set');HOME_ANIM='mode';store();render();}return;}
   if(a('data-node')){openNodeSheet(g('data-node'));return;}
   if(a('data-close-sheet')){closeSheet();return;}
@@ -29,24 +29,27 @@ document.addEventListener('click',function(e){
   if(a('data-icon-open')){openIconSheet();return;}
   if(a('data-icon-set')){save.icon=g('data-icon-set');store();closeSheet();render();return;}
   /* settings */
-  if(a('data-level')){save.level=g('data-level');store();render();return;}
+  if(a('data-level')){setLv(save.lang,g('data-level'));render();return;}
   if(a('data-goal')){save.goal=parseInt(g('data-goal'),10)||2;store();render();return;}
   if(a('data-theme-set')){save.theme=g('data-theme-set');store();applyTheme();render();return;}
   if(a('data-toggle-sound')){save.sound=!save.sound;store();render();return;}
   if(a('data-toggle-tap')){save.tap=!save.tap;store();render();return;}
   if(a('data-reset')){confirmReset=true;render();return;}
   if(a('data-reset-no')){confirmReset=false;render();return;}
-  if(a('data-reset-yes')){save=defaults();confirmReset=false;store();applyTheme();obStep=0;obDraft={lang:save.lang,prof:'',level:'mid',goal:2};if(obDraft.lang===UI)obDraft.lang=learnOrder()[0];go('onboard');return;}
+  if(a('data-reset-yes')){save=defaults();confirmReset=false;store();applyTheme();obStep=0;obDraft=obDraftNew();go('onboard');return;}
   /* onboarding */
   if(a('data-ui-set')){uiSet(g('data-ui-set'));return;}
   if(a('data-ob-lang')){obDraft.lang=g('data-ob-lang');render();return;}
   if(a('data-ob-prof')){obDraft.prof=g('data-ob-prof');render();return;}
+  if(a('data-ob-why')){obDraft.why=g('data-ob-why');render();return;}
+  if(a('data-ob-weak')){obDraft.weak=weakToggle(obDraft.weak,g('data-ob-weak'));render();return;}
   if(a('data-ob-level')){obDraft.level=g('data-ob-level');render();return;}
   if(a('data-ob-goal')){obDraft.goal=parseInt(g('data-ob-goal'),10);render();return;}
-  if(a('data-ob-back')){obStep=Math.max(0,obStep-1);if(obStep===1&&UI!=='ja')obStep=0;render();window.scrollTo(0,0);return;}
+  if(a('data-ob-back')){obStep=Math.max(0,obStep-1);render();window.scrollTo(0,0);return;}
   if(a('data-ob-next')){
-    if(obStep<3){obStep++;if(obStep===1&&UI!=='ja')obStep=2;render();window.scrollTo(0,0);return;}
-    save.lang=obDraft.lang;save.prof=obDraft.prof;save.level=obDraft.level;save.goal=obDraft.goal;save.onboarded=true;save.mode='daily';store();go('home');return;
+    var obs=obSteps();if(obs[obStep]==='why'&&!obDraft.why)return;
+    if(obStep<obs.length-1){obStep++;render();window.scrollTo(0,0);return;}
+    obFinish();return;
   }
   /* scenes */
   if(SCX){
@@ -91,6 +94,7 @@ document.addEventListener('click',function(e){
   }
   if(a('data-untile')&&F.build&&!F.answered){F.build.placed.splice(parseInt(g('data-untile'),10),1);drawBuild();return;}
   if(a('data-clear')&&F.build&&!F.answered){F.build.placed=[];drawBuild();return;}
+  if(a('data-q-hint')){if(F.cur&&!F.answered){var hd=dat(F.cur.it);ledSet('ヒント',hd.jp);var ob=document.querySelectorAll('.opt');if(ob[F.ci])ob[F.ci].classList.add('hinted');t.hidden=true;}return;}
   if(a('data-peek')){if(F.cur&&!F.peeked){F.peeked=true;board.set(dat(F.cur.it).t);t.hidden=true;}return;}
   if(a('data-abort')){abortAsk();return;}
   if(a('data-abort-yes')){leaveFlight();return;}
@@ -123,7 +127,7 @@ var rsT=0;window.addEventListener('resize',function(){clearTimeout(rsT);rsT=setT
 applyTheme();
 initSky();
 uiBoot();
-if(!save.onboarded){view='onboard';obStep=0;obDraft={lang:save.lang,prof:save.prof,level:save.level,goal:save.goal};if(obDraft.lang===UI)obDraft.lang=learnOrder()[0];}
+if(!save.onboarded){view='onboard';obStep=0;obDraft=obDraftNew();}
 render();
 uiWalk(document.body);
 initCloud();

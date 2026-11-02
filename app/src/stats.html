@@ -227,6 +227,8 @@ var D={};
 var reduce=false;try{reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}
 var LANG_JP={ko:'韓国語',en:'英語',es:'スペイン語',it:'イタリア語',zh:'中国語',fr:'フランス語',de:'ドイツ語',pt:'ポルトガル語',ru:'ロシア語',tr:'トルコ語',id:'インドネシア語',ar:'アラビア語'},LANG_ORDER=['ko','en','es','it','zh','fr','de','pt','ru','tr','id','ar'];
 var UI_JP={ja:'日本語',en:'英語',ko:'韓国語',zh:'中国語'},UI_ORDER=['ja','en','ko','zh'];
+var WHY_JP={travel:'旅行',school:'学校の成績',exam:'資格・検定',work:'仕事',study:'留学',friends:'友達・推し',hobby:'趣味'},WHY_ORDER=['travel','school','exam','work','study','friends','hobby'];
+var WEAK_JP={pron:'発音',listen:'聞き取り',speak:'とっさに話す',vocab:'単語',grammar:'文法・語順',letters:'文字',none:'特にない'},WEAK_ORDER=['pron','listen','speak','vocab','grammar','letters','none'];
 var MODE_JP={daily:'日常会話モード',job:'職業モード',study:'留学モード',exam:'検定モード'},MODE_ORDER=['daily','job','study','exam'],MODE_COLOR=['--s1','--s2','--s3','--s4'];
 var RANGE_SUB={'30d':'直近30日 ・ 1日ごと','12m':'直近12か月 ・ 1か月ごと','all':'1年ごと'};
 var RANGE_SHORT={'30d':'直近30日','12m':'直近12か月','all':'全期間'};
@@ -382,17 +384,20 @@ function showDash(){
   D.langs=figure('langs','人気の言語');
   D.modes=figure('modes','人気のモード');
   D.uis=figure('uis','表示言語');
+  D.whys=figure('whys','学ぶ理由');
+  D.weaks=figure('weaks','苦手なこと');
   D.visits.el.style.setProperty('--i','3');D.users.el.style.setProperty('--i','4');
-  D.langs.el.style.setProperty('--i','5');D.modes.el.style.setProperty('--i','6');D.uis.el.style.setProperty('--i','7');
-  D.charts=h('div',{class:'charts'},[D.visits.el,D.users.el,h('div',{class:'pair'},[D.langs.el,D.modes.el]),D.uis.el]);
-  var foot=h('section',{class:'foot rv',style:'--i:8'},[
+  D.langs.el.style.setProperty('--i','5');D.modes.el.style.setProperty('--i','6');D.uis.el.style.setProperty('--i','7');D.whys.el.style.setProperty('--i','8');D.weaks.el.style.setProperty('--i','9');
+  D.charts=h('div',{class:'charts'},[D.visits.el,D.users.el,h('div',{class:'pair'},[D.langs.el,D.modes.el]),D.uis.el,h('div',{class:'pair'},[D.whys.el,D.weaks.el])]);
+  var foot=h('section',{class:'foot rv',style:'--i:10'},[
     h('h3',{text:'数え方'}),
     h('dl',null,[
       h('dt',{text:'アクセス'}),h('dd',{text:'アプリを開いた回数。30分以内の開き直しは同じ1回として数えます。'}),
       h('dt',{text:'ユーザー'}),h('dd',{text:'ブラウザ(端末)の数。同じ人でもスマホとパソコンなら2人になります。'}),
       h('dt',{text:'新規'}),h('dd',{text:'その日(月・年)に初めて来たブラウザ。前にも来たことがあればリピーター。'}),
       h('dt',{text:'言語・モード'}),h('dd',{text:'レッスン(通話シーンを含む)を始めた回数。モードはその時に選んでいたモードです。'}),
-      h('dt',{text:'表示言語'}),h('dd',{text:'アプリの画面の言語ごとのユーザー数(ブラウザの数)。2026年11月2日より前の記録はすべて日本語として数えています。'})
+      h('dt',{text:'表示言語'}),h('dd',{text:'アプリの画面の言語ごとのユーザー数(ブラウザの数)。2026年11月2日より前の記録はすべて日本語として数えています。'}),
+      h('dt',{text:'学ぶ理由・苦手なこと'}),h('dd',{text:'最初の質問(またはホームのカード)で選んだ答えごとの人数。期間中の最後の答えで数えます。苦手なことは複数選べるので、合計は人数より多くなります。'})
     ]),
     h('p',{text:'日付は日本時間。名前やIPアドレスは保存していません。Claude で開いた版は数えていません。'})
   ]);
@@ -502,7 +507,7 @@ function wire(el,show,hide){
 }
 document.addEventListener('pointerdown',function(e){
   var t=e.target;if(t&&t.closest&&t.closest('.hit,.hb-row'))return;
-  [D.visits,D.users,D.langs,D.modes,D.uis].forEach(hideTip);
+  [D.visits,D.users,D.langs,D.modes,D.uis,D.whys,D.weaks].forEach(hideTip);
 });
 
 /* column chart (single or stacked) */
@@ -651,7 +656,32 @@ function renderUis(){
   });
   box.appendChild(list);
 }
-function renderCharts(){renderVisits();renderUsers();renderLangs();renderModes();renderUis();}
+/* 学ぶ理由・苦手なこと: people by their latest answer (苦手 can be several, so its shares add up to more than 100%) */
+function renderPeople(f,list,order,names,emptyText){
+  var d=ST.data,map={};(list||[]).forEach(function(r){map[r.k]=r.u;});
+  var rows=order.map(function(k){return {k:k,name:names[k],u:map[k]||0};}).sort(function(a,b){return b.u-a.u||order.indexOf(a.k)-order.indexOf(b.k);});
+  f.sub.textContent='答えた人の数 ・ '+RANGE_SHORT[d.range];
+  table(f,['答え','人数'],rows.map(function(r){return [r.name,fmt(r.u)+'人'];}));
+  var box=f.box;box.textContent='';hideTip(f);
+  var max=Math.max.apply(null,rows.map(function(r){return r.u;}).concat([0]));
+  if(!max){box.appendChild(empty(emptyText));return;}
+  var el=h('div',{class:'hb'+(ST.anim&&!reduce?' anim':'')});
+  rows.forEach(function(r,i){
+    var bar=h('span',{class:'hb-bar'+(r.u?'':' z'),style:'--p:'+(r.u/max)+';animation-delay:'+(i*60)+'ms'});
+    var row=h('div',{class:'hb-row',tabindex:'0',role:'img','aria-label':r.name+' '+r.u+'人'},
+      [h('span',{class:'hb-name',text:r.name}),h('span',{class:'hb-track'},[bar,h('span',{class:'hb-val',text:fmt(r.u)})])]);
+    wire(row,function(){
+      hideTip(f);row.classList.add('on');
+      var pr=f.plot.getBoundingClientRect(),br=(r.u?bar:row).getBoundingClientRect();
+      showTip(f,(r.u?br.right:br.left+60)-pr.left,br.top-pr.top,pr.width,r.name,[['--s1',fmt(r.u)+'人','答えた人']]);
+    },function(){hideTip(f);});
+    el.appendChild(row);
+  });
+  box.appendChild(el);
+}
+function renderCharts(){renderVisits();renderUsers();renderLangs();renderModes();renderUis();
+  renderPeople(D.whys,ST.data.whys,WHY_ORDER,WHY_JP,'この期間にはまだ答えがありません。');
+  renderPeople(D.weaks,ST.data.weaks,WEAK_ORDER,WEAK_JP,'この期間にはまだ答えがありません。');}
 var rT=0;
 window.addEventListener('resize',function(){
   clearTimeout(rT);

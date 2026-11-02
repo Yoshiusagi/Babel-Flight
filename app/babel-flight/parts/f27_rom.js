@@ -1,6 +1,13 @@
 /* アラビア語の読み (romanization) for display languages other than 日本語, which show katakana instead.
    Simple learner spelling: long vowels doubled (aa ii uu), ' for the glottal stop / ʿayn, "al-" before the noun. */
 var ROM_AR={
+"نعم.":"na'am.",
+"لا.":"laa.",
+"شكرا.":"shukran.",
+"آسف.":"aasif.",
+"إلى اللقاء.":"ilaa al-liqaa'.",
+"لا بأس.":"laa ba's.",
+"من فضلك.":"min fadlak.",
 "مرحبا.":"marhaban.",
 "أريد تسجيل الوصول، من فضلك.":"uriidu tasjiil al-wusuul, min fadlak.",
 "هذا جواز سفري.":"haadhaa jawaaz safarii.",

@@ -19,7 +19,10 @@ function skipEligible(L,uid){
   var u=UNITS[L][uid],a=accOf(L);
   if(!(u&&u.kind!=='scene'&&u.items.length>=SKIP_N))return false;
   if(typeof entitled==='function'&&entitled())return true; /* test account: always offered */
-  return unitRec(L,uid).n===0&&a.n>=3&&a.a>=0.85;
+  if(unitRec(L,uid).n>0)return false;
+  /* 「少しわかる」以上 in a language just started: known lessons can be skipped right away */
+  if(a.n<3&&typeof lvOf==='function'&&lvOf(L)!=='beg')return true;
+  return a.n>=3&&a.a>=0.85;
 }
 function skipBtnHTML(L,uid){
   if(!skipEligible(L,uid))return '';
@@ -68,7 +71,7 @@ function clozeKey(d){
 function clozeOpts(L,ck){
   var right=ck.w,seen={},picks=[];seen[right.toLowerCase()]=1;
   shuffle(langPool(L)).some(function(x){
-    if(picks.length>=3)return true;
+    if(picks.length>=optN(L))return true;
     tokensOf(x.t).some(function(w){
       var c=clozeWord(w);if(c.length<3||/^\d+$/.test(c)||seen[c.toLowerCase()])return false;
       if(Math.abs(c.length-right.length)>4)return false;
