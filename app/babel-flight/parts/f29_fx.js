@@ -103,6 +103,9 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.06',items:[
+  ['💼','職業モード','パイロット・医療・IT・ビジネス・ホテル観光など13職業の、仕事で使う会話を学べるようになりました。','job',0,['en','ko','zh']]
+ ]},
  {v:'2026.11.05',items:[
   ['🎓','留学モード','留学先の学校での会話(自己紹介・先生への質問・ホームステイ)と、授業で使う用語(数学・理科・社会など)を学べるようになりました。','study',0,['en','ko','zh']]
  ]},
@@ -135,6 +138,7 @@ function notamHTML(n,first){
     if(first&&x[3]==='tune')btn='<button class="ghost nt-go" type="button" data-notam-go="tune">試してみる</button>';
     else if(first&&x[3]==='exam'&&typeof examModeOn==='function'&&examModeOn())btn='<button class="ghost nt-go" type="button" data-notam-go="exam">試してみる</button>';
     else if(first&&x[3]==='ja'&&LANGS.ja&&learnOrder().indexOf('ja')>=0&&save.lang!=='ja')btn='<button class="ghost nt-go" type="button" data-notam-go="ja">試してみる</button>';
+    else if(first&&x[3]==='job')btn='<button class="ghost nt-go" type="button" data-notam-go="job">試してみる</button>';
     else if(first&&x[3]==='study'&&studyLangFor())btn='<button class="ghost nt-go" type="button" data-notam-go="study">試してみる</button>';
     else if(first&&x[3]==='first')btn='<button class="ghost nt-go" type="button" data-notam-go="'+(firstOn(save.lang)?'first':'settings')+'">'+(firstOn(save.lang)?'試してみる':'レベルを見る')+'</button>';
     return '<div class="nt-item"><span class="nt-ic" aria-hidden="true">'+x[0]+'</span><div class="nt-tx"><b>'+x[1]+'</b><p>'+x[2]+'</p>'+btn+'</div></div>';
@@ -168,6 +172,7 @@ document.addEventListener('click',function(e){
     else if(g==='settings')go('record');
     else if(g==='ja'){save.lang='ja';HOME_ANIM='lang';store();go('home');if(typeof lvNeed==='function'&&lvNeed('ja'))lvSheet('ja');}
     else if(g==='exam'){if(save.mode!=='exam'){save.mode='exam';HOME_ANIM='mode';store();}go('home');}
+    else if(g==='job'){if(profById(save.prof)&&jobOpen(save.prof)){save.mode='job';HOME_ANIM='mode';store();go('home');}else{pickerBack='home';go('picker');}}
     else if(g==='study'){var L=studyLangFor();if(L){var sw=save.lang!==L;save.lang=L;save.mode='study';HOME_ANIM=sw?'lang':'mode';store();go('home');if(sw&&typeof lvNeed==='function'&&lvNeed(L))lvSheet(L);}}
     else if(g==='first'&&typeof openNodeSheet==='function')openNodeSheet('first');
     return;

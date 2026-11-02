@@ -369,6 +369,7 @@ svg{display:block}
 .prof small{font:400 10.5px var(--f-mono);letter-spacing:.08em;color:var(--ink2)}
 .pcode{font:700 13px var(--f-mono);letter-spacing:.08em;background:var(--board);color:var(--signal);padding:4px 7px;border-radius:5px;margin-bottom:4px}
 .prof[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink);background:var(--surface2)}
+.prof.soon{opacity:.45;cursor:default;border-style:dashed}
 .prof.none .pcode{background:var(--bg2);color:var(--ink2)}
 
 /* onboarding */
@@ -2799,6 +2800,9 @@ var PROF=[
  {id:'sport',code:'ATH',jp:'スポーツ選手',en:'ATHLETE'}
 ];
 PROF.forEach(function(p){if(!p.units){p.units={};ORDER.forEach(function(l){p.units[l]=[p.id];});}ORDER.forEach(function(l){if(!p.units[l])p.units[l]=[];});});
+/* 職業モード in English / 한국어 / 简体中文: the jobs translated (i18n/<ui>/job*.tsv); a job left out shows 準備中 there */
+var JOB_UI=['pilot','crew','med','pharm','law','it','biz','beauty','chef','teach','hosp','lab','sport'];
+function jobOpen(id){return typeof UI==='undefined'||UI==='ja'||JOB_UI.indexOf(id)>=0;}
 function profById(id){for(var i=0;i<PROF.length;i++)if(PROF[i].id===id)return PROF[i];return null;}
 /* every unit of a language, by id */
 var UNITS={};
@@ -4246,7 +4250,7 @@ function pathSections(lang){
   if(save.mode==='exam'&&typeof examSections==='function'){var xs=examSections(lang);if(xs)return xs;}
   if(save.mode==='job'){
     var p=profById(save.prof);
-    if(!p)return [];
+    if(!p||!jobOpen(p.id))return [];
     var pids=p.units[lang].filter(function(u){return !!UNITS[lang][u];});
     return pids.length?[{key:p.id,title:p.jp+'の専門会話',sub:p.en+' ・ 仕事で使う会話',ids:pids,prof:p}]:[];
   }
@@ -4618,12 +4622,13 @@ function creditsHTML(){
 var LEVEL_HINT={beg:'はじめの一歩から。新しいフレーズはカードで見てから解きます。読み方のヒントつき、選択肢は3つ。',mid:'標準。並べ替えや入力問題も出ます。',adv:'入力問題が多め。職業コースが先に表示されます。'};
 function pathIdsFor(l){
   var ids=(firstOn(l)?['first']:[]).concat(dailyIds(l),LANGS[l].units.map(function(u){return u.id;}),TRAVEL_SC,STUDY_ALL,UNITS[l].usuk&&UI==='ja'?['usuk']:[]),p=profById(save.prof);
-  if(p&&UI==='ja')ids=ids.concat(p.units[l]);
+  if(p&&jobOpen(p.id))ids=ids.concat(p.units[l]);
   ALL_IDS[l].forEach(function(uid){if(ids.indexOf(uid)<0&&unitRec(l,uid).n>0)ids.push(uid);});
   return ids.filter(function(uid){return !!UNITS[l][uid];}); /* a スターター language has no 職業・留学 units yet */
 }
 function profGrid(sel,attr){
   return '<div class="prof-grid">'+PROF.map(function(p){
+    if(!jobOpen(p.id))return '<button class="prof soon" type="button" disabled aria-disabled="true"><span class="pcode">'+p.code+'</span><b>'+esc(p.jp)+'</b><small>準備中</small></button>';
     return '<button class="prof" type="button" '+attr+'="'+p.id+'" aria-pressed="'+(sel===p.id)+'"><span class="pcode">'+p.code+'</span><b>'+esc(p.jp)+'</b><small>'+p.en+'</small></button>';
   }).join('')+'<button class="prof none" type="button" '+attr+'="" aria-pressed="'+(!sel)+'"><span class="pcode">—</span><b>まだ決めていない</b><small>あとで選べます</small></button></div>';
 }
@@ -4640,7 +4645,7 @@ function openIconSheet(){
     '</div>'+(anyLk?'<p class="dim hint">🔒のアイコンは、シルバーになると使えます(一度なればずっと使えます)。</p>':'')+'<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
 }
 /* the first questions: 言語 → 学ぶ理由 → (仕事なら)職業 → レベル → 苦手なこと → 1日の目標 */
-function obSteps(){var s=['lang','why'];if(UI==='ja'&&obDraft&&obDraft.why==='work')s.push('job');return s.concat(['level','weak','goal']);}
+function obSteps(){var s=['lang','why'];if(obDraft&&obDraft.why==='work')s.push('job');return s.concat(['level','weak','goal']);}
 function onboardHTML(){
   var D=obDraft,steps=obSteps(),at=clamp(obStep,0,steps.length-1),st=steps[at],LG=LANGS[D.lang],h='<div class="ob"><div class="ob-dots" aria-label="ステップ '+(at+1)+' / '+steps.length+'">'+steps.map(function(i,j){return '<i class="'+(j<=at?'on':'')+'"></i>';}).join('')+'</div>';
   if(st==='lang'){
@@ -4781,7 +4786,7 @@ function homeHTML(){
   var L=save.lang,LG=LANGS[L],p=profById(save.prof),anim=!!HOME_ANIM&&!reduceMotion,h=topBar('','progress');
   var ids=pathIds(L);
   if(!ids.length){
-    var pick=save.mode==='job'&&!p&&uiModeOpen('job');
+    var pick=save.mode==='job'&&!(p&&jobOpen(p.id))&&uiModeOpen('job');
     h+='<section class="hero empty"><div class="hero-in"><div class="hud"><div class="hud-l"><span class="lbl">'+esc(LG.cityEn)+' ・ '+esc(LG.name)+'</span><b class="mono">'+(pick?'職業を選ぼう':'準備中')+'</b></div></div>'+heroLangs()+'</div></section>'+modeSwitch();
     if(!pick){h+=modeSoonHTML(L);return h;}
     h+='<section class="card empty-job"><span class="lbl">職業モード</span><h2 class="jh">まずは職業を選ぼう</h2><p class="dim" style="font-size:13.5px;margin-top:4px">パイロット、医療、IT、美容師など13職業から選べます。選んだ職業の専門会話が、地図の上に並びます。</p><button class="go" type="button" data-picker>職業を選ぶ</button></section>';
@@ -4799,7 +4804,7 @@ function homeHTML(){
   if(typeof examHomeHTML==='function')h+=examHomeHTML(L);
   if(save.mode==='job'){
     h+='<button class="course" type="button" data-picker><span class="ccode">'+p.code+'</span><span class="ctext"><span class="lbl">職業コース</span><b>'+esc(p.jp)+'</b><small>タップして変更 ・ 13職業から選べます</small></span><span class="chev" aria-hidden="true">›</span></button>';
-    if(p.id==='pilot')h+='<button class="course atcbtn" type="button" data-atc><span class="ccode">ATC</span><span class="ctext"><span class="lbl">AIロールプレイ ・ 英語</span><b>AI管制官と交信練習</b><small>羽田空港で、管制官役のAIと無線交信</small></span><span class="chev" aria-hidden="true">›</span></button>';
+    if(p.id==='pilot'&&UI==='ja')h+='<button class="course atcbtn" type="button" data-atc><span class="ccode">ATC</span><span class="ctext"><span class="lbl">AIロールプレイ ・ 英語</span><b>AI管制官と交信練習</b><small>羽田空港で、管制官役のAIと無線交信</small></span><span class="chev" aria-hidden="true">›</span></button>';
   }
   var idx=0;
   secs.forEach(function(sec,si){
@@ -10882,7 +10887,7 @@ function uiSwap(){
 }
 /* 表示言語: the version of public/i18n/*.json and the display languages that have one
    (written by babel-flight/i18n/build.py) */
-var I18N_V='fd7a86ba0b',I18N_UIS=["en", "ko", "zh"];
+var I18N_V='630675bba4',I18N_UIS=["en", "ko", "zh"];
 /* ================= 表示言語 (display language: 日本語 / English / 한국어 / 简体中文) =================
    The page is written in Japanese. For another display language the dictionary public/i18n/<ui>.json
    (built from babel-flight/i18n/<ui>/*.tsv by i18n/build.py) is loaded, kept on the device, and every
@@ -11074,7 +11079,7 @@ function uiReadings(){
 }
 /* ---- what the display language offers ---- */
 function learnOrder(){return ORDER.filter(function(k){return k!==UI;});}
-function uiModeOpen(m){return UI==='ja'||m==='daily'||m==='exam'||m==='study';}
+function uiModeOpen(m){return UI==='ja'||m==='daily'||m==='exam'||m==='study'||m==='job';}
 function uiFixSave(){
   if(UI==='ja')return;
   if(save.lang===UI){var alt=learnOrder().filter(function(k){return langStarted(k);})[0]||learnOrder()[0];save.lang=alt;}
@@ -11191,7 +11196,6 @@ function examOK(){return typeof examModeOn==='function'&&examModeOn();}
 function examUsable(){return examOK()&&typeof cabinLv==='function'&&cabinLv()>=1;}
 function whyList(){
   return WHY.filter(function(w){
-    if(UI!=='ja'&&w[0]==='work')return false;  /* 職業 is 日本語 only for now */
     return w[0]!=='exam'||examOK();
   });
 }
@@ -11207,7 +11211,7 @@ function kindPrefs(){
 function ivlDays(b){var d=INTERVALS[b]||1;return hasWeak('vocab')?Math.max(1,Math.round(d/2)):d;}
 /* the mode a reason starts in (when the language has it) */
 function whyMode(w,L,prof){
-  if(UI==='ja'&&w==='work'){var p=profById(prof);if(p&&(p.units[L]||[]).some(function(u){return !!UNITS[L][u];}))return 'job';}
+  if(w==='work'){var p=profById(prof);if(p&&jobOpen(p.id)&&(p.units[L]||[]).some(function(u){return !!UNITS[L][u];}))return 'job';}
   if(w==='study'&&STUDY_ALL.some(function(u){return !!UNITS[L][u];}))return 'study';
   if((w==='exam'||(w==='school'&&L==='en'&&UI==='ja'))&&examUsable()&&typeof EXAMS==='object'&&(EXAMS[L]||[]).length)return 'exam';
   return 'daily';
@@ -11276,7 +11280,7 @@ document.addEventListener('click',function(e){
       if(TUNE.step===0){if(!TUNE.why)return;TUNE.step=1;render();window.scrollTo(0,0);return;}
       applyWhy(TUNE.why,TUNE.weak,save.lang,save.prof);store();
       /* 仕事 without a job yet: choose it now (picking one from here also switches to 職業モード) */
-      if(save.why==='work'&&UI==='ja'&&!profById(save.prof)){pickerBack='home';go('picker');return;}
+      if(save.why==='work'&&!(profById(save.prof)&&jobOpen(save.prof))){pickerBack='home';go('picker');return;}
       go('home');if(typeof bootFx==='function')bootFx({kind:'bank',text:'あなた向けに設定しました'});return;
     }
   }
@@ -11386,6 +11390,9 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.06',items:[
+  ['💼','職業モード','パイロット・医療・IT・ビジネス・ホテル観光など13職業の、仕事で使う会話を学べるようになりました。','job',0,['en','ko','zh']]
+ ]},
  {v:'2026.11.05',items:[
   ['🎓','留学モード','留学先の学校での会話(自己紹介・先生への質問・ホームステイ)と、授業で使う用語(数学・理科・社会など)を学べるようになりました。','study',0,['en','ko','zh']]
  ]},
@@ -11418,6 +11425,7 @@ function notamHTML(n,first){
     if(first&&x[3]==='tune')btn='<button class="ghost nt-go" type="button" data-notam-go="tune">試してみる</button>';
     else if(first&&x[3]==='exam'&&typeof examModeOn==='function'&&examModeOn())btn='<button class="ghost nt-go" type="button" data-notam-go="exam">試してみる</button>';
     else if(first&&x[3]==='ja'&&LANGS.ja&&learnOrder().indexOf('ja')>=0&&save.lang!=='ja')btn='<button class="ghost nt-go" type="button" data-notam-go="ja">試してみる</button>';
+    else if(first&&x[3]==='job')btn='<button class="ghost nt-go" type="button" data-notam-go="job">試してみる</button>';
     else if(first&&x[3]==='study'&&studyLangFor())btn='<button class="ghost nt-go" type="button" data-notam-go="study">試してみる</button>';
     else if(first&&x[3]==='first')btn='<button class="ghost nt-go" type="button" data-notam-go="'+(firstOn(save.lang)?'first':'settings')+'">'+(firstOn(save.lang)?'試してみる':'レベルを見る')+'</button>';
     return '<div class="nt-item"><span class="nt-ic" aria-hidden="true">'+x[0]+'</span><div class="nt-tx"><b>'+x[1]+'</b><p>'+x[2]+'</p>'+btn+'</div></div>';
@@ -11451,6 +11459,7 @@ document.addEventListener('click',function(e){
     else if(g==='settings')go('record');
     else if(g==='ja'){save.lang='ja';HOME_ANIM='lang';store();go('home');if(typeof lvNeed==='function'&&lvNeed('ja'))lvSheet('ja');}
     else if(g==='exam'){if(save.mode!=='exam'){save.mode='exam';HOME_ANIM='mode';store();}go('home');}
+    else if(g==='job'){if(profById(save.prof)&&jobOpen(save.prof)){save.mode='job';HOME_ANIM='mode';store();go('home');}else{pickerBack='home';go('picker');}}
     else if(g==='study'){var L=studyLangFor();if(L){var sw=save.lang!==L;save.lang=L;save.mode='study';HOME_ANIM=sw?'lang':'mode';store();go('home');if(sw&&typeof lvNeed==='function'&&lvNeed(L))lvSheet(L);}}
     else if(g==='first'&&typeof openNodeSheet==='function')openNodeSheet('first');
     return;

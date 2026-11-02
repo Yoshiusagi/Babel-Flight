@@ -56,6 +56,9 @@ var PROF=[
  {id:'sport',code:'ATH',jp:'スポーツ選手',en:'ATHLETE'}
 ];
 PROF.forEach(function(p){if(!p.units){p.units={};ORDER.forEach(function(l){p.units[l]=[p.id];});}ORDER.forEach(function(l){if(!p.units[l])p.units[l]=[];});});
+/* 職業モード in English / 한국어 / 简体中文: the jobs translated (i18n/<ui>/job*.tsv); a job left out shows 準備中 there */
+var JOB_UI=['pilot','crew','med','pharm','law','it','biz','beauty','chef','teach','hosp','lab','sport'];
+function jobOpen(id){return typeof UI==='undefined'||UI==='ja'||JOB_UI.indexOf(id)>=0;}
 function profById(id){for(var i=0;i<PROF.length;i++)if(PROF[i].id===id)return PROF[i];return null;}
 /* every unit of a language, by id */
 var UNITS={};

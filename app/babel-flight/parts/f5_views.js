@@ -170,12 +170,13 @@ function creditsHTML(){
 var LEVEL_HINT={beg:'はじめの一歩から。新しいフレーズはカードで見てから解きます。読み方のヒントつき、選択肢は3つ。',mid:'標準。並べ替えや入力問題も出ます。',adv:'入力問題が多め。職業コースが先に表示されます。'};
 function pathIdsFor(l){
   var ids=(firstOn(l)?['first']:[]).concat(dailyIds(l),LANGS[l].units.map(function(u){return u.id;}),TRAVEL_SC,STUDY_ALL,UNITS[l].usuk&&UI==='ja'?['usuk']:[]),p=profById(save.prof);
-  if(p&&UI==='ja')ids=ids.concat(p.units[l]);
+  if(p&&jobOpen(p.id))ids=ids.concat(p.units[l]);
   ALL_IDS[l].forEach(function(uid){if(ids.indexOf(uid)<0&&unitRec(l,uid).n>0)ids.push(uid);});
   return ids.filter(function(uid){return !!UNITS[l][uid];}); /* a スターター language has no 職業・留学 units yet */
 }
 function profGrid(sel,attr){
   return '<div class="prof-grid">'+PROF.map(function(p){
+    if(!jobOpen(p.id))return '<button class="prof soon" type="button" disabled aria-disabled="true"><span class="pcode">'+p.code+'</span><b>'+esc(p.jp)+'</b><small>準備中</small></button>';
     return '<button class="prof" type="button" '+attr+'="'+p.id+'" aria-pressed="'+(sel===p.id)+'"><span class="pcode">'+p.code+'</span><b>'+esc(p.jp)+'</b><small>'+p.en+'</small></button>';
   }).join('')+'<button class="prof none" type="button" '+attr+'="" aria-pressed="'+(!sel)+'"><span class="pcode">—</span><b>まだ決めていない</b><small>あとで選べます</small></button></div>';
 }
@@ -192,7 +193,7 @@ function openIconSheet(){
     '</div>'+(anyLk?'<p class="dim hint">🔒のアイコンは、シルバーになると使えます(一度なればずっと使えます)。</p>':'')+'<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
 }
 /* the first questions: 言語 → 学ぶ理由 → (仕事なら)職業 → レベル → 苦手なこと → 1日の目標 */
-function obSteps(){var s=['lang','why'];if(UI==='ja'&&obDraft&&obDraft.why==='work')s.push('job');return s.concat(['level','weak','goal']);}
+function obSteps(){var s=['lang','why'];if(obDraft&&obDraft.why==='work')s.push('job');return s.concat(['level','weak','goal']);}
 function onboardHTML(){
   var D=obDraft,steps=obSteps(),at=clamp(obStep,0,steps.length-1),st=steps[at],LG=LANGS[D.lang],h='<div class="ob"><div class="ob-dots" aria-label="ステップ '+(at+1)+' / '+steps.length+'">'+steps.map(function(i,j){return '<i class="'+(j<=at?'on':'')+'"></i>';}).join('')+'</div>';
   if(st==='lang'){

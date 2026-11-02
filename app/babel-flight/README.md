@@ -46,9 +46,8 @@ the AI question). Learning-language text (`.ko .zh .ar`, the flight board, `[tra
 
 The choice (`bf.ui`, per device) is made at the top of the first screen (preselected from the browser's language on a
 first visit) or in 記録 → 学習の設定; switching reloads the page. With another display language: that language's own
-course is hidden (`learnOrder()`), 日常会話・留学・検定 are open (職業 shows 準備中; `uiModeOpen`),
-the onboarding skips the job question, phrase readings are romanized (Korean and Russian computed in `f27_i18n.js`,
-Chinese pinyin from the data, Arabic from `ROM_AR` in `f27_rom.js`; none for Latin-script languages), answer choices only
+course is hidden (`learnOrder()`), every mode is open (`uiModeOpen`; 職業 only for the jobs in `JOB_UI`),
+phrase readings are romanized (Korean and Russian computed in `f27_i18n.js`, Chinese pinyin from the data, Arabic from `ROM_AR` in `f27_rom.js`; none for Latin-script languages), answer choices only
 use phrases whose meaning is translated, and the AI teacher answers in that language (`ui` in `/api/ai/ask`). Cards
 that are still Japanese-only (機長アナウンス, AI管制官, AI会話ロールプレイ, AIの例文練習, 搭乗クラス) are hidden.
 The few phrases written for a learner from Japan (「日本人です」「東京に住んでいます」…) are swapped for the display
@@ -108,6 +107,13 @@ that had no translation is counted there.
   한국어 → Korea, 简体中文 → China; English keeps Japan), and the dictionaries give it the same meaning.
 - The paid 「授業の用語(くわしく)」 and the AI practice stay with 日本語. 「留学したい」 is now a reason in every display
   language. `i18n/<ui>/scene.tsv`: the 通話モード texts and scene results, which every scene in every mode uses.
+
+## 職業モード in the other display languages
+
+- All 13 jobs, translated in `i18n/<ui>/job.tsv`, `job2.tsv`, `job3.tsv` (`keys.cjs` checks every job in `JOB_UI`,
+  `parts/d3_prof.js`). A job left out of `JOB_UI` shows 準備中 in the job grid (`.prof.soon`) and a save with it asks
+  to pick again. 「仕事で使いたい」 and the job question are in every display language.
+- AI管制官, the job certificates (検定モード) and the AI practice stay with 日本語.
 
 ## 検定モード in the other display languages — `parts/f30_xui.js`
 

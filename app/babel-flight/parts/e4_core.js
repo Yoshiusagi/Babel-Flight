@@ -182,7 +182,7 @@ function pathSections(lang){
   if(save.mode==='exam'&&typeof examSections==='function'){var xs=examSections(lang);if(xs)return xs;}
   if(save.mode==='job'){
     var p=profById(save.prof);
-    if(!p)return [];
+    if(!p||!jobOpen(p.id))return [];
     var pids=p.units[lang].filter(function(u){return !!UNITS[lang][u];});
     return pids.length?[{key:p.id,title:p.jp+'の専門会話',sub:p.en+' ・ 仕事で使う会話',ids:pids,prof:p}]:[];
   }

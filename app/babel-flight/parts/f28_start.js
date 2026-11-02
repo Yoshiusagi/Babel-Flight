@@ -62,7 +62,6 @@ function examOK(){return typeof examModeOn==='function'&&examModeOn();}
 function examUsable(){return examOK()&&typeof cabinLv==='function'&&cabinLv()>=1;}
 function whyList(){
   return WHY.filter(function(w){
-    if(UI!=='ja'&&w[0]==='work')return false;  /* 職業 is 日本語 only for now */
     return w[0]!=='exam'||examOK();
   });
 }
@@ -78,7 +77,7 @@ function kindPrefs(){
 function ivlDays(b){var d=INTERVALS[b]||1;return hasWeak('vocab')?Math.max(1,Math.round(d/2)):d;}
 /* the mode a reason starts in (when the language has it) */
 function whyMode(w,L,prof){
-  if(UI==='ja'&&w==='work'){var p=profById(prof);if(p&&(p.units[L]||[]).some(function(u){return !!UNITS[L][u];}))return 'job';}
+  if(w==='work'){var p=profById(prof);if(p&&jobOpen(p.id)&&(p.units[L]||[]).some(function(u){return !!UNITS[L][u];}))return 'job';}
   if(w==='study'&&STUDY_ALL.some(function(u){return !!UNITS[L][u];}))return 'study';
   if((w==='exam'||(w==='school'&&L==='en'&&UI==='ja'))&&examUsable()&&typeof EXAMS==='object'&&(EXAMS[L]||[]).length)return 'exam';
   return 'daily';
@@ -147,7 +146,7 @@ document.addEventListener('click',function(e){
       if(TUNE.step===0){if(!TUNE.why)return;TUNE.step=1;render();window.scrollTo(0,0);return;}
       applyWhy(TUNE.why,TUNE.weak,save.lang,save.prof);store();
       /* 仕事 without a job yet: choose it now (picking one from here also switches to 職業モード) */
-      if(save.why==='work'&&UI==='ja'&&!profById(save.prof)){pickerBack='home';go('picker');return;}
+      if(save.why==='work'&&!(profById(save.prof)&&jobOpen(save.prof))){pickerBack='home';go('picker');return;}
       go('home');if(typeof bootFx==='function')bootFx({kind:'bank',text:'あなた向けに設定しました'});return;
     }
   }

@@ -189,7 +189,7 @@ function uiReadings(){
 }
 /* ---- what the display language offers ---- */
 function learnOrder(){return ORDER.filter(function(k){return k!==UI;});}
-function uiModeOpen(m){return UI==='ja'||m==='daily'||m==='exam'||m==='study';}
+function uiModeOpen(m){return UI==='ja'||m==='daily'||m==='exam'||m==='study'||m==='job';}
 function uiFixSave(){
   if(UI==='ja')return;
   if(save.lang===UI){var alt=learnOrder().filter(function(k){return langStarted(k);})[0]||learnOrder()[0];save.lang=alt;}

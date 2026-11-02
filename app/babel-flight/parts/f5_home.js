@@ -75,7 +75,7 @@ function homeHTML(){
   var L=save.lang,LG=LANGS[L],p=profById(save.prof),anim=!!HOME_ANIM&&!reduceMotion,h=topBar('','progress');
   var ids=pathIds(L);
   if(!ids.length){
-    var pick=save.mode==='job'&&!p&&uiModeOpen('job');
+    var pick=save.mode==='job'&&!(p&&jobOpen(p.id))&&uiModeOpen('job');
     h+='<section class="hero empty"><div class="hero-in"><div class="hud"><div class="hud-l"><span class="lbl">'+esc(LG.cityEn)+' ・ '+esc(LG.name)+'</span><b class="mono">'+(pick?'職業を選ぼう':'準備中')+'</b></div></div>'+heroLangs()+'</div></section>'+modeSwitch();
     if(!pick){h+=modeSoonHTML(L);return h;}
     h+='<section class="card empty-job"><span class="lbl">職業モード</span><h2 class="jh">まずは職業を選ぼう</h2><p class="dim" style="font-size:13.5px;margin-top:4px">パイロット、医療、IT、美容師など13職業から選べます。選んだ職業の専門会話が、地図の上に並びます。</p><button class="go" type="button" data-picker>職業を選ぶ</button></section>';
@@ -93,7 +93,7 @@ function homeHTML(){
   if(typeof examHomeHTML==='function')h+=examHomeHTML(L);
   if(save.mode==='job'){
     h+='<button class="course" type="button" data-picker><span class="ccode">'+p.code+'</span><span class="ctext"><span class="lbl">職業コース</span><b>'+esc(p.jp)+'</b><small>タップして変更 ・ 13職業から選べます</small></span><span class="chev" aria-hidden="true">›</span></button>';
-    if(p.id==='pilot')h+='<button class="course atcbtn" type="button" data-atc><span class="ccode">ATC</span><span class="ctext"><span class="lbl">AIロールプレイ ・ 英語</span><b>AI管制官と交信練習</b><small>羽田空港で、管制官役のAIと無線交信</small></span><span class="chev" aria-hidden="true">›</span></button>';
+    if(p.id==='pilot'&&UI==='ja')h+='<button class="course atcbtn" type="button" data-atc><span class="ccode">ATC</span><span class="ctext"><span class="lbl">AIロールプレイ ・ 英語</span><b>AI管制官と交信練習</b><small>羽田空港で、管制官役のAIと無線交信</small></span><span class="chev" aria-hidden="true">›</span></button>';
   }
   var idx=0;
   secs.forEach(function(sec,si){
