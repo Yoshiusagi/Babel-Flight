@@ -24,7 +24,7 @@
 <title>Babel Flight</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=B612+Mono:wght@400;700&family=DotGothic16&family=IBM+Plex+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@500;700&family=Noto+Sans+SC:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=B612+Mono:wght@400;700&family=DotGothic16&family=IBM+Plex+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@500;700&family=Noto+Sans+SC:wght@500;700&family=Noto+Sans+Arabic:wght@500;700&display=swap" rel="stylesheet">
 <style>
 /* pinyin tone-mark vowels (ǎ ǐ ǒ ǔ ǚ …): some Japanese fonts draw them full-width, so they come from a tiny
    subset of Noto Sans CJK SC (SIL Open Font License 1.1) — only these letters, nothing else changes */
@@ -44,13 +44,14 @@
   --good:#0f8a52; --bad:#cf3342; --info:#2563eb;
   --shadow:rgba(11,22,38,.16);
   --board:#080a0f; --flap:#ffd23f; --led:#ff9f2e;
-  --c-ko:#e8505b; --c-en:#2d6bff; --c-es:#f08a1c; --c-it:#17a068; --c-zh:#9b5de5; --c-fr:#d6457f; --c-de:#0f8b8d; --c-pt:#4c8f00; --c-ru:#8d6e63; --c-tr:#c0392b; --c-id:#457b9d;
+  --c-ko:#e8505b; --c-en:#2d6bff; --c-es:#f08a1c; --c-it:#17a068; --c-zh:#9b5de5; --c-fr:#d6457f; --c-de:#0f8b8d; --c-pt:#4c8f00; --c-ru:#8d6e63; --c-tr:#c0392b; --c-id:#457b9d; --c-ar:#b07d2b;
   --lc:var(--c-ko);
   --f-disp:'Barlow Condensed','BF Pinyin','BF Cyrillic','IBM Plex Sans JP',system-ui,sans-serif;
   --f-body:'BF Pinyin','BF Cyrillic','IBM Plex Sans JP','Hiragino Sans','Yu Gothic',system-ui,sans-serif;
   --f-mono:'B612 Mono','BF Cyrillic','Noto Sans KR',ui-monospace,Menlo,Consolas,monospace;
   --f-dot:'BF Pinyin','BF Cyrillic','DotGothic16','IBM Plex Sans JP','Hiragino Sans',sans-serif;
   --f-ko:'Noto Sans KR','IBM Plex Sans JP',sans-serif;
+  --f-ar:'Noto Sans Arabic','Geeza Pro','Segoe UI','Tahoma',sans-serif;
   --f-zh:'BF Pinyin','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
@@ -80,6 +81,10 @@ body{overflow-x:clip}
 .dim{color:var(--ink2)}
 .ko{font-family:var(--f-ko)}
 .zh{font-family:var(--f-zh)}
+/* Arabic: its own font, and each line runs right to left when it starts with Arabic */
+.ar{font-family:var(--f-ar);unicode-bidi:plaintext}
+.brtl{display:flex;align-items:center;justify-content:center;min-height:112px;padding:6px 8px;color:var(--flap);font:700 clamp(22px,7.5cqw,34px)/1.6 var(--f-ar);text-align:center;text-shadow:0 0 12px rgba(255,210,63,.3)}
+.tray[dir="rtl"],.bank[dir="rtl"]{direction:rtl}
 svg{display:block}
 
 /* top bar */
@@ -237,6 +242,7 @@ svg{display:block}
 .opt{display:block;width:100%;text-align:left;padding:14px;border:1.5px solid var(--line);background:var(--surface);border-radius:10px;font-size:15.5px;line-height:1.4;min-height:52px}
 .opt.ko{font-family:var(--f-ko);font-weight:500}
 .opt.zh{font-family:var(--f-zh);font-weight:500}
+.opt.ar{font-family:var(--f-ar);font-weight:500}
 .opt:active{transform:scale(.99)}
 .opt.ok{border-color:var(--good);background:color-mix(in srgb,var(--good) 14%,var(--surface))}
 .opt.no{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--surface))}
@@ -253,6 +259,7 @@ svg{display:block}
 .tile::before{content:"";position:absolute;left:8px;top:50%;width:7px;height:7px;margin-top:-3.5px;border-radius:50%;background:var(--bg2);box-shadow:inset 0 0 0 1.5px var(--line)}
 .tile.ko{font-family:var(--f-ko);font-weight:500}
 .tile.zh{font-family:var(--f-zh);font-weight:500}
+.tile.ar{font-family:var(--f-ar);font-weight:500}
 .tile.used{visibility:hidden}
 .typebox{width:100%;padding:14px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:500 17px var(--f-mono)}
 .skel{font:400 13px var(--f-mono);letter-spacing:.14em;color:var(--ink2);word-break:break-all}
@@ -263,6 +270,8 @@ svg{display:block}
 .sheet .ans{font-size:15px}
 .sheet .ans.ko{font-family:var(--f-ko)}
 .sheet .ans.zh{font-family:var(--f-zh)}
+.sheet .ans.ar b{font-family:var(--f-ar);unicode-bidi:plaintext;display:block}
+.sheet .ans.ar b+br{display:none}
 @keyframes up{from{transform:translateY(40%);opacity:.4}to{transform:none;opacity:1}}
 .confirm{display:grid;gap:8px;margin-top:10px}
 .pad-b{height:150px}
@@ -542,6 +551,7 @@ body.dark-ui #sky{display:none}
 .bub.me.miss{box-shadow:inset 0 0 0 1.5px #ff6b79}
 .bub.ko p{font-family:var(--f-ko)}
 .bub.zh p{font-family:var(--f-zh)}
+.bub.ar p{font-family:var(--f-ar);unicode-bidi:plaintext}
 .bub .dim{color:#93a4c4}
 .bub.typing{display:flex;gap:5px;padding:14px 16px}
 .bub.typing i{width:7px;height:7px;border-radius:50%;background:#93a4c4;animation:dots 1s ease-in-out infinite}
@@ -1112,6 +1122,7 @@ body:has(#sheetHost .sheet) #hf-watermark{bottom:calc(12px + env(safe-area-inset
 [data-cabin="suite"] .cab-p .cp-m{order:2;font:600 33px/1.25 'Cormorant Garamond','Shippori Mincho',serif;color:var(--ink);overflow-wrap:anywhere}
 [data-cabin="suite"] .cab-p .cp-m.ko{font-family:var(--f-ko);font-weight:500;font-size:28px}
 [data-cabin="suite"] .cab-p .cp-m.zh{font-family:var(--f-zh);font-weight:500;font-size:28px}
+[data-cabin="suite"] .cab-p .cp-m.ar{font-family:var(--f-ar);font-weight:500;font-size:28px;unicode-bidi:plaintext}
 [data-cabin="suite"] .cab-p .cp-x{order:1;font:500 15px/1.5 'Shippori Mincho','Cormorant Garamond',serif;color:#b9ab8c;letter-spacing:.04em}
 [data-cabin="suite"] .opts{counter-reset:o;gap:0;border-top:1px solid var(--line)}
 [data-cabin="suite"] .opt{display:flex;align-items:baseline;gap:14px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;min-height:60px;padding:16px 8px;font-size:15.5px;color:#ddd3bd}
@@ -1224,6 +1235,7 @@ body:has(#sheetHost .sheet) #hf-watermark{bottom:calc(12px + env(safe-area-inset
 .xp-q .cp-m{font-size:21px;font-weight:700;line-height:1.4;overflow-wrap:anywhere}
 .xp-q .cp-m.ko{font-family:var(--f-ko)}
 .xp-q .cp-m.zh{font-family:var(--f-zh)}
+.xp-q .cp-m.ar{font-family:var(--f-ar);unicode-bidi:plaintext}
 [data-cabin="lounge"] .opts{counter-reset:o}
 [data-cabin="lounge"] .opt{display:flex;align-items:center;gap:12px;min-height:54px;border-radius:10px;border-color:var(--line);background:var(--surface);color:#dfe5ee}
 [data-cabin="lounge"] .opt .on{display:none}
@@ -2344,6 +2356,74 @@ LANGS.id={name:'インドネシア語',native:'Bahasa Indonesia',city:'ジャカ
   ])
  ]};
 ORDER.push('id');
+/* ================= アラビア語 — starter course =================
+   Modern Standard Arabic (فصحى), understood across the Arab world; prices in UAE dirhams (the route starts in Dubai).
+   Written right to left: rtl:true makes the flight board show the whole phrase instead of split-flap letters (Arabic letters join),
+   and the word tiles and text run right to left. No typing questions (they would need an Arabic keyboard).
+   Travel phrases here; daily phrases, scenes and the route map in e3g_ar.js. Readings in katakana. */
+LANGS.ar={name:'アラビア語',native:'العربية',city:'ドバイ',cityEn:'DUBAI',code:'DXB',tts:'ar-SA',km:7950,letter:'L',hasYomi:true,noType:true,rtl:true,starter:true,units:[
+  U("checkin",[
+   ["こんにちは", "مرحبا.", "マルハバ", "いつでも使える「こんにちは」。ていねいには「السلام عليكم(アッサラーム アライクム)」。"],
+   ["チェックインしたいのですが", "أريد تسجيل الوصول، من فضلك.", "ウリード タスジール アルウスール ミン ファドリク", "「أريد〜」=〜したい。「من فضلك」=お願いします。"],
+   ["こちらが私のパスポートです", "هذا جواز سفري.", "ハーザー ジャワーズ サファリー", "「جواز السفر」=パスポート(直訳は「旅の許可」)。"],
+   ["窓側の席をお願いします", "مقعد بجانب النافذة، من فضلك.", "マクアド ビジャーニブ アンナーフィザ ミン ファドリク", "「بجانب」=〜のそば。"],
+   ["預ける荷物が1つあります", "عندي حقيبة واحدة للشحن.", "インディー ハキーバ ワーヒダ リッシャフン", "「عندي」=私は〜を持っている。"],
+   ["搭乗口はどこですか", "أين بوابة الصعود؟", "アイナ バウワーバト アッスウード", "「أين」=どこ。アラビア語の「?」は「؟」と書きます。"],
+   ["搭乗は何時ですか", "متى موعد الصعود؟", "マター マウイド アッスウード", "「متى」=いつ。"],
+   ["便は定刻通りですか", "هل الرحلة في موعدها؟", "ハル アッリフラ フィー マウイディハー", "文の最初に「هل」をつけると「〜ですか?」の質問になります。"]
+  ]),
+  U("inflight",[
+   ["水を一杯お願いします", "كوب ماء، من فضلك.", "クーブ マーッ ミン ファドリク", ""],
+   ["ブランケットをいただけますか", "هل يمكنني الحصول على بطانية؟", "ハル ユムキヌニー アルフスール アラー バッターニーヤ", "「هل يمكنني〜?」=〜してもいいですか。"],
+   ["チキンをお願いします", "دجاج، من فضلك.", "ダジャージ ミン ファドリク", ""],
+   ["お手洗いはどこですか", "أين الحمام؟", "アイナ アルハンマーム", "「الحمام」はお手洗い・浴室のこと。"],
+   ["すみません、通ってもいいですか", "عفوا، هل يمكنني المرور؟", "アフワン ハル ユムキヌニー アルムルール", ""],
+   ["気分が悪いです", "أشعر بالمرض.", "アシュウル ビルマラド", "直訳は「病気を感じる」。"],
+   ["着陸まであとどれくらいですか", "كم بقي على الهبوط؟", "カム バキヤ アラー アルフブート", ""],
+   ["電気を消していただけますか", "هل يمكنك إطفاء الضوء؟", "ハル ユムキヌカ イトファーッ アッダウッ", ""]
+  ]),
+  U("immigration",[
+   ["観光で来ました", "جئت للسياحة.", "ジゥトゥ リッスィヤーハ", ""],
+   ["5日間滞在します", "سأبقى خمسة أيام.", "サアブカー ハムサト アイヤーム", "「سـ」をつけると未来(〜するつもり)。"],
+   ["市内のホテルに泊まります", "سأقيم في فندق في وسط المدينة.", "サウキーム フィー フンドゥク フィー ワサト アルマディーナ", ""],
+   ["日本から来ました", "أنا من اليابان.", "アナー ミン アルヤーバーン", "「من」=〜から。"],
+   ["帰りの航空券があります", "عندي تذكرة العودة.", "インディー タズキラト アルアウダ", ""],
+   ["申告するものはありません", "ليس لدي ما أصرح به.", "ライサ ラダイヤ マー ウサッリフ ビヒ", ""],
+   ["一人で旅行しています", "أسافر وحدي.", "ウサーフィル ワフディー", ""],
+   ["もう一度言っていただけますか", "هل يمكنك أن تكرر، من فضلك؟", "ハル ユムキヌカ アン トゥカッリル ミン ファドリク", ""]
+  ]),
+  U("hotel",[
+   ["予約しています", "عندي حجز.", "インディー ハジュズ", ""],
+   ["一泊いくらですか", "كم سعر الليلة؟", "カム スィウル アッライラ", "「كم」=いくつ・いくら。"],
+   ["朝食は含まれていますか", "هل الفطور مشمول؟", "ハル アルフトゥール マシュムール", ""],
+   ["Wi-Fiのパスワードは何ですか", "ما كلمة سر الواي فاي؟", "マー カリマト スィッル アルワーイファーイ", "「كلمة سر」=パスワード(直訳は「秘密の言葉」)。"],
+   ["チェックアウトは何時ですか", "متى موعد المغادرة؟", "マター マウイド アルムガーダラ", "「المغادرة」=出発(チェックアウト)。"],
+   ["エアコンが動きません", "المكيف لا يعمل.", "アルムカイイフ ラー ヤアマル", "「لا」=〜ない(否定)。"],
+   ["荷物を預かっていただけますか", "هل يمكنني ترك حقيبتي هنا؟", "ハル ユムキヌニー タルク ハキーバティー フナー", ""],
+   ["タオルがもう一枚必要です", "أحتاج منشفة أخرى.", "アフタージュ ミンシャファ ウフラー", ""]
+  ]),
+  U("restaurant",[
+   ["2名でお願いします", "طاولة لشخصين، من فضلك.", "ターウィラ リシャフサイン ミン ファドリク", ""],
+   ["メニューをお願いします", "القائمة، من فضلك.", "アルカーイマ ミン ファドリク", ""],
+   ["おすすめは何ですか", "ماذا تنصحني؟", "マーザー タンサフニー", ""],
+   ["ナッツアレルギーがあります", "عندي حساسية من المكسرات.", "インディー ハッサースィーヤ ミン アルムカッサラート", ""],
+   ["とてもおいしいです！", "لذيذ جدا!", "ラズィーズ ジッダン", ""],
+   ["お会計をお願いします", "الحساب، من فضلك.", "アルヒサーブ ミン ファドリク", ""],
+   ["カードで払えますか", "هل يمكنني الدفع بالبطاقة؟", "ハル ユムキヌニー アッダフウ ビルビターカ", ""],
+   ["辛くしないでください", "بدون بهارات حارة، من فضلك.", "ビドゥーン ブハーラート ハーッラ ミン ファドリク", "「بدون〜」=〜なしで。"]
+  ]),
+  U("city",[
+   ["駅へはどう行けばいいですか", "كيف أذهب إلى المحطة؟", "カイファ アズハブ イラー アルマハッタ", "「كيف」=どうやって。"],
+   ["道に迷いました", "أنا تائه.", "アナー ターイフ", "女性は「تائهة(ターイハ)」。"],
+   ["写真を撮っていただけますか", "هل يمكنك أن تلتقط لنا صورة؟", "ハル ユムキヌカ アン タルタキタ ラナー スーラ", ""],
+   ["助けて！", "النجدة!", "アンナジダ", "命が危ないときの「助けて!」。"],
+   ["財布をなくしました", "فقدت محفظتي.", "ファカドトゥ ミフファザティー", ""],
+   ["一番近い薬局はどこですか", "أين أقرب صيدلية؟", "アイナ アクラブ サイダリーヤ", ""],
+   ["医者が必要です", "أحتاج إلى طبيب.", "アフタージュ イラー タビーブ", ""],
+   ["もっとゆっくり話してください", "تكلم ببطء، من فضلك.", "タカッラム ビブトゥッ ミン ファドリク", ""]
+  ])
+ ]};
+ORDER.push('ar');
 /* ================= PROFESSION DATA ================= */
 var PU={ko:{},en:{},es:{},it:{}};ORDER.forEach(function(l){if(!PU[l])PU[l]={};});
 function PJ(uid,jp,lat,jpList,by){
@@ -3194,6 +3274,82 @@ SC('id',"sc-booking",[["Maaf, saya tidak menemukan pesanan Anda.", "申し訳あ
 /* route map: Jakarta across Java to Bali and Flores, Sulawesi, Borneo, then Sumatra */
 CITIES.id=[["JAKARTA", "ジャカルタ", -6.21, 106.85], ["BOGOR", "ボゴール", -6.6, 106.8], ["BANDUNG", "バンドン", -6.92, 107.61], ["CIREBON", "チルボン", -6.73, 108.55], ["SEMARANG", "スマラン", -6.97, 110.42], ["YOGYAKARTA", "ジョグジャカルタ", -7.8, 110.36], ["BOROBUDUR", "ボロブドゥール", -7.61, 110.2], ["SOLO", "ソロ", -7.57, 110.82], ["SURABAYA", "スラバヤ", -7.25, 112.75], ["MALANG", "マラン", -7.98, 112.63], ["BROMO", "ブロモ山", -7.94, 112.95], ["BANYUWANGI", "バニュワンギ", -8.22, 114.37], ["DENPASAR", "デンパサール", -8.65, 115.22], ["UBUD", "ウブド", -8.51, 115.26], ["LOMBOK", "ロンボク", -8.58, 116.12], ["LABUAN BAJO", "ラブアンバジョ", -8.5, 119.89], ["MAKASSAR", "マカッサル", -5.15, 119.43], ["MANADO", "マナド", 1.47, 124.84], ["BALIKPAPAN", "バリクパパン", -1.27, 116.83], ["PONTIANAK", "ポンティアナック", -0.03, 109.33], ["BATAM", "バタム", 1.13, 104.05], ["PEKANBARU", "プカンバル", 0.51, 101.45], ["MEDAN", "メダン", 3.6, 98.67], ["LAKE TOBA", "トバ湖", 2.62, 98.83], ["BUKITTINGGI", "ブキティンギ", -0.3, 100.37], ["PADANG", "パダン", -0.95, 100.35], ["PALEMBANG", "パレンバン", -2.99, 104.76], ["LAMPUNG", "ランプン", -5.43, 105.26]];
 REGIONS.id={b:[95,127,-11,6],H:180,polys:[[95.3, 5.55, 97.1, 5.2, 98.7, 3.6, 99.8, 3.0, 101.4, 1.7, 103.0, 0.5, 104.0, -1.0, 105.0, -2.5, 105.9, -3.9, 105.8, -5.8, 104.6, -5.9, 103.0, -4.5, 102.3, -3.8, 100.35, -0.95, 99.0, 0.3, 98.8, 1.7, 96.1, 4.1], [105.2, -6.8, 106.1, -6.0, 106.85, -6.1, 108.3, -6.25, 110.4, -6.95, 111.4, -6.6, 112.7, -6.9, 114.4, -7.8, 114.4, -8.6, 113.0, -8.3, 110.5, -8.15, 108.5, -7.8, 106.5, -7.4, 105.4, -6.85], [112.7, -6.9, 114.1, -6.9, 114.1, -7.15, 112.8, -7.2], [114.45, -8.1, 115.2, -8.05, 115.7, -8.4, 115.2, -8.85, 114.6, -8.45], [115.85, -8.3, 116.6, -8.3, 116.7, -8.9, 115.85, -8.8], [116.8, -8.2, 119.1, -8.1, 119.0, -8.75, 116.9, -8.95], [119.8, -8.3, 122.9, -8.1, 123.0, -8.5, 119.9, -8.85], [118.9, -9.4, 120.8, -9.5, 120.6, -10.3, 119.1, -9.85], [123.5, -10.3, 125.2, -9.2, 127.0, -8.4, 127.0, -8.9, 124.5, -10.0], [109.6, 2.1, 110.3, 1.6, 113.0, 3.2, 114.0, 4.4, 115.0, 5.0, 116.1, 6.0, 117.0, 6.0, 118.1, 5.85, 119.3, 5.1, 117.9, 4.25, 117.6, 3.3, 118.9, 1.0, 116.8, -1.25, 116.4, -3.4, 114.6, -4.1, 114.6, -3.3, 113.0, -3.2, 111.6, -2.9, 110.2, -2.9, 109.3, 0.0, 108.9, 1.0], [119.8, 0.6, 121.0, 1.3, 123.0, 1.0, 125.2, 1.6, 124.8, 0.6, 123.0, 0.4, 121.0, 0.4, 120.6, -0.8, 121.6, -0.8, 123.3, -0.9, 123.0, -1.6, 121.5, -1.9, 122.8, -3.2, 122.3, -4.6, 121.3, -4.3, 120.9, -2.6, 120.4, -2.9, 120.4, -5.6, 119.4, -5.6, 119.4, -5.1, 119.0, -3.5, 119.8, -0.5], [100.3, 6.0, 102.3, 6.0, 103.4, 4.9, 103.4, 3.8, 104.3, 1.4, 103.5, 1.3, 102.2, 2.2, 101.3, 3.0, 100.6, 4.2, 100.3, 5.4]]};
+/* ================= アラビア語: daily phrases, travel scenes, route map ================= */
+DU.ar=[
+  U("greet",[
+   ["こんばんは", "مساء الخير.", "マサーッ アルハイル", "返事は「مساء النور(マサーッ アンヌール)」。"],
+   ["はじめまして", "تشرفنا.", "タシャッラフナー", "直訳は「光栄です」。"],
+   ["元気？", "كيف حالك؟", "カイファ ハールク", ""],
+   ["元気だよ、ありがとう。君は？", "بخير، شكرا. وأنت؟", "ビハイル シュクラン ワ アンタ", "相手が女性なら「وأنتِ(ワ アンティ)」。"],
+   ["久しぶり！", "لم أرك منذ زمن طويل!", "ラム アラカ ムンズ ザマン タウィール", ""],
+   ["じゃあね！", "مع السلامة!", "マアッサラーマ", "直訳は「無事でありますように」。"],
+   ["またあとで", "أراك لاحقا!", "アラーカ ラーヒカン", ""],
+   ["よい一日を", "يوما سعيدا!", "ヤウマン サイーダン", ""]
+  ]),
+  U("intro",[
+   ["日本人です", "أنا ياباني.", "アナー ヤーバーニー", "女性は「يابانية(ヤーバーニーヤ)」。"],
+   ["東京に住んでいます", "أسكن في طوكيو.", "アスクン フィー トーキユー", ""],
+   ["学生です", "أنا طالب.", "アナー ターリブ", "女性は「طالبة(ターリバ)」。"],
+   ["音楽が大好きです", "أحب الموسيقى كثيرا.", "ウヒッブ アルムースィーカー カスィーラン", ""],
+   ["アラビア語を勉強しています", "أتعلم اللغة العربية.", "アタアッラム アッルガ アルアラビーヤ", ""],
+   ["名前は何ていうの？", "ما اسمك؟", "マー スムク", ""],
+   ["どこの出身？", "من أين أنت؟", "ミン アイナ アンタ", ""],
+   ["友だちになろう！", "لنكن أصدقاء!", "リナクン アスディカーッ", ""]
+  ]),
+  U("num",[
+   ["これはいくらですか", "بكم هذا؟", "ビカム ハーザー", ""],
+   ["10ディルハムです", "عشرة دراهم.", "アシャラ ダラーヒム", "UAE(ドバイ)のお金は「درهم(ディルハム)」。"],
+   ["高すぎます", "غالي جدا.", "ガーリー ジッダン", ""],
+   ["もっと安いのはありますか", "هل يوجد أرخص؟", "ハル ユージャド アルハス", ""],
+   ["これを2つください", "أريد اثنين من هذا.", "ウリード イスナイン ミン ハーザー", ""],
+   ["全部でいくらですか", "كم المجموع؟", "カム アルマジュムーウ", ""],
+   ["おつりはとっておいてください", "احتفظ بالباقي.", "イフタフィズ ビルバーキー", ""],
+   ["レシートをもらえますか", "هل يمكنني الحصول على الإيصال؟", "ハル ユムキヌニー アルフスール アラー アルイーサール", ""]
+  ]),
+  U("time",[
+   ["何時ですか", "كم الساعة؟", "カム アッサーア", ""],
+   ["3時半です", "الثالثة والنصف.", "アッサーリサ ワンニスフ", "「النصف」=半分。"],
+   ["今日は何曜日？", "ما اليوم؟", "マー アルヤウム", ""],
+   ["また明日", "إلى اللقاء غدا!", "イラー アッリカーッ ガダン", ""],
+   ["今週末はひまだよ", "أنا متفرغ في نهاية هذا الأسبوع.", "アナー ムタファッリグ フィー ニハーヤト ハーザー アルウスブーウ", "中東の多くの国では、週末は金曜日と土曜日です。"],
+   ["何時に会う？", "متى نلتقي؟", "マター ナルタキー", ""],
+   ["少し遅れます", "سأتأخر قليلا.", "サアタアッハル カリーラン", ""],
+   ["遅れてごめん", "آسف على التأخير.", "アースィフ アラー アッタアヒール", ""]
+  ]),
+  U("feel",[
+   ["すごくうれしい！", "أنا سعيد جدا!", "アナー サイード ジッダン", "女性は「سعيدة(サイーダ)」。"],
+   ["疲れました", "أنا متعب.", "アナー ムトアブ", ""],
+   ["お腹がすきました", "أنا جائع.", "アナー ジャーイウ", ""],
+   ["頭が痛いです", "عندي صداع.", "インディー スダーウ", "直訳は「私は頭痛を持っている」。"],
+   ["大丈夫です", "أنا بخير.", "アナー ビハイル", ""],
+   ["ごめんなさい", "آسف.", "アースィフ", "女性は「آسفة(アースィファ)」。"],
+   ["楽しかった！", "كان ممتعا!", "カーナ ムムティアン", ""],
+   ["心配しないで", "لا تقلق.", "ラー タクラク", ""]
+  ]),
+  U("chat",[
+   ["趣味は何？", "ما هواياتك؟", "マー ヒワーヤートゥク", ""],
+   ["K-POPが好きです", "أحب الكيبوب.", "ウヒッブ アルケイポップ", ""],
+   ["週末は何してる？", "ماذا تفعل في عطلة نهاية الأسبوع؟", "マーザー タフアル フィー ウトラ ニハーヤト アルウスブーウ", ""],
+   ["映画に行かない？", "هل نذهب إلى السينما؟", "ハル ナズハブ イラー アッスィーネマー", ""],
+   ["いいよ！", "حسنا!", "ハサナン", ""],
+   ["番号を交換しない？", "هل نتبادل الأرقام؟", "ハル ナタバーダル アルアルカーム", ""],
+   ["本当に？", "حقا؟", "ハッカン", ""],
+   ["すごい！", "رائع!", "ラーイウ", ""]
+  ])
+];
+
+SC('ar',"sc-imm",[["مرحبا. جواز السفر، من فضلك.", "こんにちは。パスポートをお願いします", "تفضل.", "どうぞ", "タファッダル", "物を渡すときの「どうぞ」。相手が女性なら「تفضلي(タファッダリー)」。"], ["ما سبب الزيارة؟", "訪問の目的は何ですか", "السياحة.", "観光です", "アッスィヤーハ", ""], ["كم يوما ستبقى؟", "何日滞在しますか", "أسبوعا واحدا.", "1週間です", "ウスブーアン ワーヒダン", ""], ["أين ستقيم؟", "どこに泊まりますか", "في فندق في وسط المدينة.", "中心街のホテルです", "フィー フンドゥク フィー ワサト アルマディーナ", ""]],["حسنا. أهلا وسهلا!", "わかりました。ようこそ!"]);
+SC('ar',"sc-cafe",[["أهلا! ماذا تطلب؟", "いらっしゃい!ご注文は?", "سندويش فلافل، من فضلك.", "ファラフェルのサンドイッチをください", "サンドウィーシュ ファラーフィル ミン ファドリク", "「فلافل(ファラフェル)」はひよこ豆のコロッケ。中東の定番です。"], ["وماذا تشرب؟", "お飲み物は?", "عصير برتقال، من فضلك.", "オレンジジュースをお願いします", "アスィール ブルトゥカール ミン ファドリク", ""], ["هنا أم سفري؟", "ここで食べますか、持ち帰りですか", "سفري، من فضلك.", "持ち帰りでお願いします", "サファリー ミン ファドリク", "持ち帰りは「سفري(旅行用)」と言います。"], ["المجموع خمسة وعشرون درهما.", "全部で25ディルハムです", "هل يمكنني الدفع بالبطاقة؟", "カードで払えますか", "ハル ユムキヌニー アッダフウ ビルビターカ", ""]],["طبعا. يوما سعيدا!", "もちろん。よい一日を!"]);
+SC('ar',"sc-hotel",[["مساء الخير. كيف يمكنني مساعدتك؟", "こんばんは。ご用件を伺います", "مساء الخير، عندي حجز.", "こんばんは、予約しています", "マサーッ アルハイル インディー ハジュズ", ""], ["باسم من؟", "どなたのお名前で?", "باسم ساتو.", "佐藤の名前です", "ビスム サートー", ""], ["جواز السفر، من فضلك.", "パスポートをお願いします", "تفضل.", "どうぞ", "タファッダル", ""], ["غرفتك رقم خمسمئة واثنا عشر. الفطور من الساعة السابعة.", "お部屋は512号室です。朝食は7時からです", "متى موعد المغادرة؟", "チェックアウトは何時ですか", "マター マウイド アルムガーダラ", ""]],["الساعة الثانية عشرة. إقامة سعيدة!", "12時です。ごゆっくりどうぞ!"]);
+SC('ar',"sc-rest",[["مساء الخير. كم شخصا؟", "こんばんは。何名様ですか", "شخصان.", "2人です", "シャフサーン", ""], ["هل اخترتم؟", "お決まりですか", "ماذا تنصحنا؟", "おすすめは何ですか", "マーザー タンサフナー", ""], ["الكبسة عندنا لذيذة جدا اليوم.", "今日はカブサ(スパイスの炊き込みご飯)がおいしいですよ", "إذن، كبسة واحدة، من فضلك.", "じゃあ、カブサを1つお願いします", "イザン カブサ ワーヒダ ミン ファドリク", ""], ["شيء آخر؟", "ほかには?", "لا، شكرا. الحساب، من فضلك.", "いいえ、結構です。お会計をお願いします", "ラー シュクラン アルヒサーブ ミン ファドリク", ""]],["حالا.", "すぐにお持ちします"]);
+SC('ar',"sc-card",[["عذرا، البطاقة مرفوضة.", "申し訳ありません、カードが通りません", "هل يمكنك أن تحاول مرة أخرى؟", "もう一度試してもらえますか", "ハル ユムキヌカ アン トゥハーウィラ マッラ ウフラー", ""], ["ما زالت لا تعمل.", "やっぱり使えません", "هل يمكنني استخدام بطاقة أخرى؟", "別のカードを使ってもいいですか", "ハル ユムキヌニー イスティフダーム ビターカ ウフラー", ""], ["هذه أيضا لا تعمل.", "こちらも使えません", "هل يوجد صراف آلي قريب؟", "近くにATMはありますか", "ハル ユージャド サッラーフ アーリー カリーブ", ""], ["نعم، بجانب المدخل.", "はい、入口の横です", "شكرا. سأعود حالا.", "ありがとう。すぐ戻ります", "シュクラン サアウード ハーラン", ""]],["لا مشكلة. سأنتظرك.", "大丈夫ですよ。お待ちしています"]);
+SC('ar',"sc-wc",[["", "", "عفوا، أين الحمام؟", "すみません、お手洗いはどこですか", "アフワン アイナ アルハンマーム", "「عفوا」は話しかけるときの「すみません」。"], ["امش مستقيما، ثم إلى اليسار في النهاية.", "まっすぐ行って、突き当たりを左です", "عفوا، هل يمكنك أن تكرر؟", "すみません、もう一度言ってもらえますか", "アフワン ハル ユムキヌカ アン トゥカッリル", ""], ["مستقيما ثم يسارا. بجانب المصعد.", "まっすぐ行って左。エレベーターの横です", "بجانب المصعد. فهمت.", "エレベーターの横ですね。わかりました", "ビジャーニブ アルミスアド ファヒムトゥ", ""], ["هل من شيء آخر؟", "ほかに何かありますか", "لا، شكرا جزيلا!", "いいえ、本当にありがとうございます!", "ラー シュクラン ジャズィーラン", ""]],["عفوا. رحلة سعيدة!", "どういたしまして。よい旅を!"]);
+SC('ar',"sc-wallet",[["", "", "عفوا، فقدت محفظتي.", "すみません、財布をなくしました", "アフワン ファカドトゥ ミフファザティー", ""], ["أين فقدتها؟", "どこでなくしましたか", "أظن في الحافلة.", "バスの中だと思います", "アズンヌ フィル ハーフィラ", ""], ["كيف تبدو؟", "どんな財布ですか", "سوداء وصغيرة.", "黒くて小さいです", "サウダーッ ワ サギーラ", ""], ["املأ هذا النموذج، من فضلك.", "この用紙に記入してください", "هل يمكنني الحصول على نسخة من البلاغ؟", "届け出の控えをもらえますか", "ハル ユムキヌニー アルフスール アラー ヌスハ ミン アルバラーグ", "警察への届け出の控えは、海外旅行保険の請求に必要です。"]],["طبعا. سنتصل بك إذا وجدناها.", "もちろん。見つかったら連絡します"]);
+SC('ar',"sc-booking",[["عذرا، لا أجد حجزك.", "申し訳ありません、ご予約が見つかりません", "هذه رسالة التأكيد.", "これが予約確認のメールです", "ハーズィヒ リサーラト アッタアキード", ""], ["هذا الحجز للشهر القادم.", "このご予約は来月になっています", "ماذا؟ هل عندكم غرفة لهذه الليلة؟", "えっ!今夜泊まれる部屋はありますか", "マーザー ハル インダクム グルファ リハーズィヒ アッライラ", ""], ["عندنا غرفة مزدوجة بخمسمئة درهم.", "ダブルルームが500ディルハムで空いています", "هل الفطور مشمول؟", "朝食は付いていますか", "ハル アルフトゥール マシュムール", ""], ["نعم، مشمول.", "はい、付いています", "حسنا، سآخذها.", "わかりました、その部屋にします", "ハサナン サアフズハー", ""]],["ممتاز. هذا مفتاحك.", "承知しました。こちらが鍵です"]);
+
+/* route map: Dubai and the Gulf, Oman, Saudi Arabia, Jordan and Lebanon, Egypt, Tunisia and Morocco */
+CITIES.ar=[["DUBAI", "ドバイ", 25.2, 55.27], ["ABU DHABI", "アブダビ", 24.45, 54.38], ["AL AIN", "アルアイン", 24.21, 55.74], ["MUSCAT", "マスカット", 23.59, 58.41], ["NIZWA", "ニズワ", 22.93, 57.53], ["SUR", "スール", 22.57, 59.53], ["DOHA", "ドーハ", 25.29, 51.53], ["MANAMA", "マナーマ", 26.23, 50.59], ["KUWAIT", "クウェート", 29.38, 47.99], ["RIYADH", "リヤド", 24.71, 46.68], ["ALULA", "アルウラー", 26.62, 37.92], ["JEDDAH", "ジッダ", 21.49, 39.19], ["AQABA", "アカバ", 29.53, 35.01], ["PETRA", "ペトラ遺跡", 30.33, 35.44], ["AMMAN", "アンマン", 31.95, 35.93], ["BEIRUT", "ベイルート", 33.89, 35.5], ["CAIRO", "カイロ", 30.04, 31.24], ["ALEXANDRIA", "アレクサンドリア", 31.2, 29.92], ["LUXOR", "ルクソール", 25.69, 32.64], ["ASWAN", "アスワン", 24.09, 32.9], ["HURGHADA", "ハルガダ", 27.26, 33.81], ["TUNIS", "チュニス", 36.81, 10.18], ["KAIROUAN", "カイルアン", 35.68, 10.1], ["DJERBA", "ジェルバ島", 33.81, 10.85], ["CASABLANCA", "カサブランカ", 33.57, -7.59], ["RABAT", "ラバト", 34.02, -6.84], ["FES", "フェズ", 34.03, -5.0], ["MARRAKECH", "マラケシュ", 31.63, -8.01]];
+REGIONS.ar={b:[-11,60,20,38],H:100,polys:[[-11, 20, -11, 28.8, -10.2, 29.4, -9.6, 30.4, -9.77, 31.5, -9.24, 32.3, -8.5, 33.25, -7.6, 33.6, -6.85, 34.03, -6.6, 34.27, -6.15, 35.2, -5.8, 35.8, -5.3, 35.9, -4.4, 35.2, -2.9, 35.3, -1.3, 35.3, -0.6, 35.7, 3.06, 36.77, 5.1, 36.75, 7.75, 36.9, 9.87, 37.27, 10.3, 36.85, 11.05, 37.05, 10.6, 36.4, 10.64, 35.83, 10.76, 34.74, 10.1, 33.88, 10.85, 33.8, 13.2, 32.9, 15.1, 32.4, 16.6, 31.2, 18.5, 30.3, 20.07, 32.1, 22.0, 32.9, 23.97, 32.08, 25.2, 31.6, 27.25, 31.35, 29.92, 31.2, 31.0, 31.6, 32.3, 31.26, 33.5, 31.1, 34.4, 31.5, 34.77, 32.08, 34.98, 32.8, 35.5, 33.9, 35.85, 34.43, 35.78, 35.52, 36.17, 36.58, 34.6, 36.8, 33.6, 36.15, 32.8, 36.05, 32.0, 36.54, 30.6, 36.85, 30.4, 36.25, 29.64, 36.2, 29.12, 36.62, 28.27, 36.85, 27.4, 37.03, 27.25, 37.86, 26.8, 38.0, 48.9, 38.0, 49.47, 37.47, 50.0, 37.4, 51.5, 36.75, 53.0, 36.85, 54.0, 36.85, 53.9, 37.4, 53.9, 38.0, 60, 38.0, 60, 25.4, 57.8, 25.65, 56.3, 27.18, 54.5, 26.6, 52.5, 27.5, 50.83, 28.97, 49.5, 30.0, 48.5, 29.95, 48.0, 29.35, 48.6, 28.0, 50.16, 26.65, 50.1, 26.43, 50.8, 24.75, 51.1, 26.15, 51.6, 25.3, 51.6, 24.6, 54.38, 24.45, 55.27, 25.2, 55.95, 25.8, 56.35, 26.38, 56.35, 25.12, 56.75, 24.35, 58.41, 23.59, 59.8, 22.5, 59.0, 21.4, 58.3, 20.4, 57.8, 20.0, 40.4, 20.0, 39.15, 21.5, 38.05, 24.08, 36.45, 26.24, 35.7, 27.35, 35.0, 28.1, 35.0, 29.53, 34.9, 29.5, 34.5, 28.5, 34.3, 27.9, 33.5, 28.6, 33.0, 29.5, 32.55, 29.97, 32.6, 29.5, 33.81, 27.26, 33.95, 26.75, 34.9, 25.0, 35.6, 23.9, 36.9, 22.0, 37.2, 20.0], [-8.8, 38.0, -0.6, 38.0, -0.98, 37.6, -2.2, 36.73, -2.46, 36.84, -4.42, 36.72, -5.35, 36.14, -5.6, 36.0, -6.3, 36.5, -6.95, 37.25, -7.9, 37.0, -9.0, 37.0, -8.87, 37.95], [12.4, 37.8, 12.6, 38.0, 15.6, 38.0, 15.3, 37.5, 15.1, 37.0, 15.1, 36.65, 14.3, 36.75, 13.0, 37.4], [21.3, 38.0, 23.2, 38.0, 23.1, 37.6, 22.9, 37.5, 23.2, 36.45, 22.5, 36.4, 22.1, 37.0, 21.6, 37.0, 21.1, 37.7], [23.5, 35.3, 24.3, 35.55, 25.8, 35.35, 26.3, 35.25, 26.1, 35.0, 24.7, 34.93, 23.6, 35.2], [32.27, 35.03, 32.9, 35.39, 33.6, 35.35, 34.6, 35.69, 34.0, 35.1, 34.0, 34.97, 33.0, 34.6, 32.5, 34.7], [50.45, 25.8, 50.65, 25.8, 50.65, 26.3, 50.45, 26.3]]};
 /* ---- register daily, study and scene units ---- */
 var DAILY_IDS=['greet','intro','num','time','feel','chat'];
 var TRAVEL_SC=['sc-imm','sc-cafe','sc-hotel','sc-rest','sc-card','sc-wc','sc-wallet','sc-booking'];
@@ -3583,7 +3739,7 @@ function barcodeSVG(seed){
 
 /* ================= SAVE ================= */
 /* the font class for text in a learning language: Korean and Chinese need their own fonts */
-function lfc(L){return L==='ko'?'ko':L==='zh'?'zh':'';}
+function lfc(L){return L==='ko'?'ko':L==='zh'?'zh':L==='ar'?'ar':'';}
 var KEY='babelflight.save.v1';
 var OLD_ORDER=['checkin','inflight','immigration','hotel','restaurant','city','atc1','atc2'];
 function blankProg(){var p={};ORDER.forEach(function(k){p[k]={items:{},units:{}};});return p;}
@@ -3884,6 +4040,13 @@ function runCell(cell){
   })();
 }
 Board.prototype.set=function(text){
+  /* right-to-left scripts join their letters, so the board shows the whole phrase instead of one letter per flap */
+  if(this.rtl){
+    this.cells=[];this.cols=0;this.rows=0;
+    this.host.innerHTML='<div class="brtl ar" dir="rtl" lang="'+(this.lang||'ar')+'">'+esc(text||'')+'</div>';
+    this.host.setAttribute('role','img');this.host.setAttribute('aria-label',text?text:'表示ボード(空白)');
+    return;
+  }
   var minCols=this.minCols||13;
   var L=this.layout(text||'',minCols);
   if(L.cols!==this.cols||L.rows!==this.rows||!this.cells.length)this.build(L.cols,L.rows);
@@ -4169,7 +4332,7 @@ function stopStatus(L,uid,nextId){
    all the others are one tap away in 言語を選ぶ (langPickSheet) */
 function langStarted(k){var p=save.prog&&save.prog[k],u=p&&p.units;if(!u)return false;for(var id in u)if(u[id]&&u[id].n>0)return true;return false;}
 function myLangs(){return ORDER.filter(function(k){return k===save.lang||langStarted(k);});}
-var LANG_SOON=['アラビア語'];
+var LANG_SOON=[];
 function heroLangs(){
   return '<div class="hero-langs" role="group" aria-label="学ぶ言語">'+myLangs().map(function(k){
     return '<button class="hl" type="button" data-lang="'+k+'" style="--dc:var(--c-'+k+')" aria-pressed="'+(k===save.lang)+'"><b class="mono">'+LANGS[k].code+'</b><small>'+esc(LANGS[k].name)+'</small></button>';
@@ -4188,7 +4351,7 @@ function langPickSheet(){
     '<span class="lbl lp-h">学習中</span><div class="lp-list">'+mine.map(row).join('')+'</div>'+
     (rest.length?'<span class="lbl lp-h">ほかの言語</span><div class="lp-list">'+rest.map(row).join('')+'</div>':'')+
     (ORDER.some(function(k){return LANGS[k].starter;})?'<p class="dim hint">「スターター」の言語は、今は日常会話モード(あいさつ・旅行フレーズ・旅行の場面の会話)で学べます。職業・留学・検定のコースは準備中です。</p>':'')+
-    '<p class="dim hint">準備中: '+LANG_SOON.join('・')+'</p>'+
+    (LANG_SOON.length?'<p class="dim hint">準備中: '+LANG_SOON.join('・')+'</p>':'')+
     '<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
 }
 /* with many languages the chip rows scroll sideways: keep the current language in view */
@@ -4472,7 +4635,7 @@ function startFlight(opts){
     '<g id="pp" style="transition:transform .6s ease"><path d="'+PLANE_D+'" fill="var(--ink)" stroke="var(--bg)" stroke-width="1.8" paint-order="stroke"/></g></svg></div>'+
     '<div class="phase"><span id="phl">地上走行</span><span id="phr">FL000 ・ 1/'+q.length+'問</span></div>'+
     '<div id="bd" class="board"></div><div id="led" class="led"></div><div id="q" class="q"></div><div class="pad-b"></div>';
-  board=new Board($('bd'));board.minCols=lfc(F.lang)?9:13;board.set('');
+  board=new Board($('bd'));board.minCols=lfc(F.lang)?9:13;board.rtl=!!LANGS[F.lang].rtl;board.lang=F.lang;board.set('');
   window.scrollTo(0,0);
   var cc=opts.mode==='unit'?cityFor(F.lang,Math.max(0,pathIds(F.lang).indexOf(opts.uid))):null;
   cineTakeoff({no:id,code:LG.code,city:cc?cc[0]:LG.cityEn,cityJp:cc?cc[1]:LG.city,title:title},function(){if(F&&view==='flight')showStep();});
@@ -4563,7 +4726,8 @@ function showStep(){
     while(sh.join(' ')===tk.join(' ')&&tries++<8)sh=shuffle(tk);
     F.build={tokens:sh,placed:[]};
     board.set('');ledSet(d.jp,'単語を正しい順に並べよう');
-    box.innerHTML='<span class="qh">並べ替え'+tag+'</span><div id="tray" class="tray"></div><div id="bank" class="bank"></div>'+
+    var rtl=LG.rtl?' dir="rtl"':'';
+    box.innerHTML='<span class="qh">並べ替え'+tag+'</span><div id="tray" class="tray"'+rtl+'></div><div id="bank" class="bank"'+rtl+'></div>'+
       '<div class="row2"><button class="sq" type="button" data-clear>やり直し</button><button class="go" id="chk" type="button" data-check style="flex:1;width:auto;margin:0">答え合わせ</button></div>';
     drawBuild();
   }else if(q.k==='type'){
@@ -4864,7 +5028,7 @@ function scPanelHTML(){
   if(S.stage==='you'){
     if(S.mode==='call')return step+task+'<p class="dim hint">声に出して言ってみよう。言えたらボタンでお手本を確認。</p><button class="go" type="button" data-sc-reveal>言った！ お手本を聞く</button>';
     return step+task+(S.hint?'<p class="hintline">ヒント: '+esc(/ /.test(t.a.trim())?t.a.split(' ').slice(0,2).join(' '):Array.from(t.a).slice(0,Math.max(2,Math.floor(Array.from(t.a).length/3))).join(''))+' …</p>':'')+
-      '<div class="row2"><input id="scIn" class="typebox" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" lang="'+LANGS[S.lang].tts.slice(0,2)+'" placeholder="'+esc(LANGS[S.lang].name)+'で入力(マイク入力もOK)" aria-label="返事を入力"><button class="go" type="button" data-sc-send style="width:auto;margin:0;padding:12px 16px">送信</button></div>'+
+      '<div class="row2"><input id="scIn" class="typebox" type="text" dir="auto" autocomplete="off" autocapitalize="none" spellcheck="false" lang="'+LANGS[S.lang].tts.slice(0,2)+'" placeholder="'+esc(LANGS[S.lang].name)+'で入力(マイク入力もOK)" aria-label="返事を入力"><button class="go" type="button" data-sc-send style="width:auto;margin:0;padding:12px 16px">送信</button></div>'+
       (S.hint?'':'<button class="sq" type="button" data-sc-hint>ヒントを見る</button>');
   }
   if(S.stage==='grade')return step+task+(t.n?'<div class="note"><b>ワンポイント</b>'+esc(t.n)+'</div>':'')+
@@ -6133,7 +6297,7 @@ try{SHR.on=!window.claude&&!!document.createElement('canvas').getContext;}catch(
 var SHR_W=1080,SHR_H=1920,SHR_CARD={x:90,y:410,w:900,h:1060};
 var SHR_F={disp:'"Barlow Condensed","IBM Plex Sans JP",sans-serif',body:'"IBM Plex Sans JP","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif',mono:'"B612 Mono",ui-monospace,Menlo,monospace',emoji:'"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'};
 var SHR_INK='#101a2b',SHR_SUB='#5b6676',SHR_PAPER='#fffaf0',SHR_TRACK='#ebe3d1';
-var SHR_LC={ko:'#e8505b',en:'#2d6bff',es:'#f08a1c',it:'#17a068',zh:'#9b5de5',fr:'#d6457f',de:'#0f8b8d',pt:'#4c8f00',ru:'#8d6e63',tr:'#c0392b',id:'#457b9d'};
+var SHR_LC={ko:'#e8505b',en:'#2d6bff',es:'#f08a1c',it:'#17a068',zh:'#9b5de5',fr:'#d6457f',de:'#0f8b8d',pt:'#4c8f00',ru:'#8d6e63',tr:'#c0392b',id:'#457b9d',ar:'#b07d2b'};
 /* status colours on the picture: [strip colour, text on the strip] */
 var SHR_RC=[['#b9773f','#ffffff'],['#a3adbb','#121a26'],['#e3b23c','#1b1500'],['#8cc3d3','#0d1b24'],['#55c4f0','#05202c'],['#16233f','#ffd76a']];
 var SHR_MODE={review:'復習フライト',weak:'弱点コース',ann:'機内アナウンス',lounge:'プラチナラウンジ',rem:'補習フライト',ai:'AIの例文練習',skip:'飛び級テスト'};
@@ -7372,6 +7536,7 @@ var NUMW=['zero','one','two','three','four','five','six','seven','eight','nine',
 function normSay(s,L){
   s=String(s||'').toLowerCase();
   if(L!=='ko')s=s.normalize('NFD').replace(/[̀-ͯ]/g,'');
+  if(L==='ar')s=s.replace(/[\u064B-\u065F\u0670\u0640]/g,'');
   s=s.replace(/[’‘`]/g,"'").replace(/[^\p{L}\p{N}' ]+/gu,' ').replace(/\s+/g,' ').trim();
   if(L==='en')s=s.split(' ').map(function(w){return /^\d+$/.test(w)&&+w<=20?NUMW[+w]:w;}).join(' ');
   return s;
@@ -7491,21 +7656,21 @@ function coachRun(){
 /* ---- AI会話ロールプレイ (on top of the AI管制官 engine) ---- */
 var ROLE_SC=[
  {id:'cabin',jp:'機内でCAと話す',sub:'飲み物や毛布をお願いする',who:'CABIN CREW',sit:'国際線の機内。食事の時間です。客室乗務員に話しかけて、飲み物を頼んだり、困っていることを伝えよう。',
-  hint:{en:'Excuse me, could I have some water, please?',ko:'저기요, 물 좀 주시겠어요?',es:'Perdone, ¿me puede traer un poco de agua, por favor?',it:"Scusi, potrei avere un po' d'acqua, per favore?",zh:'不好意思，可以给我一杯水吗？',fr:"Excusez-moi, je pourrais avoir de l'eau, s'il vous plaît ?",de:"Entschuldigung, könnte ich bitte ein Glas Wasser haben?",pt:"Com licença, pode me dar um copo de água, por favor?",ru:"Извините, можно стакан воды?",tr:"Affedersiniz, bir bardak su alabilir miyim?",id:"Permisi, boleh minta segelas air?"}},
+  hint:{en:'Excuse me, could I have some water, please?',ko:'저기요, 물 좀 주시겠어요?',es:'Perdone, ¿me puede traer un poco de agua, por favor?',it:"Scusi, potrei avere un po' d'acqua, per favore?",zh:'不好意思，可以给我一杯水吗？',fr:"Excusez-moi, je pourrais avoir de l'eau, s'il vous plaît ?",de:"Entschuldigung, könnte ich bitte ein Glas Wasser haben?",pt:"Com licença, pode me dar um copo de água, por favor?",ru:"Извините, можно стакан воды?",tr:"Affedersiniz, bir bardak su alabilir miyim?",id:"Permisi, boleh minta segelas air?",ar:"عفوا، هل يمكنني الحصول على كوب ماء؟"}},
  {id:'immigration',jp:'入国審査',sub:'目的・日数・泊まる場所を答える',who:'IMMIGRATION',sit:'空港の入国審査。係官にあいさつしてパスポートを渡し、質問に答えて入国しよう。',
-  hint:{en:'Hello. Here is my passport.',ko:'안녕하세요. 여기 여권이요.',es:'Hola. Aquí tiene mi pasaporte.',it:'Buongiorno. Ecco il mio passaporto.',zh:'你好，这是我的护照。',fr:"Bonjour. Voici mon passeport.",de:"Guten Tag. Hier ist mein Reisepass.",pt:"Bom dia. Aqui está o meu passaporte.",ru:"Здравствуйте. Вот мой паспорт.",tr:"Merhaba. Buyurun, pasaportum.",id:"Selamat siang. Ini paspor saya."}},
+  hint:{en:'Hello. Here is my passport.',ko:'안녕하세요. 여기 여권이요.',es:'Hola. Aquí tiene mi pasaporte.',it:'Buongiorno. Ecco il mio passaporto.',zh:'你好，这是我的护照。',fr:"Bonjour. Voici mon passeport.",de:"Guten Tag. Hier ist mein Reisepass.",pt:"Bom dia. Aqui está o meu passaporte.",ru:"Здравствуйте. Вот мой паспорт.",tr:"Merhaba. Buyurun, pasaportum.",id:"Selamat siang. Ini paspor saya.",ar:"مرحبا. هذا جواز سفري."}},
  {id:'hotel',jp:'ホテルのチェックイン',sub:'予約を伝えて、朝食やWi-Fiを聞く',who:'FRONT DESK',sit:'ホテルのフロント。予約していることを伝えて、チェックインしよう。',
-  hint:{en:'Hi, I have a reservation under the name Sato.',ko:'안녕하세요. 사토 이름으로 예약했어요.',es:'Hola, tengo una reserva a nombre de Sato.',it:'Buonasera, ho una prenotazione a nome Sato.',zh:'你好，我用佐藤的名字预订了房间。',fr:"Bonsoir, j'ai une réservation au nom de Sato.",de:"Guten Abend, ich habe eine Reservierung auf den Namen Sato.",pt:"Boa noite, tenho uma reserva em nome de Sato.",ru:"Добрый вечер, у меня бронь на имя Сато.",tr:"İyi akşamlar, Sato adına rezervasyonum var.",id:"Selamat malam, saya sudah pesan kamar atas nama Sato."}},
+  hint:{en:'Hi, I have a reservation under the name Sato.',ko:'안녕하세요. 사토 이름으로 예약했어요.',es:'Hola, tengo una reserva a nombre de Sato.',it:'Buonasera, ho una prenotazione a nome Sato.',zh:'你好，我用佐藤的名字预订了房间。',fr:"Bonsoir, j'ai une réservation au nom de Sato.",de:"Guten Abend, ich habe eine Reservierung auf den Namen Sato.",pt:"Boa noite, tenho uma reserva em nome de Sato.",ru:"Добрый вечер, у меня бронь на имя Сато.",tr:"İyi akşamlar, Sato adına rezervasyonum var.",id:"Selamat malam, saya sudah pesan kamar atas nama Sato.",ar:"مساء الخير، عندي حجز باسم ساتو."}},
  {id:'restaurant',jp:'レストランで注文',sub:'席・注文・アレルギー・お会計',who:'SERVER',sit:'レストランに入りました。席をお願いして、料理と飲み物を注文しよう。',
-  hint:{en:'Hi, a table for one, please.',ko:'안녕하세요. 한 명이에요.',es:'Hola, una mesa para uno, por favor.',it:'Buonasera, un tavolo per uno, per favore.',zh:'你好，一位。',fr:"Bonsoir, une table pour une personne, s'il vous plaît.",de:"Guten Abend, einen Tisch für eine Person, bitte.",pt:"Boa noite, uma mesa para um, por favor.",ru:"Добрый вечер, столик на одного, пожалуйста.",tr:"İyi akşamlar, bir kişilik masa lütfen.",id:"Selamat malam, meja untuk satu orang."}},
+  hint:{en:'Hi, a table for one, please.',ko:'안녕하세요. 한 명이에요.',es:'Hola, una mesa para uno, por favor.',it:'Buonasera, un tavolo per uno, per favore.',zh:'你好，一位。',fr:"Bonsoir, une table pour une personne, s'il vous plaît.",de:"Guten Abend, einen Tisch für eine Person, bitte.",pt:"Boa noite, uma mesa para um, por favor.",ru:"Добрый вечер, столик на одного, пожалуйста.",tr:"İyi akşamlar, bir kişilik masa lütfen.",id:"Selamat malam, meja untuk satu orang.",ar:"مساء الخير، طاولة لشخص واحد، من فضلك."}},
  {id:'directions',jp:'道をたずねる',sub:'駅への行き方を聞く',who:'LOCAL',sit:'街で道に迷いました。近くの人に、駅への行き方をたずねよう。',
-  hint:{en:'Excuse me, how can I get to the station?',ko:'실례합니다. 역에 어떻게 가요?',es:'Perdone, ¿cómo puedo llegar a la estación?',it:'Scusi, come arrivo alla stazione?',zh:'不好意思，请问去火车站怎么走？',fr:"Excusez-moi, pour aller à la gare, s'il vous plaît ?",de:"Entschuldigung, wie komme ich zum Bahnhof?",pt:"Com licença, como chego à estação?",ru:"Извините, как пройти к вокзалу?",tr:"Affedersiniz, istasyona nasıl gidebilirim?",id:"Permisi, bagaimana cara ke stasiun?"}},
+  hint:{en:'Excuse me, how can I get to the station?',ko:'실례합니다. 역에 어떻게 가요?',es:'Perdone, ¿cómo puedo llegar a la estación?',it:'Scusi, come arrivo alla stazione?',zh:'不好意思，请问去火车站怎么走？',fr:"Excusez-moi, pour aller à la gare, s'il vous plaît ?",de:"Entschuldigung, wie komme ich zum Bahnhof?",pt:"Com licença, como chego à estação?",ru:"Извините, как пройти к вокзалу?",tr:"Affedersiniz, istasyona nasıl gidebilirim?",id:"Permisi, bagaimana cara ke stasiun?",ar:"عفوا، كيف أذهب إلى المحطة؟"}},
  {id:'homestay',jp:'ホームステイ初日',sub:'あいさつ・家のルール・好きな食べ物',who:'HOST',sit:'ホームステイ先に着きました。ホストファミリーにあいさつして、自己紹介しよう。',
-  hint:{en:"Hi, nice to meet you! I'm Ken from Japan.",ko:'안녕하세요! 일본에서 온 켄이에요.',es:'¡Hola, mucho gusto! Soy Ken, de Japón.',it:'Ciao, piacere! Sono Ken, vengo dal Giappone.',zh:'你好！很高兴认识你，我是从日本来的健。',fr:"Bonjour, enchanté ! Je m'appelle Ken, je viens du Japon.",de:"Hallo, freut mich! Ich bin Ken aus Japan.",pt:"Oi, prazer! Eu sou o Ken, do Japão.",ru:"Здравствуйте! Очень приятно, я Кен из Японии.",tr:"Merhaba, memnun oldum! Ben Japonya'dan Ken.",id:"Halo, senang bertemu! Saya Ken dari Jepang."}},
+  hint:{en:"Hi, nice to meet you! I'm Ken from Japan.",ko:'안녕하세요! 일본에서 온 켄이에요.',es:'¡Hola, mucho gusto! Soy Ken, de Japón.',it:'Ciao, piacere! Sono Ken, vengo dal Giappone.',zh:'你好！很高兴认识你，我是从日本来的健。',fr:"Bonjour, enchanté ! Je m'appelle Ken, je viens du Japon.",de:"Hallo, freut mich! Ich bin Ken aus Japan.",pt:"Oi, prazer! Eu sou o Ken, do Japão.",ru:"Здравствуйте! Очень приятно, я Кен из Японии.",tr:"Merhaba, memnun oldum! Ben Japonya'dan Ken.",id:"Halo, senang bertemu! Saya Ken dari Jepang.",ar:"مرحبا! تشرفنا، أنا كين من اليابان."}},
  {id:'class',jp:'授業で先生に質問',sub:'宿題や授業の内容を聞く',who:'TEACHER',sit:'留学先の授業のあと。先生に話しかけて、宿題について質問しよう。',
-  hint:{en:'Excuse me, I have a question about the homework.',ko:'선생님, 숙제에 대해 질문이 있어요.',es:'Perdone, profesor, tengo una pregunta sobre los deberes.',it:'Scusi, professore, ho una domanda sui compiti.',zh:'老师，我有一个关于作业的问题。',fr:"Excusez-moi, j'ai une question sur les devoirs.",de:"Entschuldigung, ich habe eine Frage zu den Hausaufgaben.",pt:"Com licença, professor, tenho uma dúvida sobre a lição de casa.",ru:"Извините, у меня вопрос по домашнему заданию.",tr:"Affedersiniz, ödev hakkında bir sorum var.",id:"Permisi, Bu Guru, saya mau tanya tentang PR."}},
+  hint:{en:'Excuse me, I have a question about the homework.',ko:'선생님, 숙제에 대해 질문이 있어요.',es:'Perdone, profesor, tengo una pregunta sobre los deberes.',it:'Scusi, professore, ho una domanda sui compiti.',zh:'老师，我有一个关于作业的问题。',fr:"Excusez-moi, j'ai une question sur les devoirs.",de:"Entschuldigung, ich habe eine Frage zu den Hausaufgaben.",pt:"Com licença, professor, tenho uma dúvida sobre a lição de casa.",ru:"Извините, у меня вопрос по домашнему заданию.",tr:"Affedersiniz, ödev hakkında bir sorum var.",id:"Permisi, Bu Guru, saya mau tanya tentang PR.",ar:"عفوا يا أستاذ، عندي سؤال عن الواجب."}},
  {id:'interview',jp:'スピーキング試験・面接',sub:'自分のことを話す',who:'EXAMINER',sit:'スピーキング試験の部屋に入りました。試験官にあいさつして、質問に答えよう。',
-  hint:{en:'Good morning. Nice to meet you.',ko:'안녕하세요. 만나서 반갑습니다.',es:'Buenos días. Encantado de conocerle.',it:'Buongiorno. Piacere di conoscerla.',zh:'早上好，很高兴见到您。',fr:"Bonjour. Enchanté de vous rencontrer.",de:"Guten Morgen. Freut mich, Sie kennenzulernen.",pt:"Bom dia. Muito prazer.",ru:"Доброе утро. Очень приятно.",tr:"Günaydın. Tanıştığımıza memnun oldum.",id:"Selamat pagi. Senang bertemu dengan Anda."}}
+  hint:{en:'Good morning. Nice to meet you.',ko:'안녕하세요. 만나서 반갑습니다.',es:'Buenos días. Encantado de conocerle.',it:'Buongiorno. Piacere di conoscerla.',zh:'早上好，很高兴见到您。',fr:"Bonjour. Enchanté de vous rencontrer.",de:"Guten Morgen. Freut mich, Sie kennenzulernen.",pt:"Bom dia. Muito prazer.",ru:"Доброе утро. Очень приятно.",tr:"Günaydın. Tanıştığımıza memnun oldum.",id:"Selamat pagi. Senang bertemu dengan Anda.",ar:"صباح الخير. تشرفنا."}}
 ];
 var ROLE_LIM=[0,5,15,30],ROLE_KEY='babelflight.roleDay';
 var ROLE={sc:null,L:'en',log:[],ex:[],busy:false,done:false,ctl:null,counted:false,hint:false};
@@ -7548,7 +7713,7 @@ function roleHTML(){
     h+='<div class="card" style="text-align:center"><b>会話終了。おつかれさま！</b><div class="row2" style="margin-top:10px"><button class="ghost" type="button" data-role-sc="'+ROLE_SC.indexOf(sc)+'" style="flex:1">もう一度</button><button class="ghost" type="button" data-role-list style="flex:1">別の場面</button></div></div>';
   }else{
     h+='<div class="atc-in"><div id="roleHint" class="hintline'+(ROLE.hint?'':' hidden-hint')+'">'+(ROLE.hint?'例: '+esc(sc.hint[L]):'')+'</div>'+
-      '<div class="row2"><input id="roleIn" class="typebox'+(lfc(L)?' '+lfc(L):'')+'" type="text" lang="'+L+'" placeholder="'+esc(LG.name)+'で返事を書こう" aria-label="返事" autocomplete="off" autocapitalize="none" spellcheck="false">'+
+      '<div class="row2"><input id="roleIn" class="typebox'+(lfc(L)?' '+lfc(L):'')+'" type="text" dir="auto" lang="'+L+'" placeholder="'+esc(LG.name)+'で返事を書こう" aria-label="返事" autocomplete="off" autocapitalize="none" spellcheck="false">'+
       (srCtor()?'<button class="sq role-mic" type="button" data-role-mic aria-label="声で入力">'+micIcon()+'</button>':'')+
       '<button class="go" type="button" data-role-send style="width:auto;margin:0;padding:12px 16px">送信</button></div>'+
       (ROLE.log.length?'':'<button class="sq" type="button" data-role-hint>最初の言い方のヒント</button>')+'</div>';

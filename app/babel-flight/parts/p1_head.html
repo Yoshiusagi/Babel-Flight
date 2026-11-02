@@ -1,7 +1,7 @@
 <title>Babel Flight</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=B612+Mono:wght@400;700&family=DotGothic16&family=IBM+Plex+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@500;700&family=Noto+Sans+SC:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=B612+Mono:wght@400;700&family=DotGothic16&family=IBM+Plex+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@500;700&family=Noto+Sans+SC:wght@500;700&family=Noto+Sans+Arabic:wght@500;700&display=swap" rel="stylesheet">
 <style>
 /* pinyin tone-mark vowels (ǎ ǐ ǒ ǔ ǚ …): some Japanese fonts draw them full-width, so they come from a tiny
    subset of Noto Sans CJK SC (SIL Open Font License 1.1) — only these letters, nothing else changes */
@@ -21,13 +21,14 @@
   --good:#0f8a52; --bad:#cf3342; --info:#2563eb;
   --shadow:rgba(11,22,38,.16);
   --board:#080a0f; --flap:#ffd23f; --led:#ff9f2e;
-  --c-ko:#e8505b; --c-en:#2d6bff; --c-es:#f08a1c; --c-it:#17a068; --c-zh:#9b5de5; --c-fr:#d6457f; --c-de:#0f8b8d; --c-pt:#4c8f00; --c-ru:#8d6e63; --c-tr:#c0392b; --c-id:#457b9d;
+  --c-ko:#e8505b; --c-en:#2d6bff; --c-es:#f08a1c; --c-it:#17a068; --c-zh:#9b5de5; --c-fr:#d6457f; --c-de:#0f8b8d; --c-pt:#4c8f00; --c-ru:#8d6e63; --c-tr:#c0392b; --c-id:#457b9d; --c-ar:#b07d2b;
   --lc:var(--c-ko);
   --f-disp:'Barlow Condensed','BF Pinyin','BF Cyrillic','IBM Plex Sans JP',system-ui,sans-serif;
   --f-body:'BF Pinyin','BF Cyrillic','IBM Plex Sans JP','Hiragino Sans','Yu Gothic',system-ui,sans-serif;
   --f-mono:'B612 Mono','BF Cyrillic','Noto Sans KR',ui-monospace,Menlo,Consolas,monospace;
   --f-dot:'BF Pinyin','BF Cyrillic','DotGothic16','IBM Plex Sans JP','Hiragino Sans',sans-serif;
   --f-ko:'Noto Sans KR','IBM Plex Sans JP',sans-serif;
+  --f-ar:'Noto Sans Arabic','Geeza Pro','Segoe UI','Tahoma',sans-serif;
   --f-zh:'BF Pinyin','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
@@ -57,6 +58,10 @@ body{overflow-x:clip}
 .dim{color:var(--ink2)}
 .ko{font-family:var(--f-ko)}
 .zh{font-family:var(--f-zh)}
+/* Arabic: its own font, and each line runs right to left when it starts with Arabic */
+.ar{font-family:var(--f-ar);unicode-bidi:plaintext}
+.brtl{display:flex;align-items:center;justify-content:center;min-height:112px;padding:6px 8px;color:var(--flap);font:700 clamp(22px,7.5cqw,34px)/1.6 var(--f-ar);text-align:center;text-shadow:0 0 12px rgba(255,210,63,.3)}
+.tray[dir="rtl"],.bank[dir="rtl"]{direction:rtl}
 svg{display:block}
 
 /* top bar */
@@ -214,6 +219,7 @@ svg{display:block}
 .opt{display:block;width:100%;text-align:left;padding:14px;border:1.5px solid var(--line);background:var(--surface);border-radius:10px;font-size:15.5px;line-height:1.4;min-height:52px}
 .opt.ko{font-family:var(--f-ko);font-weight:500}
 .opt.zh{font-family:var(--f-zh);font-weight:500}
+.opt.ar{font-family:var(--f-ar);font-weight:500}
 .opt:active{transform:scale(.99)}
 .opt.ok{border-color:var(--good);background:color-mix(in srgb,var(--good) 14%,var(--surface))}
 .opt.no{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--surface))}
@@ -230,6 +236,7 @@ svg{display:block}
 .tile::before{content:"";position:absolute;left:8px;top:50%;width:7px;height:7px;margin-top:-3.5px;border-radius:50%;background:var(--bg2);box-shadow:inset 0 0 0 1.5px var(--line)}
 .tile.ko{font-family:var(--f-ko);font-weight:500}
 .tile.zh{font-family:var(--f-zh);font-weight:500}
+.tile.ar{font-family:var(--f-ar);font-weight:500}
 .tile.used{visibility:hidden}
 .typebox{width:100%;padding:14px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:500 17px var(--f-mono)}
 .skel{font:400 13px var(--f-mono);letter-spacing:.14em;color:var(--ink2);word-break:break-all}
@@ -240,6 +247,8 @@ svg{display:block}
 .sheet .ans{font-size:15px}
 .sheet .ans.ko{font-family:var(--f-ko)}
 .sheet .ans.zh{font-family:var(--f-zh)}
+.sheet .ans.ar b{font-family:var(--f-ar);unicode-bidi:plaintext;display:block}
+.sheet .ans.ar b+br{display:none}
 @keyframes up{from{transform:translateY(40%);opacity:.4}to{transform:none;opacity:1}}
 .confirm{display:grid;gap:8px;margin-top:10px}
 .pad-b{height:150px}

@@ -64,7 +64,7 @@ function startFlight(opts){
     '<g id="pp" style="transition:transform .6s ease"><path d="'+PLANE_D+'" fill="var(--ink)" stroke="var(--bg)" stroke-width="1.8" paint-order="stroke"/></g></svg></div>'+
     '<div class="phase"><span id="phl">地上走行</span><span id="phr">FL000 ・ 1/'+q.length+'問</span></div>'+
     '<div id="bd" class="board"></div><div id="led" class="led"></div><div id="q" class="q"></div><div class="pad-b"></div>';
-  board=new Board($('bd'));board.minCols=lfc(F.lang)?9:13;board.set('');
+  board=new Board($('bd'));board.minCols=lfc(F.lang)?9:13;board.rtl=!!LANGS[F.lang].rtl;board.lang=F.lang;board.set('');
   window.scrollTo(0,0);
   var cc=opts.mode==='unit'?cityFor(F.lang,Math.max(0,pathIds(F.lang).indexOf(opts.uid))):null;
   cineTakeoff({no:id,code:LG.code,city:cc?cc[0]:LG.cityEn,cityJp:cc?cc[1]:LG.city,title:title},function(){if(F&&view==='flight')showStep();});
@@ -155,7 +155,8 @@ function showStep(){
     while(sh.join(' ')===tk.join(' ')&&tries++<8)sh=shuffle(tk);
     F.build={tokens:sh,placed:[]};
     board.set('');ledSet(d.jp,'単語を正しい順に並べよう');
-    box.innerHTML='<span class="qh">並べ替え'+tag+'</span><div id="tray" class="tray"></div><div id="bank" class="bank"></div>'+
+    var rtl=LG.rtl?' dir="rtl"':'';
+    box.innerHTML='<span class="qh">並べ替え'+tag+'</span><div id="tray" class="tray"'+rtl+'></div><div id="bank" class="bank"'+rtl+'></div>'+
       '<div class="row2"><button class="sq" type="button" data-clear>やり直し</button><button class="go" id="chk" type="button" data-check style="flex:1;width:auto;margin:0">答え合わせ</button></div>';
     drawBuild();
   }else if(q.k==='type'){

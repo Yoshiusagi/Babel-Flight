@@ -34,7 +34,7 @@ function barcodeSVG(seed){
 
 /* ================= SAVE ================= */
 /* the font class for text in a learning language: Korean and Chinese need their own fonts */
-function lfc(L){return L==='ko'?'ko':L==='zh'?'zh':'';}
+function lfc(L){return L==='ko'?'ko':L==='zh'?'zh':L==='ar'?'ar':'';}
 var KEY='babelflight.save.v1';
 var OLD_ORDER=['checkin','inflight','immigration','hotel','restaurant','city','atc1','atc2'];
 function blankProg(){var p={};ORDER.forEach(function(k){p[k]={items:{},units:{}};});return p;}
@@ -335,6 +335,13 @@ function runCell(cell){
   })();
 }
 Board.prototype.set=function(text){
+  /* right-to-left scripts join their letters, so the board shows the whole phrase instead of one letter per flap */
+  if(this.rtl){
+    this.cells=[];this.cols=0;this.rows=0;
+    this.host.innerHTML='<div class="brtl ar" dir="rtl" lang="'+(this.lang||'ar')+'">'+esc(text||'')+'</div>';
+    this.host.setAttribute('role','img');this.host.setAttribute('aria-label',text?text:'表示ボード(空白)');
+    return;
+  }
   var minCols=this.minCols||13;
   var L=this.layout(text||'',minCols);
   if(L.cols!==this.cols||L.rows!==this.rows||!this.cells.length)this.build(L.cols,L.rows);

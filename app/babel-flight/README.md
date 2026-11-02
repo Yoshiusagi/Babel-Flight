@@ -19,7 +19,8 @@ Adding one (中国語 is the example):
 - `parts/p3c_<lang>.js` (after `p3b_data.js` in `order.txt`): `LANGS.<lang>={…, units:[U('checkin',…), …]}` with the
   6 travel units, then `ORDER.push('<lang>')`. Each phrase is `[日本語, phrase, reading, note, words]`; the 5th
   column splits the phrase into words for 並べ替え when the language has no spaces. `noType:true` turns the typing
-  questions off (they would need that language's keyboard).
+  questions off (they would need that language's keyboard). `rtl:true` (アラビア語) shows the whole phrase on the flight
+  board (Arabic letters join, so no split-flap letters) and runs the word tiles and text right to left.
 - `parts/e3g_<lang>.js` (after `e3d_geo.js`): `DU.<lang>` (6 daily units), `SC('<lang>', …)` for the 8 scenes,
   `CITIES.<lang>` (28 stops) and `REGIONS.<lang>` (the dotted map).
 - the colour `--c-<lang>` and, if the script needs it, a font (`--f-<lang>` and `lfc()` in `e4_core.js`) in
