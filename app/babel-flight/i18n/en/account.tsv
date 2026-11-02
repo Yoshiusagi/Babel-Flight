@@ -1,0 +1,61 @@
+# アカウント (sign-in, sync)
+メールアドレスの形が正しくないみたい。	That email address doesn't look right.
+メールアドレスを入れてね。	Please enter your email address.
+メールアドレスかパスワードが違います。	The email address or password is wrong.
+このメールアドレスはもう登録されています。「ログイン」から入ってね。	This email address is already registered. Please use "Log in".
+パスワードは8文字以上にしてね。	Use at least 8 characters for the password.
+パスワードを入れてね。	Please enter your password.
+試した回数が多すぎます。少し時間をあけてね。	Too many attempts. Please wait a little.
+ポップアップがブロックされました。もう一度ボタンを押してね。	The pop-up was blocked. Please press the button again.
+通信できませんでした。電波を確認してね。	Couldn't connect. Check your signal.
+このメールアドレスは別の方法で登録されています。	This email address is registered with another sign-in method.
+このアカウントは使えなくなっています。	This account can no longer be used.
+このログイン方法は今は使えません。	This sign-in method isn't available right now.
+このアドレスはまだログインの許可が出ていません。	This address isn't allowed to sign in yet.
+ログイン中のアカウントと違うアカウントです。	This is a different account from the one you're logged in with.
+うまくいきませんでした。もう一度試してね。	That didn't work. Please try again.
+もう一度ログインしてね。	Please log in again.
+ログインの確認ができませんでした。少し待ってからもう一度試してね。	Couldn't confirm your login. Wait a moment and try again.
+ログアウトしました。この端末の記録はそのまま使えます。	You're logged out. This device's record stays as it is.
+アカウントを削除しました。この端末の記録はそのまま残っています。	Your account was deleted. This device's record is still here.
+ログインできませんでした。もう一度試してね。	Couldn't log in. Please try again.
+14文字までにしてね。	Up to 14 characters, please.
+確認用のパスワードが1回目と違います。	The confirmation password doesn't match.
+再設定のメールを送ったよ。届かないときは迷惑メールフォルダも見てね。	We sent a reset email. If it doesn't arrive, check your spam folder too.
+同期中…	Syncing…
+同期済み ・	Synced ·
+同期済み ・ {0}	Synced · {0}
+オフライン ・ つながったら同期します	Offline · will sync when connected
+同期できませんでした。「今すぐ同期」を押してね	Couldn't sync. Press "Sync now"
+準備中…	Getting ready…
+任意	Optional
+ログインすると、スマホとパソコンで進み具合を同期できるよ。ログインしなくても今まで通り使えます。	Log in to sync your progress between phone and computer. You can keep using the app without logging in.
+メール	Email
+でログイン中	(logged in)
+名前を変える	Change name
+今すぐ同期	Sync now
+ログアウト	Log out
+アカウントを削除	Delete account
+アカウントを持っている？	Have an account?
+ログインして続きから →	Log in and continue →
+Appleで続ける	Continue with Apple
+メールアドレスで	With email:
+新規登録	Sign up
+ログイン	Log in
+メールアドレス	Email address
+パスワード	Password
+(8文字以上)	(8 or more characters)
+パスワード(確認)	Password (again)
+登録する	Sign up
+パスワードを忘れた？	Forgot your password?
+パスワードの再設定	Reset password
+登録したメールアドレスに、再設定のリンクを送ります。	We'll send a reset link to your registered email address.
+リンクを送る	Send link
+ログインに戻る	Back to login
+記録画面のIDカードに出る名前です。ログインしているほかの端末にも同期されます。	The name on your ID card on the Record screen. It syncs to your other logged-in devices.
+名前(14文字まで)	Name (up to 14 characters)
+保存する	Save
+サーバーにある学習記録とアカウントが消えて、元に戻せません。この端末に残っている記録はそのままです。確認のため、もう一度ログインしてね。	Your learning record on the server and your account will be erased and can't be restored. The record on this device stays. To confirm, please log in once more.
+Appleで確認して削除	Confirm with Apple and delete
+Googleで確認して削除	Confirm with Google and delete
+削除する	Delete
