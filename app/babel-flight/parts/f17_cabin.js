@@ -192,7 +192,7 @@ var STUDY_MORE=[{bank:'sd-math',title:'数学の用語(くわしく)',sub:'数�
   var ps0=pathSections;
   pathSections=function(lang){
     var s=ps0.apply(this,arguments);
-    if(save.mode==='study'&&lang==='en'&&cabinLv()>=1)
+    if(save.mode==='study'&&lang==='en'&&cabinLv()>=1&&UI==='ja')   /* くわしく: 日本語 only for now */
       s=s.concat(STUDY_MORE.map(function(x){return {key:'study-'+x.bank,title:x.title,sub:x.sub,ids:bankUnits(XBANK[x.bank])};}));
     return s;
   };
@@ -204,7 +204,7 @@ var STUDY_MORE=[{bank:'sd-math',title:'数学の用語(くわしく)',sub:'数�
 })();
 function studyMoreHTML(L){
   var lv=cabinLv();
-  if(lv<0||L!=='en')return '';
+  if(lv<0||L!=='en'||UI!=='ja')return '';
   var h='<section class="card exam-card study-more"><span class="lbl">STUDY ・ '+CABINS[lv][2]+'</span><h2 class="jh">授業の用語(くわしく)</h2>';
   if(lv<1)return h+'<p class="dim" style="font-size:13.5px;margin-top:4px">数学と理科の用語128語を、意味と授業での使われ方つきで。</p><p class="dim hint">🔒 「プレミアムエコノミー」から</p></section>';
   h+='<p class="dim" style="font-size:13.5px;margin-top:4px">数学と理科の用語を、意味と授業での使われ方つきで。答えたあとの説明に、先生が授業で言いそうな英文がのっています。</p>';

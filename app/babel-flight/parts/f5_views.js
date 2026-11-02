@@ -169,7 +169,7 @@ function creditsHTML(){
 }
 var LEVEL_HINT={beg:'はじめの一歩から。新しいフレーズはカードで見てから解きます。読み方のヒントつき、選択肢は3つ。',mid:'標準。並べ替えや入力問題も出ます。',adv:'入力問題が多め。職業コースが先に表示されます。'};
 function pathIdsFor(l){
-  var ids=(firstOn(l)?['first']:[]).concat(dailyIds(l),LANGS[l].units.map(function(u){return u.id;}),TRAVEL_SC,UI==='ja'?STUDY_ALL:[],UNITS[l].usuk&&UI==='ja'?['usuk']:[]),p=profById(save.prof);
+  var ids=(firstOn(l)?['first']:[]).concat(dailyIds(l),LANGS[l].units.map(function(u){return u.id;}),TRAVEL_SC,STUDY_ALL,UNITS[l].usuk&&UI==='ja'?['usuk']:[]),p=profById(save.prof);
   if(p&&UI==='ja')ids=ids.concat(p.units[l]);
   ALL_IDS[l].forEach(function(uid){if(ids.indexOf(uid)<0&&unitRec(l,uid).n>0)ids.push(uid);});
   return ids.filter(function(uid){return !!UNITS[l][uid];}); /* a スターター language has no 職業・留学 units yet */

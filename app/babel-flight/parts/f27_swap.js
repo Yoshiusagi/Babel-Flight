@@ -87,6 +87,16 @@ var UI_SWAP={
   UI_SWAP.zh.ja=J({'アメリカ人です。':{t:'中国人です。',r:'chūgoku-jin desu'},'ニューヨークに住んでいます。':{t:'北京に住んでいます。',s:'北京に 住んで います。',r:'pekin ni sunde imasu'},
     'アメリカから来ました。':{t:'中国から来ました。',s:'中国から 来ました。',r:'chūgoku kara kimashita'}});
 })();
+/* scene lines with the learner's country (留学: introducing yourself in class), same rule as UI_SWAP */
+var UI_SWAP_SC={
+ ko:{en:{"Hi, everyone. I'm from Japan.":{a:"Hi, everyone. I'm from Korea."}},
+     es:{"Hola a todos. Soy de Japón.":{a:"Hola a todos. Soy de Corea."}},
+     it:{"Ciao a tutti. Vengo dal Giappone.":{a:"Ciao a tutti. Vengo dalla Corea."}}},
+ zh:{en:{"Hi, everyone. I'm from Japan.":{a:"Hi, everyone. I'm from China."}},
+     es:{"Hola a todos. Soy de Japón.":{a:"Hola a todos. Soy de China."}},
+     it:{"Ciao a tutti. Vengo dal Giappone.":{a:"Ciao a tutti. Vengo dalla Cina."}},
+     ko:{"안녕하세요, 일본에서 왔어요.":{a:"안녕하세요, 중국에서 왔어요."}}}
+};
 function uiSwap(){
   var S=UI_SWAP[UI];if(!S)return;
   ORDER.forEach(function(L){
@@ -95,5 +105,10 @@ function uiSwap(){
       var w=m[it.t];if(!w)return;
       it.t=w.t;if(w.s!==undefined||it.s)it.s=w.s||'';if(w.r!==undefined){it.r=w.r;it._r=w.r;}if(w.n!==undefined)it.n=w.n;
     });});
+  });
+  var C=UI_SWAP_SC[UI];
+  if(C&&typeof SCN==='object')ORDER.forEach(function(L){
+    var m=C[L],S=SCN[L];if(!m||!S)return;
+    Object.keys(S).forEach(function(id){(S[id].turns||[]).forEach(function(t){var w=m[t.a];if(!w)return;t.a=w.a;if(w.r!==undefined){t.r=w.r;t._r=w.r;}});});
   });
 }

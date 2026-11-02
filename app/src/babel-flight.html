@@ -4617,7 +4617,7 @@ function creditsHTML(){
 }
 var LEVEL_HINT={beg:'はじめの一歩から。新しいフレーズはカードで見てから解きます。読み方のヒントつき、選択肢は3つ。',mid:'標準。並べ替えや入力問題も出ます。',adv:'入力問題が多め。職業コースが先に表示されます。'};
 function pathIdsFor(l){
-  var ids=(firstOn(l)?['first']:[]).concat(dailyIds(l),LANGS[l].units.map(function(u){return u.id;}),TRAVEL_SC,UI==='ja'?STUDY_ALL:[],UNITS[l].usuk&&UI==='ja'?['usuk']:[]),p=profById(save.prof);
+  var ids=(firstOn(l)?['first']:[]).concat(dailyIds(l),LANGS[l].units.map(function(u){return u.id;}),TRAVEL_SC,STUDY_ALL,UNITS[l].usuk&&UI==='ja'?['usuk']:[]),p=profById(save.prof);
   if(p&&UI==='ja')ids=ids.concat(p.units[l]);
   ALL_IDS[l].forEach(function(uid){if(ids.indexOf(uid)<0&&unitRec(l,uid).n>0)ids.push(uid);});
   return ids.filter(function(uid){return !!UNITS[l][uid];}); /* a スターター language has no 職業・留学 units yet */
@@ -7846,7 +7846,7 @@ var STUDY_MORE=[{bank:'sd-math',title:'数学の用語(くわしく)',sub:'数�
   var ps0=pathSections;
   pathSections=function(lang){
     var s=ps0.apply(this,arguments);
-    if(save.mode==='study'&&lang==='en'&&cabinLv()>=1)
+    if(save.mode==='study'&&lang==='en'&&cabinLv()>=1&&UI==='ja')   /* くわしく: 日本語 only for now */
       s=s.concat(STUDY_MORE.map(function(x){return {key:'study-'+x.bank,title:x.title,sub:x.sub,ids:bankUnits(XBANK[x.bank])};}));
     return s;
   };
@@ -7858,7 +7858,7 @@ var STUDY_MORE=[{bank:'sd-math',title:'数学の用語(くわしく)',sub:'数�
 })();
 function studyMoreHTML(L){
   var lv=cabinLv();
-  if(lv<0||L!=='en')return '';
+  if(lv<0||L!=='en'||UI!=='ja')return '';
   var h='<section class="card exam-card study-more"><span class="lbl">STUDY ・ '+CABINS[lv][2]+'</span><h2 class="jh">授業の用語(くわしく)</h2>';
   if(lv<1)return h+'<p class="dim" style="font-size:13.5px;margin-top:4px">数学と理科の用語128語を、意味と授業での使われ方つきで。</p><p class="dim hint">🔒 「プレミアムエコノミー」から</p></section>';
   h+='<p class="dim" style="font-size:13.5px;margin-top:4px">数学と理科の用語を、意味と授業での使われ方つきで。答えたあとの説明に、先生が授業で言いそうな英文がのっています。</p>';
@@ -10855,6 +10855,16 @@ var UI_SWAP={
   UI_SWAP.zh.ja=J({'アメリカ人です。':{t:'中国人です。',r:'chūgoku-jin desu'},'ニューヨークに住んでいます。':{t:'北京に住んでいます。',s:'北京に 住んで います。',r:'pekin ni sunde imasu'},
     'アメリカから来ました。':{t:'中国から来ました。',s:'中国から 来ました。',r:'chūgoku kara kimashita'}});
 })();
+/* scene lines with the learner's country (留学: introducing yourself in class), same rule as UI_SWAP */
+var UI_SWAP_SC={
+ ko:{en:{"Hi, everyone. I'm from Japan.":{a:"Hi, everyone. I'm from Korea."}},
+     es:{"Hola a todos. Soy de Japón.":{a:"Hola a todos. Soy de Corea."}},
+     it:{"Ciao a tutti. Vengo dal Giappone.":{a:"Ciao a tutti. Vengo dalla Corea."}}},
+ zh:{en:{"Hi, everyone. I'm from Japan.":{a:"Hi, everyone. I'm from China."}},
+     es:{"Hola a todos. Soy de Japón.":{a:"Hola a todos. Soy de China."}},
+     it:{"Ciao a tutti. Vengo dal Giappone.":{a:"Ciao a tutti. Vengo dalla Cina."}},
+     ko:{"안녕하세요, 일본에서 왔어요.":{a:"안녕하세요, 중국에서 왔어요."}}}
+};
 function uiSwap(){
   var S=UI_SWAP[UI];if(!S)return;
   ORDER.forEach(function(L){
@@ -10864,10 +10874,15 @@ function uiSwap(){
       it.t=w.t;if(w.s!==undefined||it.s)it.s=w.s||'';if(w.r!==undefined){it.r=w.r;it._r=w.r;}if(w.n!==undefined)it.n=w.n;
     });});
   });
+  var C=UI_SWAP_SC[UI];
+  if(C&&typeof SCN==='object')ORDER.forEach(function(L){
+    var m=C[L],S=SCN[L];if(!m||!S)return;
+    Object.keys(S).forEach(function(id){(S[id].turns||[]).forEach(function(t){var w=m[t.a];if(!w)return;t.a=w.a;if(w.r!==undefined){t.r=w.r;t._r=w.r;}});});
+  });
 }
 /* 表示言語: the version of public/i18n/*.json and the display languages that have one
    (written by babel-flight/i18n/build.py) */
-var I18N_V='dcffd52fc7',I18N_UIS=["en", "ko", "zh"];
+var I18N_V='fd7a86ba0b',I18N_UIS=["en", "ko", "zh"];
 /* ================= 表示言語 (display language: 日本語 / English / 한국어 / 简体中文) =================
    The page is written in Japanese. For another display language the dictionary public/i18n/<ui>.json
    (built from babel-flight/i18n/<ui>/*.tsv by i18n/build.py) is loaded, kept on the device, and every
@@ -11059,7 +11074,7 @@ function uiReadings(){
 }
 /* ---- what the display language offers ---- */
 function learnOrder(){return ORDER.filter(function(k){return k!==UI;});}
-function uiModeOpen(m){return UI==='ja'||m==='daily'||m==='exam';}
+function uiModeOpen(m){return UI==='ja'||m==='daily'||m==='exam'||m==='study';}
 function uiFixSave(){
   if(UI==='ja')return;
   if(save.lang===UI){var alt=learnOrder().filter(function(k){return langStarted(k);})[0]||learnOrder()[0];save.lang=alt;}
@@ -11176,7 +11191,7 @@ function examOK(){return typeof examModeOn==='function'&&examModeOn();}
 function examUsable(){return examOK()&&typeof cabinLv==='function'&&cabinLv()>=1;}
 function whyList(){
   return WHY.filter(function(w){
-    if(UI!=='ja'&&(w[0]==='work'||w[0]==='study'))return false;  /* 職業・留学 are 日本語 only for now */
+    if(UI!=='ja'&&w[0]==='work')return false;  /* 職業 is 日本語 only for now */
     return w[0]!=='exam'||examOK();
   });
 }
@@ -11193,7 +11208,7 @@ function ivlDays(b){var d=INTERVALS[b]||1;return hasWeak('vocab')?Math.max(1,Mat
 /* the mode a reason starts in (when the language has it) */
 function whyMode(w,L,prof){
   if(UI==='ja'&&w==='work'){var p=profById(prof);if(p&&(p.units[L]||[]).some(function(u){return !!UNITS[L][u];}))return 'job';}
-  if(UI==='ja'&&w==='study'&&STUDY_ALL.some(function(u){return !!UNITS[L][u];}))return 'study';
+  if(w==='study'&&STUDY_ALL.some(function(u){return !!UNITS[L][u];}))return 'study';
   if((w==='exam'||(w==='school'&&L==='en'&&UI==='ja'))&&examUsable()&&typeof EXAMS==='object'&&(EXAMS[L]||[]).length)return 'exam';
   return 'daily';
 }
@@ -11371,6 +11386,9 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.05',items:[
+  ['🎓','留学モード','留学先の学校での会話(自己紹介・先生への質問・ホームステイ)と、授業で使う用語(数学・理科・社会など)を学べるようになりました。','study',0,['en','ko','zh']]
+ ]},
  {v:'2026.11.04',items:[
   ['🗾','日本語コース','日本語も学べるようになりました。行き先は東京です。','ja',0,['en','ko','zh']],
   ['✨','なめらかな動き','画面の切り替えやボタンの動きが、なめらかになりました。','',0],
@@ -11384,6 +11402,13 @@ var NOTAM=[
   ['✈️','離陸アニメーション','アプリを開いたときや、正解が続いたときなどに短いアニメが加わりました。','']
  ]}
 ];
+/* 留学モード: the language to try it in (this one if it has the course, otherwise the first that does) */
+function studyLangFor(){
+  var has=function(L){return !!(UNITS[L]&&STUDY_ALL.some(function(u){return !!UNITS[L][u];}));};
+  if(has(save.lang))return save.lang;
+  var o=learnOrder();for(var i=0;i<o.length;i++)if(has(o[i]))return o[i];
+  return '';
+}
 function notamLatest(){return NOTAM[0].v;}
 function notamSeenAll(){save.seen=notamLatest();}
 function notamItems(n){return n.items.filter(function(x){return !(x[4]&&typeof BF_APP!=='undefined'&&BF_APP)&&!(x[5]&&x[5].indexOf(UI)<0);});}
@@ -11393,6 +11418,7 @@ function notamHTML(n,first){
     if(first&&x[3]==='tune')btn='<button class="ghost nt-go" type="button" data-notam-go="tune">試してみる</button>';
     else if(first&&x[3]==='exam'&&typeof examModeOn==='function'&&examModeOn())btn='<button class="ghost nt-go" type="button" data-notam-go="exam">試してみる</button>';
     else if(first&&x[3]==='ja'&&LANGS.ja&&learnOrder().indexOf('ja')>=0&&save.lang!=='ja')btn='<button class="ghost nt-go" type="button" data-notam-go="ja">試してみる</button>';
+    else if(first&&x[3]==='study'&&studyLangFor())btn='<button class="ghost nt-go" type="button" data-notam-go="study">試してみる</button>';
     else if(first&&x[3]==='first')btn='<button class="ghost nt-go" type="button" data-notam-go="'+(firstOn(save.lang)?'first':'settings')+'">'+(firstOn(save.lang)?'試してみる':'レベルを見る')+'</button>';
     return '<div class="nt-item"><span class="nt-ic" aria-hidden="true">'+x[0]+'</span><div class="nt-tx"><b>'+x[1]+'</b><p>'+x[2]+'</p>'+btn+'</div></div>';
   }).join('')+'</div>';
@@ -11425,6 +11451,7 @@ document.addEventListener('click',function(e){
     else if(g==='settings')go('record');
     else if(g==='ja'){save.lang='ja';HOME_ANIM='lang';store();go('home');if(typeof lvNeed==='function'&&lvNeed('ja'))lvSheet('ja');}
     else if(g==='exam'){if(save.mode!=='exam'){save.mode='exam';HOME_ANIM='mode';store();}go('home');}
+    else if(g==='study'){var L=studyLangFor();if(L){var sw=save.lang!==L;save.lang=L;save.mode='study';HOME_ANIM=sw?'lang':'mode';store();go('home');if(sw&&typeof lvNeed==='function'&&lvNeed(L))lvSheet(L);}}
     else if(g==='first'&&typeof openNodeSheet==='function')openNodeSheet('first');
     return;
   }

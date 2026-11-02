@@ -46,7 +46,7 @@ the AI question). Learning-language text (`.ko .zh .ar`, the flight board, `[tra
 
 The choice (`bf.ui`, per device) is made at the top of the first screen (preselected from the browser's language on a
 first visit) or in 記録 → 学習の設定; switching reloads the page. With another display language: that language's own
-course is hidden (`learnOrder()`), only 日常会話モード is open (職業 / 留学 show 準備中, 検定 is off; `uiModeOpen`),
+course is hidden (`learnOrder()`), 日常会話・留学・検定 are open (職業 shows 準備中; `uiModeOpen`),
 the onboarding skips the job question, phrase readings are romanized (Korean and Russian computed in `f27_i18n.js`,
 Chinese pinyin from the data, Arabic from `ROM_AR` in `f27_rom.js`; none for Latin-script languages), answer choices only
 use phrases whose meaning is translated, and the AI teacher answers in that language (`ui` in `/api/ai/ask`). Cards
@@ -98,6 +98,16 @@ that had no translation is counted there.
 - Sheets slide down when closed and dim what is behind dialogs; the answered question slides out to the left.
 - Small touches: a tapped choice bounces, the right answer pops and a wrong one shakes, segmented buttons slide their
   marker, the tab you move to lifts. All off with reduced motion.
+
+## 留学モード in the other display languages
+
+- English / 한국어 / 简体中文 get the whole 留学モード of the English, Spanish, Italian and Korean courses: the 4
+  school-life lessons and scenes (自己紹介・先生への質問・ホームステイ・学校生活) and the subject terms (数学・理科・社会・
+  国語・歴史・音楽・体育・情報). Translations: `i18n/<ui>/study.tsv`; `i18n/keys.cjs` lists every study unit and scene.
+- 「日本から来ました」 in the self-introduction becomes the display language's country (`UI_SWAP_SC` in `f27_swap.js`:
+  한국어 → Korea, 简体中文 → China; English keeps Japan), and the dictionaries give it the same meaning.
+- The paid 「授業の用語(くわしく)」 and the AI practice stay with 日本語. 「留学したい」 is now a reason in every display
+  language. `i18n/<ui>/scene.tsv`: the 通話モード texts and scene results, which every scene in every mode uses.
 
 ## 検定モード in the other display languages — `parts/f30_xui.js`
 
