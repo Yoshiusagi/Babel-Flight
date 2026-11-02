@@ -33,8 +33,9 @@ function barcodeSVG(seed){
 }
 
 /* ================= SAVE ================= */
-/* the font class for text in a learning language: Korean and Chinese need their own fonts */
-function lfc(L){return L==='ko'?'ko':L==='zh'?'zh':L==='ar'?'ar':'';}
+/* the font class for text in a learning language: Korean and Chinese need their own fonts; Japanese (learnt from
+   another display language) keeps a Japanese font, and the class also keeps the translation away from it */
+function lfc(L){return L==='ko'?'ko':L==='zh'?'zh':L==='ar'?'ar':L==='ja'?'ja':'';}
 var KEY='babelflight.save.v1';
 var OLD_ORDER=['checkin','inflight','immigration','hotel','restaurant','city','atc1','atc2'];
 function blankProg(){var p={};ORDER.forEach(function(k){p[k]={items:{},units:{}};});return p;}
@@ -287,7 +288,7 @@ function speak(text,code,slow,force){
   if(!tts.ok)return;if(!force&&!save.sound)return;
   try{
     speechSynthesis.cancel();
-    var u=new SpeechSynthesisUtterance(text);u.lang=code;
+    var u=new SpeechSynthesisUtterance(String(text).replace(/\u2060/g,''));u.lang=code;
     var v=voiceFor(code);if(v)u.voice=v;
     u.rate=slow?0.6:0.9;speechSynthesis.speak(u);
   }catch(e){}

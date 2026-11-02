@@ -4,11 +4,11 @@
    Used by build.py to check that each dictionary covers them all. */
 const fs = require('fs'), vm = require('vm'), path = require('path');
 const P = path.join(__dirname, '..', 'parts') + '/';
-const order = fs.readFileSync(P + 'order.txt', 'utf8').split(/\s+/).filter(f => /^(p3|e3|d[1-8])/.test(f));
+const order = fs.readFileSync(P + 'order.txt', 'utf8').split(/\s+/).filter(f => /^(p3|e3|d[1-8])/.test(f)).concat(['f17_exam.js', 'f30_xui.js']);
 const stub = () => new Proxy(function () {}, { get: (t, k) => k === Symbol.toPrimitive ? () => '' : stub(), apply: () => stub() });
 const ctx = { console, document: stub(), navigator: { userAgent: '' }, localStorage: { getItem: () => null, setItem() {} }, location: { href: '', search: '', hostname: '' } };
 ctx.window = ctx; vm.createContext(ctx);
-vm.runInContext(order.map(f => fs.readFileSync(P + f, 'utf8')).join('\n') + '\n;this.__d={LANGS,DU,SCN,ORDER,UM,SCENE_META,CITIES,PROF,EN_UK,SC_UK,USUK};', ctx);
+vm.runInContext(order.map(f => fs.readFileSync(P + f, 'utf8')).join('\n') + '\n;this.__d={LANGS,DU,SCN,ORDER,UM,SCENE_META,CITIES,PROF,EN_UK,SC_UK,USUK,UNITS,xuiUnits};', ctx);
 const d = ctx.__d, JP = /[぀-ヿ㐀-鿿]/, out = {};
 const add = (k, cat, L) => { if (!k || !JP.test(k)) return; const o = out[k] || (out[k] = { cat, langs: [] }); if (L && !o.langs.includes(L)) o.langs.push(L); };
 const ids = new Set();
@@ -30,6 +30,15 @@ for (const t of ['米英の違い', 'アメリカ英語との違い', 'イギリ
   'この端末にはイギリス英語の音声が入っていないので、ほかの英語の音声で読み上げます。']) add(t, 'u', 'en');
 for (const id of ids) if (d.UM[id]) add(d.UM[id].jp, 'u');
 for (const id in d.SCENE_META) { const m = d.SCENE_META[id]; if (m.grp !== 'travel') continue; add(m.jp, 'u'); add(m.role, 'u'); add(m.sit, 'u'); add(m.ini, 'u'); }
+/* 検定モード in another display language: the exam lessons it shows (f30_xui.js). "uis" = only these display languages need it */
+for (const ui of ['en', 'ko', 'zh']) {
+  for (const [L, uid] of d.xuiUnits(ui)) {
+    const u = d.UNITS[L][uid]; if (!u) continue;
+    const addX = (k, cat) => { if (!k || !JP.test(k)) return; let o = out[k]; if (!o) o = out[k] = { cat, langs: [L], uis: [] }; if (o.uis && !o.uis.includes(ui)) o.uis.push(ui); };
+    for (const it of u.items) { addX(it.jp, 'm'); addX(it.n, 'n'); }
+    if (d.UM[uid]) addX(d.UM[uid].jp, 'u');
+  }
+}
 if (process.argv.includes('--names')) {
   /* names shown inside sentences: cities (with their Latin spelling from the route data) and jobs */
   const cities = {};

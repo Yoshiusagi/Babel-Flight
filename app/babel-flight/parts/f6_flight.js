@@ -150,6 +150,7 @@ function showStep(){
     speak(d.t,LG.tts,false);
   }else if(q.k==='t2j'){
     board.set(d.t);ledSet('? ? ?',beg&&d.r?'読み: '+d.r:'意味を選ぼう');optsFor(q.it,'jp');
+    if(beg&&d.r){var ls=$('led').querySelector('.s');if(ls)ls.innerHTML='読み: <span translate="no">'+esc(d.r)+'</span>';}  /* the reading itself is never translated */
     box.innerHTML='<span class="qh">意味はどれ？'+tag+'</span>'+hearBtns()+optsHTML('')+
       (q.nh?'<button class="sq hint-go" type="button" data-q-hint><span aria-hidden="true">💡</span><span>ヒントを見る<small>見てもミスになりません</small></span></button>':'');
     if(beg||q.nh)speak(d.t,LG.tts,false);

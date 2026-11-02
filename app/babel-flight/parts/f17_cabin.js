@@ -67,7 +67,8 @@ function cabinCardHTML(){
 }
 
 /* ---- 検定モード ---- */
-function examModeOn(){return cabinLv()>=0&&UI==='ja';}
+/* 検定モード: every display language (英検 and the job certificates only in 日本語, see f30_xui.js) */
+function examModeOn(){return cabinLv()>=0;}
 /* 目標 (one per language), kept on this device in the test version */
 var XG_KEY='babelflight.examTarget';
 function xgLoad(){try{var o=JSON.parse(lsGet(XG_KEY)||'{}');return o&&typeof o==='object'?o:{};}catch(e){return {};}}
@@ -137,7 +138,7 @@ function trainBlockHTML(b){
   var next=null;bankUnits(b).some(function(u){if(unitRec(b.L,u).n===0){next=u;return true;}return false;});
   if(m.seen>=4)h+='<button class="go sm" type="button" data-xtrain="'+esc(b.key)+'">トレーニング(10問)<small>'+(next?'覚えたフレーズを復習 ・ 新しいフレーズは地図のステップで':'復習の時期・苦手・まだ弱いフレーズから出題。何回でも')+'</small></button>';
   else if(next)h+='<button class="go sm" type="button" data-go="'+esc(next)+'">'+esc(unitTitle(next))+'からはじめる<small>レッスンで覚えたフレーズが、トレーニングに出てきます</small></button>';
-  if(full&&m.pct>=XPASS&&typeof aiDrillAvail==='function'&&aiDrillAvail())
+  if(full&&m.pct>=XPASS&&UI==='ja'&&typeof aiDrillAvail==='function'&&aiDrillAvail())
     h+='<button class="ghost ai-drill" type="button" data-xai="'+esc(b.key)+'">AIが作る新しい例文で練習<small>'+w.line+'に到達したので、同じ表現を別の文で(まちがいがあるかも)</small></button>';
   return h;
 }

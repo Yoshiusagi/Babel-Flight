@@ -16,7 +16,7 @@ function modeSwitch(){
     '<button type="button" data-mode-set="daily" aria-pressed="'+(m==='daily')+'"><b>'+(x?'日常会話':'日常会話モード')+'</b><small>あいさつ・旅行</small></button>'+
     '<button type="button" data-mode-set="job" aria-pressed="'+(m==='job')+'"><b>'+(x?'職業':'職業モード')+'</b><small>13職業の会話</small></button>'+
     '<button type="button" data-mode-set="study" aria-pressed="'+(m==='study')+'"><b>'+(x?'留学':'留学モード')+'</b><small>学校と授業</small></button>'+
-    (x?'<button type="button" data-mode-set="exam" aria-pressed="'+(m==='exam')+'"><b>検定</b><small>英検・TOEIC</small></button>':'')+'</div>';
+    (x?'<button type="button" data-mode-set="exam" aria-pressed="'+(m==='exam')+'"><b>検定</b><small>'+({en:'TOPIK・DELE',ko:'TOEIC・OPIc',zh:'CET・TOEIC'}[UI]||'英検・TOEIC')+'</small></button>':'')+'</div>';
 }
 function stopStatus(L,uid,nextId){
   var r=unitRec(L,uid);
@@ -227,7 +227,8 @@ function mapFrame(){
   g.setLineDash([]);g.globalAlpha=1;
   /* Tokyo marker or edge arrow */
   var tx=SX(M.tk.x),ty=SY(M.tk.y);g.font='700 10px "B612 Mono",monospace';g.textAlign='center';
-  if(tx>8&&tx<cw-8&&ty>96&&ty<ch-104){g.fillStyle='#fff';g.beginPath();g.arc(tx,ty,3.2,0,6.283);g.fill();g.fillStyle='rgba(255,255,255,.85)';g.fillText('TOKYO',tx,ty+15);}
+  if(M.L==='ja'){/* the 日本語 route starts in Tokyo itself: no separate home marker */}
+  else if(tx>8&&tx<cw-8&&ty>96&&ty<ch-104){g.fillStyle='#fff';g.beginPath();g.arc(tx,ty,3.2,0,6.283);g.fill();g.fillStyle='rgba(255,255,255,.85)';g.fillText('TOKYO',tx,ty+15);}
   else{var ex=clamp(tx,18,cw-18),ey=clamp(ty,Math.min(110,ch/2),Math.max(ch-112,ch/2)),an=Math.atan2(ty-ey,tx-ex);g.save();g.translate(ex,ey);g.rotate(an);g.fillStyle='rgba(255,255,255,.7)';g.beginPath();g.moveTo(9,0);g.lineTo(-4,-6);g.lineTo(-4,6);g.closePath();g.fill();g.restore();g.fillStyle='rgba(255,255,255,.75)';g.textAlign=ex>cw/2?'right':'left';g.fillText('TOKYO',ex+(ex>cw/2?-14:14),ey+4);}
   /* cities */
   var pulse=reduceMotion?.5:(Math.sin(now/380)+1)/2;

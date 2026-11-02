@@ -44,7 +44,7 @@
   --good:#0f8a52; --bad:#cf3342; --info:#2563eb;
   --shadow:rgba(11,22,38,.16);
   --board:#080a0f; --flap:#ffd23f; --led:#ff9f2e;
-  --c-ko:#e8505b; --c-en:#2d6bff; --c-es:#f08a1c; --c-it:#17a068; --c-zh:#9b5de5; --c-fr:#d6457f; --c-de:#0f8b8d; --c-pt:#4c8f00; --c-ru:#8d6e63; --c-tr:#c0392b; --c-id:#457b9d; --c-ar:#b07d2b;
+  --c-ko:#e8505b; --c-en:#2d6bff; --c-es:#f08a1c; --c-it:#17a068; --c-zh:#9b5de5; --c-fr:#d6457f; --c-de:#0f8b8d; --c-pt:#4c8f00; --c-ru:#8d6e63; --c-tr:#c0392b; --c-ja:#3949ab; --c-id:#457b9d; --c-ar:#b07d2b;
   --lc:var(--c-ko);
   --f-disp:'Barlow Condensed','BF Pinyin','BF Cyrillic','IBM Plex Sans JP',system-ui,sans-serif;
   --f-body:'BF Pinyin','BF Cyrillic','IBM Plex Sans JP','Hiragino Sans','Yu Gothic',system-ui,sans-serif;
@@ -81,6 +81,7 @@ body{overflow-x:clip}
 .dim{color:var(--ink2)}
 .ko{font-family:var(--f-ko)}
 .zh{font-family:var(--f-zh)}
+.ja{font-family:'IBM Plex Sans JP','Hiragino Sans','Yu Gothic','Noto Sans JP',sans-serif}
 /* Arabic: its own font, and each line runs right to left when it starts with Arabic */
 .ar{font-family:var(--f-ar);unicode-bidi:plaintext}
 .brtl{display:flex;align-items:center;justify-content:center;min-height:112px;padding:6px 8px;color:var(--flap);font:700 clamp(22px,7.5cqw,34px)/1.6 var(--f-ar);text-align:center;text-shadow:0 0 12px rgba(255,210,63,.3)}
@@ -552,6 +553,7 @@ body.dark-ui #sky{display:none}
 .bub.ko p{font-family:var(--f-ko)}
 .bub.zh p{font-family:var(--f-zh)}
 .bub.ar p{font-family:var(--f-ar);unicode-bidi:plaintext}
+.bub p.ar{font-family:var(--f-ar);unicode-bidi:plaintext}
 .bub .dim{color:#93a4c4}
 .bub.typing{display:flex;gap:5px;padding:14px 16px}
 .bub.typing i{width:7px;height:7px;border-radius:50%;background:#93a4c4;animation:dots 1s ease-in-out infinite}
@@ -1675,6 +1677,55 @@ html.ui-busy .uipick{opacity:.55;pointer-events:none}
 .nt-all small{font-size:12px;color:var(--ink2)}
 @media (prefers-reduced-motion:no-preference){.nt-item{animation:lcIn .4s cubic-bezier(.2,.8,.2,1) both}.nt-item:nth-child(2){animation-delay:.08s}.nt-item:nth-child(3){animation-delay:.16s}}
 </style>
+<style>
+/* ---- なめらかな動き (f31_motion.js) ---- */
+.mot-layer{position:fixed;inset:0;z-index:3;pointer-events:none}
+.mot-ghost{position:fixed;z-index:4;pointer-events:none;transition:opacity .2s ease,transform .32s cubic-bezier(.4,0,.2,1)}
+.mot-ghost.go{opacity:0}
+.mot-ghost.to-up.go{transform:translateY(-14px) scale(.985)}
+.mot-ghost.to-l.go{transform:translateX(-38px)}
+.mot-ghost.to-r.go{transform:translateX(38px)}
+.mot-ghost.q-ghost{z-index:6;transition:opacity .2s ease,transform .26s cubic-bezier(.4,0,.2,1)}
+#main.enter{animation:enter .52s cubic-bezier(.16,1,.3,1) .04s both}
+#main.mot-in{animation:motIn .52s cubic-bezier(.16,1,.3,1) .06s both}
+#main.enter-r{animation:enterR .52s cubic-bezier(.16,1,.3,1) .05s both}
+#main.enter-l{animation:enterL .52s cubic-bezier(.16,1,.3,1) .05s both}
+@keyframes motIn{from{opacity:0;transform:translateY(16px) scale(.99)}}
+/* sheets rise with a soft landing and slide away when closed; dialogs dim the screen a little */
+.sheet{animation:sheetUp .44s cubic-bezier(.16,1,.3,1)}
+@keyframes sheetUp{from{transform:translateY(100%)}}
+.mot-sheet-out{pointer-events:none}
+.mot-sheet-out .sheet{z-index:29;animation:sheetDown .26s cubic-bezier(.4,0,1,1) forwards}
+@keyframes sheetDown{to{transform:translateY(105%);opacity:.5}}
+.sheet-dim{position:fixed;inset:0;z-index:29;background:rgba(6,12,24,.26);pointer-events:none;animation:dimIn .3s ease both}
+.mot-sheet-out .sheet-dim{animation:dimOut .26s ease forwards}
+@keyframes dimIn{from{opacity:0}}
+@keyframes dimOut{to{opacity:0}}
+/* a soft press on everything you tap */
+:where(.ghost,.choice,.opt,.sq,.langc,.lp-row,.prof,.hl,.xg-chip,.seg button,.nt-go,.wchoice,.tab){transition:transform .16s cubic-bezier(.2,.8,.2,1),background-color .2s ease,border-color .2s ease,box-shadow .2s ease,color .2s ease}
+:where(.ghost,.choice,.opt,.sq,.langc,.lp-row,.prof,.xg-chip,.seg button,.nt-go,.wchoice):active:not(:disabled){transform:scale(.97)}
+.tap-pop{animation:tapPop .38s cubic-bezier(.3,1.6,.5,1)}
+@keyframes tapPop{0%{transform:scale(.96)}60%{transform:scale(1.025)}100%{transform:none}}
+.opt.ok{animation:okPop .42s cubic-bezier(.3,1.6,.5,1)}
+@keyframes okPop{0%{transform:scale(.97)}55%{transform:scale(1.03)}100%{transform:none}}
+.opt.no{animation:noShake .34s cubic-bezier(.36,.07,.19,.97)}
+@keyframes noShake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+/* segmented buttons: the marker slides to the new choice */
+.seg{position:relative}
+.seg button{position:relative;z-index:1}
+.seg.has-ind button[aria-pressed="true"]{background:transparent!important;border-color:transparent!important}
+.seg-ind{position:absolute;left:0;top:0;z-index:0;pointer-events:none;transition:transform .34s cubic-bezier(.3,1.25,.5,1),width .34s ease,height .34s ease}
+/* the tab you move to lifts a little */
+.tab[aria-current="page"] svg{animation:tabPop .42s cubic-bezier(.3,1.6,.5,1)}
+.tab[aria-current="page"]::before{animation:tabBar .36s cubic-bezier(.2,.8,.2,1)}
+@keyframes tabPop{40%{transform:translateY(-3px) scale(1.12)}}
+@keyframes tabBar{from{transform:scaleX(0)}}
+@media (prefers-reduced-motion:reduce){
+  .mot-layer,.mot-ghost,.mot-sheet-out{display:none}
+  .sheet,.sheet-dim,.tap-pop,.opt.ok,.opt.no,.tab[aria-current="page"] svg,.tab[aria-current="page"]::before,#main.mot-in,#main.enter,#main.enter-l,#main.enter-r{animation:none!important}
+  .seg-ind{display:none}
+}
+</style>
 </head>
 <body>
 <div id="sky" class="sky" aria-hidden="true"></div>
@@ -2539,6 +2590,78 @@ LANGS.ar={name:'アラビア語',native:'العربية',city:'ドバイ',cityEn
   ])
  ]};
 ORDER.push('ar');
+/* ================= 日本語 (Japanese) — starter course for the other display languages =================
+   Only offered when the screen is in English / 한국어 / 简体中文 (learnOrder() hides the course of the
+   display language itself, so a Japanese screen never shows it). Readings are romaji (Hepburn, with ō ū).
+   The meaning (jp) is the plain Japanese the dictionaries translate; the phrase itself (t, and the word split s)
+   starts with an invisible WORD JOINER (JA_M) so the display-language translation never touches the Japanese
+   being learned. No typing questions (they would need a Japanese keyboard). Daily phrases, scenes and the
+   route map are in e3g_ja.js. */
+var JA_M='⁠';
+function JU(id,list){return U(id,list.map(function(x){return [x[0],JA_M+x[1],x[2]||'',x[3]||'',x[4]?JA_M+x[4]:''];}));}
+LANGS.ja={name:'日本語',native:'日本語',city:'東京',cityEn:'TOKYO',code:'HND',tts:'ja-JP',km:1,letter:'M',hasYomi:true,noType:true,starter:true,units:[
+  JU('checkin',[
+   ["こんにちは","こんにちは。","konnichiwa","「は」は「wa」と読みます。"],
+   ["チェックインしたいのですが","チェックインをお願いします。","chekku-in o onegai shimasu","「〜をお願いします」は、何かを頼むときの便利な言い方です。","チェックインを お願いします。"],
+   ["こちらが私のパスポートです","これが私のパスポートです。","kore ga watashi no pasupōto desu","","これが 私の パスポート です。"],
+   ["窓側の席をお願いします","窓側の席をお願いします。","madogawa no seki o onegai shimasu","通路側は「通路側(tsūrogawa)」。","窓側の 席を お願いします。"],
+   ["預ける荷物が1つあります","預ける荷物が一つあります。","azukeru nimotsu ga hitotsu arimasu","","預ける 荷物が 一つ あります。"],
+   ["搭乗口はどこですか","搭乗口はどこですか。","tōjōguchi wa doko desu ka","「〜はどこですか」で場所を聞けます。","搭乗口は どこ ですか。"],
+   ["搭乗は何時ですか","搭乗は何時ですか。","tōjō wa nanji desu ka","","搭乗は 何時 ですか。"],
+   ["便は定刻通りですか","この便は時間通りですか。","kono bin wa jikan dōri desu ka","","この 便は 時間通り ですか。"]
+  ]),
+  JU('inflight',[
+   ["水を一杯お願いします","お水を一杯お願いします。","omizu o ippai onegai shimasu","「お水」の「お」は、ていねいにする言葉です。","お水を 一杯 お願いします。"],
+   ["ブランケットをいただけますか","ブランケットをいただけますか。","buranketto o itadakemasu ka","「〜をいただけますか」は、とてもていねいなお願いです。"],
+   ["チキンをお願いします","チキンでお願いします。","chikin de onegai shimasu","選ぶときは「〜でお願いします」。"],
+   ["お手洗いはどこですか","お手洗いはどこですか。","otearai wa doko desu ka","「トイレ」とも言います。","お手洗いは どこ ですか。"],
+   ["すみません、通ってもいいですか","すみません、通ってもいいですか。","sumimasen, tōtte mo ii desu ka","「すみません」は、呼びかけにもおわびにも使えます。","すみません、 通っても いい ですか。"],
+   ["気分が悪いです","気分が悪いです。","kibun ga warui desu","","気分が 悪い です。"],
+   ["着陸まであとどれくらいですか","着陸まであとどのくらいですか。","chakuriku made ato dono kurai desu ka","","着陸まで あと どのくらい ですか。"],
+   ["電気を消していただけますか","電気を消していただけますか。","denki o keshite itadakemasu ka","","電気を 消して いただけますか。"]
+  ]),
+  JU('immigration',[
+   ["観光で来ました","観光で来ました。","kankō de kimashita","「〜で来ました」=〜の目的で来ました。"],
+   ["5日間滞在します","5日間滞在します。","itsukakan taizai shimasu","日にちには特別な読み方があります(5日=itsuka)。","5日間 滞在 します。"],
+   ["市内のホテルに泊まります","市内のホテルに泊まります。","shinai no hoteru ni tomarimasu","","市内の ホテルに 泊まります。"],
+   ["アメリカから来ました","アメリカから来ました。","amerika kara kimashita","","アメリカから 来ました。"],
+   ["帰りの航空券があります","帰りの航空券があります。","kaeri no kōkūken ga arimasu","","帰りの 航空券が あります。"],
+   ["申告するものはありません","申告するものはありません。","shinkoku suru mono wa arimasen","","申告する ものは ありません。"],
+   ["一人で旅行しています","一人で旅行しています。","hitori de ryokō shite imasu","","一人で 旅行して います。"],
+   ["もう一度言っていただけますか","もう一度言っていただけますか。","mō ichido itte itadakemasu ka","","もう一度 言って いただけますか。"]
+  ]),
+  JU('hotel',[
+   ["予約しています","予約しています。","yoyaku shite imasu",""],
+   ["一泊いくらですか","一泊いくらですか。","ippaku ikura desu ka","","一泊 いくら ですか。"],
+   ["朝食は含まれていますか","朝食は付いていますか。","chōshoku wa tsuite imasu ka","朝食=朝ごはん。","朝食は 付いて いますか。"],
+   ["Wi-Fiのパスワードは何ですか","Wi-Fiのパスワードは何ですか。","wai-fai no pasuwādo wa nan desu ka","","Wi-Fiの パスワードは 何 ですか。"],
+   ["チェックアウトは何時ですか","チェックアウトは何時ですか。","chekku-auto wa nanji desu ka","","チェックアウトは 何時 ですか。"],
+   ["エアコンが動きません","エアコンがつきません。","eakon ga tsukimasen",""],
+   ["荷物を預かっていただけますか","荷物を預かっていただけますか。","nimotsu o azukatte itadakemasu ka","","荷物を 預かって いただけますか。"],
+   ["タオルがもう一枚必要です","タオルをもう一枚お願いします。","taoru o mō ichimai onegai shimasu","「枚」は紙や布など、うすい物を数えます。","タオルを もう 一枚 お願いします。"]
+  ]),
+  JU('restaurant',[
+   ["2名でお願いします","2人です。","futari desu","人数は「一人(hitori)」「二人(futari)」。3人からは「〜にん」。"],
+   ["メニューをお願いします","メニューをお願いします。","menyū o onegai shimasu",""],
+   ["おすすめは何ですか","おすすめは何ですか。","osusume wa nan desu ka","","おすすめは 何 ですか。"],
+   ["ナッツアレルギーがあります","ナッツのアレルギーがあります。","nattsu no arerugī ga arimasu","","ナッツの アレルギーが あります。"],
+   ["とてもおいしいです！","とてもおいしいです！","totemo oishii desu!","","とても おいしい です！"],
+   ["お会計をお願いします","お会計をお願いします。","okaikei o onegai shimasu","日本のレストランでは、チップはいりません。"],
+   ["カードで払えますか","カードで払えますか。","kādo de haraemasu ka",""],
+   ["辛くしないでください","辛くしないでください。","karaku shinaide kudasai","「〜しないでください」=〜しないでほしいときの言い方。","辛く しないで ください。"]
+  ]),
+  JU('city',[
+   ["駅へはどう行けばいいですか","駅へはどう行けばいいですか。","eki e wa dō ikeba ii desu ka","「へ」は「e」と読みます。","駅へは どう 行けば いい ですか。"],
+   ["道に迷いました","道に迷いました。","michi ni mayoimashita",""],
+   ["写真を撮っていただけますか","写真を撮っていただけますか。","shashin o totte itadakemasu ka","","写真を 撮って いただけますか。"],
+   ["助けて！","助けて！","tasukete!",""],
+   ["財布をなくしました","財布をなくしました。","saifu o nakushimashita","落とし物は「交番(kōban)」に届けられることが多いです。"],
+   ["一番近い薬局はどこですか","一番近い薬局はどこですか。","ichiban chikai yakkyoku wa doko desu ka","「ドラッグストア」もよく見かけます。","一番 近い 薬局は どこ ですか。"],
+   ["医者が必要です","医者に診てもらいたいです。","isha ni mite moraitai desu","","医者に 診て もらいたい です。"],
+   ["もっとゆっくり話してください","もう少しゆっくり話してください。","mō sukoshi yukkuri hanashite kudasai","","もう少し ゆっくり 話して ください。"]
+  ])
+ ]};
+ORDER.push('ja');
 /* ================= PROFESSION DATA ================= */
 var PU={ko:{},en:{},es:{},it:{}};ORDER.forEach(function(l){if(!PU[l])PU[l]={};});
 function PJ(uid,jp,lat,jpList,by){
@@ -3465,6 +3588,91 @@ SC('ar',"sc-booking",[["عذرا، لا أجد حجزك.", "申し訳ありま�
 /* route map: Dubai and the Gulf, Oman, Saudi Arabia, Jordan and Lebanon, Egypt, Tunisia and Morocco */
 CITIES.ar=[["DUBAI", "ドバイ", 25.2, 55.27], ["ABU DHABI", "アブダビ", 24.45, 54.38], ["AL AIN", "アルアイン", 24.21, 55.74], ["MUSCAT", "マスカット", 23.59, 58.41], ["NIZWA", "ニズワ", 22.93, 57.53], ["SUR", "スール", 22.57, 59.53], ["DOHA", "ドーハ", 25.29, 51.53], ["MANAMA", "マナーマ", 26.23, 50.59], ["KUWAIT", "クウェート", 29.38, 47.99], ["RIYADH", "リヤド", 24.71, 46.68], ["ALULA", "アルウラー", 26.62, 37.92], ["JEDDAH", "ジッダ", 21.49, 39.19], ["AQABA", "アカバ", 29.53, 35.01], ["PETRA", "ペトラ遺跡", 30.33, 35.44], ["AMMAN", "アンマン", 31.95, 35.93], ["BEIRUT", "ベイルート", 33.89, 35.5], ["CAIRO", "カイロ", 30.04, 31.24], ["ALEXANDRIA", "アレクサンドリア", 31.2, 29.92], ["LUXOR", "ルクソール", 25.69, 32.64], ["ASWAN", "アスワン", 24.09, 32.9], ["HURGHADA", "ハルガダ", 27.26, 33.81], ["TUNIS", "チュニス", 36.81, 10.18], ["KAIROUAN", "カイルアン", 35.68, 10.1], ["DJERBA", "ジェルバ島", 33.81, 10.85], ["CASABLANCA", "カサブランカ", 33.57, -7.59], ["RABAT", "ラバト", 34.02, -6.84], ["FES", "フェズ", 34.03, -5.0], ["MARRAKECH", "マラケシュ", 31.63, -8.01]];
 REGIONS.ar={b:[-11,60,20,38],H:100,polys:[[-11, 20, -11, 28.8, -10.2, 29.4, -9.6, 30.4, -9.77, 31.5, -9.24, 32.3, -8.5, 33.25, -7.6, 33.6, -6.85, 34.03, -6.6, 34.27, -6.15, 35.2, -5.8, 35.8, -5.3, 35.9, -4.4, 35.2, -2.9, 35.3, -1.3, 35.3, -0.6, 35.7, 3.06, 36.77, 5.1, 36.75, 7.75, 36.9, 9.87, 37.27, 10.3, 36.85, 11.05, 37.05, 10.6, 36.4, 10.64, 35.83, 10.76, 34.74, 10.1, 33.88, 10.85, 33.8, 13.2, 32.9, 15.1, 32.4, 16.6, 31.2, 18.5, 30.3, 20.07, 32.1, 22.0, 32.9, 23.97, 32.08, 25.2, 31.6, 27.25, 31.35, 29.92, 31.2, 31.0, 31.6, 32.3, 31.26, 33.5, 31.1, 34.4, 31.5, 34.77, 32.08, 34.98, 32.8, 35.5, 33.9, 35.85, 34.43, 35.78, 35.52, 36.17, 36.58, 34.6, 36.8, 33.6, 36.15, 32.8, 36.05, 32.0, 36.54, 30.6, 36.85, 30.4, 36.25, 29.64, 36.2, 29.12, 36.62, 28.27, 36.85, 27.4, 37.03, 27.25, 37.86, 26.8, 38.0, 48.9, 38.0, 49.47, 37.47, 50.0, 37.4, 51.5, 36.75, 53.0, 36.85, 54.0, 36.85, 53.9, 37.4, 53.9, 38.0, 60, 38.0, 60, 25.4, 57.8, 25.65, 56.3, 27.18, 54.5, 26.6, 52.5, 27.5, 50.83, 28.97, 49.5, 30.0, 48.5, 29.95, 48.0, 29.35, 48.6, 28.0, 50.16, 26.65, 50.1, 26.43, 50.8, 24.75, 51.1, 26.15, 51.6, 25.3, 51.6, 24.6, 54.38, 24.45, 55.27, 25.2, 55.95, 25.8, 56.35, 26.38, 56.35, 25.12, 56.75, 24.35, 58.41, 23.59, 59.8, 22.5, 59.0, 21.4, 58.3, 20.4, 57.8, 20.0, 40.4, 20.0, 39.15, 21.5, 38.05, 24.08, 36.45, 26.24, 35.7, 27.35, 35.0, 28.1, 35.0, 29.53, 34.9, 29.5, 34.5, 28.5, 34.3, 27.9, 33.5, 28.6, 33.0, 29.5, 32.55, 29.97, 32.6, 29.5, 33.81, 27.26, 33.95, 26.75, 34.9, 25.0, 35.6, 23.9, 36.9, 22.0, 37.2, 20.0], [-8.8, 38.0, -0.6, 38.0, -0.98, 37.6, -2.2, 36.73, -2.46, 36.84, -4.42, 36.72, -5.35, 36.14, -5.6, 36.0, -6.3, 36.5, -6.95, 37.25, -7.9, 37.0, -9.0, 37.0, -8.87, 37.95], [12.4, 37.8, 12.6, 38.0, 15.6, 38.0, 15.3, 37.5, 15.1, 37.0, 15.1, 36.65, 14.3, 36.75, 13.0, 37.4], [21.3, 38.0, 23.2, 38.0, 23.1, 37.6, 22.9, 37.5, 23.2, 36.45, 22.5, 36.4, 22.1, 37.0, 21.6, 37.0, 21.1, 37.7], [23.5, 35.3, 24.3, 35.55, 25.8, 35.35, 26.3, 35.25, 26.1, 35.0, 24.7, 34.93, 23.6, 35.2], [32.27, 35.03, 32.9, 35.39, 33.6, 35.35, 34.6, 35.69, 34.0, 35.1, 34.0, 34.97, 33.0, 34.6, 32.5, 34.7], [50.45, 25.8, 50.65, 25.8, 50.65, 26.3, 50.45, 26.3]]};
+/* ================= 日本語: daily phrases, travel scenes, route map =================
+   Same rules as p3c_ja.js: jp = the plain Japanese meaning (translated by the display language), the phrase
+   starts with JA_M so it is never translated, readings are romaji. */
+DU.ja=[
+  JU('greet',[["おはようございます","おはようございます。","ohayō gozaimasu","友だちには「おはよう」だけでOK。"],["こんばんは","こんばんは。","konbanwa","「は」は「wa」と読みます。"],
+   ["はじめまして","はじめまして。","hajimemashite","初めて会う人に。このあとに名前を言います。"],["元気？","元気？","genki?",""],
+   ["元気だよ、ありがとう。君は？","うん、元気。ありがとう。そっちは？","un, genki. arigatō. sotchi wa?","「そっちは?」は「あなたは?」の友だちどうしの言い方。","うん、 元気。 ありがとう。 そっちは？"],
+   ["久しぶり！","久しぶり！","hisashiburi!","ていねいには「お久しぶりです」。"],["またね","またね。","mata ne",""],["よい一日を","よい一日を。","yoi ichinichi o",""]]),
+  JU('intro',[["アメリカ人です","アメリカ人です。","amerika-jin desu","国の名前+「人(jin)」で国籍を言います。"],["ニューヨークに住んでいます","ニューヨークに住んでいます。","nyūyōku ni sunde imasu","","ニューヨークに 住んで います。"],
+   ["学生です","学生です。","gakusei desu","「です」はていねいな言い方の文の終わり。"],["音楽が大好きです","音楽が大好きです。","ongaku ga daisuki desu","","音楽が 大好き です。"],
+   ["日本語を勉強しています","日本語を勉強しています。","nihongo o benkyō shite imasu","","日本語を 勉強して います。"],["名前は何ていうの？","名前は何ていうの？","namae wa nan te iu no?","ていねいには「お名前は何ですか」。","名前は 何て いうの？"],
+   ["どこの出身？","どこの出身？","doko no shusshin?",""],["友だちになろう！","友だちになろう！","tomodachi ni narō!",""]]),
+  JU('num',[["これはいくらですか","これはいくらですか。","kore wa ikura desu ka","","これは いくら ですか。"],["1000円です","千円です。","sen en desu",""],
+   ["高すぎます","高すぎます。","takasugimasu",""],["もっと安いのはありますか","もっと安いのはありますか。","motto yasui no wa arimasu ka","","もっと 安いのは ありますか。"],
+   ["これを2つください","これを二つください。","kore o futatsu kudasai","物は「ひとつ、ふたつ、みっつ」と数えます。","これを 二つ ください。"],["全部でいくらですか","全部でいくらですか。","zenbu de ikura desu ka","","全部で いくら ですか。"],
+   ["袋はいりません","袋はいりません。","fukuro wa irimasen","日本のお店では、レジ袋は有料のことが多いです。"],["レシートをもらえますか","レシートをもらえますか。","reshīto o moraemasu ka",""]]),
+  JU('time',[["何時ですか","今、何時ですか。","ima, nanji desu ka","","今、 何時 ですか。"],["3時半です","3時半です。","sanji han desu","「半」=30分。"],
+   ["今日は何曜日？","今日は何曜日？","kyō wa nan'yōbi?",""],["また明日","また明日。","mata ashita",""],["今週末はひまだよ","今週末はひまだよ。","konshūmatsu wa hima da yo","","今週末は ひま だよ。"],
+   ["何時に待ち合わせる？","何時に待ち合わせる？","nanji ni machiawaseru?",""],["少し遅れます","少し遅れます。","sukoshi okuremasu",""],["遅れてごめんなさい","遅れてごめんなさい。","okurete gomen nasai",""]]),
+  JU('feel',[["すごくうれしい！","すごくうれしい！","sugoku ureshii!",""],["疲れました","疲れました。","tsukaremashita","友だちには「疲れた」。"],["お腹がすきました","お腹がすきました。","onaka ga sukimashita",""],
+   ["頭が痛いです","頭が痛いです。","atama ga itai desu","","頭が 痛い です。"],["大丈夫です","大丈夫です。","daijōbu desu",""],["ごめんなさい","ごめんなさい。","gomen nasai","ていねいには「すみません」。"],
+   ["楽しかった！","楽しかった！","tanoshikatta!",""],["心配しないで","心配しないで。","shinpai shinaide",""]]),
+  JU('chat',[["趣味は何？","趣味は何？","shumi wa nani?",""],["アニメが好きです","アニメが好きです。","anime ga suki desu","","アニメが 好き です。"],["週末は何してる？","週末は何してる？","shūmatsu wa nani shiteru?","","週末は 何 してる？"],
+   ["映画に行かない？","映画に行かない？","eiga ni ikanai?","「〜ない?」は、さそうときの言い方。"],["いいね！","いいね！","ii ne!",""],["LINEを交換しよう","LINEを交換しよう。","rain o kōkan shiyō","日本ではLINEで連絡を取り合うことが多いです。"],
+   ["本当に？","本当に？","hontō ni?",""],["すごい！","すごい！","sugoi!",""]])
+];
+/* scenes: [their line, its meaning, your line, its meaning, reading, note] — the lines start with JA_M */
+function JSC(id,turns,end){SC('ja',id,turns.map(function(t){return [t[0]?JA_M+t[0]:'',t[1],JA_M+t[2],t[3],t[4]||'',t[5]||''];}),[JA_M+end[0],end[1]]);}
+JSC('sc-imm',[["おはようございます。パスポートをお願いします。","おはようございます。パスポートをお願いします","はい、どうぞ。","はい、どうぞ","hai, dōzo","物を渡すときの決まった言い方。"],
+  ["旅行の目的は何ですか。","旅行の目的は何ですか","観光で来ました。","観光で来ました","kankō de kimashita",""],
+  ["どのくらい滞在しますか。","どのくらい滞在しますか","1週間です。","1週間です","isshūkan desu",""],
+  ["どこに泊まりますか。","どこに泊まりますか","中心街のホテルです。","中心街のホテルです","chūshingai no hoteru desu",""]],
+  ["ようこそ。滞在を楽しんでください。","ようこそ。滞在を楽しんでください"]);
+JSC('sc-cafe',[["こんにちは！何にしますか。","こんにちは!何にしますか","ハムのサンドイッチをください。","ハムのサンドイッチをください","hamu no sandoitchi o kudasai","「〜をください」で注文できます。"],
+  ["お飲み物は？","飲み物は?","アイスコーヒーをお願いします。","アイスコーヒーをお願いします","aisu kōhī o onegai shimasu",""],
+  ["店内で召し上がりますか、お持ち帰りですか。","店内で召し上がりますか、お持ち帰りですか","持ち帰りでお願いします。","持ち帰りでお願いします","mochikaeri de onegai shimasu","「テイクアウトで」とも言います。"],
+  ["1,200円です。","1,200円です","カードで払えますか。","カードで払えますか","kādo de haraemasu ka",""]],
+  ["もちろん。どうぞ、召し上がれ！","もちろん。召し上がれ!"]);
+JSC('sc-hotel',[["こんにちは。ご用件を伺います。","こんにちは。ご用件を伺います","チェックインをしたいのですが。","チェックインをしたいのですが","chekku-in o shitai no desu ga",""],
+  ["どなたのお名前で？","どなたのお名前で?","スミスです。","スミスです","sumisu desu","名前+「です」で名乗れます。"],
+  ["パスポートをお借りできますか。","パスポートをお借りできますか","はい、どうぞ。","はい、どうぞ","hai, dōzo",""],
+  ["512号室です。朝食は7時からです。","512号室です。朝食は7時からです","チェックアウトは何時ですか。","チェックアウトは何時ですか","chekku-auto wa nanji desu ka",""]],
+  ["11時です。ゆっくりお休みください。","11時です。ゆっくりお休みください"]);
+JSC('sc-rest',[["こんばんは。何名様ですか。","こんばんは。何名様ですか","2人です。","2人です","futari desu",""],
+  ["ご注文はお決まりですか。","ご注文はお決まりですか","おすすめは何ですか。","おすすめは何ですか","osusume wa nan desu ka",""],
+  ["今日は天ぷらがとてもおいしいですよ。","今日は天ぷらがとてもおいしいですよ","じゃあ、天ぷらをお願いします。","じゃあ、天ぷらをお願いします","jā, tenpura o onegai shimasu",""],
+  ["ほかに何か？","ほかに何か?","いいえ、結構です。お会計をお願いします。","いいえ、結構です。お会計をお願いします","iie, kekkō desu. okaikei o onegai shimasu","「結構です」は、ていねいに断るときの言い方。"]],
+  ["すぐにお持ちします。","すぐにお持ちします"]);
+JSC('sc-card',[["申し訳ありません、カードが通りませんでした。","申し訳ありません、カードが拒否されました","もう一度試してもらえますか。","もう一度試してもらえますか","mō ichido tameshite moraemasu ka",""],
+  ["やっぱり使えません。","やっぱり使えません","別のカードを使ってもいいですか。","別のカードを使ってもいいですか","betsu no kādo o tsukatte mo ii desu ka","「〜てもいいですか」で許可を求めます。"],
+  ["こちらも使えません。","こちらも使えません","近くにATMはありますか。","近くにATMはありますか","chikaku ni ē-tī-emu wa arimasu ka","コンビニにもATMがあります。"],
+  ["はい、入口の横にあります。","はい、入口の横にあります","ありがとう。すぐ戻ります。","ありがとう。すぐ戻ります","arigatō. sugu modorimasu",""]],
+  ["大丈夫ですよ。お待ちしています。","大丈夫ですよ。お待ちしています"]);
+JSC('sc-wc',[["","","すみません、トイレはどこですか。","すみません、トイレはどこですか","sumimasen, toire wa doko desu ka",""],
+  ["まっすぐ行って、突き当たりを左です。","まっすぐ行って、突き当たりを左です","すみません、もう一度言ってもらえますか。","すみません、もう一度言ってもらえますか","sumimasen, mō ichido itte moraemasu ka",""],
+  ["まっすぐ行って左。エレベーターの横です。","まっすぐ行って左。エレベーターの横です","エレベーターの横ですね。わかりました。","エレベーターの横ですね。わかりました","erebētā no yoko desu ne. wakarimashita","「〜ですね」で、聞いたことを確かめます。"],
+  ["ほかに何かありますか。","ほかに何かありますか","いいえ、本当にありがとうございます！","いいえ、本当にありがとうございます!","iie, hontō ni arigatō gozaimasu!",""]],
+  ["どういたしまして。よい旅を！","どういたしまして。よい旅を!"]);
+JSC('sc-wallet',[["","","すみません、財布をなくしました。","すみません、財布をなくしました","sumimasen, saifu o nakushimashita",""],
+  ["それは大変。どこでなくしましたか。","それは大変。どこでなくしましたか","バスに置き忘れたと思います。","バスに置き忘れたと思います","basu ni okiwasureta to omoimasu",""],
+  ["どんな財布ですか。","どんな財布ですか","黒くて小さい財布です。","黒くて小さい財布です","kurokute chiisai saifu desu",""],
+  ["この用紙に記入してください。","この用紙に記入してください","届け出の控えをもらえますか。","届け出の控えをもらえますか","todokede no hikae o moraemasu ka",""]],
+  ["もちろん。見つかったら連絡します。","もちろん。見つかったら連絡します"]);
+JSC('sc-booking',[["申し訳ありません、ご予約が見つかりません。","申し訳ありません、ご予約が見つかりません","これが予約確認のメールです。","これが予約確認のメールです","kore ga yoyaku kakunin no mēru desu",""],
+  ["このご予約は来月になっています。","このご予約は来月になっています","えっ…今夜泊まれる部屋はありますか。","えっ…今夜泊まれる部屋はありますか","e… kon'ya tomareru heya wa arimasu ka",""],
+  ["ダブルルームが1万5千円で空いています。","ダブルルームが1万5千円で空いています","朝食は付いていますか。","朝食は付いていますか","chōshoku wa tsuite imasu ka",""],
+  ["はい、付いています。","はい、付いています","わかりました、その部屋にします。","わかりました、その部屋にします","wakarimashita, sono heya ni shimasu",""]],
+  ["承知しました。こちらが鍵です。","承知しました。こちらが鍵です"]);
+
+/* route map: Tokyo, west along the old Tōkaidō to Kyūshū, then up the Japan Sea side to Hokkaidō */
+CITIES.ja=[['TOKYO','東京',35.68,139.76],['YOKOHAMA','横浜',35.44,139.64],['KAMAKURA','鎌倉',35.32,139.55],['HAKONE','箱根',35.23,139.11],['SHIZUOKA','静岡',34.98,138.38],
+  ['NAGOYA','名古屋',35.18,136.91],['ISE','伊勢',34.49,136.71],['NARA','奈良',34.69,135.80],['KYOTO','京都',35.01,135.77],['OSAKA','大阪',34.69,135.50],
+  ['KOBE','神戸',34.69,135.20],['HIMEJI','姫路',34.82,134.69],['OKAYAMA','岡山',34.66,133.92],['HIROSHIMA','広島',34.39,132.46],['MATSUYAMA','松山',33.84,132.77],
+  ['FUKUOKA','福岡',33.59,130.40],['NAGASAKI','長崎',32.75,129.88],['KUMAMOTO','熊本',32.80,130.71],['KAGOSHIMA','鹿児島',31.60,130.56],['KANAZAWA','金沢',36.56,136.66],
+  ['NIIGATA','新潟',37.92,139.04],['SENDAI','仙台',38.27,140.87],['AOMORI','青森',40.82,140.74],['HAKODATE','函館',41.77,140.73],['SAPPORO','札幌',43.06,141.35]];
+REGIONS.ja={b:[128.4,146.4,30.6,46.0],H:340,polys:[
+  /* Honshū */
+  [130.9,34.0,131.4,34.4,131.85,34.7,132.7,35.4,133.3,35.55,134.2,35.55,135.1,35.75,135.4,35.5,136.05,35.65,136.1,36.15,136.7,36.8,136.75,37.3,137.35,37.5,137.0,37.05,137.2,36.75,137.7,36.95,138.25,37.2,
+   138.9,37.85,139.45,38.3,139.75,38.9,140.0,39.6,139.85,40.0,140.05,40.6,140.3,41.2,141.2,41.2,141.45,40.6,141.95,40.0,142.05,39.5,141.65,38.9,141.5,38.4,140.95,38.2,141.0,37.7,140.9,36.9,140.6,36.4,
+   140.85,35.75,140.4,35.15,139.85,34.95,140.1,35.55,139.75,35.45,139.65,35.15,139.15,35.25,138.85,34.6,138.75,35.05,138.2,34.65,137.25,34.65,136.85,34.95,136.8,34.5,136.25,34.2,135.75,33.45,135.15,33.9,
+   135.25,34.3,135.45,34.65,135.2,34.7,134.25,34.75,133.4,34.45,132.5,34.3,132.0,34.0,131.4,33.95],
+  /* Hokkaidō */
+  [140.0,41.45,140.65,41.75,141.1,41.8,141.0,42.3,141.65,42.6,142.4,42.3,143.25,41.95,143.8,42.65,144.4,42.95,145.5,43.25,145.3,43.6,145.1,44.15,144.2,43.95,143.3,44.3,142.6,44.9,141.95,45.5,141.6,45.2,
+   141.75,44.4,141.4,43.55,140.95,43.2,140.4,43.3,139.85,42.6,140.1,42.25,139.95,41.75]
+].concat(REGIONS.ko.polys.slice(0,1),REGIONS.ko.polys.slice(3,5))};
 /* ================= はじめの一歩 (FIRST STEPS): the shortest words, before あいさつ =================
    Shown on the 日常会話 path for a language at レベル「はじめて」 (and kept once flown). */
 UM.first={jp:'はじめの一歩',lat:'FIRST STEPS'};
@@ -3496,6 +3704,10 @@ var FIRST_U={
   ["ありがとう","谢谢。","xièxie","","谢谢。"],["ごめんなさい","对不起。","duìbuqǐ","","对不起。"],["こんにちは","你好。","nǐ hǎo","3声が続くと、前の「nǐ」は2声のように発音します。","你 好。"],
   ["じゃあね","再见！","zàijiàn","直訳は「また会いましょう」。","再见！"],["お願いします","拜托了。","bàituō le","頼みごとをするときの「お願い！」。","拜托 了。"],["大丈夫です","没关系。","méi guānxi","謝られたときの「気にしないで」の意味でも使います。","没 关系。"]]
 };
+/* 日本語 (for the other display languages): the phrase starts with JA_M, see p3c_ja.js */
+FIRST_U.ja=[["はい","はい。","hai",""],["いいえ","いいえ。","iie",""],["ありがとう","ありがとう。","arigatō","ていねいには「ありがとうございます」。"],["ごめんなさい","ごめんなさい。","gomen nasai",""],
+  ["こんにちは","こんにちは。","konnichiwa","「は」は「wa」と読みます。"],["じゃあね","じゃあね。","jā ne","友だちどうしの「またね」。"],["お願いします","お願いします。","onegai shimasu","何かを頼むとき、いろいろな場面で使えます。"],["大丈夫です","大丈夫です。","daijōbu desu",""]]
+  .map(function(x){return [x[0],JA_M+x[1],x[2],x[3]];});
 Object.keys(FIRST_U).forEach(function(l){if(DU[l])DU[l].unshift(U('first',FIRST_U[l]));});
 /* ---- register daily, study and scene units ---- */
 var DAILY_IDS=['greet','intro','num','time','feel','chat'];
@@ -3885,8 +4097,9 @@ function barcodeSVG(seed){
 }
 
 /* ================= SAVE ================= */
-/* the font class for text in a learning language: Korean and Chinese need their own fonts */
-function lfc(L){return L==='ko'?'ko':L==='zh'?'zh':L==='ar'?'ar':'';}
+/* the font class for text in a learning language: Korean and Chinese need their own fonts; Japanese (learnt from
+   another display language) keeps a Japanese font, and the class also keeps the translation away from it */
+function lfc(L){return L==='ko'?'ko':L==='zh'?'zh':L==='ar'?'ar':L==='ja'?'ja':'';}
 var KEY='babelflight.save.v1';
 var OLD_ORDER=['checkin','inflight','immigration','hotel','restaurant','city','atc1','atc2'];
 function blankProg(){var p={};ORDER.forEach(function(k){p[k]={items:{},units:{}};});return p;}
@@ -4139,7 +4352,7 @@ function speak(text,code,slow,force){
   if(!tts.ok)return;if(!force&&!save.sound)return;
   try{
     speechSynthesis.cancel();
-    var u=new SpeechSynthesisUtterance(text);u.lang=code;
+    var u=new SpeechSynthesisUtterance(String(text).replace(/\u2060/g,''));u.lang=code;
     var v=voiceFor(code);if(v)u.voice=v;
     u.rate=slow?0.6:0.9;speechSynthesis.speak(u);
   }catch(e){}
@@ -4509,7 +4722,7 @@ function modeSwitch(){
     '<button type="button" data-mode-set="daily" aria-pressed="'+(m==='daily')+'"><b>'+(x?'日常会話':'日常会話モード')+'</b><small>あいさつ・旅行</small></button>'+
     '<button type="button" data-mode-set="job" aria-pressed="'+(m==='job')+'"><b>'+(x?'職業':'職業モード')+'</b><small>13職業の会話</small></button>'+
     '<button type="button" data-mode-set="study" aria-pressed="'+(m==='study')+'"><b>'+(x?'留学':'留学モード')+'</b><small>学校と授業</small></button>'+
-    (x?'<button type="button" data-mode-set="exam" aria-pressed="'+(m==='exam')+'"><b>検定</b><small>英検・TOEIC</small></button>':'')+'</div>';
+    (x?'<button type="button" data-mode-set="exam" aria-pressed="'+(m==='exam')+'"><b>検定</b><small>'+({en:'TOPIK・DELE',ko:'TOEIC・OPIc',zh:'CET・TOEIC'}[UI]||'英検・TOEIC')+'</small></button>':'')+'</div>';
 }
 function stopStatus(L,uid,nextId){
   var r=unitRec(L,uid);
@@ -4720,7 +4933,8 @@ function mapFrame(){
   g.setLineDash([]);g.globalAlpha=1;
   /* Tokyo marker or edge arrow */
   var tx=SX(M.tk.x),ty=SY(M.tk.y);g.font='700 10px "B612 Mono",monospace';g.textAlign='center';
-  if(tx>8&&tx<cw-8&&ty>96&&ty<ch-104){g.fillStyle='#fff';g.beginPath();g.arc(tx,ty,3.2,0,6.283);g.fill();g.fillStyle='rgba(255,255,255,.85)';g.fillText('TOKYO',tx,ty+15);}
+  if(M.L==='ja'){/* the 日本語 route starts in Tokyo itself: no separate home marker */}
+  else if(tx>8&&tx<cw-8&&ty>96&&ty<ch-104){g.fillStyle='#fff';g.beginPath();g.arc(tx,ty,3.2,0,6.283);g.fill();g.fillStyle='rgba(255,255,255,.85)';g.fillText('TOKYO',tx,ty+15);}
   else{var ex=clamp(tx,18,cw-18),ey=clamp(ty,Math.min(110,ch/2),Math.max(ch-112,ch/2)),an=Math.atan2(ty-ey,tx-ex);g.save();g.translate(ex,ey);g.rotate(an);g.fillStyle='rgba(255,255,255,.7)';g.beginPath();g.moveTo(9,0);g.lineTo(-4,-6);g.lineTo(-4,6);g.closePath();g.fill();g.restore();g.fillStyle='rgba(255,255,255,.75)';g.textAlign=ex>cw/2?'right':'left';g.fillText('TOKYO',ex+(ex>cw/2?-14:14),ey+4);}
   /* cities */
   var pulse=reduceMotion?.5:(Math.sin(now/380)+1)/2;
@@ -4915,6 +5129,7 @@ function showStep(){
     speak(d.t,LG.tts,false);
   }else if(q.k==='t2j'){
     board.set(d.t);ledSet('? ? ?',beg&&d.r?'読み: '+d.r:'意味を選ぼう');optsFor(q.it,'jp');
+    if(beg&&d.r){var ls=$('led').querySelector('.s');if(ls)ls.innerHTML='読み: <span translate="no">'+esc(d.r)+'</span>';}  /* the reading itself is never translated */
     box.innerHTML='<span class="qh">意味はどれ？'+tag+'</span>'+hearBtns()+optsHTML('')+
       (q.nh?'<button class="sq hint-go" type="button" data-q-hint><span aria-hidden="true">💡</span><span>ヒントを見る<small>見てもミスになりません</small></span></button>':'');
     if(beg||q.nh)speak(d.t,LG.tts,false);
@@ -5226,15 +5441,17 @@ function sceneHTML(){
   return h;
 }
 function scLogHTML(){
-  var S=SCX,ko=lfc(S.lang)?' '+lfc(S.lang):'';
+  /* the learning language's font class goes on the phrase itself, so the labels and the meaning around it are
+     still translated in another display language */
+  var S=SCX,pc=lfc(S.lang)?' class="'+lfc(S.lang)+'"':'';
   return S.log.map(function(m){
     if(m.who==='them'){
       if(m.typing)return '<div class="bub them typing"><i></i><i></i><i></i></div>';
-      return '<div class="bub them'+ko+'">'+(S.sub?'<p>'+esc(m.text)+'</p>':'<p class="dim">♪ 音声のみ(字幕オフ)</p>')+(S.tr&&m.jp?'<small>'+esc(m.jp)+'</small>':'')+'</div>';
+      return '<div class="bub them">'+(S.sub?'<p'+pc+'>'+esc(m.text)+'</p>':'<p class="dim">♪ 音声のみ(字幕オフ)</p>')+(S.tr&&m.jp?'<small>'+esc(m.jp)+'</small>':'')+'</div>';
     }
     var g=m.grade!==undefined?GRADE_TXT[m.grade]:null;
-    return '<div class="bub me'+ko+(m.grade===0?' miss':'')+'">'+(m.typed?'<p>'+esc(m.typed)+'</p>':'')+
-      (m.model?'<div class="model"><span class="lbl">お手本</span><p>'+esc(m.model)+'</p>'+(m.r?'<small>'+esc(m.r)+'</small>':'')+'</div>':'')+
+    return '<div class="bub me'+(m.grade===0?' miss':'')+'">'+(m.typed?'<p'+pc+'>'+esc(m.typed)+'</p>':'')+
+      (m.model?'<div class="model"><span class="lbl">お手本</span><p'+pc+'>'+esc(m.model)+'</p>'+(m.r?'<small translate="no">'+esc(m.r)+'</small>':'')+'</div>':'')+
       (g?'<span class="gtag g'+m.grade+'">'+g[0]+' '+g[1]+'</span>':'')+'</div>';
   }).join('');
 }
@@ -7504,7 +7721,8 @@ function cabinCardHTML(){
 }
 
 /* ---- 検定モード ---- */
-function examModeOn(){return cabinLv()>=0&&UI==='ja';}
+/* 検定モード: every display language (英検 and the job certificates only in 日本語, see f30_xui.js) */
+function examModeOn(){return cabinLv()>=0;}
 /* 目標 (one per language), kept on this device in the test version */
 var XG_KEY='babelflight.examTarget';
 function xgLoad(){try{var o=JSON.parse(lsGet(XG_KEY)||'{}');return o&&typeof o==='object'?o:{};}catch(e){return {};}}
@@ -7574,7 +7792,7 @@ function trainBlockHTML(b){
   var next=null;bankUnits(b).some(function(u){if(unitRec(b.L,u).n===0){next=u;return true;}return false;});
   if(m.seen>=4)h+='<button class="go sm" type="button" data-xtrain="'+esc(b.key)+'">トレーニング(10問)<small>'+(next?'覚えたフレーズを復習 ・ 新しいフレーズは地図のステップで':'復習の時期・苦手・まだ弱いフレーズから出題。何回でも')+'</small></button>';
   else if(next)h+='<button class="go sm" type="button" data-go="'+esc(next)+'">'+esc(unitTitle(next))+'からはじめる<small>レッスンで覚えたフレーズが、トレーニングに出てきます</small></button>';
-  if(full&&m.pct>=XPASS&&typeof aiDrillAvail==='function'&&aiDrillAvail())
+  if(full&&m.pct>=XPASS&&UI==='ja'&&typeof aiDrillAvail==='function'&&aiDrillAvail())
     h+='<button class="ghost ai-drill" type="button" data-xai="'+esc(b.key)+'">AIが作る新しい例文で練習<small>'+w.line+'に到達したので、同じ表現を別の文で(まちがいがあるかも)</small></button>';
   return h;
 }
@@ -9731,7 +9949,7 @@ if(typeof CAB_FEAT==='object'){var ivAt=0;CAB_FEAT.forEach(function(f,i){if(f[0]
 var IV_HIST='babelflight.ivhist',IV_SUBKEY='babelflight.ivsub';
 var IV={key:'',data:null,stage:'',err:'',i:0,tok:0,line:'',card:false,ans:{},yn:{},self:{},att:{},topic:-1,win:null,tm:0,sr:null,noMic:false,ask:false};
 function ivGrade(k){return IV_GRADES.filter(function(g){return g[0]===k;})[0]||null;}
-function ivOn(){return save.lang==='en'&&typeof cabinLv==='function'&&cabinLv()>=0;}
+function ivOn(){return save.lang==='en'&&UI==='ja'&&typeof cabinLv==='function'&&cabinLv()>=0;}  /* 英検 interviews: 日本語 only */
 function ivLocked(g){return cabinLv()<g[2];}
 function ivSub(){try{return localStorage.getItem(IV_SUBKEY)!=='0';}catch(e){return true;}}
 function ivHist(){try{var o=JSON.parse(localStorage.getItem(IV_HIST)||'{}');return o&&typeof o==='object'?o:{};}catch(e){return {};}}
@@ -10628,6 +10846,15 @@ var UI_SWAP={
  }
 };
 /* applied once at start (the page reloads when the display language changes) */
+/* 日本語 course (learnt from 한국어 / 简体中文): the learner's own country instead of the US (English keeps it) */
+(function(){
+  if(typeof JA_M!=='string')return;
+  function J(o){var out={};Object.keys(o).forEach(function(k){var v=o[k];out[JA_M+k]={t:JA_M+v.t,r:v.r};if(v.s)out[JA_M+k].s=JA_M+v.s;});return out;}
+  UI_SWAP.ko.ja=J({'アメリカ人です。':{t:'韓国人です。',r:'kankoku-jin desu'},'ニューヨークに住んでいます。':{t:'ソウルに住んでいます。',s:'ソウルに 住んで います。',r:'sōru ni sunde imasu'},
+    'アメリカから来ました。':{t:'韓国から来ました。',s:'韓国から 来ました。',r:'kankoku kara kimashita'}});
+  UI_SWAP.zh.ja=J({'アメリカ人です。':{t:'中国人です。',r:'chūgoku-jin desu'},'ニューヨークに住んでいます。':{t:'北京に住んでいます。',s:'北京に 住んで います。',r:'pekin ni sunde imasu'},
+    'アメリカから来ました。':{t:'中国から来ました。',s:'中国から 来ました。',r:'chūgoku kara kimashita'}});
+})();
 function uiSwap(){
   var S=UI_SWAP[UI];if(!S)return;
   ORDER.forEach(function(L){
@@ -10640,7 +10867,7 @@ function uiSwap(){
 }
 /* 表示言語: the version of public/i18n/*.json and the display languages that have one
    (written by babel-flight/i18n/build.py) */
-var I18N_V='aa82d9edb6',I18N_UIS=["en", "ko", "zh"];
+var I18N_V='dcffd52fc7',I18N_UIS=["en", "ko", "zh"];
 /* ================= 表示言語 (display language: 日本語 / English / 한국어 / 简体中文) =================
    The page is written in Japanese. For another display language the dictionary public/i18n/<ui>.json
    (built from babel-flight/i18n/<ui>/*.tsv by i18n/build.py) is loaded, kept on the device, and every
@@ -10716,7 +10943,7 @@ function uiLookParts(core){
   var a=uiLook(p[1]),b=uiLook(p[2]);
   return a!=null&&b!=null?a+' '+b:null;
 }
-var UI_NO='.ko,.zh,.ar,.brtl,.cell,[translate="no"],script,style,textarea';
+var UI_NO='.ko,.zh,.ar,.ja,.brtl,.cell,[translate="no"],script,style,textarea';
 function uiSkip(el){return !!(el&&el.closest&&el.closest(UI_NO));}
 var UI_ATTR=['aria-label','title','placeholder','alt'];
 function uiText(n){
@@ -10818,7 +11045,7 @@ function uiRom(L,o){
   var t=o.t!=null?o.t:o.a;if(!t)return '';
   if(L==='ko')return romKo(t);
   if(L==='ru')return romRu(t);
-  if(L==='zh')return o._r;
+  if(L==='zh'||L==='ja')return o._r;
   if(L==='ar')return (typeof ROM_AR==='object'&&ROM_AR[t])||'';
   return '';
 }
@@ -10832,11 +11059,10 @@ function uiReadings(){
 }
 /* ---- what the display language offers ---- */
 function learnOrder(){return ORDER.filter(function(k){return k!==UI;});}
-function uiModeOpen(m){return UI==='ja'||m==='daily';}
+function uiModeOpen(m){return UI==='ja'||m==='daily'||m==='exam';}
 function uiFixSave(){
   if(UI==='ja')return;
   if(save.lang===UI){var alt=learnOrder().filter(function(k){return langStarted(k);})[0]||learnOrder()[0];save.lang=alt;}
-  if(save.mode==='exam')save.mode='daily';
   if(obDraft&&obDraft.lang===UI)obDraft.lang=learnOrder()[0];
 }
 function uiApply(l,d){
@@ -10950,7 +11176,7 @@ function examOK(){return typeof examModeOn==='function'&&examModeOn();}
 function examUsable(){return examOK()&&typeof cabinLv==='function'&&cabinLv()>=1;}
 function whyList(){
   return WHY.filter(function(w){
-    if(UI!=='ja'&&(w[0]==='work'||w[0]==='study'||w[0]==='exam'))return false;  /* 職業・留学・検定 are 日本語 only for now */
+    if(UI!=='ja'&&(w[0]==='work'||w[0]==='study'))return false;  /* 職業・留学 are 日本語 only for now */
     return w[0]!=='exam'||examOK();
   });
 }
@@ -10966,16 +11192,15 @@ function kindPrefs(){
 function ivlDays(b){var d=INTERVALS[b]||1;return hasWeak('vocab')?Math.max(1,Math.round(d/2)):d;}
 /* the mode a reason starts in (when the language has it) */
 function whyMode(w,L,prof){
-  if(UI!=='ja')return 'daily';
-  if(w==='work'){var p=profById(prof);if(p&&(p.units[L]||[]).some(function(u){return !!UNITS[L][u];}))return 'job';}
-  if(w==='study'&&STUDY_ALL.some(function(u){return !!UNITS[L][u];}))return 'study';
-  if((w==='exam'||(w==='school'&&L==='en'))&&examUsable()&&typeof EXAMS==='object'&&(EXAMS[L]||[]).length)return 'exam';
+  if(UI==='ja'&&w==='work'){var p=profById(prof);if(p&&(p.units[L]||[]).some(function(u){return !!UNITS[L][u];}))return 'job';}
+  if(UI==='ja'&&w==='study'&&STUDY_ALL.some(function(u){return !!UNITS[L][u];}))return 'study';
+  if((w==='exam'||(w==='school'&&L==='en'&&UI==='ja'))&&examUsable()&&typeof EXAMS==='object'&&(EXAMS[L]||[]).length)return 'exam';
   return 'daily';
 }
 function whyChoicesHTML(cur,attr,L){
   return '<div class="opt-list why-list">'+whyList().map(function(w){
     var sub=w[3];
-    if(w[0]==='school'&&L==='en'&&examUsable())sub='英検コースで、つづり・文の組み立てを多めに';
+    if(w[0]==='school'&&L==='en'&&UI==='ja'&&examUsable())sub='英検コースで、つづり・文の組み立てを多めに';
     if(w[0]==='exam'&&!examUsable())sub='つづり・文の組み立ての問題を多めに';
     return '<button class="choice wchoice" type="button" '+attr+'="'+w[0]+'" aria-pressed="'+(cur===w[0])+'"><span class="wi" aria-hidden="true">'+w[1]+'</span><span class="wt"><b>'+w[2]+'</b><small>'+sub+'</small></span></button>';
   }).join('')+'</div>';
@@ -11143,8 +11368,16 @@ function fxLand(goalJust,streakUp){
   if(goalJust){var gd=m.querySelector('.goalbox');if(gd)gd.classList.add('goal-burst');}
   if(streakUp){var sp=m.querySelector('.streak-up');if(sp)sp.classList.add('go');}
 }
-/* ---- NOTAM: what is new (newest first). go: tune | settings | first | home ---- */
+/* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
+   iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.04',items:[
+  ['🗾','日本語コース','日本語も学べるようになりました。行き先は東京です。','ja',0,['en','ko','zh']],
+  ['✨','なめらかな動き','画面の切り替えやボタンの動きが、なめらかになりました。','',0],
+  ['🏅','検定モードが使えるように','TOEIC・IELTS・TOEFL・TOPIK・DELE・CILSなどの検定コースが、この表示言語でも使えるようになりました。','exam',1,['en','ko','zh']],
+  ['🎤','TOEIC Speaking・OPIc','韓国でよく使われる英語スピーキング試験のコースが加わりました。','',1,['ko']],
+  ['📝','CET-4・CET-6','中国の大学英語試験(四級・六級)のコースが加わりました。','',1,['zh']]
+ ]},
  {v:'2026.11.03',items:[
   ['🌱','はじめてでも、やさしく','「はじめの一歩」レッスンと、新しいフレーズを先に見られるカードが加わりました。「はじめて」レベルは選択肢が3つになります。','first'],
   ['🎯','あなたに合わせたレッスン','学ぶ理由と苦手なことに合わせて、始める場所と問題の出し方が変わります。レベルも言語ごとに選べます。','tune'],
@@ -11153,25 +11386,30 @@ var NOTAM=[
 ];
 function notamLatest(){return NOTAM[0].v;}
 function notamSeenAll(){save.seen=notamLatest();}
-function notamItems(n){return n.items.filter(function(x){return !(x[4]&&typeof BF_APP!=='undefined'&&BF_APP);});}  /* x[4] = paid plans: never in the iPhone app */
+function notamItems(n){return n.items.filter(function(x){return !(x[4]&&typeof BF_APP!=='undefined'&&BF_APP)&&!(x[5]&&x[5].indexOf(UI)<0);});}
 function notamHTML(n,first){
   return '<div class="nt-items">'+notamItems(n).map(function(x){
     var btn='';
     if(first&&x[3]==='tune')btn='<button class="ghost nt-go" type="button" data-notam-go="tune">試してみる</button>';
+    else if(first&&x[3]==='exam'&&typeof examModeOn==='function'&&examModeOn())btn='<button class="ghost nt-go" type="button" data-notam-go="exam">試してみる</button>';
+    else if(first&&x[3]==='ja'&&LANGS.ja&&learnOrder().indexOf('ja')>=0&&save.lang!=='ja')btn='<button class="ghost nt-go" type="button" data-notam-go="ja">試してみる</button>';
     else if(first&&x[3]==='first')btn='<button class="ghost nt-go" type="button" data-notam-go="'+(firstOn(save.lang)?'first':'settings')+'">'+(firstOn(save.lang)?'試してみる':'レベルを見る')+'</button>';
     return '<div class="nt-item"><span class="nt-ic" aria-hidden="true">'+x[0]+'</span><div class="nt-tx"><b>'+x[1]+'</b><p>'+x[2]+'</p>'+btn+'</div></div>';
   }).join('')+'</div>';
 }
+/* the notices not seen yet (newest first) that have something for this person */
+function notamUnseen(){var s=save.seen||'';return NOTAM.filter(function(n){return n.v>s&&notamItems(n).length;});}
 function notamSheet(all){
-  var list=all?NOTAM:[NOTAM[0]];
+  var list=(all?NOTAM:notamUnseen()).filter(function(n){return notamItems(n).length;});
   $('sheetHost').innerHTML='<div class="sheet plain notam-sheet" role="dialog" aria-label="アップデートのお知らせ"><div class="sheet-in">'+
     '<div class="nt-head"><span class="nt-tag mono">NOTAM</span><span class="lbl">'+(all?'これまでのお知らせ':'新しいお知らせ')+'</span></div><h3>アップデートのお知らせ</h3>'+
-    list.map(function(n,i){return (all?'<span class="lbl nt-date mono">'+n.v+'</span>':'')+notamHTML(n,!all&&i===0);}).join('')+
+    list.map(function(n){return (all||list.length>1?'<span class="lbl nt-date mono">'+n.v+'</span>':'')+notamHTML(n,!all);}).join('')+
     '<button class="go" type="button" data-notam-ok>OK</button></div></div>';
 }
 function notamMaybe(){
   if(!save.onboarded||(save.seen||'')>=notamLatest()||view!=='home'||F)return;
   var sh=$('sheetHost');if(sh&&sh.innerHTML)return;
+  if(!notamUnseen().length){notamSeenAll();store();return;}   /* nothing new for this display language */
   notamSheet(false);
 }
 function notamBtnHTML(){return '<button class="ghost nt-all" type="button" data-notam-all>アップデートのお知らせ<small>新しくなったところ</small></button>';}
@@ -11185,6 +11423,8 @@ document.addEventListener('click',function(e){
     closeSheet();
     if(g==='tune'){TUNE={step:0,why:save.why,weak:(save.weak||[]).slice()};view='tune';render();window.scrollTo(0,0);}
     else if(g==='settings')go('record');
+    else if(g==='ja'){save.lang='ja';HOME_ANIM='lang';store();go('home');if(typeof lvNeed==='function'&&lvNeed('ja'))lvSheet('ja');}
+    else if(g==='exam'){if(save.mode!=='exam'){save.mode='exam';HOME_ANIM='mode';store();}go('home');}
     else if(g==='first'&&typeof openNodeSheet==='function')openNodeSheet('first');
     return;
   }
@@ -11192,6 +11432,288 @@ document.addEventListener('click',function(e){
 /* the overlay goes up before the first screen is drawn, so the home screen never flashes first */
 if(!fxReduced())bootFx({done:function(){setTimeout(notamMaybe,150);}});
 else setTimeout(notamMaybe,600);
+/* ================= 検定モード in the other display languages (English / 한국어 / 简体中文) =================
+   - The international exams (TOEIC・IELTS・TOEFL・ICAO・TOPIK・DELE・CILS) work in every display language;
+     英検 (and its 模試・面接練習) and the job certificates stay with 日本語.
+   - Each country's own tests: 한국어 → TOEIC Speaking・OPIc, 简体中文 → CET-4・CET-6 (大学英语四六级).
+   The phrases are written like every unit (Japanese meaning + note); the display language's dictionary
+   translates them. XUI_BASE / XUI_EXTRA say which exams a display language shows (i18n/keys.cjs reads them). */
+XU('x-toeics1','TOEIC Speaking ステップ1','TOEIC SPEAKING 1','en',[
+ ["In this picture, I can see a busy street.","","この写真では、にぎやかな通りが見えます。","写真描写(Describe a picture)の書き出しの型。"],
+ ["In the foreground, two people are talking.","","手前では2人が話しています。","foreground=手前、background=奥。"],
+ ["In the background, there are some tall buildings.","","奥には高いビルがいくつかあります。",""],
+ ["It looks like they are waiting for a bus.","","彼らはバスを待っているようです。","It looks like 〜=〜のようだ(推測)。"],
+ ["I usually go shopping about twice a month.","","ふだんは月に2回くらい買い物に行きます。","質問への応答(Respond to questions)では、回数などを具体的に。"],
+ ["The main reason is that it saves time.","","いちばんの理由は、時間の節約になるからです。",""],
+ ["For example, I can order food on my phone.","","たとえば、スマホで食べ物を注文できます。",""],
+ ["That's why I prefer shopping online.","","だから私はネットで買うほうが好きです。","That's why 〜=だから〜。理由のあとのまとめに。"]]);
+XU('x-toeics2','TOEIC Speaking ステップ2','TOEIC SPEAKING 2','en',[
+ ["I'm calling about the problem you mentioned in your message.","","メッセージでおっしゃっていた問題の件でお電話しました。","解決策の提案(Propose a solution)の書き出しの型。"],
+ ["I understand that you are worried about the schedule.","","スケジュールのことでご心配なのはわかります。",""],
+ ["I'd like to suggest a couple of solutions.","","解決策をいくつか提案したいと思います。",""],
+ ["First, we could move the meeting to Friday.","","まず、会議を金曜日に移すことができます。","we could 〜=〜することもできます(やわらかい提案)。"],
+ ["If that doesn't work, please let me know.","","それでうまくいかなければ、お知らせください。",""],
+ ["I agree with the statement for two reasons.","","2つの理由から、その意見に賛成です。","意見を述べる問題(Express an opinion)の書き出しの型。"],
+ ["On top of that, it helps people stay healthy.","","それに加えて、人が健康でいる助けになります。","On top of that=それに加えて。"],
+ ["For these reasons, I think it's a good idea.","","これらの理由から、良い考えだと思います。",""]]);
+XU('x-opic1','OPIc ステップ1','OPIC 1','en',[
+ ["Let me introduce myself.","","自己紹介をさせてください。","OPIcは自己紹介の質問から始まります。"],
+ ["I'm a university student majoring in business.","","経営学を専攻している大学生です。","major in 〜=〜を専攻する。"],
+ ["I live in an apartment with my family.","","家族とアパートに住んでいます。",""],
+ ["My favorite place in my home is my room.","","家でいちばん好きな場所は自分の部屋です。",""],
+ ["In my free time, I like to go to the park.","","ひまなときは公園に行くのが好きです。",""],
+ ["I usually go there on weekends.","","ふだんは週末に行きます。",""],
+ ["There is a big lake and a walking trail.","","大きな湖と散歩道があります。","場所を説明するときは There is 〜 で具体的に。"],
+ ["It makes me feel relaxed.","","そこにいるとリラックスできます。","make 人 feel 〜=人を〜な気持ちにさせる。"]]);
+XU('x-opic2','OPIc ステップ2','OPIC 2','en',[
+ ["I remember a trip I took last summer.","","去年の夏の旅行を覚えています。","過去の経験を話す質問の書き出しの型。"],
+ ["Something unexpected happened.","","思いがけないことが起きました。",""],
+ ["At first, I didn't know what to do.","","最初は、どうしたらいいかわかりませんでした。",""],
+ ["In the end, everything worked out.","","最後には、すべてうまくいきました。","work out=うまくいく。"],
+ ["Hi, I'd like to ask a few questions.","","こんにちは、いくつか質問したいのですが。","ロールプレイで質問するときの書き出し。"],
+ ["What time do you open on weekends?","","週末は何時に開きますか。",""],
+ ["Is there a discount for students?","","学生割引はありますか。",""],
+ ["Thank you. That's very helpful.","","ありがとうございます。とても助かります。",""]]);
+XU('x-cet4-1','CET-4 ステップ1','CET-4 STEP 1','en',[
+ ["Nowadays, more and more students are taking part-time jobs.","","最近、アルバイトをする学生がますます増えています。","ライティングの書き出しの型。"],
+ ["There are several reasons for this phenomenon.","","この現象にはいくつかの理由があります。","phenomenon=現象。"],
+ ["First of all, it helps them gain work experience.","","まず第一に、仕事の経験を積む助けになります。",""],
+ ["What's more, they can earn some pocket money.","","さらに、おこづかいをかせげます。","What's more=さらに。"],
+ ["However, it may take time away from their studies.","","しかし、勉強の時間を奪うかもしれません。",""],
+ ["As far as I'm concerned, the advantages outweigh the disadvantages.","","私としては、利点が欠点を上回ると思います。","As far as I'm concerned=私の考えでは。"],
+ ["Therefore, students should balance work and study.","","したがって、学生は仕事と勉強を両立させるべきです。",""],
+ ["Only in this way can we make the most of our college life.","","こうしてこそ、大学生活を最大限に生かせます。","Only in this way のあとは倒置(can we)。"]]);
+XU('x-cet4-2','CET-4 ステップ2','CET-4 STEP 2','en',[
+ ["The Spring Festival is the most important traditional festival in China.","","春節は中国でいちばん大切な伝統的な祝日です。","翻訳問題によく出る、中国の文化のテーマ。"],
+ ["Family members get together to have a reunion dinner.","","家族が集まって団らんの夕食をとります。",""],
+ ["Tea has a history of thousands of years.","","お茶には数千年の歴史があります。",""],
+ ["The high-speed railway has made travel much more convenient.","","高速鉄道で移動がずっと便利になりました。",""],
+ ["The library is open until ten o'clock in the evening.","","図書館は夜10時まで開いています。",""],
+ ["The lecture has been moved to Room 302.","","講義は302号室に変更されました。",""],
+ ["I'm afraid I can't make it to the club meeting.","","残念ですが、サークルの集まりに行けそうにありません。","make it=間に合う・参加できる。"],
+ ["The woman suggests that the man join a study group.","","女性は男性に勉強会に入るよう提案しています。","リスニングの選択肢の型。suggest that のあとは動詞の原形(join)。"]]);
+XU('x-cet6-1','CET-6 ステップ1','CET-6 STEP 1','en',[
+ ["It is widely acknowledged that education plays a vital role in society.","","教育が社会で非常に重要な役割を果たすことは、広く認められています。",""],
+ ["With the rapid development of technology, our lifestyles have changed dramatically.","","技術の急速な発展にともなって、私たちの生活様式は劇的に変わりました。",""],
+ ["This trend has aroused widespread concern.","","この傾向は広い関心を呼んでいます。","arouse concern=関心(懸念)を呼ぶ。"],
+ ["Admittedly, there are some drawbacks.","","たしかに、いくつかの欠点はあります。","反対の意見を先に認めるときの言い方。"],
+ ["Nevertheless, the benefits far outweigh the costs.","","それでも、利点はコストをはるかに上回ります。",""],
+ ["It is high time that we took action.","","今こそ行動を起こすべき時です。","It is high time のあとは過去形(took)。"],
+ ["Not only does it save energy, but it also reduces pollution.","","エネルギーを節約するだけでなく、汚染も減らします。","Not only のあとは倒置(does it)。"],
+ ["In a word, we should strike a balance between development and protection.","","要するに、開発と保護のバランスをとるべきです。","strike a balance=バランスをとる。"]]);
+XU('x-cet6-2','CET-6 ステップ2','CET-6 STEP 2','en',[
+ ["The passage mainly discusses the impact of artificial intelligence on employment.","","この文章は主に、人工知能が雇用に与える影響について論じています。","読解で要旨を答えるときの型。"],
+ ["The author's attitude towards the new policy is cautious.","","新しい政策に対する筆者の態度は慎重です。","筆者の態度を問う設問でよく使います。"],
+ ["Urbanization has brought both opportunities and challenges.","","都市化は機会と課題の両方をもたらしました。",""],
+ ["The government has taken measures to protect the environment.","","政府は環境を守るための対策をとっています。","take measures=対策をとる。"],
+ ["Traditional Chinese medicine has attracted attention worldwide.","","中国の伝統医学は世界中で注目を集めています。",""],
+ ["Mobile payment has become part of daily life in China.","","モバイル決済は中国で日常生活の一部になりました。",""],
+ ["The speaker implies that the experiment was not successful.","","話し手は、その実験がうまくいかなかったことをほのめかしています。","imply=ほのめかす。"],
+ ["Volunteers play an indispensable role in the community.","","ボランティアは地域社会で欠かせない役割を果たしています。","indispensable=欠かせない。"]]);
+ORDER.forEach(function(l){ALL_IDS[l]=Object.keys(UNITS[l]);});
+XBANK.toeics={L:'en',name:'TOEIC Speaking',tier:2,ids:['x-toeics1','x-toeics2']};
+XBANK.opic={L:'en',name:'OPIc',tier:2,ids:['x-opic1','x-opic2']};
+XBANK.cet4={L:'en',name:'CET-4',tier:1,ids:['x-cet4-1','x-cet4-2']};
+XBANK.cet6={L:'en',name:'CET-6',tier:2,ids:['x-cet6-1','x-cet6-2']};
+['toeics','opic','cet4','cet6'].forEach(function(k){XBANK[k].key=k;XBANK[k].ids.forEach(function(u){XBANK_OF[u]=k;});});
+/* what another display language shows in 検定モード: [group, goal kind] per learning language */
+var XUI_ICAO={key:'icao',title:'航空英語(ICAO)',sub:'パイロットや管制官に必要な英語',ids:['x-icao']},
+    XUI_ICAO_G={key:'icao',title:'航空英語(ICAO)',pre:'ICAO ',sub:'パイロット・管制官に必要なのはレベル4以上',goals:[['レベル4','icao'],['レベル5','icao'],['レベル6','icao']]};
+var XUI_EXTRA={
+ ko:{en:[[{key:'kr-en',title:'TOEIC Speaking・OPIc',sub:'韓国の就職でよく使われる英語スピーキング試験',ids:['x-toeics1','x-opic1']},
+         {key:'toeics',title:'TOEIC Speaking',pre:'TOEIC Speaking ',sub:'目標のレベル(Lv.1〜8)',goals:[['Lv.5','toeics'],['Lv.6','toeics'],['Lv.7','toeics'],['Lv.8','toeics']]},
+         {key:'opic',title:'OPIc',pre:'OPIc ',sub:'目標の等級',goals:[['IM1','opic'],['IM2','opic'],['IM3','opic'],['IH','opic'],['AL','opic']]}]]},
+ zh:{en:[[{key:'cn-en',title:'CET-4・CET-6(大学英語)',sub:'中国の大学英語試験。425点が合格ライン(710点満点)',ids:['x-cet4-1','x-cet6-1']},
+         {key:'cet',title:'CET(大学英語)',pre:'',sub:'425点が合格ライン(710点満点)',goals:[['CET-4','cet4'],['CET-6','cet6']]}]]}
+};
+var XUI_HINT={en:'TOPIK・DELE・CILS など',ko:'TOEIC Speaking・OPIc・TOEIC など',zh:'CET-4・CET-6・TOEIC など'};
+/* the exam groups and goal kinds a display language shows (日本語: everything, unchanged) */
+function xuiApply(){
+  if(typeof UI==='undefined'||UI==='ja')return;
+  Object.keys(EXAMS).forEach(function(L){
+    var ex=(JOBX_EX0[L]||[]).filter(function(g){return g.key!=='eiken';}),xg=(JOBX_XG0[L]||[]).filter(function(k){return k.key!=='eiken';});
+    if(L==='en'){ex=ex.concat([XUI_ICAO]);xg=xg.concat([XUI_ICAO_G]);}
+    EXAMS[L]=ex;XGOALS[L]=xg;
+  });
+  var x=XUI_EXTRA[UI]||{};
+  Object.keys(x).forEach(function(L){x[L].forEach(function(e){EXAMS[L]=e.slice(0,1).concat(EXAMS[L]);XGOALS[L]=e.slice(1).concat(XGOALS[L]);});});
+}
+/* [learning language, unit] pairs a display language needs translated in 検定モード (for i18n/keys.cjs) */
+function xuiUnits(ui){
+  var out=[],seen={};
+  function add(L,b){if(L===ui||!XBANK[b])return;XBANK[b].ids.forEach(function(u){if(!seen[L+u]){seen[L+u]=1;out.push([L,u]);}});}
+  [['en','toeic'],['en','ielts'],['en','toefl'],['en','icao'],['ko','topik1'],['ko','topik2'],['es','dele-a2'],['es','dele-b1'],['it','cils-a2'],['it','cils-b1']].forEach(function(p){add(p[0],p[1]);});
+  var x=XUI_EXTRA[ui]||{};
+  Object.keys(x).forEach(function(L){x[L].forEach(function(e){e.slice(1).forEach(function(k){k.goals.forEach(function(g){add(L,g[1]);});});});});
+  return out;
+}
+if(typeof jobxApply==='function'&&typeof render==='function'){
+  var jobxApply0=jobxApply;
+  jobxApply=function(){jobxApply0();xuiApply();};
+  var exh0=examHomeHTML;
+  examHomeHTML=function(L){
+    var h=exh0.apply(this,arguments);
+    if(!h||UI==='ja'||save.mode!=='exam')return h;
+    /* 英検 only: the full-format mock tests; the job line belongs to 職業モード (日本語 only) */
+    h=h.replace(/<button class="ghost" type="button" data-mock-open>[\s\S]*?<\/button>/,'').replace(/<p class="dim hint">🔒 本番形式の模試[^<]*<\/p>/,'').replace(/<p class="dim hint jobx-line">[\s\S]*?<\/p>/,'');
+    h=h.split('英検の級・TOEICのスコアなど').join(XUI_HINT[UI]||'TOEIC・TOPIK など');
+    h=h.replace(/<p class="exam-tm">[\s\S]*?<\/p>/,'<p class="exam-tm">TOEIC®・IELTS・TOEFL®・TOPIK・DELE・CILS'+(UI==='ko'?'・OPIc':'')+'は、それぞれの団体の商標です。このコースは公式のものではなく、問題はすべてBabel Flightのオリジナルです。</p>');
+    return h;
+  };
+}
+/* ================= なめらかな動き: screen changes, sheets, questions, small touches =================
+   - A screen change no longer cuts: the old screen floats away (a "ghost" copy) while the new one rises in.
+     Moving between tabs or steps slides sideways; the same screen re-drawn (a toggle) does not move at all.
+   - Sheets close by sliding down (they used to vanish); dialog sheets dim the screen behind a little.
+   - In a lesson the answered question slides out to the left as the next one comes in from the right.
+   - Small touches: the chosen option pops, a pressed choice bounces, segmented buttons slide their marker.
+   Everything is skipped with reduced motion. */
+var MOT={key:'',tap:null,seg:{}};
+function motOn(){return !reduceMotion;}
+/* which screen is showing (a step of the first questions counts as its own screen) */
+function motKey(){
+  var m=$('main');
+  if(m&&m.querySelector('.land'))return 'land';
+  if(view==='onboard')return 'onboard:'+obStep;
+  if(view==='tune')return 'tune:'+(typeof TUNE==='object'?TUNE.step:0);
+  return view;
+}
+var MOT_ORDER=['home','review','record'];
+function motDir(a,b){
+  var ia=MOT_ORDER.indexOf(a),ib=MOT_ORDER.indexOf(b);
+  if(ia>=0&&ib>=0)return ib>ia?1:-1;
+  var sa=/:(\d+)$/.exec(a),sb=/:(\d+)$/.exec(b);
+  if(sa&&sb&&a.split(':')[0]===b.split(':')[0])return +sb[1]>+sa[1]?1:-1;
+  return 0;
+}
+/* Copies on their way out live in a closed shadow layer: nothing in the page (or a test) can find or click them,
+   and they keep their look because the page's styles are adopted into that layer once. */
+var MOT_L=null;
+function motLayer(){
+  if(MOT_L)return MOT_L;
+  var host=document.createElement('div');host.className='mot-layer';host.setAttribute('aria-hidden','true');
+  var root=host.attachShadow?host.attachShadow({mode:'closed'}):host,css='';
+  document.querySelectorAll('style').forEach(function(s){css+=s.textContent+'\n';});
+  css+='.mot-ghost{position:fixed;pointer-events:none;margin:0}';
+  try{if(root!==host&&'adoptedStyleSheets' in root&&typeof CSSStyleSheet==='function'){var sh=new CSSStyleSheet();sh.replaceSync(css);root.adoptedStyleSheets=[sh];}else throw 0;}
+  catch(e){var st=document.createElement('style');st.textContent=css;root.appendChild(st);}
+  document.body.appendChild(host);
+  return (MOT_L={host:host,root:root});
+}
+/* a copy, not the real nodes: the code that is running may still read the button that was tapped.
+   Canvases (the route map) are painted into their copies. */
+function motCopy(from,to){
+  for(var c=from.firstChild;c;c=c.nextSibling)to.appendChild(c.cloneNode(true));
+  var a=from.querySelectorAll('canvas'),b=to.querySelectorAll('canvas');
+  for(var i=0;i<a.length&&i<b.length;i++){try{if(a[i].width&&a[i].height)b[i].getContext('2d').drawImage(a[i],0,0);}catch(e){}}
+}
+/* the old screen: its children move into a same-looking box (same tag, id and classes) that floats away */
+function motGhost(el,dir,cls){
+  if(!el||!el.firstChild)return;
+  var r=el.getBoundingClientRect(),g=document.createElement(el.tagName);
+  if(el.id)g.id=el.id;
+  g.className=(el.className||'').replace(/\b(enter|enter-l|enter-r|mot-in|qin)\b/g,'')+' mot-ghost '+(cls||'')+(dir>0?' to-l':dir<0?' to-r':' to-up');
+  g.style.left=r.left+'px';g.style.top=r.top+'px';g.style.width=r.width+'px';
+  motCopy(el,g);
+  motLayer().root.appendChild(g);
+  requestAnimationFrame(function(){requestAnimationFrame(function(){g.classList.add('go');});});
+  setTimeout(function(){if(g.parentNode)g.parentNode.removeChild(g);},440);
+}
+(function(){
+  var r0=render;
+  render=function(){
+    var main=$('main'),from=MOT.key||motKey0(),to=motKeyNext(),changed=from!==to,dir=motDir(from,to);
+    if(changed&&motOn()&&main&&main.firstChild&&from)motGhost(main,dir);
+    /* the same screen drawn again (a toggle, a setting): no reveal or count-up all over again */
+    MOT.quiet=!changed&&!!from&&!HOME_ANIM;
+    var out;try{out=r0.apply(this,arguments);}finally{MOT.quiet=false;}
+    MOT.key=motKey();
+    if(main){
+      if(changed&&motOn()){
+        main.classList.remove('enter','enter-l','enter-r','mot-in');void main.offsetWidth;
+        main.classList.add(dir>0?'enter-r':dir<0?'enter-l':'mot-in');
+      }else if(!changed&&main.classList.contains('enter'))main.classList.remove('enter');  /* a toggle: stay still */
+    }
+    motAfter();
+    return out;
+  };
+  function motKey0(){return '';}
+  function motKeyNext(){
+    if(view==='onboard')return 'onboard:'+obStep;
+    if(view==='tune')return 'tune:'+(typeof TUNE==='object'?TUNE.step:0);
+    return view;
+  }
+})();
+(function(){
+  var av=animateView;animateView=function(){if(MOT.quiet)return;return av.apply(this,arguments);};
+  var rr=revealRows;revealRows=function(){if(MOT.quiet)return;return rr.apply(this,arguments);};
+})();
+/* lessons and landings draw #main themselves: remember that the screen changed */
+(function(){
+  var sf=startFlight;startFlight=function(){var r=sf.apply(this,arguments);MOT.key='flight';return r;};
+  if(typeof startScene==='function'){var ss=startScene;startScene=function(){var r=ss.apply(this,arguments);MOT.key='scene';return r;};}
+  if(typeof land==='function'){var l0=land;land=function(){var r=l0.apply(this,arguments);MOT.key='land';return r;};}
+})();
+/* sheets: slide down when closed; dialogs dim what is behind them */
+(function(){
+  var c0=closeSheet;
+  closeSheet=function(){
+    var h=$('sheetHost'),s=h&&h.querySelector('.sheet');
+    if(s&&motOn()){
+      var g=document.createElement('div');g.id='sheetHost';g.className='mot-sheet-out';
+      motCopy(h,g);
+      motLayer().root.appendChild(g);
+      setTimeout(function(){if(g.parentNode)g.parentNode.removeChild(g);},300);
+    }
+    return c0.apply(this,arguments);
+  };
+  var host=$('sheetHost');
+  if(host&&'MutationObserver' in window)new MutationObserver(function(){
+    var s=host.querySelector('.sheet.plain,.sheet.share-sheet');
+    var dim=host.querySelector('.sheet-dim');
+    if(s&&!dim){dim=document.createElement('div');dim.className='sheet-dim';dim.setAttribute('aria-hidden','true');host.insertBefore(dim,host.firstChild);}
+    else if(!s&&dim)dim.parentNode.removeChild(dim);
+  }).observe(host,{childList:true});
+})();
+/* lessons: the answered question slides out to the left */
+(function(){
+  var n0=nextStep;
+  nextStep=function(){
+    if(motOn()&&F&&F.cur&&F.answered){var q=$('q');if(q&&q.firstChild)motGhost(q,1,'q-ghost');}
+    return n0.apply(this,arguments);
+  };
+})();
+/* small touches after each draw */
+document.addEventListener('click',function(e){
+  var t=e.target.closest&&e.target.closest('button');if(!t)return;
+  for(var i=0;i<t.attributes.length;i++){var a=t.attributes[i];if(/^data-/.test(a.name)&&a.name!=='data-tk'){MOT.tap=[a.name,a.value];return;}}
+  MOT.tap=null;
+},true);
+function motAfter(){
+  if(!motOn())return;
+  /* the choice just tapped bounces (only that one, not every chosen item on the screen) */
+  if(MOT.tap){
+    var sel='['+MOT.tap[0]+'="'+String(MOT.tap[1]).replace(/"/g,'\\"')+'"][aria-pressed="true"]',b=null;
+    try{b=document.querySelector('#main '+sel);}catch(x){}
+    if(b){b.classList.remove('tap-pop');void b.offsetWidth;b.classList.add('tap-pop');}
+    MOT.tap=null;
+  }
+  /* segmented buttons: a marker slides from the old choice to the new one */
+  document.querySelectorAll('#main .seg').forEach(function(sg){
+    var on=sg.querySelector('button[aria-pressed="true"]'),first=sg.querySelector('button');if(!on||!first)return;
+    var key='';for(var i=0;i<first.attributes.length;i++){if(/^data-/.test(first.attributes[i].name)){key=first.attributes[i].name;break;}}
+    if(!key)return;
+    var now={x:on.offsetLeft,y:on.offsetTop,w:on.offsetWidth,h:on.offsetHeight},was=MOT.seg[key];   /* layout values: not thrown off by the press animation */
+    MOT.seg[key]=now;
+    if(!was||(was.x===now.x&&was.y===now.y))return;
+    var ind=document.createElement('span');ind.className='seg-ind';ind.setAttribute('aria-hidden','true');
+    var cs=getComputedStyle(on);ind.style.borderRadius=cs.borderRadius;ind.style.background=cs.backgroundColor;
+    ind.style.transform='translate('+was.x+'px,'+was.y+'px)';ind.style.width=was.w+'px';ind.style.height=was.h+'px';
+    sg.classList.add('has-ind');sg.appendChild(ind);
+    requestAnimationFrame(function(){requestAnimationFrame(function(){ind.style.transform='translate('+now.x+'px,'+now.y+'px)';ind.style.width=now.w+'px';ind.style.height=now.h+'px';});});
+    setTimeout(function(){sg.classList.remove('has-ind');if(ind.parentNode)ind.parentNode.removeChild(ind);},380);
+  });
+}
 /* ================= EVENTS + BOOT ================= */
 function go(v){view=v;confirmReset=false;render();window.scrollTo(0,0);}
 document.addEventListener('click',function(e){

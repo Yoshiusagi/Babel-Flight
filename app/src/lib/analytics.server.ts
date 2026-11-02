@@ -33,7 +33,7 @@ import {
   type Row,
 } from "./http.server";
 
-const LANGS = new Set(["ko", "en", "es", "it", "zh", "fr", "de", "pt", "ru", "tr", "id", "ar"]);
+const LANGS = new Set(["ko", "en", "es", "it", "zh", "fr", "de", "pt", "ru", "tr", "id", "ar", "ja"]);
 const MODES = new Set(["daily", "job", "study", "exam"]);
 const KINDS = new Set(["visit", "lesson"]);
 const UIS = new Set(["ja", "en", "ko", "zh"]);

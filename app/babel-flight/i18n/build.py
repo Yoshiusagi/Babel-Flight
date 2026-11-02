@@ -15,9 +15,11 @@ Checks (the build stops on any of them):
   - every line has exactly one tab and both sides are filled in
   - a key appears once (or always with the same translation)
   - the {n} placeholders of a key and its translation are the same set
-  - no kana left in a translation (no Japanese left behind)
+  - no kana left in a translation (no Japanese left behind), except in ja.tsv: the notes of the 日本語 course
+    quote the Japanese they explain
   - every text of 日常会話モード (i18n/keys.cjs) is translated, except texts used only by the course of the
-    display language itself (an English speaker doesn't take the English course)
+    display language itself (an English speaker doesn't take the English course); the 検定モード lessons a display
+    language shows (f30_xui.js) are checked for that display language only
 """
 import glob, hashlib, json, os, re, subprocess, sys
 
@@ -45,7 +47,7 @@ def load(ui):
                 errs.append(where + ': %r translated twice differently' % k)
             if sorted(PH.findall(k)) != sorted(PH.findall(v)):
                 errs.append(where + ': placeholders differ in %r' % k)
-            if KANA.search(v):
+            if KANA.search(v) and os.path.basename(f) != 'ja.tsv':   # ja.tsv: notes of the 日本語 course quote Japanese
                 errs.append(where + ': kana left in the translation of %r' % k)
             d[k] = v
     return d, errs
@@ -76,7 +78,7 @@ def main():
         errs += e
         for jp, en in names['cities'].items():
             d.setdefault(jp, title(en))
-        miss = [k for k, m in keys.items() if k not in d and m['langs'] != [ui]]
+        miss = [k for k, m in keys.items() if k not in d and m['langs'] != [ui] and ('uis' not in m or ui in m['uis'])]
         for k in miss[:30]:
             errs.append('%s: not translated: %r (%s)' % (ui, k, ','.join(keys[k]['langs'])))
         if len(miss) > 30:

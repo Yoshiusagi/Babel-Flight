@@ -35,15 +35,17 @@ function sceneHTML(){
   return h;
 }
 function scLogHTML(){
-  var S=SCX,ko=lfc(S.lang)?' '+lfc(S.lang):'';
+  /* the learning language's font class goes on the phrase itself, so the labels and the meaning around it are
+     still translated in another display language */
+  var S=SCX,pc=lfc(S.lang)?' class="'+lfc(S.lang)+'"':'';
   return S.log.map(function(m){
     if(m.who==='them'){
       if(m.typing)return '<div class="bub them typing"><i></i><i></i><i></i></div>';
-      return '<div class="bub them'+ko+'">'+(S.sub?'<p>'+esc(m.text)+'</p>':'<p class="dim">♪ 音声のみ(字幕オフ)</p>')+(S.tr&&m.jp?'<small>'+esc(m.jp)+'</small>':'')+'</div>';
+      return '<div class="bub them">'+(S.sub?'<p'+pc+'>'+esc(m.text)+'</p>':'<p class="dim">♪ 音声のみ(字幕オフ)</p>')+(S.tr&&m.jp?'<small>'+esc(m.jp)+'</small>':'')+'</div>';
     }
     var g=m.grade!==undefined?GRADE_TXT[m.grade]:null;
-    return '<div class="bub me'+ko+(m.grade===0?' miss':'')+'">'+(m.typed?'<p>'+esc(m.typed)+'</p>':'')+
-      (m.model?'<div class="model"><span class="lbl">お手本</span><p>'+esc(m.model)+'</p>'+(m.r?'<small>'+esc(m.r)+'</small>':'')+'</div>':'')+
+    return '<div class="bub me'+(m.grade===0?' miss':'')+'">'+(m.typed?'<p'+pc+'>'+esc(m.typed)+'</p>':'')+
+      (m.model?'<div class="model"><span class="lbl">お手本</span><p'+pc+'>'+esc(m.model)+'</p>'+(m.r?'<small translate="no">'+esc(m.r)+'</small>':'')+'</div>':'')+
       (g?'<span class="gtag g'+m.grade+'">'+g[0]+' '+g[1]+'</span>':'')+'</div>';
   }).join('');
 }

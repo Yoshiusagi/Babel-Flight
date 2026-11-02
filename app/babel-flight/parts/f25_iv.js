@@ -10,7 +10,7 @@ if(typeof CAB_FEAT==='object'){var ivAt=0;CAB_FEAT.forEach(function(f,i){if(f[0]
 var IV_HIST='babelflight.ivhist',IV_SUBKEY='babelflight.ivsub';
 var IV={key:'',data:null,stage:'',err:'',i:0,tok:0,line:'',card:false,ans:{},yn:{},self:{},att:{},topic:-1,win:null,tm:0,sr:null,noMic:false,ask:false};
 function ivGrade(k){return IV_GRADES.filter(function(g){return g[0]===k;})[0]||null;}
-function ivOn(){return save.lang==='en'&&typeof cabinLv==='function'&&cabinLv()>=0;}
+function ivOn(){return save.lang==='en'&&UI==='ja'&&typeof cabinLv==='function'&&cabinLv()>=0;}  /* 英検 interviews: 日本語 only */
 function ivLocked(g){return cabinLv()<g[2];}
 function ivSub(){try{return localStorage.getItem(IV_SUBKEY)!=='0';}catch(e){return true;}}
 function ivHist(){try{var o=JSON.parse(localStorage.getItem(IV_HIST)||'{}');return o&&typeof o==='object'?o:{};}catch(e){return {};}}

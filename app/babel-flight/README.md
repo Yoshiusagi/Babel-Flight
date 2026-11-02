@@ -81,6 +81,33 @@ that had no translation is counted there.
   review spacing, 文字 keeps readings on, 発音 replays the answer slowly. The map position is kept on the same lesson
   when the path changes (`keepPos`).
 
+## 日本語 course (for the other display languages) — `parts/p3c_ja.js`, `parts/e3g_ja.js`
+
+- A starter course like the others (はじめの一歩, 日常会話, travel phrases, the 8 travel scenes, a route map of Japan from
+  Tokyo). Offered only in English / 한국어 / 简体中文 (`learnOrder()` hides the course of the display language).
+- `jp` is the plain Japanese meaning, translated by the display language as usual; the phrase itself (`t`, `s`) and the
+  scene lines start with an invisible WORD JOINER (`JA_M`) and carry the `.ja` class, so the translation never touches
+  the Japanese being learnt (speech and the split-flap board drop the joiner). Readings are romaji.
+- 한국어 / 简体中文 swap "I'm American / I live in New York / I'm from the US" for their own country (`f27_swap.js`).
+  The notes of this course quote Japanese, so `i18n/<ui>/ja.tsv` may contain kana.
+
+## Smooth motion — `parts/f31_motion.js`
+
+- A screen change no longer cuts: a copy of the old screen floats away in a closed shadow layer (nothing can find or
+  click it) while the new one rises in; tabs and steps slide sideways; re-drawing the same screen does not move.
+- Sheets slide down when closed and dim what is behind dialogs; the answered question slides out to the left.
+- Small touches: a tapped choice bounces, the right answer pops and a wrong one shakes, segmented buttons slide their
+  marker, the tab you move to lifts. All off with reduced motion.
+
+## 検定モード in the other display languages — `parts/f30_xui.js`
+
+- English / 한국어 / 简体中文 show the international exams (TOEIC・IELTS・TOEFL・ICAO・TOPIK・DELE・CILS) and their own
+  country's tests: 한국어 → **TOEIC Speaking・OPIc**, 简体中文 → **CET-4・CET-6**. 英検 (with its 模試 and 面接練習),
+  the job certificates and the AI practice stay with 日本語. `xuiApply()` rebuilds `EXAMS` / `XGOALS` for the display
+  language after `jobxApply()`; `XUI_EXTRA` lists each country's tests.
+- The lessons are written like any unit (Japanese meaning + note); `i18n/keys.cjs` lists the ones each display language
+  shows (`xuiUnits`), and `build.py` checks they are translated (`i18n/<ui>/exam.tsv`, `xui.tsv`).
+
 ## Animations and the update notice — `parts/f29_fx.js`
 
 - Opening the app (and coming back after 15 minutes): a plane climbs out of the bottom (under 1 s, tap to skip, none with

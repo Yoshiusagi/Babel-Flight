@@ -1,0 +1,49 @@
+<style>
+/* ---- なめらかな動き (f31_motion.js) ---- */
+.mot-layer{position:fixed;inset:0;z-index:3;pointer-events:none}
+.mot-ghost{position:fixed;z-index:4;pointer-events:none;transition:opacity .2s ease,transform .32s cubic-bezier(.4,0,.2,1)}
+.mot-ghost.go{opacity:0}
+.mot-ghost.to-up.go{transform:translateY(-14px) scale(.985)}
+.mot-ghost.to-l.go{transform:translateX(-38px)}
+.mot-ghost.to-r.go{transform:translateX(38px)}
+.mot-ghost.q-ghost{z-index:6;transition:opacity .2s ease,transform .26s cubic-bezier(.4,0,.2,1)}
+#main.enter{animation:enter .52s cubic-bezier(.16,1,.3,1) .04s both}
+#main.mot-in{animation:motIn .52s cubic-bezier(.16,1,.3,1) .06s both}
+#main.enter-r{animation:enterR .52s cubic-bezier(.16,1,.3,1) .05s both}
+#main.enter-l{animation:enterL .52s cubic-bezier(.16,1,.3,1) .05s both}
+@keyframes motIn{from{opacity:0;transform:translateY(16px) scale(.99)}}
+/* sheets rise with a soft landing and slide away when closed; dialogs dim the screen a little */
+.sheet{animation:sheetUp .44s cubic-bezier(.16,1,.3,1)}
+@keyframes sheetUp{from{transform:translateY(100%)}}
+.mot-sheet-out{pointer-events:none}
+.mot-sheet-out .sheet{z-index:29;animation:sheetDown .26s cubic-bezier(.4,0,1,1) forwards}
+@keyframes sheetDown{to{transform:translateY(105%);opacity:.5}}
+.sheet-dim{position:fixed;inset:0;z-index:29;background:rgba(6,12,24,.26);pointer-events:none;animation:dimIn .3s ease both}
+.mot-sheet-out .sheet-dim{animation:dimOut .26s ease forwards}
+@keyframes dimIn{from{opacity:0}}
+@keyframes dimOut{to{opacity:0}}
+/* a soft press on everything you tap */
+:where(.ghost,.choice,.opt,.sq,.langc,.lp-row,.prof,.hl,.xg-chip,.seg button,.nt-go,.wchoice,.tab){transition:transform .16s cubic-bezier(.2,.8,.2,1),background-color .2s ease,border-color .2s ease,box-shadow .2s ease,color .2s ease}
+:where(.ghost,.choice,.opt,.sq,.langc,.lp-row,.prof,.xg-chip,.seg button,.nt-go,.wchoice):active:not(:disabled){transform:scale(.97)}
+.tap-pop{animation:tapPop .38s cubic-bezier(.3,1.6,.5,1)}
+@keyframes tapPop{0%{transform:scale(.96)}60%{transform:scale(1.025)}100%{transform:none}}
+.opt.ok{animation:okPop .42s cubic-bezier(.3,1.6,.5,1)}
+@keyframes okPop{0%{transform:scale(.97)}55%{transform:scale(1.03)}100%{transform:none}}
+.opt.no{animation:noShake .34s cubic-bezier(.36,.07,.19,.97)}
+@keyframes noShake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+/* segmented buttons: the marker slides to the new choice */
+.seg{position:relative}
+.seg button{position:relative;z-index:1}
+.seg.has-ind button[aria-pressed="true"]{background:transparent!important;border-color:transparent!important}
+.seg-ind{position:absolute;left:0;top:0;z-index:0;pointer-events:none;transition:transform .34s cubic-bezier(.3,1.25,.5,1),width .34s ease,height .34s ease}
+/* the tab you move to lifts a little */
+.tab[aria-current="page"] svg{animation:tabPop .42s cubic-bezier(.3,1.6,.5,1)}
+.tab[aria-current="page"]::before{animation:tabBar .36s cubic-bezier(.2,.8,.2,1)}
+@keyframes tabPop{40%{transform:translateY(-3px) scale(1.12)}}
+@keyframes tabBar{from{transform:scaleX(0)}}
+@media (prefers-reduced-motion:reduce){
+  .mot-layer,.mot-ghost,.mot-sheet-out{display:none}
+  .sheet,.sheet-dim,.tap-pop,.opt.ok,.opt.no,.tab[aria-current="page"] svg,.tab[aria-current="page"]::before,#main.mot-in,#main.enter,#main.enter-l,#main.enter-r{animation:none!important}
+  .seg-ind{display:none}
+}
+</style>

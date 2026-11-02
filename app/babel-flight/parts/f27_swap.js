@@ -78,6 +78,15 @@ var UI_SWAP={
  }
 };
 /* applied once at start (the page reloads when the display language changes) */
+/* 日本語 course (learnt from 한국어 / 简体中文): the learner's own country instead of the US (English keeps it) */
+(function(){
+  if(typeof JA_M!=='string')return;
+  function J(o){var out={};Object.keys(o).forEach(function(k){var v=o[k];out[JA_M+k]={t:JA_M+v.t,r:v.r};if(v.s)out[JA_M+k].s=JA_M+v.s;});return out;}
+  UI_SWAP.ko.ja=J({'アメリカ人です。':{t:'韓国人です。',r:'kankoku-jin desu'},'ニューヨークに住んでいます。':{t:'ソウルに住んでいます。',s:'ソウルに 住んで います。',r:'sōru ni sunde imasu'},
+    'アメリカから来ました。':{t:'韓国から来ました。',s:'韓国から 来ました。',r:'kankoku kara kimashita'}});
+  UI_SWAP.zh.ja=J({'アメリカ人です。':{t:'中国人です。',r:'chūgoku-jin desu'},'ニューヨークに住んでいます。':{t:'北京に住んでいます。',s:'北京に 住んで います。',r:'pekin ni sunde imasu'},
+    'アメリカから来ました。':{t:'中国から来ました。',s:'中国から 来ました。',r:'chūgoku kara kimashita'}});
+})();
 function uiSwap(){
   var S=UI_SWAP[UI];if(!S)return;
   ORDER.forEach(function(L){

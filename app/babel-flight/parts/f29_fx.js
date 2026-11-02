@@ -100,8 +100,16 @@ function fxLand(goalJust,streakUp){
   if(goalJust){var gd=m.querySelector('.goalbox');if(gd)gd.classList.add('goal-burst');}
   if(streakUp){var sp=m.querySelector('.streak-up');if(sp)sp.classList.add('go');}
 }
-/* ---- NOTAM: what is new (newest first). go: tune | settings | first | home ---- */
+/* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
+   iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.04',items:[
+  ['🗾','日本語コース','日本語も学べるようになりました。行き先は東京です。','ja',0,['en','ko','zh']],
+  ['✨','なめらかな動き','画面の切り替えやボタンの動きが、なめらかになりました。','',0],
+  ['🏅','検定モードが使えるように','TOEIC・IELTS・TOEFL・TOPIK・DELE・CILSなどの検定コースが、この表示言語でも使えるようになりました。','exam',1,['en','ko','zh']],
+  ['🎤','TOEIC Speaking・OPIc','韓国でよく使われる英語スピーキング試験のコースが加わりました。','',1,['ko']],
+  ['📝','CET-4・CET-6','中国の大学英語試験(四級・六級)のコースが加わりました。','',1,['zh']]
+ ]},
  {v:'2026.11.03',items:[
   ['🌱','はじめてでも、やさしく','「はじめの一歩」レッスンと、新しいフレーズを先に見られるカードが加わりました。「はじめて」レベルは選択肢が3つになります。','first'],
   ['🎯','あなたに合わせたレッスン','学ぶ理由と苦手なことに合わせて、始める場所と問題の出し方が変わります。レベルも言語ごとに選べます。','tune'],
@@ -110,25 +118,30 @@ var NOTAM=[
 ];
 function notamLatest(){return NOTAM[0].v;}
 function notamSeenAll(){save.seen=notamLatest();}
-function notamItems(n){return n.items.filter(function(x){return !(x[4]&&typeof BF_APP!=='undefined'&&BF_APP);});}  /* x[4] = paid plans: never in the iPhone app */
+function notamItems(n){return n.items.filter(function(x){return !(x[4]&&typeof BF_APP!=='undefined'&&BF_APP)&&!(x[5]&&x[5].indexOf(UI)<0);});}
 function notamHTML(n,first){
   return '<div class="nt-items">'+notamItems(n).map(function(x){
     var btn='';
     if(first&&x[3]==='tune')btn='<button class="ghost nt-go" type="button" data-notam-go="tune">試してみる</button>';
+    else if(first&&x[3]==='exam'&&typeof examModeOn==='function'&&examModeOn())btn='<button class="ghost nt-go" type="button" data-notam-go="exam">試してみる</button>';
+    else if(first&&x[3]==='ja'&&LANGS.ja&&learnOrder().indexOf('ja')>=0&&save.lang!=='ja')btn='<button class="ghost nt-go" type="button" data-notam-go="ja">試してみる</button>';
     else if(first&&x[3]==='first')btn='<button class="ghost nt-go" type="button" data-notam-go="'+(firstOn(save.lang)?'first':'settings')+'">'+(firstOn(save.lang)?'試してみる':'レベルを見る')+'</button>';
     return '<div class="nt-item"><span class="nt-ic" aria-hidden="true">'+x[0]+'</span><div class="nt-tx"><b>'+x[1]+'</b><p>'+x[2]+'</p>'+btn+'</div></div>';
   }).join('')+'</div>';
 }
+/* the notices not seen yet (newest first) that have something for this person */
+function notamUnseen(){var s=save.seen||'';return NOTAM.filter(function(n){return n.v>s&&notamItems(n).length;});}
 function notamSheet(all){
-  var list=all?NOTAM:[NOTAM[0]];
+  var list=(all?NOTAM:notamUnseen()).filter(function(n){return notamItems(n).length;});
   $('sheetHost').innerHTML='<div class="sheet plain notam-sheet" role="dialog" aria-label="アップデートのお知らせ"><div class="sheet-in">'+
     '<div class="nt-head"><span class="nt-tag mono">NOTAM</span><span class="lbl">'+(all?'これまでのお知らせ':'新しいお知らせ')+'</span></div><h3>アップデートのお知らせ</h3>'+
-    list.map(function(n,i){return (all?'<span class="lbl nt-date mono">'+n.v+'</span>':'')+notamHTML(n,!all&&i===0);}).join('')+
+    list.map(function(n){return (all||list.length>1?'<span class="lbl nt-date mono">'+n.v+'</span>':'')+notamHTML(n,!all);}).join('')+
     '<button class="go" type="button" data-notam-ok>OK</button></div></div>';
 }
 function notamMaybe(){
   if(!save.onboarded||(save.seen||'')>=notamLatest()||view!=='home'||F)return;
   var sh=$('sheetHost');if(sh&&sh.innerHTML)return;
+  if(!notamUnseen().length){notamSeenAll();store();return;}   /* nothing new for this display language */
   notamSheet(false);
 }
 function notamBtnHTML(){return '<button class="ghost nt-all" type="button" data-notam-all>アップデートのお知らせ<small>新しくなったところ</small></button>';}
@@ -142,6 +155,8 @@ document.addEventListener('click',function(e){
     closeSheet();
     if(g==='tune'){TUNE={step:0,why:save.why,weak:(save.weak||[]).slice()};view='tune';render();window.scrollTo(0,0);}
     else if(g==='settings')go('record');
+    else if(g==='ja'){save.lang='ja';HOME_ANIM='lang';store();go('home');if(typeof lvNeed==='function'&&lvNeed('ja'))lvSheet('ja');}
+    else if(g==='exam'){if(save.mode!=='exam'){save.mode='exam';HOME_ANIM='mode';store();}go('home');}
     else if(g==='first'&&typeof openNodeSheet==='function')openNodeSheet('first');
     return;
   }

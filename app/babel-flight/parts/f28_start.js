@@ -62,7 +62,7 @@ function examOK(){return typeof examModeOn==='function'&&examModeOn();}
 function examUsable(){return examOK()&&typeof cabinLv==='function'&&cabinLv()>=1;}
 function whyList(){
   return WHY.filter(function(w){
-    if(UI!=='ja'&&(w[0]==='work'||w[0]==='study'||w[0]==='exam'))return false;  /* 職業・留学・検定 are 日本語 only for now */
+    if(UI!=='ja'&&(w[0]==='work'||w[0]==='study'))return false;  /* 職業・留学 are 日本語 only for now */
     return w[0]!=='exam'||examOK();
   });
 }
@@ -78,16 +78,15 @@ function kindPrefs(){
 function ivlDays(b){var d=INTERVALS[b]||1;return hasWeak('vocab')?Math.max(1,Math.round(d/2)):d;}
 /* the mode a reason starts in (when the language has it) */
 function whyMode(w,L,prof){
-  if(UI!=='ja')return 'daily';
-  if(w==='work'){var p=profById(prof);if(p&&(p.units[L]||[]).some(function(u){return !!UNITS[L][u];}))return 'job';}
-  if(w==='study'&&STUDY_ALL.some(function(u){return !!UNITS[L][u];}))return 'study';
-  if((w==='exam'||(w==='school'&&L==='en'))&&examUsable()&&typeof EXAMS==='object'&&(EXAMS[L]||[]).length)return 'exam';
+  if(UI==='ja'&&w==='work'){var p=profById(prof);if(p&&(p.units[L]||[]).some(function(u){return !!UNITS[L][u];}))return 'job';}
+  if(UI==='ja'&&w==='study'&&STUDY_ALL.some(function(u){return !!UNITS[L][u];}))return 'study';
+  if((w==='exam'||(w==='school'&&L==='en'&&UI==='ja'))&&examUsable()&&typeof EXAMS==='object'&&(EXAMS[L]||[]).length)return 'exam';
   return 'daily';
 }
 function whyChoicesHTML(cur,attr,L){
   return '<div class="opt-list why-list">'+whyList().map(function(w){
     var sub=w[3];
-    if(w[0]==='school'&&L==='en'&&examUsable())sub='英検コースで、つづり・文の組み立てを多めに';
+    if(w[0]==='school'&&L==='en'&&UI==='ja'&&examUsable())sub='英検コースで、つづり・文の組み立てを多めに';
     if(w[0]==='exam'&&!examUsable())sub='つづり・文の組み立ての問題を多めに';
     return '<button class="choice wchoice" type="button" '+attr+'="'+w[0]+'" aria-pressed="'+(cur===w[0])+'"><span class="wi" aria-hidden="true">'+w[1]+'</span><span class="wt"><b>'+w[2]+'</b><small>'+sub+'</small></span></button>';
   }).join('')+'</div>';
