@@ -116,8 +116,10 @@ classes' features (検定コース, 模試, AI会話ロールプレイ, 弱点�
 fixed 航空英語(ICAO) group: `JOBX` maps job → language → certificates, `JOBX_C` holds each certificate's group
 title and 目標 levels. `jobxApply()` rebuilds `EXAMS` / `XGOALS` from the base lists on every render, so a job
 change shows at once (a target of the old job is simply ignored). Lessons are ordinary `XU()` units in banks
-(`XBANK`, tier 2 = ビジネス like ICAO); banks under 40 phrases stay 準備中 (no meter). Jobs without a
-certificate yet show a 準備中 line on the 検定 card.
+(`XBANK`, tier 2 = ビジネス like ICAO); banks under 40 phrases stay 準備中 (no meter). 研究者 has IELTS / TOPIK /
+DELE / CILS (graduate school and research) in all four languages, 客室乗務員 TOEIC (interview, announcements). Jobs with
+no language certificate (IT・美容師・スポーツ選手) get a practice group instead (`practice:true`: no 目標, marked
+「公式の資格ではありません」 on the 検定 card).
 
 ## 面接練習 (英検 二次試験 3級〜1級)
 
