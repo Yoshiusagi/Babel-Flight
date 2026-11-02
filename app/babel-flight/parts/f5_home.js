@@ -28,7 +28,7 @@ function stopStatus(L,uid,nextId){
 /* the language chips show the current language and every language with a lesson flown;
    all the others are one tap away in 言語を選ぶ (langPickSheet) */
 function langStarted(k){var p=save.prog&&save.prog[k],u=p&&p.units;if(!u)return false;for(var id in u)if(u[id]&&u[id].n>0)return true;return false;}
-function myLangs(){return ORDER.filter(function(k){return k===save.lang||langStarted(k);});}
+function myLangs(){return learnOrder().filter(function(k){return k===save.lang||langStarted(k);});}
 var LANG_SOON=[];
 function heroLangs(){
   return '<div class="hero-langs" role="group" aria-label="学ぶ言語">'+myLangs().map(function(k){
@@ -36,7 +36,7 @@ function heroLangs(){
   }).join('')+'<button class="hl hl-more" type="button" data-lang-pick aria-label="言語を選ぶ"><b class="mono">＋</b><small>ほかの言語</small></button></div>';
 }
 function langPickSheet(){
-  var mine=myLangs(),rest=ORDER.filter(function(k){return mine.indexOf(k)<0;});
+  var mine=myLangs(),rest=learnOrder().filter(function(k){return mine.indexOf(k)<0;});
   function row(k){
     var LG=LANGS[k],ids=pathIdsFor(k),on=k===save.lang;
     return '<button class="lp-row" type="button" data-lang="'+k+'" style="--dc:var(--c-'+k+')" aria-pressed="'+on+'"><span class="lp-code mono">'+LG.code+'</span>'+
@@ -63,6 +63,9 @@ function langChipsReveal(){
 /* a mode the language doesn't have yet (a スターター language in 職業 / 留学 / 検定) */
 var MODE_JP={daily:'日常会話モード',job:'職業モード',study:'留学モード',exam:'検定モード'};
 function modeSoonHTML(L){
+  if(!uiModeOpen(save.mode))return '<section class="card empty-job mode-soon"><span class="lbl">'+esc(MODE_JP[save.mode]||'')+'</span><h2 class="jh">'+esc(MODE_JP[save.mode]||'このモード')+'は準備中です</h2>'+
+    '<p class="dim" style="font-size:13.5px;margin-top:4px">この表示言語では、今は日常会話モードで、あいさつ・旅行フレーズ・旅行の場面の会話を学べます。ほかのモードも順番に翻訳していきます。</p>'+
+    '<button class="go" type="button" data-mode-set="daily">日常会話モードで学ぶ</button></section>';
   var LG=LANGS[L],p=profById(save.prof),what=save.mode==='job'&&p?p.jp+'の専門会話':MODE_JP[save.mode]||'このモード';
   return '<section class="card empty-job mode-soon"><span class="lbl">'+esc(MODE_JP[save.mode]||'')+' ・ '+esc(LG.name)+'</span><h2 class="jh">'+esc(LG.name)+'の'+esc(what)+'は準備中です</h2>'+
     '<p class="dim" style="font-size:13.5px;margin-top:4px">今は日常会話モードで、あいさつ・旅行フレーズ・旅行の場面の会話を学べます。ほかのモードも順番に増やしていきます。</p>'+
@@ -72,7 +75,7 @@ function homeHTML(){
   var L=save.lang,LG=LANGS[L],p=profById(save.prof),anim=!!HOME_ANIM&&!reduceMotion,h=topBar('','progress');
   var ids=pathIds(L);
   if(!ids.length){
-    var pick=save.mode==='job'&&!p;
+    var pick=save.mode==='job'&&!p&&uiModeOpen('job');
     h+='<section class="hero empty"><div class="hero-in"><div class="hud"><div class="hud-l"><span class="lbl">'+esc(LG.cityEn)+' ・ '+esc(LG.name)+'</span><b class="mono">'+(pick?'職業を選ぼう':'準備中')+'</b></div></div>'+heroLangs()+'</div></section>'+modeSwitch();
     if(!pick){h+=modeSoonHTML(L);return h;}
     h+='<section class="card empty-job"><span class="lbl">職業モード</span><h2 class="jh">まずは職業を選ぼう</h2><p class="dim" style="font-size:13.5px;margin-top:4px">パイロット、医療、IT、美容師など13職業から選べます。選んだ職業の専門会話が、地図の上に並びます。</p><button class="go" type="button" data-picker>職業を選ぶ</button></section>';

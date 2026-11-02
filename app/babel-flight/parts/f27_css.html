@@ -1,0 +1,13 @@
+<style>
+/* 表示言語 (display language) */
+html.ui-ko{--f-body:'BF Pinyin','BF Cyrillic','Noto Sans KR','IBM Plex Sans JP',system-ui,sans-serif}
+html.ui-zh{--f-body:'BF Pinyin','BF Cyrillic','Noto Sans SC','PingFang SC','Microsoft YaHei','IBM Plex Sans JP',sans-serif}
+.uipick{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));gap:6px;margin-top:8px}
+.uipick button{padding:9px 4px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;font-size:13px;font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.uipick button[lang="ko"]{font-family:'Noto Sans KR',var(--f-body)}
+.uipick button[lang="zh-Hans"]{font-family:'Noto Sans SC',var(--f-body)}
+.uipick button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.ob .uipick{margin:0 0 14px}
+html.ui-busy .uipick{opacity:.55;pointer-events:none}
+.uierr{margin-top:6px}
+</style>

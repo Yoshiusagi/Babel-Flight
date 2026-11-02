@@ -116,6 +116,8 @@ function aiDrillMake(L,items,signal){
   });
 }
 function aiDrillBtnHTML(){
+  /* the AI example sentences come with Japanese translations: 日本語 display only for now */
+  if(UI!=='ja')return '';
   if(!AID.wrong||!AID.wrong.length||!aiDrillAvail())return '';
   return '<button class="ghost ai-drill" type="button" data-ai-drill>AIが作る新しい例文で練習<small>間違えたフレーズを使った例文をAIが作ります(まちがいがあるかも)</small></button>';
 }

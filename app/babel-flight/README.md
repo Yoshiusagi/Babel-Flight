@@ -33,6 +33,38 @@ The language chips (home hero, 復習, 記録) show the current language and eve
 subset of Noto Sans CJK SC (SIL Open Font License 1.1) at the top of `p1_head.html`, because some Japanese fonts
 draw them full-width. Progress in a language an older version doesn't know is kept as it is (`mergeSave`).
 
+## 表示言語 (display language: 日本語 / English / 한국어 / 简体中文)
+
+`parts/f27_i18n.js` + `f27_css.html`. The page is written in Japanese; for another display language the dictionary
+`public/i18n/<ui>.json` is loaded (kept on the device in localStorage `bf.i18n.<ui>`, refreshed when `I18N_V` in
+`parts/f27_i18nv.js` changes) and a MutationObserver swaps every Japanese text node and `aria-label` / `title` /
+`placeholder` / `alt` as it reaches the page, so the render functions stay in Japanese. Lookup: the exact text, then a
+template with numbers / Latin words as `{0}` `{1}` …, then also names (languages, cities, jobs, unit titles, scene roles,
+statuses). `T(s)` does the same for text in code (canvas drawing goes through it automatically, the share post text,
+the AI question). Learning-language text (`.ko .zh .ar`, the flight board, `[translate=no]`) is never touched;
+`data-tk="…"` on an element gives the dictionary key when one Japanese word means two things (やめる = Quit / Cancel).
+
+The choice (`bf.ui`, per device) is made at the top of the first screen (preselected from the browser's language on a
+first visit) or in 記録 → 学習の設定; switching reloads the page. With another display language: that language's own
+course is hidden (`learnOrder()`), only 日常会話モード is open (職業 / 留学 show 準備中, 検定 is off; `uiModeOpen`),
+the onboarding skips the job question, phrase readings are romanized (Korean and Russian computed in `f27_i18n.js`,
+Chinese pinyin from the data, Arabic from `ROM_AR` in `f27_rom.js`; none for Latin-script languages), answer choices only
+use phrases whose meaning is translated, and the AI teacher answers in that language (`ui` in `/api/ai/ask`). Cards
+that are still Japanese-only (機長アナウンス, AI管制官, AI会話ロールプレイ, AIの例文練習, 搭乗クラス) are hidden.
+The few phrases written for a learner from Japan (「日本人です」「東京に住んでいます」…) are swapped for the display
+language's country (`f27_swap.js`: 한국어 → Korea / Seoul, 简体中文 → China / Beijing; English keeps Japan), and the
+dictionaries give those meanings the same country. 中文 is Simplified Chinese. Only the display languages that have a
+dictionary are offered (`I18N_UIS`).
+
+Dictionaries: `i18n/<ui>/*.tsv` (`japanese<TAB>translation`, templates with `{n}`), built by
+
+    python3 babel-flight/i18n/build.py
+
+which checks placeholders, leftover kana and that every text of 日常会話モード (`i18n/keys.cjs`) is translated, adds the
+city names from the route data (unless `<ui>/cities.tsv` names them), and writes `public/i18n/*.json` and `parts/f27_i18nv.js`. To find screen texts that are
+still missing, run the app with a display language and read `UI_MISS` (set it to `{}` to start recording) — every text
+that had no translation is counted there.
+
 ## Usage counting
 
 `parts/f12_track.js` (standalone site only, never in the Claude version) sends an anonymous

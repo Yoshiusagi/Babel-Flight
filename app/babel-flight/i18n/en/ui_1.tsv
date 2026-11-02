@@ -1,0 +1,412 @@
+# 画面の文字 (UI). Templates: numbers, Latin words and names (languages, cities, jobs, unit titles, statuses) are {0} {1} …
+フレーズ	phrases
+会話	Conversation
+次へ	Next
+発音チェック	Pronunciation check
+発音を聞く	Hear the pronunciation
+AIに「なぜ？」を質問する	Ask the AI "why?"
+ボタンを押して、言ってみよう	Press the button and say it
+表示ボード(空白)	Flight board (blank)
+閉じる	Close
+巡航中	Cruising
+レッスンの詳細	Lesson details
+ゆっくり	Slow
+聞く	Listen
+ワンポイント	Tip
+上昇中	Climbing
+降下中	Descending
+意味を選ぼう	Choose the meaning
+意味はどれ？	What does it mean?
+はじめる	Start
+搭乗券	Boarding pass
+東京 羽田	Tokyo Haneda
+便名	Flight
+ゲート	Gate
+問題数	Questions
+{0}問	{0} questions
+定着度	Mastery
+約{0}分 ・ {1}フレーズ ・ 全部問題形式	About {0} min · {1} phrases · all as questions
+進捗をシェア	Share progress
+おしい！ 正解はこちら	So close! Here's the answer
+これを{0}で言うと？	How do you say this in {0}?
+言い方を選ぼう	Choose how to say it
+ミス {0}	Misses {0}
+1日	1 day
+{0}日	{0} days
+地上走行	Taxiing
+スターター	Starter
+今日の目標	Today's goal
+言語を選ぶ	Choose a language
+ほかの言語	Other languages
+会話の場面 ・ {0}	Conversation scene · {0}
+通話モードで話す	Speak in call mode
+相手の声に、声に出して答える ・ 自己採点	Answer out loud · rate yourself
+入力モードで答える	Answer in typing mode
+文字で返事 ・ 自動採点 ・ キーボードのマイクで話してもOK	Reply in text · auto-graded · keyboard dictation is OK too
+職業モード	Job mode
+留学モード	Study-abroad mode
+検定モード	Exam mode
+マイル	miles
+今日	Today
+連続	Streak
+学ぶ言語	Learning language
+＋	+
+搭乗券 ・ 日常会話	Boarding pass · Everyday talk
+搭乗券 ・ 旅行フレーズ	Boarding pass · Travel phrases
+搭乗券 ・ {0}	Boarding pass · {0}
+学ぶモード	Learning mode
+日常会話モード	Everyday mode
+日常会話	Everyday
+あいさつ・旅行	Greetings & travel
+13職業の会話	Talk for 13 jobs
+学校と授業	School & classes
+職業	Jobs
+留学	Study abroad
+正解！	Correct!
+{0} ・ {1}問	{0} · Q{1}
+いい感じ！	Nice!
+着陸	Landing
+完璧！	Perfect!
+到着	Arrived
+基本の日常会話	Everyday basics
+あいさつ・自己紹介・数字・気持ち	Greetings, introductions, numbers, feelings
+次はここ	Next
+旅行フレーズ	Travel phrases
+空港・機内・入国・ホテル・街	Airport, in-flight, immigration, hotel, town
+旅行の場面で話す	Talk in travel scenes
+入国審査からトラブルまで、会話で練習	From immigration to trouble: practice in conversation
+{0} {1} ・ {2}	{0} {1} · {2}
+答え合わせ	Check
+ナイス！	Nice one!
+リスニング	Listening
+もう一度聞く	Listen again
+音が聞こえない？ 文字を見る	Can't hear it? Show the text
+聞こえた文を選ぼう	Choose what you heard
+聞こえた内容に合うものは？	Which matches what you heard?
+その調子！	Keep it up!
+{0}のルートマップ。次の目的地は{1}	{0} route map. Next stop: {1}
+{0} ・ {1}	{0} · {1}
+東京から {0} {1}	{0} {1} from Tokyo
+{0}から {1} {2}	{1} {2} from {0}
+東京	Tokyo
+やめる	Quit
+やめる(取り消し)	Cancel
+続ける	Continue
+つづりを入力しよう	Type the spelling
+入力	Typing
+答えを入力	Type your answer
+準備中	Coming soon
+学習中	Learning
+この表示言語では、今は日常会話モードで、あいさつ・旅行フレーズ・旅行の場面の会話を学べます。ほかのモードも順番に翻訳していきます。	In this display language you can learn greetings, travel phrases and travel-scene conversations in Everyday mode for now. The other modes will be translated one by one.
+日常会話モードで学ぶ	Learn in Everyday mode
+職業モードは準備中です	Job mode is coming soon
+留学モードは準備中です	Study-abroad mode is coming soon
+検定モードは準備中です	Exam mode is coming soon
+復習	Review
+相手: {0}	With: {0}
+苦手 {0}フレーズ ・ 約{1}分	{0} weak phrases · about {1} min
+🔒 プレミアムエコノミーから使えます	🔒 From Premium Economy
+🔒 「プレミアムエコノミー」から使えます	🔒 From Premium Economy
+単語を正しい順に並べよう	Put the words in the right order
+並べ替え	Word order
+やり直し	Reset
+獲得マイルの明細	Miles earned
+ちょっと揺れた着陸	A slightly bumpy landing
+大丈夫。間違えた分だけ記憶に残りやすいよ	It's OK. Mistakes help you remember
+レッスン完了	Lesson complete
+正解 {0} {1}	Correct {0} {1}
+着陸評価 {0}	Landing rating {0}
+はじめての到着	First arrival
+獲得マイル	Miles earned
+間違えたフレーズ	Phrases you missed
+弱点コースに追加	Added to Weak points
+補習フライトへ	To the make-up flight
+レッスンをシェア	Share this lesson
+{0}・{1}・{2}・{3}・{4}	{0} · {1} · {2} · {3} · {4}
+次のレッスンへ	Next lesson
+ホームに戻る(地図を見る)	Back home (see the map)
+記録	Record
+ホーム	Home
+メニュー	Menu
+どの言語を学ぶ？	Which language will you learn?
+・ {0}行き	· to {0}
+{0}往復 ・ 約{1}分 ・ {2}	{0} exchanges · about {1} min · {2}
+いつでも切り替えられます。進み具合は言語ごとに残ります。	Switch any time. Your progress is kept for each language.
+「スターター」の言語は、今は日常会話モード(あいさつ・旅行フレーズ・旅行の場面の会話)で学べます。職業・留学・検定のコースは準備中です。	"Starter" languages can be learned in Everyday mode for now (greetings, travel phrases and travel-scene conversations). Job, study-abroad and exam courses are coming.
+{0} → {1} ・ {2}	{0} → {1} · {2}
+{0} ・ {1} {2}	{0} · {1} {2}
+{0} ・ {1} に到着	{0} · arrived in {1}
+筆記体なぞり	Cursive tracing
+{0}行き ・ {1}	To {0} · {1}
+{0}行き ・ 補習フライト: {1}	To {0} · Make-up flight: {1}
+{0}行き ・ 弱点コース	To {0} · Weak points
+{0}行き ・ リスニング特訓	To {0} · Listening drill
+{0}行き ・ 自由練習	To {0} · Free practice
+{0}行き ・ 復習	To {0} · Review
+弱点レポート	Weak-point report
+弱点コース	Weak points
+リスニング特訓	Listening drill
+ログイン / 新規登録	Log in / Sign up
+自由練習	Free practice
+復習 {0}フレーズ	Review: {0} phrases
+忘れかけた頃の復習	Review just before you forget
+今がちょうど復習のタイミング。思い出すほど記憶が長持ちします。	It's the perfect time to review. The more you recall, the longer you remember.
+今は復習するものがありません。次は{0}時間後です。	Nothing to review now. Next in {0} hours.
+今は復習するものがありません。次は{0}日後です。	Nothing to review now. Next in {0} days.
+今は復習するものがありません。次は{0}分後です。	Nothing to review now. Next in {0} minutes.
+今は復習するものがありません。次はいまです。	Nothing to review now. Next: now.
+まだ学習したフレーズがありません。ホームから1レッスンやってみよう。	You haven't learned any phrases yet. Try a lesson from Home.
+復習をはじめる	Start review
+復習するものはありません	Nothing to review
+補習フライト	Make-up flight
+補習フライト: {0}	Make-up flight: {0}
+苦手を別の形で練習	Practice weak phrases in new ways
+苦手を別の形で練習 ・ 約{0}分	Practice weak phrases in new ways · about {0} min
+間違いが多かったレッスンの苦手フレーズを、穴埋め・並べ替え・聞き取りなど別の形で出します。ミス{0}つまでで卒業。	Weak phrases from lessons with many mistakes come back as fill-in-the-blank, word order, listening and more. Graduate with {0} miss or fewer.
+苦手が多かったので「補習フライト」を追加しました(苦手 {0}フレーズ)	Lots of misses, so a make-up flight was added ({0} weak phrases)
+プラチナラウンジ	Platinum Lounge
+プラチナ以上のステータスの間だけ入れる、上級のボーナスレッスン。入力・並べ替え・聞き取りの問題だけで{0}問、ボーナス+{1}マイル。	An advanced bonus lesson, open while your status is Platinum or higher: {0} typing, word-order and listening questions, bonus +{1} miles.
+間違えたことのあるフレーズを、間違えた回数が多い順に出します。{0}回続けて正解すると卒業。	Phrases you've missed, most-missed first. Get one right {0} times in a row to graduate.
+問	Q
+{0} ・ アルファベット	{0} · Alphabet
+お手本の線をなぞって、筆記体を練習しよう。✍️ タッチペン推奨(指でもできます)	Trace the model lines to practice cursive. ✍️ A stylus works best (a finger is fine too)
+/ {0} 文字	/ {0} letters
+苦手なフレーズや、問題の形式ごとの正答率の変化をまとめて見られます。	See your weak phrases and how your accuracy changes for each question type.
+学習ずみのフレーズからランダムに{0}問。復習のタイミングに関係なく練習できます。	{0} random questions from phrases you've learned. Practice any time, whatever the review schedule.
+なぜ間隔をあけて復習するの？	Why space out reviews?
+忘れかけた頃に思い出す	Remembering just as you start to forget
+と、記憶は前より長持ちします。正解が続くと復習までの間隔が{0}→{1}→{2}→{3}→{4}→{5}日と伸び、間違えると短くなります。	makes memories last longer. Each right answer stretches the gap to the next review: {0} → {1} → {2} → {3} → {4} → {5} days. A wrong answer shortens it.
+同じ日に何度解いても間隔は伸びません。	Answering many times on the same day doesn't stretch the gap.
+次の日に思い出せるか	Whether you remember it the next day
+が本当のチェックです。	is the real test.
+{0}のスタンプ	{0} stamp
+{0} / {1} レッスン	{0} / {1} lessons
+{0} ・ 地図で飛行機が進みます	{0} · your plane moves on the map
+あなたの番 ・ {0}	Your turn · {0}
+こう伝えよう	Say this
+返事を入力	Type your reply
+{0}で入力(マイク入力も{1})	Type in {0} (mic {1})
+送信	Send
+相手の声をもう一度	Replay their line
+ゆっくり再生	Play slowly
+通話を終える	End call
+もう一度	Again
+字	Aa
+字幕	Subtitles
+訳	Tr
+日本語訳	Translation
+終了	End
+今日の目標を達成しました！	You reached today's goal!
+今日の目標達成	Today's goal reached
+目標達成ずみ。おかわりフライト中	Goal reached. Bonus flight
+ヒントを見る	Show hint
+ヒント:	Hint:
+終了の確認	Quit?
+このレッスンをやめますか？	Quit this lesson?
+ここまでの記録は保存されません。	Your progress in this lesson won't be saved.
+{0} ・ {1} ・ 入力モード	{0} · {1} · typing mode
+{0} ・ {1} ・ 通話モード	{0} · {1} · call mode
+相手が話しています…	They're speaking…
+呼び出し中…	Calling…
+相手を呼び出しています…	Calling…
+そのステータスの間だけ	While you hold that status
+ステータスをシェア	Share status
+空らんに入る語はどれ？	Which word fills the blank?
+穴埋め	Fill in the blank
+空らん	blank
+名前	Name
+一度もらえばずっと使える	Yours to keep once earned
+どんな練習か見る	See what it's like
+はじめて	New to it
+少しわかる	A little
+日常会話OK	Conversational
+標準。並べ替えや入力問題も出ます。	Standard. Includes word-order and typing questions.
+読み方のヒントつき。入力問題は出ません。基本の会話から始めます。	With reading hints. No typing questions. Starts with basic conversation.
+入力問題が多め。職業コースが先に表示されます。	More typing questions. Your job course comes first.
+職業コース	Job course
+未設定	Not set
+アイコンを変える	Change icon
+{0} ステータス ・ {1}志望	{0} status · aspiring {1}
+{0} ステータス	{0} status
+次の「{0}」まで {1} マイル	{1} miles to "{0}"
+最高ステータスに到達	Top status reached
+直近{0}ヶ月 {1} マイル ・ {2} まで有効	Last {0} months: {1} miles · valid until {2}
+ステータス特典	Status perks
+いまは {0}	Now: {0}
+ブロンズ	Bronze
+シルバー	Silver
+ゴールド	Gold
+プラチナ	Platinum
+ダイヤモンド	Diamond
+キャプテン	Captain
+アイコンが{0}つ増える	{0} more icons
+使える	Unlocked
+テーマカラーを選べる	Choose a theme color
+{0}で解放	Unlocks at {0}
+ラウンジ(上級のボーナスレッスン)	Lounge (advanced bonus lessons)
+特別デザインの搭乗券	Special boarding pass design
+金色の{0}カード	Gold {0} card
+無料	Free
+ホーム画面に追加すると、アプリみたいに全画面で開けて、電波がないところでも練習できるよ。	Add it to your home screen to open it full-screen like an app and practice even without signal.
+追加のしかたを見る	How to add it
+ホーム画面に追加	Add to Home Screen
+でこのページを開く	— open this page in it
+でこのページを開く(ほかのアプリの中で開いているときは「Safariで開く」)	— open this page in it (inside another app, choose "Open in Safari")
+右上のメニュー(⋮)を開く	Open the menu (⋮) at the top right
+「ホーム画面に追加」	"Add to Home screen"
+「アプリをインストール」	"Install app"
+か	or
+を選ぶ	(choose one)
+ホーム画面から開いても、この端末の記録はそのまま使えます。	Opening it from the home screen keeps this device's record.
+レッスン	Lessons
+連続日数	Day streak
+学習したフレーズ	Phrases learned
+定着したフレーズ	Phrases mastered
+スタンプ	Stamps
+{0} ・ {1} / {2}	{0} · {1} / {2}
+学習の設定	Settings
+表示言語 ・ Language	Display language
+変更	Change
+今のレベル	Current level
+英語の種類	Type of English
+アメリカ英語	American English
+イギリス英語	British English
+単語・つづり・音声がアメリカ式です。 記録は共通です。	Words, spelling and audio are American. Your record is shared.
+単語・つづり・音声がイギリス式です。 記録は共通です。	Words, spelling and audio are British. Your record is shared.
+1日の目標(レッスン数)	Daily goal (lessons)
+{0}回	{0}×
+表示	Appearance
+自動	Auto
+ライト	Light
+ダーク	Dark
+テーマカラー	Theme color
+ゴールドになると選べるようになります(一度なればずっと使えます)。	Unlocks at Gold (yours to keep once reached).
+効果音	Sound effects
+タップ音	Tap sounds
+振動	Vibration
+進捗はこの端末のブラウザに保存されます	Progress is saved in this browser
+進捗はアカウントに保存されています	Progress is saved to your account
+リセット	Reset
+消去する	Erase
+{0} 設計・プログラミング・{1}(新しいタブで開きます)	{0} design, programming, {1} (opens in a new tab)
+{0} 公開・サーバー(新しいタブで開きます)	{0} hosting & server (opens in a new tab)
+{0} コードの保存場所(新しいタブで開きます)	{0} where the code is kept (opens in a new tab)
+このアプリについて	About this app
+制作	Made by
+戸井慶成	戸井慶成
+使ったサービス	Built with
+設計・プログラミング・AI	Design, programming, AI
+公開・サーバー	Hosting & server
+コードの保存場所	Where the code is kept
+筆記体のお手本: {0} {1} — {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16} {17} {18}; {19} {20} {21} {22} {23} {24} {25} {26} {27}	Cursive models: {0} {1} — {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16} {17} {18}; {19} {20} {21} {22} {23} {24} {25} {26} {27}
+ステップ {0} / {1}	Step {0} / {1}
+日本から世界へ。	Take off to the world.
+仕事で使う言葉を、フライト形式で。	Real-world phrases, one flight at a time.
+はじめに{0}つだけ質問させてね。あなたに合わせて学ぶ内容を組み立てます。	Just {0} quick questions to start. Your course is built around you.
+ご搭乗ありがとうございました	Thank you for flying with us
+タッチペン推奨	A stylus works best
+(指でもできます)。お手本の線を、	(a finger is fine too). Trace the model line from the
+緑の●	green ●
+から矢印の向きになぞろう。	in the direction of the arrows.
+{0} 小文字	{0} Lowercase
+{0}〜{1}	{0}–{1}
+{0} 大文字	{0} Uppercase
+{0} つなげ書き	{0} Joined writing
+短い単語を続けて	Short words, joined up
+{0} 自分の名前	{0} Your name
+ローマ字で	In Latin letters
+練習の記録はこの端末に保存されます。お手本の文字は {0} の筆記体フォント({1} {2} {3})をもとにしています。	Your practice is saved on this device. The model letters are based on {0}'s cursive font ({1} {2} {3}).
+アカウント	Account
+スマホとパソコンで進み具合を同期できます。この端末の記録は、アカウントの記録と合わせて引き継がれます。	Sync your progress between phone and computer. This device's record is merged into your account.
+{0}で続ける	Continue with {0}
+メールアドレスで続ける	Continue with email
+続けると	By continuing you agree to the
+プライバシーポリシー	Privacy Policy
+に同意したことになります。	.
+ログインの準備中…	Getting sign-in ready…
+ログインの準備ができませんでした。電波を確認して、開き直してね。	Sign-in couldn't get ready. Check your connection and reopen the app.
+戻る	Back
+アイコンを選ぶ	Choose an icon
+パイロット	Pilot
+地球	Earth
+スーツケース	Suitcase
+地図	Map
+音楽	Music
+本	Book
+さくら	Cherry blossom
+自転車	Bicycle
+ペンギン	Penguin
+キツネ	Fox
+星	Star
+離陸	Takeoff
+小型機	Light aircraft
+ヘリコプター	Helicopter
+コンパス	Compass
+ロケット	Rocket
+シェアする画像	Image to share
+画像を作っています…	Making the image…
+画像に名前(	Put your name (
+)を入れる	) on the image
+画像をシェア	Share image
+{0}・{1}・{2}など	{0}, {1}, {2} and more
+画像を保存	Save image
+投稿文をコピー	Copy post text
+{0}・{1}は、画像を保存してからアプリで投稿してね。{2}・{3}・{4}はリンク付きの投稿画面が開きます。	For {0} and {1}, save the image and post it from the app. {2}, {3} and {4} open a post with a link.
+{0}のレベルは？	Your {0} level?
+標準(飛行機)	Standard (plane)
+1日の目標は？	Daily goal?
+気軽に	Casual
+ふつう	Regular
+しっかり	Serious
+本気	Intense
+1日1レッスン ・ 約3分	1 lesson a day · about 3 min
+1日2レッスン ・ 約6分	2 lessons a day · about 6 min
+1日3レッスン ・ 約10分	3 lessons a day · about 10 min
+1日5レッスン ・ 約15分	5 lessons a day · about 15 min
+どんな仕事で活躍したい？	What job would you like to do?
+選んだ職業の専門会話が、ホームのロードマップに追加されます。{0}言語すべてに対応しています。	Conversations for the job you choose are added to your route on Home. Available in all {0} languages.
+まだ決めていない	Not decided yet
+あとで選べます	You can choose later
+客室乗務員	Cabin crew
+医師・看護師	Doctor / nurse
+薬剤師	Pharmacist
+弁護士	Lawyer
+ITエンジニア	IT engineer
+ビジネス	Business
+美容師	Hairdresser
+料理人・シェフ	Cook / chef
+教師	Teacher
+ホテル・観光	Hotel & tourism
+研究者	Researcher
+スポーツ選手	Athlete
+韓国語	Korean
+英語	English
+スペイン語	Spanish
+イタリア語	Italian
+中国語	Chinese
+フランス語	French
+ドイツ語	German
+ポルトガル語	Portuguese
+ロシア語	Russian
+トルコ語	Turkish
+インドネシア語	Indonesian
+アラビア語	Arabic
+# シェア (share images and post text)
+Babel Flightで{0}の「{1}」をクリアしました✈️ {2} +{3}マイル	I cleared "{1}" in {0} on Babel Flight ✈️ {2} +{3} miles
+Babel Flightで語学の旅を続けています✈️ 連続{0}日・{1}マイル・覚えたフレーズ{2}	My language journey on Babel Flight continues ✈️ {0}-day streak · {1} miles · {2} phrases learned
+Babel Flightで語学の旅を続けています✈️ {1}マイル・覚えたフレーズ{2}	My language journey on Babel Flight continues ✈️ {1} miles · {2} phrases learned
+Babel Flightのステータスは「{0}」✈️ 総{1}マイル・スタンプ{2}個	My Babel Flight status is "{0}" ✈️ {1} miles in total · {2} stamps
+飛行機に乗るように、語学を学ぶ	Learn languages the way you take a flight
+韓国語・英語・スペイン語など12言語	Korean, English, Spanish and more: 12 languages
+連続日数	Day streak
+覚えたフレーズ	Phrases learned
+直近6ヶ月のマイル	Miles in the last 6 months
+総マイル	Total miles
+フライト	Flight
+復習フライト	Review flight
+機内アナウンス	In-flight announcements
+AIの例文練習	AI example practice
+飛び級テスト	Skip-ahead test
+{0} ・ {1} {2} に到着	{0} · arrived in {1} {2}
+{0} ・ {1} {2} {3} に到着	{0} · arrived in {1} {2} {3}
+{0} ・ {1} {2} {3} {4} に到着	{0} · arrived in {1} {2} {3} {4}

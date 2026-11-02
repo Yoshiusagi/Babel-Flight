@@ -89,7 +89,7 @@ if(SAI.on){
     var ctl=new AbortController();AI.ctl=ctl;
     var acc='';
     var setLeft=function(){var el=$('aiLeft');if(el)el.textContent=(saiLeftText('ask')?saiLeftText('ask')+' ・ ':'')+'AIの答えはまちがうこともあるよ';};
-    saiPost('/api/ai/ask',{lang:F.lang,phrase:String(d.t||'').slice(0,300),jp:String(d.jp||'').slice(0,300),reading:String(d.r||'').slice(0,300),note:String(d.n||'').slice(0,600),question:String(q).slice(0,200)},ctl.signal)
+    saiPost('/api/ai/ask',{lang:F.lang,ui:UI,phrase:String(d.t||'').slice(0,300),jp:String(T(d.jp)||'').slice(0,300),reading:String(d.r||'').slice(0,300),note:String(T(d.n)||'').slice(0,600),question:String(T(q)).slice(0,200)},ctl.signal)
     .then(function(r){
       if(!r.ok)return r.json().catch(function(){return {};}).then(function(j){
         if(j&&j.left)SAI.left=j.left;

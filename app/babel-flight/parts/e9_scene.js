@@ -56,7 +56,7 @@ function scPanelHTML(){
   var task='<div class="task"><span class="task-k">こう伝えよう</span><b>'+esc(t.aj)+'</b></div>';
   if(S.stage==='you'){
     if(S.mode==='call')return step+task+'<p class="dim hint">声に出して言ってみよう。言えたらボタンでお手本を確認。</p><button class="go" type="button" data-sc-reveal>言った！ お手本を聞く</button>';
-    return step+task+(S.hint?'<p class="hintline">ヒント: '+esc(/ /.test(t.a.trim())?t.a.split(' ').slice(0,2).join(' '):Array.from(t.a).slice(0,Math.max(2,Math.floor(Array.from(t.a).length/3))).join(''))+' …</p>':'')+
+    return step+task+(S.hint?'<p class="hintline">ヒント: <span translate="no">'+esc(/ /.test(t.a.trim())?t.a.split(' ').slice(0,2).join(' '):Array.from(t.a).slice(0,Math.max(2,Math.floor(Array.from(t.a).length/3))).join(''))+'</span> …</p>':'')+
       '<div class="row2"><input id="scIn" class="typebox" type="text" dir="auto" autocomplete="off" autocapitalize="none" spellcheck="false" lang="'+LANGS[S.lang].tts.slice(0,2)+'" placeholder="'+esc(LANGS[S.lang].name)+'で入力(マイク入力もOK)" aria-label="返事を入力"><button class="go" type="button" data-sc-send style="width:auto;margin:0;padding:12px 16px">送信</button></div>'+
       (S.hint?'':'<button class="sq" type="button" data-sc-hint>ヒントを見る</button>');
   }

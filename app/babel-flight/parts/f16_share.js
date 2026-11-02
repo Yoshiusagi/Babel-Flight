@@ -66,12 +66,13 @@ function shrStatus(){
   ORDER.forEach(function(l){ALL_IDS[l].forEach(function(uid){if(unitRec(l,uid).n>0)stamps++;});});
   return {rank:statusIdx(now),win:milesWindow(now),miles:save.miles,stamps:stamps,prof:p?p.jp:'',cap:!!save.cap,icon:ic?ic[1]:''};
 }
+/* the post text: written as a template so the display language (T, 表示言語) can reorder it */
 function shrText(kind,d){
-  var t;
-  if(kind==='lesson')t='Babel Flightで'+d.langName+'の「'+d.title+'」をクリアしました✈️ '+'★★★'.slice(0,d.stars)+' +'+fmt(d.miles)+'マイル';
-  else if(kind==='progress')t='Babel Flightで語学の旅を続けています✈️ '+(d.streak>0?'連続'+d.streak+'日・':'')+fmt(d.miles)+'マイル・覚えたフレーズ'+fmt(d.learned);
-  else t='Babel Flightのステータスは「'+RANKS[d.rank][0]+'」✈️ 総'+fmt(d.miles)+'マイル・スタンプ'+d.stamps+'個';
-  return t+' #BabelFlight';
+  var t,a;
+  if(kind==='lesson'){t='Babel Flightで{0}の「{1}」をクリアしました✈️ {2} +{3}マイル';a=[d.langName,d.title,'★★★'.slice(0,d.stars),fmt(d.miles)];}
+  else if(kind==='progress'){t=d.streak>0?'Babel Flightで語学の旅を続けています✈️ 連続{0}日・{1}マイル・覚えたフレーズ{2}':'Babel Flightで語学の旅を続けています✈️ {1}マイル・覚えたフレーズ{2}';a=[d.streak,fmt(d.miles),fmt(d.learned)];}
+  else{t='Babel Flightのステータスは「{0}」✈️ 総{1}マイル・スタンプ{2}個';a=[RANKS[d.rank][0],fmt(d.miles),d.stamps];}
+  return T(t).replace(/\{(\d)\}/g,function(_,i){return T(String(a[+i]));})+' #BabelFlight';
 }
 function shrIntent(where,kind,d){
   var tx=encodeURIComponent(shrText(kind,d)),u=encodeURIComponent(shrLink());
@@ -139,7 +140,7 @@ function shrFooter(c){
   c.textAlign='center';c.fillStyle='#ffffff';
   shrFont(c,'700',66,SHR_F.disp);shrSpaced(c,'#BabelFlight',SHR_W/2,1578,2,'center');
   shrFont(c,'400',34,SHR_F.mono);c.fillStyle='rgba(255,255,255,.9)';c.fillText(shrSite().replace(/^https?:\/\//,''),SHR_W/2,1636);
-  shrFont(c,'500',30,SHR_F.body);c.fillStyle='rgba(255,255,255,.75)';c.fillText('韓国語・英語・スペイン語・イタリア語',SHR_W/2,1688);
+  shrFont(c,'500',30,SHR_F.body);c.fillStyle='rgba(255,255,255,.75)';c.fillText('韓国語・英語・スペイン語など12言語',SHR_W/2,1688);
 }
 /* the paper card with a coloured strip, a tear line and notches */
 function shrCard(stripCol,draw){

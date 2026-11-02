@@ -10,7 +10,8 @@
 //
 // Routes (dispatched from server.ts):
 //   GET  /api/ai/status   { enabled, signedIn, left? }
-//   POST /api/ai/ask      { lang, phrase, jp, reading?, note?, question } -> streamed plain text
+//   POST /api/ai/ask      { lang, phrase, jp, reading?, note?, question, ui? } -> streamed plain text
+//                         (ui: the display language ja/en/ko/zh; jp and note then come translated into it)
 //   POST /api/ai/atc      { scenario, history[], pilot } -> { atc, score, feedback_ja, better, done, left }
 //   POST /api/ai/drill    { lang, variant?, items[{t,jp}] } -> { qs[{t,jp,wrong[3]}], left }
 import type { D1Database, D1PreparedStatement } from "@cloudflare/workers-types";
@@ -44,6 +45,14 @@ const SAFETY_JA =
   "語学の学習に関係のない質問、危険・暴力・性的・差別的な内容、個人情報(住所・学校名・連絡先など)を求める話題には答えず、" +
   "「ごめんね、ここでは語学の質問に答えるよ」のように短く伝えて、語学の話に戻してください。" +
   "あなたはAIです。人間のふりはしないでください。";
+
+/* 表示言語 (display language) for the answers of /api/ai/ask */
+const UI_NAMES: Record<string, string> = { en: "English", ko: "Korean", zh: "Simplified Chinese" };
+const SAFETY_UI =
+  "Some learners are teenagers (13-17). Keep everything age-appropriate and safe. If a question is not about language " +
+  "learning, or asks for anything dangerous, violent, sexual, discriminatory or personal (address, school, contact details), " +
+  "do not answer it: say briefly and kindly that you only answer language questions here, and steer back to the phrase. " +
+  "You are an AI; never claim to be a human.";
 
 const SAFETY_EN =
   "Some learners are teenagers (13-17). Keep everything age-appropriate and safe. Stay strictly inside this radio training " +
@@ -311,6 +320,7 @@ async function handleAsk(request: Request, db: D1Database, key: string): Promise
   const reading = text(body?.reading, 300);
   const note = text(body?.note, 600);
   const question = text(body?.question, 200, true);
+  const ui = typeof body?.ui === "string" && UI_NAMES[body.ui] ? body.ui : "ja";
   if (!LANG_NAMES[lang] || phrase === null || jp === null || reading === null || note === null || question === null) {
     return json({ ok: false, error: "bad_request" }, 400);
   }
@@ -322,11 +332,22 @@ async function handleAsk(request: Request, db: D1Database, key: string): Promise
   const used = await reserve(db, uid, day, "ask", false, tier);
   if (!used) return json({ ok: false, error: "quota", left: leftOf(await usage(db, uid, day), tier) }, 429);
 
-  const system =
-    "あなたは語学学習アプリ「Babel Flight」の中で、学習者の質問に答えるAIの語学の先生です。" +
-    "日本の中学生にもわかるように説明するのが得意です。" +
-    SAFETY_JA;
-  const prompt =
+  const out = ui === "ja" ? null : UI_NAMES[ui];
+  const system = out
+    ? `You are the AI language teacher inside the language-learning app "Babel Flight", answering learners' questions. ` +
+      `You explain things so that a junior-high-school student understands. Always answer in ${out}. ` + SAFETY_UI
+    : "あなたは語学学習アプリ「Babel Flight」の中で、学習者の質問に答えるAIの語学の先生です。" +
+      "日本の中学生にもわかるように説明するのが得意です。" +
+      SAFETY_JA;
+  const prompt = out
+    ? `Language being learned: ${LANG_EN[lang] ?? LANG_NAMES[lang]}\nPhrase: ${phrase}\nMeaning (${out}): ${jp}` +
+      (reading ? `\nReading: ${reading}` : "") +
+      (note ? `\nThe app's tip: ${note}` : "") +
+      `\n\nThe learner's question: ${question}` +
+      `\n\nHow to answer: in ${out}, explaining the reason so it really makes sense. About 120 words. No headings or Markdown ` +
+      `symbols (# or *); short paragraphs. End with "Example:" and one similar example sentence (the original and its ${out} ` +
+      "translation). Do not state anything as certain unless you are sure."
+    :
     `学習中の言語: ${LANG_NAMES[lang]}\nフレーズ: ${phrase}\n日本語の意味: ${jp}` +
     (reading ? `\n読み(${lang === "zh" ? "ピンイン" : "カタカナ"}): ${reading}` : "") +
     (note ? `\nアプリのワンポイント解説: ${note}` : "") +

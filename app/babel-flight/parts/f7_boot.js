@@ -36,15 +36,16 @@ document.addEventListener('click',function(e){
   if(a('data-toggle-tap')){save.tap=!save.tap;store();render();return;}
   if(a('data-reset')){confirmReset=true;render();return;}
   if(a('data-reset-no')){confirmReset=false;render();return;}
-  if(a('data-reset-yes')){save=defaults();confirmReset=false;store();applyTheme();obStep=0;obDraft={lang:save.lang,prof:'',level:'mid',goal:2};go('onboard');return;}
+  if(a('data-reset-yes')){save=defaults();confirmReset=false;store();applyTheme();obStep=0;obDraft={lang:save.lang,prof:'',level:'mid',goal:2};if(obDraft.lang===UI)obDraft.lang=learnOrder()[0];go('onboard');return;}
   /* onboarding */
+  if(a('data-ui-set')){uiSet(g('data-ui-set'));return;}
   if(a('data-ob-lang')){obDraft.lang=g('data-ob-lang');render();return;}
   if(a('data-ob-prof')){obDraft.prof=g('data-ob-prof');render();return;}
   if(a('data-ob-level')){obDraft.level=g('data-ob-level');render();return;}
   if(a('data-ob-goal')){obDraft.goal=parseInt(g('data-ob-goal'),10);render();return;}
-  if(a('data-ob-back')){obStep=Math.max(0,obStep-1);render();window.scrollTo(0,0);return;}
+  if(a('data-ob-back')){obStep=Math.max(0,obStep-1);if(obStep===1&&UI!=='ja')obStep=0;render();window.scrollTo(0,0);return;}
   if(a('data-ob-next')){
-    if(obStep<3){obStep++;render();window.scrollTo(0,0);return;}
+    if(obStep<3){obStep++;if(obStep===1&&UI!=='ja')obStep=2;render();window.scrollTo(0,0);return;}
     save.lang=obDraft.lang;save.prof=obDraft.prof;save.level=obDraft.level;save.goal=obDraft.goal;save.onboarded=true;save.mode='daily';store();go('home');return;
   }
   /* scenes */
@@ -121,8 +122,10 @@ var rsT=0;window.addEventListener('resize',function(){clearTimeout(rsT);rsT=setT
 
 applyTheme();
 initSky();
-if(!save.onboarded){view='onboard';obStep=0;obDraft={lang:save.lang,prof:save.prof,level:save.level,goal:save.goal};}
+uiBoot();
+if(!save.onboarded){view='onboard';obStep=0;obDraft={lang:save.lang,prof:save.prof,level:save.level,goal:save.goal};if(obDraft.lang===UI)obDraft.lang=learnOrder()[0];}
 render();
+uiWalk(document.body);
 initCloud();
 initAI();
 })();

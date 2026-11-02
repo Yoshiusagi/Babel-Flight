@@ -89,6 +89,8 @@ var POOL={};
 function langPool(L){
   if(POOL[L])return POOL[L];
   var a=[];ALL_IDS[L].forEach(function(uid){var u=UNITS[L][uid];if(u.kind!=='scene'){var g=u.track;u.items.forEach(function(x){x._g=g;a.push(x);});}});
+  /* another display language: only phrases whose meaning is translated (日常会話モード) */
+  if(UI!=='ja'&&I18N)a=a.filter(function(x){return I18N.d[x.jp]!=null;});
   return (POOL[L]=a);
 }
 function tooClose(a,b){var na=normLoose(a),nb=normLoose(b);if(!na||!nb)return true;if(na.indexOf(nb)>=0||nb.indexOf(na)>=0)return true;return simScore(a,b)>0.8;}

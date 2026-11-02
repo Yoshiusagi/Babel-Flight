@@ -14,6 +14,7 @@ f22_css.html
 f23_css.html
 f24_css.html
 f25_css.html
+f27_css.html
 @HEADEND
 e2_body.html
 a0_env.js
@@ -77,5 +78,9 @@ f24_cdata.js
 f24_cursive.js
 f25_iv.js
 f26_jobx.js
+f27_rom.js
+f27_swap.js
+f27_i18nv.js
+f27_i18n.js
 f7_boot.js
 @END

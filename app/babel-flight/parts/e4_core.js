@@ -161,6 +161,7 @@ function weakList(lang){
 }
 function nextDueIn(lang){var m=Infinity;eachItem(lang,function(uid,i,r){if(r.b>=1&&r.d<m)m=r.d;});return m===Infinity?null:m;}
 function pathSections(lang){
+  if(typeof uiModeOpen==='function'&&!uiModeOpen(save.mode))return [];
   if(save.mode==='exam'&&typeof examSections==='function'){var xs=examSections(lang);if(xs)return xs;}
   if(save.mode==='job'){
     var p=profById(save.prof);

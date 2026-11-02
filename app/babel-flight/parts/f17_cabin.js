@@ -47,7 +47,7 @@ function cabinFeatHTML(lv){
   return '<ul class="cabin-feat">'+CAB_FEAT.map(function(f){var v=f[1][lv];return '<li class="'+(v==='—'?'off':'on')+'"><span>'+f[0]+'</span><b>'+(v==='—'?'🔒':esc(v))+'</b></li>';}).join('')+'</ul>';
 }
 function cabinCardHTML(){
-  var lv=cabinLv();if(lv<0)return '';
+  var lv=cabinLv();if(lv<0||UI!=='ja')return '';
   if(!cabinTester()){
     return '<section class="card cabin-card eco"><div class="card-h"><h2 class="jh">搭乗クラス</h2><span class="lbl">'+CABINS[lv][2]+'</span></div>'+
       '<div class="cab-now"><b>'+CABINS[lv][1]+'</b><small>'+(lv?'':'無料 ・ ')+'いまのクラス</small></div>'+cabinFeatHTML(lv)+
@@ -67,7 +67,7 @@ function cabinCardHTML(){
 }
 
 /* ---- 検定モード ---- */
-function examModeOn(){return cabinLv()>=0;}
+function examModeOn(){return cabinLv()>=0&&UI==='ja';}
 /* 目標 (one per language), kept on this device in the test version */
 var XG_KEY='babelflight.examTarget';
 function xgLoad(){try{var o=JSON.parse(lsGet(XG_KEY)||'{}');return o&&typeof o==='object'?o:{};}catch(e){return {};}}
@@ -472,7 +472,7 @@ function roleUsed(){try{var o=JSON.parse(lsGet(ROLE_KEY)||'{}');return o&&o.d===
 function roleLeft(){var lv=cabinLv();return lv<0?0:Math.max(0,ROLE_LIM[lv]-roleUsed());}
 function roleAiOn(){return typeof SAI==='object'&&SAI.enabled&&typeof ACCT==='object'&&!!ACCT.me;}
 function roleCardHTML(L){
-  var lv=cabinLv();if(lv<0)return '';
+  var lv=cabinLv();if(lv<0||UI!=='ja')return '';
   var h='<section class="card mode role-card"><span class="lbl">AI ROLEPLAY ・ '+esc(LANGS[L].name)+'</span><h2 class="jh">AI会話ロールプレイ</h2>'+
     '<p class="dim">機内のCA、入国審査官、ホテルの人などの役をAIが演じます。'+esc(LANGS[L].name)+'で返事をすると、採点とお手本が出ます。</p>';
   if(lv<1)return h+'<p class="dim hint">🔒 プレミアムエコノミーから使えます</p></section>'+

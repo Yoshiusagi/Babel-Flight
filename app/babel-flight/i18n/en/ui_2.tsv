@@ -1,0 +1,57 @@
+# AIに「なぜ？」を質問する (the AI teacher in a lesson)
+AI機能を使うには、AIに送る内容の確認で「同意して使う」を選んでね。	To use the AI, choose "Agree and use" when asked about what is sent to the AI.
+ログインが切れたみたい。「記録」画面からもう一度ログインしてね。	Looks like you were logged out. Log in again from the Record screen.
+今日の質問はここまで(1日20回)。また明日ね！	That's all the questions for today (20 a day). See you tomorrow!
+今日の質問はここまで(1日{0}回)。また明日ね！	That's all the questions for today ({0} a day). See you tomorrow!
+今日はAIがとても混んでいるので、ここまでにしています。また明日試してね。	The AI is very busy today, so we're stopping here. Try again tomorrow.
+AI機能は今お休み中です。	The AI is taking a break right now.
+AIが答えられませんでした。少し待ってからもう一度試してね。(回数は減っていないよ)	The AI couldn't answer. Wait a moment and try again. (It didn't count.)
+うまくいきませんでした。もう一度試してね。	That didn't work. Please try again.
+テスト用アカウント ・ 回数制限なし	Test account · no limit
+今日はあと	Left today:
+今日はあと{0}回	{0} left today
+回	times
+AI機能を確認中…	Checking the AI…
+AIへの質問は、ログインすると使えるよ(無料・1日20回まで)。ログインはレッスンのあと「記録」画面からできます。	Log in to ask the AI (free, up to 20 a day). You can log in from the Record screen after a lesson.
+AIの答えはまちがうこともあるよ	The AI can make mistakes
+{0} ・ AIの答えはまちがうこともあるよ	{0} · The AI can make mistakes
+ログインすると使えるよ。	Log in to use it.
+考え中…	Thinking…
+(途中で通信が切れました)	(The connection was lost partway)
+(途中までの回答です)	(The answer stops here)
+通信できませんでした。電波を確認して、もう一度試してね。	Couldn't connect. Check your signal and try again.
+通信できませんでした。電波を確認して、もう一度送ってね。	Couldn't connect. Check your signal and send it again.
+AI機能が許可されていないため使えません。	The AI isn't allowed here, so it can't be used.
+少し時間をおいてから、もう一度試してね。	Wait a little, then try again.
+もう一度サインインしてから試してね。	Sign in again, then try.
+この質問には答えられませんでした。聞き方を変えてみてね。	This question couldn't be answered. Try asking another way.
+うまく答えを受け取れませんでした。もう一度試してね。	The answer didn't come through. Please try again.
+なぜこの形になるの？	Why is it this form?
+似た言い方を教えて	Tell me similar ways to say it
+発音のコツは？	Tips for pronouncing it?
+どんな場面で使う？	When do you use it?
+AIに質問	Ask the AI
+例:	Example:
+テスト用アカウント ・ 回数制限なし ・ {0}の答えはまちがうこともあるよ	Test account · no limit · The {0} can make mistakes
+{0}への質問	Question for the {0}
+自由に質問してもOK	Feel free to ask anything
+# 発音チェック (pronunciation check)
+聞いています…	Listening…
+言い終わったら少し待ってね(もう一度押すと止まる)	Wait a moment when you finish (press again to stop)
+聞こえた言葉:	What I heard:
+◎ ばっちり！ ちゃんと伝わる発音です	◎ Spot on! Easy to understand
+◯ おしい！ 聞こえた言葉と見比べてみよう	◯ Close! Compare it with what I heard
+△ もう一度！ ゆっくり、はっきり言ってみよう	△ Once more! Say it slowly and clearly
+マイクが許可されていません。ブラウザの設定でマイクを許可してね。	The microphone isn't allowed. Allow it in your browser settings.
+声が聞き取れませんでした。もう一度、はっきり言ってみてね。	I couldn't hear you. Try again, nice and clearly.
+このブラウザは音声認識に対応していません(ChromeやSafariで使えます)。	This browser can't recognize speech (Chrome and Safari can).
+音声認識には通信が必要です。電波を確認してね。	Speech recognition needs a connection. Check your signal.
+この端末では、この言語の音声認識が使えません。	This device can't recognize speech in this language.
+うまく聞き取れませんでした。もう一度試してね。	I couldn't catch that. Please try again.
+# iPhone app: daily reminder
+✈️ 搭乗のご案内	✈️ Boarding call
+{0} {1}便、まもなく搭乗開始です。今日のレッスンで{2}を一歩すすめよう。	{0} {1} is now boarding. Take your {2} one step further with today's lesson.
+機長よりお知らせします。連続{0}日目のフライトの準備が整いました。	This is your captain speaking. Day {0} of your streak is ready for departure.
+機長よりお知らせします。本日のフライトの準備が整いました。	This is your captain speaking. Today's flight is ready for departure.
+搭乗手続きのお時間です。{0}分のレッスンからどうぞ。	Time to check in. Start with a {0}-minute lesson.
+本日の目標まで、あと{0}レッスン。ゲートでお待ちしています。	{0} more lessons to today's goal. We'll be waiting at the gate.
