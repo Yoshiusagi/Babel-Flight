@@ -67,7 +67,7 @@ if(SAI.on){
     return '<button class="go sm" type="button" data-atc>交信をはじめる</button>'+(SAI.left?'<p class="sai-left">'+saiLeftText('atc')+'</p>':'');
   };
   atcNoteText=function(){
-    return 'AI管制官は1日5回まで('+(saiLeftText('atc')||'ログインが必要')+')。AIの答えはまちがうこともあるので、本物の交信方法は教材でも確かめてね。';
+    return 'AI管制官は一日5回まで('+(saiLeftText('atc')||'ログインが必要')+')。AIの答えはまちがうこともあるので、本物の交信方法は教材でも確かめてね。';
   };
   aiBtnHTML=function(){
     return SAI.enabled?'<div id="aiBox" class="aibox"><button class="sq ai" type="button" data-ai-open>AIに「なぜ？」を質問する</button></div>':'';
@@ -85,7 +85,7 @@ if(SAI.on){
     if(!ACCT.me){out.textContent='ログインすると使えるよ。';return;}
     var d=dat(F.cur.it);
     aiStop();
-    out.textContent='考え中…';out.classList.add('wait');
+    out.removeAttribute('translate');out.textContent='考え中…';out.classList.add('wait');
     var ctl=new AbortController();AI.ctl=ctl;
     var acc='';
     var setLeft=function(){var el=$('aiLeft');if(el)el.textContent=(saiLeftText('ask')?saiLeftText('ask')+' ・ ':'')+'AIの答えはまちがうこともあるよ';};
@@ -93,19 +93,19 @@ if(SAI.on){
     .then(function(r){
       if(!r.ok)return r.json().catch(function(){return {};}).then(function(j){
         if(j&&j.left)SAI.left=j.left;
-        out.classList.remove('wait');out.textContent=saiErr(j,'ask');setLeft();
+        out.classList.remove('wait');out.removeAttribute('translate');out.textContent=saiErr(j,'ask');setLeft();
         if(j&&(j.error==='signin'||j.error==='disabled'))saiStatus();
       });
       var n=parseInt(r.headers.get('x-ai-left'),10);
       if(!isNaN(n)){SAI.left=SAI.left||{ask:0,atc:0};SAI.left.ask=n;setLeft();}
-      var show=function(){out.classList.remove('wait');out.textContent=acc;};
+      var show=function(){out.classList.remove('wait');out.setAttribute('translate','no');out.textContent=acc;};
       if(!r.body||!r.body.getReader)return r.text().then(function(t){acc=t;show();});
       var rd=r.body.getReader(),dec=new TextDecoder();
       var pump=function(){return rd.read().then(function(x){
         if(x.done){acc+=dec.decode();show();return;}
         acc+=dec.decode(x.value,{stream:true});if(acc)show();return pump();
       });};
-      return pump().then(function(){if(!acc.trim()){out.textContent=saiErr({error:'upstream'},'ask');}});
+      return pump().then(function(){if(!acc.trim()){out.removeAttribute('translate');out.textContent=saiErr({error:'upstream'},'ask');}});
     })
     .catch(function(e){
       if(e&&e.name==='AbortError')return;
@@ -117,7 +117,7 @@ if(SAI.on){
   /* AIの例文練習 through the site's server */
   aiDrillAvail=function(){return SAI.enabled&&!!ACCT.me;};
   aiDrillMake=function(L,items,signal){
-    var body={lang:L,variant:L==='en'&&save.enVar==='uk'?'uk':'us',items:items.map(function(d){return {t:String(d.t||'').slice(0,200),jp:String(d.jp||'').slice(0,200)};})};
+    var body={lang:L,ui:UI,variant:L==='en'&&save.enVar==='uk'?'uk':'us',items:items.map(function(d){return {t:String(d.t||'').slice(0,200),jp:String(T(d.jp)||'').slice(0,200)};})};
     return saiPost('/api/ai/drill',body,signal).then(function(r){return r.json().catch(function(){return {};});}).then(function(j){
       if(j&&j.left)SAI.left=j.left;
       if(!j||!j.ok)throw {code:(j&&j.error)||'server'};
@@ -139,7 +139,7 @@ if(SAI.on){
     var me={who:'me',text:text,wait:true};ATC.log.push(me);atcRefresh();
     var ctl=new AbortController();ATC.ctl=ctl;
     var at=ATC,sc=ATC.sc;
-    saiPost('/api/ai/atc',{scenario:sc.id,history:ATC.ex.slice(),pilot:text},ctl.signal)
+    saiPost('/api/ai/atc',{scenario:sc.id,history:ATC.ex.slice(),pilot:text,ui:UI},ctl.signal)
     .then(function(r){return r.json().catch(function(){return {};});})
     .then(function(j){
       if(ATC!==at||ATC.sc!==sc)return; // left this call meanwhile

@@ -138,7 +138,7 @@ function trainBlockHTML(b){
   var next=null;bankUnits(b).some(function(u){if(unitRec(b.L,u).n===0){next=u;return true;}return false;});
   if(m.seen>=4)h+='<button class="go sm" type="button" data-xtrain="'+esc(b.key)+'">トレーニング(10問)<small>'+(next?'覚えたフレーズを復習 ・ 新しいフレーズは地図のステップで':'復習の時期・苦手・まだ弱いフレーズから出題。何回でも')+'</small></button>';
   else if(next)h+='<button class="go sm" type="button" data-go="'+esc(next)+'">'+esc(unitTitle(next))+'からはじめる<small>レッスンで覚えたフレーズが、トレーニングに出てきます</small></button>';
-  if(full&&m.pct>=XPASS&&UI==='ja'&&typeof aiDrillAvail==='function'&&aiDrillAvail())
+  if(full&&m.pct>=XPASS&&typeof aiDrillAvail==='function'&&aiDrillAvail())
     h+='<button class="ghost ai-drill" type="button" data-xai="'+esc(b.key)+'">AIが作る新しい例文で練習<small>'+w.line+'に到達したので、同じ表現を別の文で(まちがいがあるかも)</small></button>';
   return h;
 }
@@ -437,35 +437,35 @@ function coachRun(){
   var tot=[0,0];Object.keys(r.d).forEach(function(k){tot[0]+=r.d[k][0];tot[1]+=r.d[k][1];});
   var body={lang:L,
     phrase:(weak.map(function(d){return d.t;}).join(' / ')||'(苦手なフレーズはまだありません)').slice(0,300),
-    jp:(weak.map(function(d){return d.jp;}).join(' / ')||'(なし)').slice(0,300),reading:'',
+    jp:(weak.map(function(d){return T(d.jp);}).join(' / ')||'(なし)').slice(0,300),reading:'',ui:UI,
     note:('弱点レポートのデータ: これまでの解答 '+tot[0]+'問、正答率 '+(tot[0]?Math.round(tot[1]/tot[0]*100):0)+'%。問題の形式ごとの正答率: '+(kinds.join('、')||'まだデータが少ない')+'。上のフレーズは間違えた回数が多いものです。').slice(0,600),
     question:'この弱点データを見て、これからの勉強のしかたを3つ、具体的にアドバイスしてください。'};
-  out.textContent='AIコーチが考え中…';out.classList.add('wait');
+  out.removeAttribute('translate');out.textContent='AIコーチが考え中…';out.classList.add('wait');
   saiPost('/api/ai/ask',body).then(function(res){
     var left=res.headers.get('x-ai-left');if(left!==null&&SAI.left){SAI.left.ask=parseInt(left,10);}
     if(!res.ok)return res.json().catch(function(){return {};}).then(function(j){throw j;});
     return res.text();
-  }).then(function(t){out.classList.remove('wait');out.textContent=t;},function(j){out.classList.remove('wait');out.textContent=saiErr(j,'ask');});
+  }).then(function(t){out.classList.remove('wait');out.setAttribute('translate','no');out.textContent=t;},function(j){out.classList.remove('wait');out.removeAttribute('translate');out.textContent=saiErr(j,'ask');});
 }
 
 /* ---- AI会話ロールプレイ (on top of the AI管制官 engine) ---- */
 var ROLE_SC=[
  {id:'cabin',jp:'機内でCAと話す',sub:'飲み物や毛布をお願いする',who:'CABIN CREW',sit:'国際線の機内。食事の時間です。客室乗務員に話しかけて、飲み物を頼んだり、困っていることを伝えよう。',
-  hint:{en:'Excuse me, could I have some water, please?',ko:'저기요, 물 좀 주시겠어요?',es:'Perdone, ¿me puede traer un poco de agua, por favor?',it:"Scusi, potrei avere un po' d'acqua, per favore?",zh:'不好意思，可以给我一杯水吗？',fr:"Excusez-moi, je pourrais avoir de l'eau, s'il vous plaît ?",de:"Entschuldigung, könnte ich bitte ein Glas Wasser haben?",pt:"Com licença, pode me dar um copo de água, por favor?",ru:"Извините, можно стакан воды?",tr:"Affedersiniz, bir bardak su alabilir miyim?",id:"Permisi, boleh minta segelas air?",ar:"عفوا، هل يمكنني الحصول على كوب ماء؟"}},
+  hint:{ja:'すみません、お水をいただけますか。',en:'Excuse me, could I have some water, please?',ko:'저기요, 물 좀 주시겠어요?',es:'Perdone, ¿me puede traer un poco de agua, por favor?',it:"Scusi, potrei avere un po' d'acqua, per favore?",zh:'不好意思，可以给我一杯水吗？',fr:"Excusez-moi, je pourrais avoir de l'eau, s'il vous plaît ?",de:"Entschuldigung, könnte ich bitte ein Glas Wasser haben?",pt:"Com licença, pode me dar um copo de água, por favor?",ru:"Извините, можно стакан воды?",tr:"Affedersiniz, bir bardak su alabilir miyim?",id:"Permisi, boleh minta segelas air?",ar:"عفوا، هل يمكنني الحصول على كوب ماء؟"}},
  {id:'immigration',jp:'入国審査',sub:'目的・日数・泊まる場所を答える',who:'IMMIGRATION',sit:'空港の入国審査。係官にあいさつしてパスポートを渡し、質問に答えて入国しよう。',
-  hint:{en:'Hello. Here is my passport.',ko:'안녕하세요. 여기 여권이요.',es:'Hola. Aquí tiene mi pasaporte.',it:'Buongiorno. Ecco il mio passaporto.',zh:'你好，这是我的护照。',fr:"Bonjour. Voici mon passeport.",de:"Guten Tag. Hier ist mein Reisepass.",pt:"Bom dia. Aqui está o meu passaporte.",ru:"Здравствуйте. Вот мой паспорт.",tr:"Merhaba. Buyurun, pasaportum.",id:"Selamat siang. Ini paspor saya.",ar:"مرحبا. هذا جواز سفري."}},
+  hint:{ja:'こんにちは。これがパスポートです。',en:'Hello. Here is my passport.',ko:'안녕하세요. 여기 여권이요.',es:'Hola. Aquí tiene mi pasaporte.',it:'Buongiorno. Ecco il mio passaporto.',zh:'你好，这是我的护照。',fr:"Bonjour. Voici mon passeport.",de:"Guten Tag. Hier ist mein Reisepass.",pt:"Bom dia. Aqui está o meu passaporte.",ru:"Здравствуйте. Вот мой паспорт.",tr:"Merhaba. Buyurun, pasaportum.",id:"Selamat siang. Ini paspor saya.",ar:"مرحبا. هذا جواز سفري."}},
  {id:'hotel',jp:'ホテルのチェックイン',sub:'予約を伝えて、朝食やWi-Fiを聞く',who:'FRONT DESK',sit:'ホテルのフロント。予約していることを伝えて、チェックインしよう。',
-  hint:{en:'Hi, I have a reservation under the name Sato.',ko:'안녕하세요. 사토 이름으로 예약했어요.',es:'Hola, tengo una reserva a nombre de Sato.',it:'Buonasera, ho una prenotazione a nome Sato.',zh:'你好，我用佐藤的名字预订了房间。',fr:"Bonsoir, j'ai une réservation au nom de Sato.",de:"Guten Abend, ich habe eine Reservierung auf den Namen Sato.",pt:"Boa noite, tenho uma reserva em nome de Sato.",ru:"Добрый вечер, у меня бронь на имя Сато.",tr:"İyi akşamlar, Sato adına rezervasyonum var.",id:"Selamat malam, saya sudah pesan kamar atas nama Sato.",ar:"مساء الخير، عندي حجز باسم ساتو."}},
+  hint:{ja:'こんばんは。佐藤の名前で予約しています。',en:'Hi, I have a reservation under the name Sato.',ko:'안녕하세요. 사토 이름으로 예약했어요.',es:'Hola, tengo una reserva a nombre de Sato.',it:'Buonasera, ho una prenotazione a nome Sato.',zh:'你好，我用佐藤的名字预订了房间。',fr:"Bonsoir, j'ai une réservation au nom de Sato.",de:"Guten Abend, ich habe eine Reservierung auf den Namen Sato.",pt:"Boa noite, tenho uma reserva em nome de Sato.",ru:"Добрый вечер, у меня бронь на имя Сато.",tr:"İyi akşamlar, Sato adına rezervasyonum var.",id:"Selamat malam, saya sudah pesan kamar atas nama Sato.",ar:"مساء الخير، عندي حجز باسم ساتو."}},
  {id:'restaurant',jp:'レストランで注文',sub:'席・注文・アレルギー・お会計',who:'SERVER',sit:'レストランに入りました。席をお願いして、料理と飲み物を注文しよう。',
-  hint:{en:'Hi, a table for one, please.',ko:'안녕하세요. 한 명이에요.',es:'Hola, una mesa para uno, por favor.',it:'Buonasera, un tavolo per uno, per favore.',zh:'你好，一位。',fr:"Bonsoir, une table pour une personne, s'il vous plaît.",de:"Guten Abend, einen Tisch für eine Person, bitte.",pt:"Boa noite, uma mesa para um, por favor.",ru:"Добрый вечер, столик на одного, пожалуйста.",tr:"İyi akşamlar, bir kişilik masa lütfen.",id:"Selamat malam, meja untuk satu orang.",ar:"مساء الخير، طاولة لشخص واحد، من فضلك."}},
+  hint:{ja:'こんにちは。一人です。',en:'Hi, a table for one, please.',ko:'안녕하세요. 한 명이에요.',es:'Hola, una mesa para uno, por favor.',it:'Buonasera, un tavolo per uno, per favore.',zh:'你好，一位。',fr:"Bonsoir, une table pour une personne, s'il vous plaît.",de:"Guten Abend, einen Tisch für eine Person, bitte.",pt:"Boa noite, uma mesa para um, por favor.",ru:"Добрый вечер, столик на одного, пожалуйста.",tr:"İyi akşamlar, bir kişilik masa lütfen.",id:"Selamat malam, meja untuk satu orang.",ar:"مساء الخير، طاولة لشخص واحد، من فضلك."}},
  {id:'directions',jp:'道をたずねる',sub:'駅への行き方を聞く',who:'LOCAL',sit:'街で道に迷いました。近くの人に、駅への行き方をたずねよう。',
-  hint:{en:'Excuse me, how can I get to the station?',ko:'실례합니다. 역에 어떻게 가요?',es:'Perdone, ¿cómo puedo llegar a la estación?',it:'Scusi, come arrivo alla stazione?',zh:'不好意思，请问去火车站怎么走？',fr:"Excusez-moi, pour aller à la gare, s'il vous plaît ?",de:"Entschuldigung, wie komme ich zum Bahnhof?",pt:"Com licença, como chego à estação?",ru:"Извините, как пройти к вокзалу?",tr:"Affedersiniz, istasyona nasıl gidebilirim?",id:"Permisi, bagaimana cara ke stasiun?",ar:"عفوا، كيف أذهب إلى المحطة؟"}},
+  hint:{ja:'すみません、駅までどうやって行けばいいですか。',en:'Excuse me, how can I get to the station?',ko:'실례합니다. 역에 어떻게 가요?',es:'Perdone, ¿cómo puedo llegar a la estación?',it:'Scusi, come arrivo alla stazione?',zh:'不好意思，请问去火车站怎么走？',fr:"Excusez-moi, pour aller à la gare, s'il vous plaît ?",de:"Entschuldigung, wie komme ich zum Bahnhof?",pt:"Com licença, como chego à estação?",ru:"Извините, как пройти к вокзалу?",tr:"Affedersiniz, istasyona nasıl gidebilirim?",id:"Permisi, bagaimana cara ke stasiun?",ar:"عفوا، كيف أذهب إلى المحطة؟"}},
  {id:'homestay',jp:'ホームステイ初日',sub:'あいさつ・家のルール・好きな食べ物',who:'HOST',sit:'ホームステイ先に着きました。ホストファミリーにあいさつして、自己紹介しよう。',
-  hint:{en:"Hi, nice to meet you! I'm Ken from Japan.",ko:'안녕하세요! 일본에서 온 켄이에요.',es:'¡Hola, mucho gusto! Soy Ken, de Japón.',it:'Ciao, piacere! Sono Ken, vengo dal Giappone.',zh:'你好！很高兴认识你，我是从日本来的健。',fr:"Bonjour, enchanté ! Je m'appelle Ken, je viens du Japon.",de:"Hallo, freut mich! Ich bin Ken aus Japan.",pt:"Oi, prazer! Eu sou o Ken, do Japão.",ru:"Здравствуйте! Очень приятно, я Кен из Японии.",tr:"Merhaba, memnun oldum! Ben Japonya'dan Ken.",id:"Halo, senang bertemu! Saya Ken dari Jepang.",ar:"مرحبا! تشرفنا، أنا كين من اليابان."}},
+  hint:{ja:'はじめまして！ケンです。よろしくお願いします。',en:"Hi, nice to meet you! I'm Ken from Japan.",ko:'안녕하세요! 일본에서 온 켄이에요.',es:'¡Hola, mucho gusto! Soy Ken, de Japón.',it:'Ciao, piacere! Sono Ken, vengo dal Giappone.',zh:'你好！很高兴认识你，我是从日本来的健。',fr:"Bonjour, enchanté ! Je m'appelle Ken, je viens du Japon.",de:"Hallo, freut mich! Ich bin Ken aus Japan.",pt:"Oi, prazer! Eu sou o Ken, do Japão.",ru:"Здравствуйте! Очень приятно, я Кен из Японии.",tr:"Merhaba, memnun oldum! Ben Japonya'dan Ken.",id:"Halo, senang bertemu! Saya Ken dari Jepang.",ar:"مرحبا! تشرفنا، أنا كين من اليابان."}},
  {id:'class',jp:'授業で先生に質問',sub:'宿題や授業の内容を聞く',who:'TEACHER',sit:'留学先の授業のあと。先生に話しかけて、宿題について質問しよう。',
-  hint:{en:'Excuse me, I have a question about the homework.',ko:'선생님, 숙제에 대해 질문이 있어요.',es:'Perdone, profesor, tengo una pregunta sobre los deberes.',it:'Scusi, professore, ho una domanda sui compiti.',zh:'老师，我有一个关于作业的问题。',fr:"Excusez-moi, j'ai une question sur les devoirs.",de:"Entschuldigung, ich habe eine Frage zu den Hausaufgaben.",pt:"Com licença, professor, tenho uma dúvida sobre a lição de casa.",ru:"Извините, у меня вопрос по домашнему заданию.",tr:"Affedersiniz, ödev hakkında bir sorum var.",id:"Permisi, Bu Guru, saya mau tanya tentang PR.",ar:"عفوا يا أستاذ، عندي سؤال عن الواجب."}},
+  hint:{ja:'先生、宿題について質問があります。',en:'Excuse me, I have a question about the homework.',ko:'선생님, 숙제에 대해 질문이 있어요.',es:'Perdone, profesor, tengo una pregunta sobre los deberes.',it:'Scusi, professore, ho una domanda sui compiti.',zh:'老师，我有一个关于作业的问题。',fr:"Excusez-moi, j'ai une question sur les devoirs.",de:"Entschuldigung, ich habe eine Frage zu den Hausaufgaben.",pt:"Com licença, professor, tenho uma dúvida sobre a lição de casa.",ru:"Извините, у меня вопрос по домашнему заданию.",tr:"Affedersiniz, ödev hakkında bir sorum var.",id:"Permisi, Bu Guru, saya mau tanya tentang PR.",ar:"عفوا يا أستاذ، عندي سؤال عن الواجب."}},
  {id:'interview',jp:'スピーキング試験・面接',sub:'自分のことを話す',who:'EXAMINER',sit:'スピーキング試験の部屋に入りました。試験官にあいさつして、質問に答えよう。',
-  hint:{en:'Good morning. Nice to meet you.',ko:'안녕하세요. 만나서 반갑습니다.',es:'Buenos días. Encantado de conocerle.',it:'Buongiorno. Piacere di conoscerla.',zh:'早上好，很高兴见到您。',fr:"Bonjour. Enchanté de vous rencontrer.",de:"Guten Morgen. Freut mich, Sie kennenzulernen.",pt:"Bom dia. Muito prazer.",ru:"Доброе утро. Очень приятно.",tr:"Günaydın. Tanıştığımıza memnun oldum.",id:"Selamat pagi. Senang bertemu dengan Anda.",ar:"صباح الخير. تشرفنا."}}
+  hint:{ja:'おはようございます。よろしくお願いします。',en:'Good morning. Nice to meet you.',ko:'안녕하세요. 만나서 반갑습니다.',es:'Buenos días. Encantado de conocerle.',it:'Buongiorno. Piacere di conoscerla.',zh:'早上好，很高兴见到您。',fr:"Bonjour. Enchanté de vous rencontrer.",de:"Guten Morgen. Freut mich, Sie kennenzulernen.",pt:"Bom dia. Muito prazer.",ru:"Доброе утро. Очень приятно.",tr:"Günaydın. Tanıştığımıza memnun oldum.",id:"Selamat pagi. Senang bertemu dengan Anda.",ar:"صباح الخير. تشرفنا."}}
 ];
 var ROLE_LIM=[0,5,15,30],ROLE_KEY='babelflight.roleDay';
 var ROLE={sc:null,L:'en',log:[],ex:[],busy:false,done:false,ctl:null,counted:false,hint:false};
@@ -473,16 +473,16 @@ function roleUsed(){try{var o=JSON.parse(lsGet(ROLE_KEY)||'{}');return o&&o.d===
 function roleLeft(){var lv=cabinLv();return lv<0?0:Math.max(0,ROLE_LIM[lv]-roleUsed());}
 function roleAiOn(){return typeof SAI==='object'&&SAI.enabled&&typeof ACCT==='object'&&!!ACCT.me;}
 function roleCardHTML(L){
-  var lv=cabinLv();if(lv<0||UI!=='ja')return '';
+  var lv=cabinLv();if(lv<0)return '';
   var h='<section class="card mode role-card"><span class="lbl">AI ROLEPLAY ・ '+esc(LANGS[L].name)+'</span><h2 class="jh">AI会話ロールプレイ</h2>'+
-    '<p class="dim">機内のCA、入国審査官、ホテルの人などの役をAIが演じます。'+esc(LANGS[L].name)+'で返事をすると、採点とお手本が出ます。</p>';
+    '<p class="dim">機内のCA、入国審査官、ホテルの人などの役をAIが演じます。<span>'+esc(LANGS[L].name)+'で返事をすると、採点とお手本が出ます。</span></p>';
   if(lv<1)return h+'<p class="dim hint">🔒 プレミアムエコノミーから使えます</p></section>'+
     '<section class="card mode report off"><span class="lbl">WEAKNESS REPORT</span><h2 class="jh">弱点レポート</h2>'+
     '<p class="dim">苦手なフレーズや、問題の形式ごとの正答率の変化をまとめて見られます。</p><p class="dim hint">🔒 プレミアムエコノミーから使えます</p></section>';
   if(!roleAiOn())return h+'<p class="warn">'+(typeof SAI==='object'&&!SAI.enabled?'AIは準備中です(サイトのAIキーの設定待ち)。':'ログインすると使えます。')+'</p></section>';
   var left=roleLeft();
   return h+(left>0?'<button class="go sm" type="button" data-role>はじめる</button>':'<p class="warn">今日のロールプレイはここまで。また明日ね！</p>')+
-    '<p class="sai-left">'+cabinName(lv)+': 1日'+ROLE_LIM[lv]+'回 ・ 今日はあと'+left+'回</p></section>';
+    '<p class="sai-left">'+cabinName(lv)+': 一日'+ROLE_LIM[lv]+'回 ・ 今日はあと'+left+'回</p></section>';
 }
 function roleLogHTML(){
   var sc=ROLE.sc,ko=lfc(ROLE.L)?' '+lfc(ROLE.L):'';
@@ -490,7 +490,7 @@ function roleLogHTML(){
     if(m.who==='ai')return '<div class="radio"><span class="lbl">'+esc(sc.who)+'</span><p class="'+ko+'" lang="'+ROLE.L+'">'+esc(m.text)+'</p><button class="mini" type="button" data-role-say="'+i+'" aria-label="もう一度聞く">'+speakerIcon()+'</button></div>';
     var fb='';
     if(m.err)fb='<div class="fb warn">'+esc(m.err)+'</div>';
-    else if(m.score!==undefined)fb='<div class="fb"><span class="fstars" aria-label="評価 '+m.score+' / 3">'+'★★★'.slice(0,m.score)+'<em>'+'★★★'.slice(m.score)+'</em></span>'+esc(m.fb||'')+(m.better?'<div class="better"><span class="lbl">お手本</span><span class="'+ko+'" lang="'+ROLE.L+'">'+esc(m.better)+'</span></div>':'')+'</div>';
+    else if(m.score!==undefined)fb='<div class="fb"><span class="fstars" aria-label="評価 '+m.score+' / 3">'+'★★★'.slice(0,m.score)+'<em>'+'★★★'.slice(m.score)+'</em></span><span translate="no">'+esc(m.fb||'')+'</span>'+(m.better?'<div class="better"><span class="lbl">お手本</span><span class="'+ko+'" lang="'+ROLE.L+'">'+esc(m.better)+'</span></div>':'')+'</div>';
     else if(m.wait)fb='<div class="fb dim">相手が考え中…</div>';
     return '<div class="me"><span class="lbl">あなた</span><p class="'+ko+'" lang="'+ROLE.L+'">'+esc(m.text)+'</p></div>'+fb;
   }).join('');
@@ -501,14 +501,14 @@ function roleHTML(){
   if(!sc){
     return h+'<p class="dim lead">AIが相手の役を演じます。'+esc(LG.name)+'で返事をしよう。返事ごとに採点とお手本が出ます。</p><div class="opt-list">'+
       ROLE_SC.map(function(s,i){return '<button class="choice" type="button" data-role-sc="'+i+'"><b>'+esc(s.jp)+'</b><small>'+esc(s.sub)+'</small></button>';}).join('')+'</div>'+
-      '<p class="dim hint">'+cabinName(cabinLv())+': 1日'+ROLE_LIM[cabinLv()]+'回まで(今日はあと'+roleLeft()+'回)。AIの答えはまちがうこともあります。</p><div class="pad-b"></div>';
+      '<p class="dim hint">'+cabinName(cabinLv())+': 一日'+ROLE_LIM[cabinLv()]+'回まで(今日はあと'+roleLeft()+'回)。AIの答えはまちがうこともあります。</p><div class="pad-b"></div>';
   }
   h+='<div class="card sit"><span class="lbl">場面</span><p>'+esc(sc.sit)+'</p></div><div id="roleLog" class="atclog role-log">'+roleLogHTML()+'</div>';
   if(ROLE.done){
     h+='<div class="card" style="text-align:center"><b>会話終了。おつかれさま！</b><div class="row2" style="margin-top:10px"><button class="ghost" type="button" data-role-sc="'+ROLE_SC.indexOf(sc)+'" style="flex:1">もう一度</button><button class="ghost" type="button" data-role-list style="flex:1">別の場面</button></div></div>';
   }else{
-    h+='<div class="atc-in"><div id="roleHint" class="hintline'+(ROLE.hint?'':' hidden-hint')+'">'+(ROLE.hint?'例: '+esc(sc.hint[L]):'')+'</div>'+
-      '<div class="row2"><input id="roleIn" class="typebox'+(lfc(L)?' '+lfc(L):'')+'" type="text" dir="auto" lang="'+L+'" placeholder="'+esc(LG.name)+'で返事を書こう" aria-label="返事" autocomplete="off" autocapitalize="none" spellcheck="false">'+
+    h+='<div class="atc-in"><div id="roleHint" class="hintline'+(ROLE.hint?'':' hidden-hint')+'">'+(ROLE.hint?'例: <span class="'+(lfc(L)||'')+'" translate="no">'+esc(sc.hint[L]||'')+'</span>':'')+'</div>'+
+      '<div class="row2"><input id="roleIn" class="typebox'+(lfc(L)?' '+lfc(L):'')+'" translate="no" type="text" dir="auto" lang="'+L+'" placeholder="'+esc(T(LG.name+'で返事を書こう'))+'" aria-label="'+esc(T('返事'))+'" autocomplete="off" autocapitalize="none" spellcheck="false">'+
       (srCtor()?'<button class="sq role-mic" type="button" data-role-mic aria-label="声で入力">'+micIcon()+'</button>':'')+
       '<button class="go" type="button" data-role-send style="width:auto;margin:0;padding:12px 16px">送信</button></div>'+
       (ROLE.log.length?'':'<button class="sq" type="button" data-role-hint>最初の言い方のヒント</button>')+'</div>';
@@ -532,7 +532,7 @@ function roleSend(){
   var me={who:'me',text:text,wait:true};ROLE.log.push(me);roleRefresh();
   var ctl=typeof AbortController==='function'?new AbortController():null;ROLE.ctl=ctl;
   var at=ROLE,sc=ROLE.sc,L=ROLE.L;
-  saiPost('/api/ai/atc',{scenario:'role:'+sc.id+':'+L,history:ROLE.ex.slice(),pilot:text},ctl&&ctl.signal)
+  saiPost('/api/ai/atc',{scenario:'role:'+sc.id+':'+L,history:ROLE.ex.slice(),pilot:text,ui:UI},ctl&&ctl.signal)
   .then(function(r){return r.json().catch(function(){return {};});})
   .then(function(j){
     if(ROLE!==at)return;
@@ -576,7 +576,7 @@ document.addEventListener('click',function(e){
   if(a('data-role-list')){ROLE.sc=null;render();window.scrollTo(0,0);return;}
   if(a('data-role-back')){if(ROLE.ctl){try{ROLE.ctl.abort();}catch(x){}}ROLE.busy=false;if(ROLE.sc){ROLE.sc=null;render();window.scrollTo(0,0);}else go('review');return;}
   if(a('data-role-send')){roleSend();return;}
-  if(a('data-role-hint')){ROLE.hint=true;var hl=$('roleHint');if(hl&&ROLE.sc){hl.textContent='例: '+ROLE.sc.hint[ROLE.L];hl.classList.remove('hidden-hint');}t.hidden=true;return;}
+  if(a('data-role-hint')){ROLE.hint=true;var hl=$('roleHint');if(hl&&ROLE.sc){hl.innerHTML='例: <span class="'+(lfc(ROLE.L)||'')+'" translate="no">'+esc(ROLE.sc.hint[ROLE.L]||'')+'</span>';hl.classList.remove('hidden-hint');}t.hidden=true;return;}
   if(a('data-role-say')){var m=ROLE.log[parseInt(g('data-role-say'),10)];if(m)speak(m.text,LANGS[ROLE.L].tts,false,true);return;}
   if(a('data-role-mic')){
     if(SRX.rec){srStop();return;}

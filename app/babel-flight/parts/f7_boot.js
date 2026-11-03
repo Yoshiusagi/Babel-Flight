@@ -74,7 +74,7 @@ document.addEventListener('click',function(e){
   if(a('data-atc-list')){aiStop();ATC.sc=null;render();window.scrollTo(0,0);return;}
   if(a('data-atc-back')){if(ATC.ctl){try{ATC.ctl.abort();}catch(x){}}ATC.busy=false;if(ATC.sc){ATC.sc=null;render();window.scrollTo(0,0);}else go('review');return;}
   if(a('data-atc-send')){atcSend();return;}
-  if(a('data-atc-hint')){ATC.hint=true;var hl=$('atcHint');if(hl){hl.textContent='例: '+ATC.sc.hint;hl.classList.remove('hidden-hint');}t.hidden=true;return;}
+  if(a('data-atc-hint')){ATC.hint=true;var hl=$('atcHint');if(hl){hl.innerHTML='例: <span translate="no">'+esc(ATC.sc.hint)+'</span>';hl.classList.remove('hidden-hint');}t.hidden=true;return;}
   if(a('data-atc-say')){var m=ATC.log[parseInt(g('data-atc-say'),10)];if(m)speak(m.text,'en-US',false,true);return;}
   /* AI ask */
   if(a('data-ai-open')){aiOpen();return;}

@@ -119,8 +119,7 @@ function aiDrillMake(L,items,signal){
   });
 }
 function aiDrillBtnHTML(){
-  /* the AI example sentences come with Japanese translations: 日本語 display only for now */
-  if(UI!=='ja')return '';
+  /* the AI writes the translations in the display language (ui in /api/ai/drill) */
   if(!AID.wrong||!AID.wrong.length||!aiDrillAvail())return '';
   return '<button class="ghost ai-drill" type="button" data-ai-drill>AIが作る新しい例文で練習<small>間違えたフレーズを使った例文をAIが作ります(まちがいがあるかも)</small></button>';
 }
@@ -137,6 +136,8 @@ function aiDrillStart(){
     if(AID.ctl!==ctl)return;
     AID.busy=false;AID.ctl=null;closeSheet();
     UNITS[L]['ai-drill']={id:'ai-drill',items:r.qs.map(function(q){return {jp:q.jp,t:q.t,r:'',n:'AIが作った例文です。まちがいがあるかもしれません。'};}),track:'ai'};
+    /* the AI already wrote these in the display language: the page translation leaves them as they are */
+    if(typeof uiKeep==='function')r.qs.forEach(function(q){uiKeep([q.jp].concat(q.wrong||[]));});
     startFlight({mode:'ai',lang:L,items:r.qs.map(function(q,i){return {uid:'ai-drill',i:i};}),qs:r.qs});
   },function(e){
     if(AID.ctl!==ctl)return;

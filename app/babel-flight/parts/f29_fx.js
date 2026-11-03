@@ -103,6 +103,9 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.08',items:[
+  ['🤖','AIの機能','AI会話ロールプレイ・AI管制官・AIの例文練習・AIコーチが、この表示言語でも使えるようになりました。アドバイスや訳もこの言語で出ます。','',1,['en','ko','zh']]
+ ]},
  {v:'2026.11.07',items:[
   ['🏅','スターター言語の検定','中国語(HSK)・フランス語(DELF)・ドイツ語(Goethe)・ロシア語(ТРКИ)・トルコ語(TYS)・ポルトガル語(Celpe-Bras)・インドネシア語(UKBI)・アラビア語の検定コースが加わりました。','exam',1,['ja','en','ko']],
   ['🏅','スターター言語の検定','フランス語(DELF)・ドイツ語(Goethe)・ロシア語(ТРКИ)・トルコ語(TYS)・ポルトガル語(Celpe-Bras)・インドネシア語(UKBI)・アラビア語の検定コースが加わりました。','exam',1,['zh']],

@@ -1,0 +1,117 @@
+# AI features in every display language: role-play, ATC, AI examples, the report card and the AI coach
+最初の言い方のヒント	Hint: how to start
+道をたずねる	Ask the way
+ホームステイ初日	First day at a homestay
+授業で先生に質問	Ask a teacher after class
+スピーキング試験・面接	Speaking test / interview
+まだ苦手なフレーズはありません。間違えたフレーズがここに出てきます。	No weak phrases yet. Phrases you get wrong will show up here.
+テスト版のため、レポートの記録はこの端末だけに保存されます。	This is a test version, so the report is saved on this device only.
+ラウンジに入る	Enter the lounge
+交信をはじめる	Start the radio call
+場面を選ぼう	Choose a scene
+飲み物や毛布をお願いする	Ask for a drink or a blanket
+目的・日数・泊まる場所を答える	Answer the purpose, length of stay and where you'll stay
+席・注文・アレルギー・お会計	Table, order, allergies, bill
+駅への行き方を聞く	Ask how to get to the station
+宿題や授業の内容を聞く	Ask about the homework or the lesson
+自分のことを話す	Talk about yourself
+問題の形式ごとの正答率	Accuracy by question type
+場面	Scene
+声で入力	Voice input
+あなた	You
+返事	Your reply
+地上走行の許可をもらう	Get taxi clearance
+離陸の許可をもらう	Get takeoff clearance
+着陸の許可をもらう	Get landing clearance
+緊急事態を宣言する	Declare an emergency
+状況	Situation
+シナリオを選ぼう	Choose a scenario
+相手が考え中…	They're thinking…
+管制官への返答	Your reply to the controller
+管制官が応答中…	The controller is responding…
+会話終了。おつかれさま！	Conversation over. Great job!
+別の場面	Another scene
+交信終了。おつかれさま！	Radio call over. Great job!
+別のシナリオ	Another scenario
+街で道に迷いました。近くの人に、駅への行き方をたずねよう。	You're lost in town. Ask someone nearby how to get to the station.
+留学先の授業のあと。先生に話しかけて、宿題について質問しよう。	After class at your school abroad. Talk to the teacher and ask about the homework.
+機内でCAと話す	Talk with a flight attendant
+ホテルのチェックイン	Hotel check-in
+レストランで注文	Order at a restaurant
+あいさつ・家のルール・好きな食べ物	Greetings, house rules, favorite food
+AIコーチにアドバイスをもらう	Get advice from the AI coach
+国際線の機内。食事の時間です。客室乗務員に話しかけて、飲み物を頼んだり、困っていることを伝えよう。	On an international flight at mealtime. Talk to a flight attendant: ask for a drink or say what you need.
+空港の入国審査。係官にあいさつしてパスポートを渡し、質問に答えて入国しよう。	Passport control at the airport. Greet the officer, hand over your passport and answer the questions.
+ホテルのフロント。予約していることを伝えて、チェックインしよう。	At the hotel front desk. Say you have a reservation and check in.
+レストランに入りました。席をお願いして、料理と飲み物を注文しよう。	You've walked into a restaurant. Ask for a table and order food and a drink.
+ホームステイ先に着きました。ホストファミリーにあいさつして、自己紹介しよう。	You've arrived at your homestay. Greet your host family and introduce yourself.
+スピーキング試験の部屋に入りました。試験官にあいさつして、質問に答えよう。	You've entered the speaking test room. Greet the examiner and answer the questions.
+予約を伝えて、朝食やWi-Fiを聞く	Give your reservation, ask about breakfast and Wi-Fi
+🔒 AIコーチのアドバイスはファーストから	🔒 AI coach advice starts from First
+AIコーチが考え中…	The AI coach is thinking…
+AI会話ロールプレイ	AI conversation role-play
+AIの練習問題	AI practice questions
+AIの例文	AI example
+AIが作った例文。意味はどれ？	An example written by AI. What does it mean?
+AIが作る新しい例文で練習	Practice with new examples written by AI
+間違えたフレーズを使った例文をAIが作ります(まちがいがあるかも)	AI writes examples using the phrases you missed (they may have mistakes)
+AIが作った例文です。まちがいがあるかもしれません。	An example written by AI. It may contain mistakes.
+AIが問題を作っています…(10秒くらい)	AI is writing questions… (about 10 seconds)
+AI管制官と交信練習	Radio practice with an AI controller
+管制官役のAIと英語で無線交信。あなたの返答を採点して、お手本も教えてくれます。	Talk on the radio in English with an AI controller. It scores your replies and shows a model answer.
+BABEL 201(あなた)	BABEL 201 (you)
+コールサイン: Babel 201	Callsign: Babel 201
+あなたは「Babel 201」便のパイロット。管制官役のAIと英語で交信しよう。返答ごとに採点とお手本が出ます。	You're the pilot of flight “Babel 201”. Talk in English with the AI controller. Each reply gets a score and a model answer.
+Tokyo Ground ・ 駐機場から滑走路へ	Tokyo Ground · from the stand to the runway
+Tokyo Tower ・ 滑走路34R	Tokyo Tower · runway 34R
+Tokyo Tower ・ 最終進入	Tokyo Tower · final approach
+Tokyo Departure ・ エンジン故障	Tokyo Departure · engine failure
+羽田空港の駐機場(スポット12)にいます。出発の準備ができたので、Tokyo Groundに地上走行の許可をもらおう。	You're at stand 12 at Haneda Airport and ready to go. Ask Tokyo Ground for taxi clearance.
+滑走路34Rの手前で待機中です。管制塔の指示を正しく復唱して、離陸しよう。	You're holding short of runway 34R. Read back the tower's instructions correctly and take off.
+羽田空港の滑走路34Lに向けて最終進入中(約8マイル手前)。管制塔に連絡して着陸の許可をもらおう。	On final approach to runway 34L at Haneda (about 8 miles out). Call the tower and get landing clearance.
+離陸して上昇中(高度5000フィート)に、エンジン1基が止まった！管制に緊急事態を宣言して、羽田に戻る許可をもらおう。	Climbing after takeoff (5,000 feet), one engine has failed! Declare an emergency and get permission to return to Haneda.
+英語で返答(例: Roger, ...)	Reply in English (e.g. Roger, ...)
+AI管制官 ・ 英語	AI controller · English
+評価 {0} / {1}	Score {0} / {1}
+{0}会話ロールプレイ ・ {1}	{0} role-play · {1}
+この{0}日の解答	Answers in the last {0} days
+この{0}日の正答率	Accuracy in the last {0} days
+この{0}日の正答率。	Accuracy in the last {0} days.
+苦手なフレーズ {0}	Weak phrases: {0}
+{0} {1} ・ {2}特典	{0} {1} · {2} perk
+学習ずみのフレーズから、入力・並べ替え・聞き取りなど難しい形だけで{0}問。クリアでボーナス+{1}マイル。	{0} questions from phrases you've learned, in hard forms only: typing, word order, listening. Clear it for a +{1} mile bonus.
+まず{0}レッスンやってみよう	Try {0} lesson first
+それぞれの形式を{0}問以上解くと、ここに出てきます。	Answer {0} or more questions of each type and it shows up here.
+{0} 解答なし	{0} no answers
+{0}が相手の役を演じます。{1}で返事をしよう。返事ごとに採点とお手本が出ます。	{0} plays the other person. Reply in {1}. Each reply gets a score and a model answer.
+{0}: 一日{1}回まで(今日はあと{2}回)。{3}の答えはまちがうこともあります。	{0}: up to {1} a day ({2} left today). The {3} can make mistakes.
+{0}: 一日{1}回 ・ 今日はあと{2}回	{0}: {1} a day · {2} left today
+機内のCA、入国審査官、ホテルの人などの役をAIが演じます。	AI plays roles like a flight attendant, an immigration officer or hotel staff.
+{0}で返事をすると、採点とお手本が出ます。	Reply in {0} to get a score and a model answer.
+{0}で返事を書こう	Write your reply in {0}
+{0} ・ 詳しい版	{0} · detailed
+{0} ・ かんたん版	{0} · simple
+🔒 正答率の推移と、問題の形式ごとの得意・苦手は{0}から	🔒 Accuracy trends and strengths by question type start from {0}
+{0}管制官は一日{1}回まで(テスト用アカウント ・ 回数制限なし)。{2}の答えはまちがうこともあるので、本物の交信方法は教材でも確かめてね。	{0} controller: up to {1} a day (test account · no limit). The {2} can make mistakes, so check real radio procedures in your study materials too.
+{0}管制官は一日{1}回まで(今日はあと{2}回)。{3}の答えはまちがうこともあるので、本物の交信方法は教材でも確かめてね。	{0} controller: up to {1} a day ({2} left today). The {3} can make mistakes, so check real radio procedures in your study materials too.
+{0}管制官は一日{1}回まで(ログインが必要)。{2}の答えはまちがうこともあるので、本物の交信方法は教材でも確かめてね。	{0} controller: up to {1} a day (sign-in needed). The {2} can make mistakes, so check real radio procedures in your study materials too.
+{0}行き ・ {1}の例文練習	To {0} · {1} example practice
+# NOTAM
+AIの機能	AI features
+AI会話ロールプレイ・AI管制官・AIの例文練習・AIコーチが、この表示言語でも使えるようになりました。アドバイスや訳もこの言語で出ます。	AI role-play, the AI controller, AI example practice and the AI coach now work in this display language, with advice and translations in it too.
+# AI status lines
+ログインすると使えます(無料・1日5回まで)。	Sign in to use it (free, up to 5 a day).
+AI管制官は準備中です。もうすぐ使えるようになるよ。	The AI controller is coming soon.
+今日のAI管制官はここまで。また明日ね！	That's all the AI controller for today. See you tomorrow!
+うまく問題を作れませんでした。少し待ってから、もう一度試してね。	Couldn't make the questions. Wait a moment and try again.
+この交信は長くなったので、ここで終わりにしよう。	This radio call is getting long, so let's end it here.
+今日のAI例文練習はここまで(1日10回)。また明日ね！	That's all the AI example practice for today (10 a day). See you tomorrow!
+今日のAI管制官はここまで(1日5回)。また明日ね！	That's all the AI controller for today (5 a day). See you tomorrow!
+今日はたくさん交信したので、ここまで。また明日ね！	You've made lots of calls today, so that's it for now. See you tomorrow!
+返答をうまく読み取れませんでした。もう一度送ってみてね。	Couldn't read the reply. Try sending it again.
+今日のロールプレイはここまで。また明日ね！	That's all the role-play for today. See you tomorrow!
+このアカウントでは使えません。	This account can't use it.
+AIは準備中です(サイトのAIキーの設定待ち)。	AI is coming soon (waiting for the site's AI key).
+ログインすると使えます。	Sign in to use it.
+AIロールプレイ ・ 英語	AI role-play · English
+羽田空港で、管制官役のAIと無線交信	Radio calls at Haneda with an AI controller

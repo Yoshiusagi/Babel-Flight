@@ -37,6 +37,7 @@ function uiNames(){
   if(typeof UM==='object')Object.keys(UM).forEach(function(k){if(UM[k]&&UM[k].jp)n[UM[k].jp]=1;});
   if(typeof SCENE_META==='object')Object.keys(SCENE_META).forEach(function(k){n[SCENE_META[k].role]=1;});
   if(typeof RANKS==='object')RANKS.forEach(function(r){n[r[0]]=1;});
+  if(typeof CABINS==='object')CABINS.forEach(function(c){n[c[1]]=1;});
   var list=Object.keys(n).filter(function(x){return x&&JPX.test(x);}).sort(function(a,b){return b.length-a.length;});
   UI_NAMES=list.length?new RegExp(list.map(function(x){return x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}).join('|'),'g'):false;
   return UI_NAMES;
@@ -88,9 +89,11 @@ function uiLookParts(core){
 var UI_NO='.ko,.zh,.ar,.ja,.brtl,.cell,[translate="no"],script,style,textarea';
 function uiSkip(el){return !!(el&&el.closest&&el.closest(UI_NO));}
 var UI_ATTR=['aria-label','title','placeholder','alt'];
+var UI_KEEP={};
+function uiKeep(list){(list||[]).forEach(function(x){if(x)UI_KEEP[String(x).trim()]=1;});}
 function uiText(n){
   var s=n.nodeValue;
-  if(!s||n.__uiOut===s||!JPX.test(s))return;
+  if(!s||n.__uiOut===s||!JPX.test(s)||UI_KEEP[s.trim()])return;
   var p=n.parentNode;if(!p||uiSkip(p))return;
   /* data-tk: the dictionary key when the same Japanese word means different things (やめる = quit / cancel) */
   var tk=p.getAttribute&&p.getAttribute('data-tk'),r=tk?(I18N.d[tk]!=null?I18N.d[tk]:null):uiLook(s);

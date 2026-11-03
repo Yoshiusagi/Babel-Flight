@@ -82,7 +82,7 @@ function atcLogHTML(){
     if(m.who==='atc')return '<div class="radio"><span class="lbl">'+ATC.sc.fac+'</span><p>'+esc(m.text)+'</p><button class="mini" type="button" data-atc-say="'+i+'" aria-label="もう一度聞く">'+speakerIcon()+'</button></div>';
     var fb='';
     if(m.err)fb='<div class="fb warn">'+esc(m.err)+'</div>';
-    else if(m.score!==undefined)fb='<div class="fb"><span class="fstars" aria-label="評価 '+m.score+' / 3">'+'★★★'.slice(0,m.score)+'<em>'+'★★★'.slice(m.score)+'</em></span>'+esc(m.fb||'')+(m.better?'<div class="better"><span class="lbl">お手本</span>'+esc(m.better)+'</div>':'')+'</div>';
+    else if(m.score!==undefined)fb='<div class="fb"><span class="fstars" aria-label="評価 '+m.score+' / 3">'+'★★★'.slice(0,m.score)+'<em>'+'★★★'.slice(m.score)+'</em></span><span translate="no">'+esc(m.fb||'')+'</span>'+(m.better?'<div class="better"><span class="lbl">お手本</span>'+esc(m.better)+'</div>':'')+'</div>';
     else if(m.wait)fb='<div class="fb dim">管制官が応答中…</div>';
     return '<div class="me"><span class="lbl">BABEL 201(あなた)</span><p>'+esc(m.text)+'</p></div>'+fb;
   }).join('');
@@ -100,7 +100,7 @@ function atcHTML(){
   if(ATC.done){
     h+='<div class="card" style="text-align:center"><b>交信終了。おつかれさま！</b><div class="row2" style="margin-top:10px"><button class="ghost" type="button" data-atc-sc="'+ATC_SC.indexOf(ATC.sc)+'" style="flex:1">もう一度</button><button class="ghost" type="button" data-atc-list style="flex:1">別のシナリオ</button></div></div>';
   }else{
-    h+='<div class="atc-in"><div id="atcHint" class="hintline'+(ATC.hint?'':' hidden-hint')+'">'+(ATC.hint?'例: '+esc(ATC.sc.hint):'')+'</div>'+
+    h+='<div class="atc-in"><div id="atcHint" class="hintline'+(ATC.hint?'':' hidden-hint')+'">'+(ATC.hint?'例: <span translate="no">'+esc(ATC.sc.hint)+'</span>':'')+'</div>'+
       '<div class="row2"><input id="atcIn" class="typebox" type="text" placeholder="英語で返答(例: Roger, ...)" aria-label="管制官への返答" autocomplete="off" autocapitalize="none" spellcheck="false" lang="en"><button class="go" type="button" data-atc-send style="width:auto;margin:0;padding:12px 16px">送信</button></div>'+
       (ATC.log.length<=1?'<button class="sq" type="button" data-atc-hint>最初の言い方のヒント</button>':'')+'</div>';
   }

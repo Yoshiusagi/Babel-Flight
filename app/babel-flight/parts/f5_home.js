@@ -93,7 +93,7 @@ function homeHTML(){
   if(typeof examHomeHTML==='function')h+=examHomeHTML(L);
   if(save.mode==='job'){
     h+='<button class="course" type="button" data-picker><span class="ccode">'+p.code+'</span><span class="ctext"><span class="lbl">職業コース</span><b>'+esc(p.jp)+'</b><small>タップして変更 ・ 13職業から選べます</small></span><span class="chev" aria-hidden="true">›</span></button>';
-    if(p.id==='pilot'&&UI==='ja')h+='<button class="course atcbtn" type="button" data-atc><span class="ccode">ATC</span><span class="ctext"><span class="lbl">AIロールプレイ ・ 英語</span><b>AI管制官と交信練習</b><small>羽田空港で、管制官役のAIと無線交信</small></span><span class="chev" aria-hidden="true">›</span></button>';
+    if(p.id==='pilot')h+='<button class="course atcbtn" type="button" data-atc><span class="ccode">ATC</span><span class="ctext"><span class="lbl">AIロールプレイ ・ 英語</span><b>AI管制官と交信練習</b><small>羽田空港で、管制官役のAIと無線交信</small></span><span class="chev" aria-hidden="true">›</span></button>';
   }
   var idx=0;
   secs.forEach(function(sec,si){

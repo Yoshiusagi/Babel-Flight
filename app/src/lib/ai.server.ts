@@ -12,8 +12,10 @@
 //   GET  /api/ai/status   { enabled, signedIn, left? }
 //   POST /api/ai/ask      { lang, phrase, jp, reading?, note?, question, ui? } -> streamed plain text
 //                         (ui: the display language ja/en/ko/zh; jp and note then come translated into it)
-//   POST /api/ai/atc      { scenario, history[], pilot } -> { atc, score, feedback_ja, better, done, left }
-//   POST /api/ai/drill    { lang, variant?, items[{t,jp}] } -> { qs[{t,jp,wrong[3]}], left }
+//   POST /api/ai/atc      { scenario, history[], pilot, ui? } -> { atc, score, feedback_ja, better, done, left }
+//   POST /api/ai/drill    { lang, variant?, items[{t,jp}], ui? } -> { qs[{t,jp,wrong[3]}], left }
+//                         (ui: the display language; feedback_ja and the jp translations are then written in it,
+//                         and the items' jp come translated into it)
 import type { D1Database, D1PreparedStatement } from "@cloudflare/workers-types";
 
 import { accountUid } from "./account.server";
@@ -37,8 +39,8 @@ const FREE = { ask: ASK_PER_DAY, atc: ATC_SESSIONS_PER_DAY, turn: ATC_TURNS_PER_
 const UNLIMITED = 999;
 const NO_LIMIT = 1_000_000_000;
 const JST_MS = 9 * 3_600_000;
-const LANG_NAMES: Record<string, string> = { ko: "韓国語", en: "英語", es: "スペイン語", it: "イタリア語", zh: "中国語(普通話・簡体字)", fr: "フランス語", de: "ドイツ語", pt: "ポルトガル語(ブラジル)", ru: "ロシア語", tr: "トルコ語", id: "インドネシア語", ar: "アラビア語(フスハー)" };
-const LANG_EN: Record<string, string> = { ko: "Korean", en: "English", es: "Spanish (Spain)", it: "Italian", zh: "Mandarin Chinese (simplified characters)", fr: "French (France)", de: "German", pt: "Brazilian Portuguese", ru: "Russian", tr: "Turkish", id: "Indonesian", ar: "Modern Standard Arabic" };
+const LANG_NAMES: Record<string, string> = { ko: "韓国語", en: "英語", es: "スペイン語", it: "イタリア語", zh: "中国語(普通話・簡体字)", fr: "フランス語", de: "ドイツ語", pt: "ポルトガル語(ブラジル)", ru: "ロシア語", tr: "トルコ語", id: "インドネシア語", ar: "アラビア語(フスハー)", ja: "日本語" };
+const LANG_EN: Record<string, string> = { ko: "Korean", en: "English", es: "Spanish (Spain)", it: "Italian", zh: "Mandarin Chinese (simplified characters)", fr: "French (France)", de: "German", pt: "Brazilian Portuguese", ru: "Russian", tr: "Turkish", id: "Indonesian", ar: "Modern Standard Arabic", ja: "Japanese" };
 
 const SAFETY_JA =
   "利用者には中学生・高校生(13〜17歳)も含まれます。年齢にふさわしい、やさしく安全な内容だけで答えてください。" +
@@ -54,11 +56,26 @@ const SAFETY_UI =
   "do not answer it: say briefly and kindly that you only answer language questions here, and steer back to the phrase. " +
   "You are an AI; never claim to be a human.";
 
-const SAFETY_EN =
-  "Some learners are teenagers (13-17). Keep everything age-appropriate and safe. Stay strictly inside this radio training " +
-  "scenario; if the learner writes about anything unrelated, unsafe, or personal (address, school, contact details), do not " +
-  "engage with it: give a short kind note in feedback_ja steering back to the exercise, and repeat your previous transmission. " +
-  "You are an AI; never claim to be a human.";
+/* The learner's display language for the role-play / ATC feedback and the drill translations (default 日本語).
+   With another display language the feedback field is called "feedback" in the prompt, so the model is not misled by
+   the "_ja"; the reply to the browser always calls it feedback_ja. */
+function uiOf(v: unknown): string {
+  return typeof v === "string" && UI_NAMES[v] ? v : "ja";
+}
+const UI_LEARNER: Record<string, string> = { ja: "a Japanese student", en: "a student who reads English", ko: "a Korean student", zh: "a Chinese student" };
+const UI_TRANSL: Record<string, string> = { ja: "Japanese", en: "English", ko: "Korean", zh: "Simplified Chinese" };
+function fbKey(ui: string): string {
+  return ui === "ja" ? "feedback_ja" : "feedback";
+}
+
+function safetyEn(fk: string): string {
+  return (
+    "Some learners are teenagers (13-17). Keep everything age-appropriate and safe. Stay strictly inside this radio training " +
+    "scenario; if the learner writes about anything unrelated, unsafe, or personal (address, school, contact details), do not " +
+    `engage with it: give a short kind note in ${fk} steering back to the exercise, and repeat your previous transmission. ` +
+    "You are an AI; never claim to be a human."
+  );
+}
 
 type Scenario = { fac: string; en: string; first: string };
 
@@ -84,33 +101,38 @@ const ROLE_SCENES: Record<string, RoleScene> = {
     goal: "Greet the learner and ask four short questions, one at a time, about their hometown, hobbies, school life and future dream, with one follow-up question." },
 };
 
-const SAFETY_ROLE =
-  "Some learners are teenagers (13-17). Keep everything age-appropriate and safe. Stay strictly inside this practice " +
-  "conversation; if the learner writes about anything unrelated, unsafe, or personal (address, school name, contact " +
-  "details), do not engage with it: give a short kind note in feedback_ja steering back to the exercise, and repeat or " +
-  "simplify your previous line. You are an AI playing a role; never claim to be a real human.";
+function safetyRole(fk: string): string {
+  return (
+    "Some learners are teenagers (13-17). Keep everything age-appropriate and safe. Stay strictly inside this practice " +
+    "conversation; if the learner writes about anything unrelated, unsafe, or personal (address, school name, contact " +
+    `details), do not engage with it: give a short kind note in ${fk} steering back to the exercise, and repeat or ` +
+    "simplify your previous line. You are an AI playing a role; never claim to be a real human."
+  );
+}
 
-/** "role:<scene>:<lang>" -> the system prompt for that conversation, or null. */
-function roleSystem(id: string): string | null {
-  const m = /^role:([a-z]+):(ko|en|es|it|zh|fr|de|pt|ru|tr|id|ar)$/.exec(id);
+/** "role:<scene>:<lang>" -> the system prompt for that conversation, or null. ui: the learner's display language. */
+function roleSystem(id: string, ui = "ja"): string | null {
+  const m = /^role:([a-z]+):(ko|en|es|it|zh|fr|de|pt|ru|tr|id|ar|ja)$/.exec(id);
   const s = m ? ROLE_SCENES[m[1] ?? ""] : undefined;
   if (!m || !s) return null;
   const lang = LANG_EN[m[2] ?? ""] ?? "English";
+  const fk = fbKey(ui);
+  const fbLang = `easy ${UI_TRANSL[ui] ?? "Japanese"}`;
   return (
-    `You are role-playing ${s.who} for Babel Flight, a language-learning app. The learner is a Japanese student ` +
+    `You are role-playing ${s.who} for Babel Flight, a language-learning app. The learner is ${UI_LEARNER[ui] ?? UI_LEARNER.ja} ` +
     `practising ${lang}. This is a practice conversation only.\nPlace: ${s.place}.\nWhat happens: ${s.goal}\n` +
     `The learner speaks first. Speak ONLY in ${lang}, in short, natural, polite sentences at a beginner-to-intermediate ` +
     "level (at most two sentences per turn).\n" +
     "After each learner message, reply with ONLY one JSON object and no other text, in this shape:\n" +
     `{"atc":"your next line in ${lang}. Use an empty string only when the conversation is finished.",` +
-    '"score":3,"feedback_ja":"1-2 short sentences in easy Japanese for the student: what was good and what to fix ' +
+    `"score":3,"${fk}":"1-2 short sentences in ${fbLang} for the student: what was good and what to fix ` +
     '(grammar, word choice, politeness, missing information).",' +
     `"better":"a natural model version of the learner's last message in ${lang}","done":false}\n` +
     `score: 3 = natural and correct, 2 = understandable with small mistakes, 1 = hard to understand, 0 = not usable or not in ${lang}.\n` +
     "Keep the conversation to about five learner messages, then finish with done true and a short friendly closing line " +
-    "in \"atc\". If the learner writes in Japanese or seems stuck, kindly explain in feedback_ja what to say and repeat " +
-    "or simplify your previous line in \"atc\".\n" +
-    SAFETY_ROLE
+    `in "atc". If the learner writes in another language than ${lang} or seems stuck, kindly explain in ${fk} what to say ` +
+    'and repeat or simplify your previous line in "atc".\n' +
+    safetyRole(fk)
   );
 }
 // Must stay in step with ATC_SC in babel-flight/parts/c8_ai.js (ids, station, opening call).
@@ -397,23 +419,24 @@ function readHistory(v: unknown): Exchange[] | null {
   return out;
 }
 
-function atcSystem(sc: Scenario): string {
+function atcSystem(sc: Scenario, ui = "ja"): string {
+  const fk = fbKey(ui);
   return (
-    "You are role-playing an air traffic controller for a pilot-training app called Babel Flight. The learner is a Japanese " +
-    "student who dreams of becoming an airline pilot. Use standard ICAO radiotelephony phraseology in English. This is a " +
-    "training simulation only.\n" +
+    "You are role-playing an air traffic controller for a pilot-training app called Babel Flight. The learner is " +
+    `${UI_LEARNER[ui] ?? UI_LEARNER.ja} who dreams of becoming an airline pilot. Use standard ICAO radiotelephony phraseology ` +
+    "in English. This is a training simulation only.\n" +
     `Airport: Tokyo Haneda (RJTT). Your station: ${sc.fac}. The pilot's callsign is "Babel 201".\nScenario: ${sc.en}\n` +
     (sc.first ? `You have already transmitted: "${sc.first}"\n` : "") +
     "After each pilot transmission, reply with ONLY one JSON object and no other text, in this shape:\n" +
     '{"atc":"your next radio transmission in English, short and realistic. Use an empty string only when the scenario is finished.",' +
-    '"score":3,"feedback_ja":"1-2 short sentences in easy Japanese for the student: what was good and what to fix, such as the callsign, ' +
+    `"score":3,"${fk}":"1-2 short sentences in easy ${UI_TRANSL[ui] ?? "Japanese"} for the student: what was good and what to fix, such as the callsign, ` +
     'the readback of runway, altitude or frequency, or missing words.","better":"a model version of the pilot\'s last transmission in English",' +
     '"done":false}\n' +
     "score: 3 = correct and complete, 2 = understandable with small mistakes, 1 = important items missing, 0 = not usable.\n" +
-    "Keep the scenario to about 4 pilot transmissions, then finish with done true and a short friendly sign-off in \"atc\". " +
-    "If the pilot writes in Japanese or seems confused, kindly explain in feedback_ja what to say and repeat your previous " +
-    "transmission in \"atc\".\n" +
-    SAFETY_EN
+    'Keep the scenario to about 4 pilot transmissions, then finish with done true and a short friendly sign-off in "atc". ' +
+    `If the pilot writes in another language than English or seems confused, kindly explain in ${fk} what to say and repeat ` +
+    'your previous transmission in "atc".\n' +
+    safetyEn(fk)
   );
 }
 
@@ -427,7 +450,7 @@ function parseAtc(raw: string): { atc: string; score: number; feedback_ja: strin
     return {
       atc: String(r.atc ?? "").slice(0, 400),
       score: score < 0 ? 0 : score > 3 ? 3 : score,
-      feedback_ja: String(r.feedback_ja ?? "").slice(0, 400),
+      feedback_ja: String(r.feedback_ja ?? r.feedback ?? "").slice(0, 400),
       better: String(r.better ?? "").slice(0, 400),
       done: r.done === true,
     };
@@ -441,7 +464,8 @@ async function handleAtc(request: Request, db: D1Database, key: string): Promise
   if (!uid) return json({ ok: false, error: "signin" }, 401);
   const body = await readJsonBody(request, 12000);
   const scName = typeof body?.scenario === "string" ? body.scenario : "";
-  const role = roleSystem(scName);
+  const ui = uiOf(body?.ui);
+  const role = roleSystem(scName, ui);
   const sc = role ? undefined : ATC_SCENARIOS[scName];
   const history = readHistory(body?.history ?? []);
   const pilot = text(body?.pilot, 300, true);
@@ -463,7 +487,7 @@ async function handleAtc(request: Request, db: D1Database, key: string): Promise
     messages.push({ role: "user", content: `${said}: "${ex.pilot}"` });
     messages.push({
       role: "assistant",
-      content: JSON.stringify({ atc: ex.atc, score: ex.score, feedback_ja: ex.feedback, better: ex.better, done: false }),
+      content: JSON.stringify({ atc: ex.atc, score: ex.score, [fbKey(ui)]: ex.feedback, better: ex.better, done: false }),
     });
   }
   messages.push({ role: "user", content: `${said}: "${pilot}"` });
@@ -471,7 +495,7 @@ async function handleAtc(request: Request, db: D1Database, key: string): Promise
   let reply: ReturnType<typeof parseAtc> = null;
   let upstreamOk = false;
   try {
-    const res = await callClaude(key, { max_tokens: 600, system: role ?? atcSystem(sc as Scenario), messages });
+    const res = await callClaude(key, { max_tokens: 600, system: role ?? atcSystem(sc as Scenario, ui), messages });
     if (res.ok) {
       upstreamOk = true;
       const data = (await res.json()) as { content?: { type?: string; text?: string }[] };
@@ -541,6 +565,8 @@ async function handleDrill(request: Request, db: D1Database, key: string): Promi
   if (!uid) return json({ ok: false, error: "signin" }, 401);
   const body = await readJsonBody(request, 4000);
   const lang = typeof body?.lang === "string" ? body.lang : "";
+  const ui = uiOf(body?.ui);
+  const tr = UI_TRANSL[ui] ?? "Japanese";
   const variant = body?.variant === "uk" ? "British" : "American";
   const items: { t: string; jp: string }[] = [];
   const list = Array.isArray(body?.items) ? body.items : null;
@@ -561,18 +587,20 @@ async function handleDrill(request: Request, db: D1Database, key: string): Promi
   if (!used) return json({ ok: false, error: "quota", left: leftOf(await usage(db, uid, day), tier) }, 429);
 
   const language = lang === "en" ? `${variant} English` : LANG_EN[lang];
+  const learner = ui === "ja" ? "a Japanese junior high school student" : `${UI_LEARNER[ui]} (a teenager or older)`;
   const system =
-    "You write practice questions for Babel Flight, a language-learning app. The learner is a Japanese junior high school " +
-    `student learning ${language}. Some learners are teenagers (13-17): use only everyday, friendly, age-appropriate ` +
+    `You write practice questions for Babel Flight, a language-learning app. The learner is ${learner} ` +
+    `learning ${language}. Some learners are teenagers (13-17): use only everyday, friendly, age-appropriate ` +
     "content. Never include anything violent, sexual, hateful, dangerous or personal. Use only correct, natural, standard " +
     "language; when unsure, choose a simpler sentence. Reply with JSON only.";
   const prompt =
     "The learner just got these phrases wrong:\n" +
     items.map((d, i) => `${i + 1}. ${d.t} (= ${d.jp})`).join("\n") +
     `\nFor EACH phrase, write 2 NEW short example sentences (at most 12 words) in ${language} that reuse the same key word ` +
-    "or pattern in a different everyday situation. Give a natural Japanese translation of each, and 3 wrong Japanese " +
+    `or pattern in a different everyday situation. Give a natural ${tr} translation of each, and 3 wrong ${tr} ` +
     "translations that look plausible but clearly mean something else.\n" +
-    'Reply with ONLY this JSON: {"qs":[{"t":"sentence","jp":"correct Japanese","wrong":["wrong 1","wrong 2","wrong 3"]}]}';
+    `Reply with ONLY this JSON (the "jp" field holds the ${tr} translation): ` +
+    `{"qs":[{"t":"sentence","jp":"correct ${tr}","wrong":["wrong 1","wrong 2","wrong 3"]}]}`;
 
   let qs: DrillQ[] = [];
   let upstreamOk = false;
