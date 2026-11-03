@@ -319,7 +319,7 @@ jobxApply();
     else if(ks.length&&ks.every(function(k){return JOBX_C[k].practice;}))line='「'+p.jp+'」には語学の資格がないので、仕事の場面の練習を入れています(公式の資格ではありません)。';
     else if(ks.length)line='「'+p.jp+'」の資格: '+ks.map(function(k){return JOBX_C[k].title;}).join('・')+'(職業は職業モードで変えられます)';
     else line='「'+p.jp+'」の'+(L==='en'?'英語の':'')+'資格は準備中です。';
-    h=h.replace('CILSは、それぞれの団体の商標です','CILS・OET・TOLES・Cambridge English・ServSafe・CELTA は、それぞれの団体の商標です');
+    if(L==='en')h=h.replace('TOEFL®</span>','TOEFL®・OET・TOLES・Cambridge English・ServSafe・CELTA</span>');
     var i=h.lastIndexOf('<p class="exam-tm">');
     return i<0?h:h.slice(0,i)+'<p class="dim hint jobx-line">💼 '+esc(line)+'</p>'+h.slice(i);
   };

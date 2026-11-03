@@ -356,19 +356,21 @@ function runCell(cell){
     flipStep(cell,cell.cur,nxt,function(){cell.cur=nxt;loop();});
   })();
 }
+/* the phrase on the board is the language being learnt: never translated (its label included) */
+Board.prototype.noTr=function(text){if(text)this.host.setAttribute('translate','no');else this.host.removeAttribute('translate');};
 Board.prototype.set=function(text){
   /* right-to-left scripts join their letters, so the board shows the whole phrase instead of one letter per flap */
   if(this.rtl){
     this.cells=[];this.cols=0;this.rows=0;
     this.host.innerHTML='<div class="brtl ar" dir="rtl" lang="'+(this.lang||'ar')+'">'+esc(text||'')+'</div>';
-    this.host.setAttribute('role','img');this.host.setAttribute('aria-label',text?text:'表示ボード(空白)');
+    this.host.setAttribute('role','img');this.host.setAttribute('aria-label',text?text:'表示ボード(空白)');this.noTr(text);
     return;
   }
   var minCols=this.minCols||13;
   var L=this.layout(text||'',minCols);
   if(L.cols!==this.cols||L.rows!==this.rows||!this.cells.length)this.build(L.cols,L.rows);
   this.host.setAttribute('role','img');
-  this.host.setAttribute('aria-label',text?text:'表示ボード(空白)');
+  this.host.setAttribute('aria-label',text?text:'表示ボード(空白)');this.noTr(text);
   var n=0,idx=0;
   for(var r=0;r<L.rows;r++)for(var c=0;c<L.cols;c++){
     var cell=this.cells[idx],ch=L.grid[r][c];idx++;

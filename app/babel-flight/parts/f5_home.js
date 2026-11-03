@@ -16,7 +16,7 @@ function modeSwitch(){
     '<button type="button" data-mode-set="daily" aria-pressed="'+(m==='daily')+'"><b>'+(x?'日常会話':'日常会話モード')+'</b><small>あいさつ・旅行</small></button>'+
     '<button type="button" data-mode-set="job" aria-pressed="'+(m==='job')+'"><b>'+(x?'職業':'職業モード')+'</b><small>13職業の会話</small></button>'+
     '<button type="button" data-mode-set="study" aria-pressed="'+(m==='study')+'"><b>'+(x?'留学':'留学モード')+'</b><small>学校と授業</small></button>'+
-    (x?'<button type="button" data-mode-set="exam" aria-pressed="'+(m==='exam')+'"><b>検定</b><small>'+({en:'TOPIK・DELE',ko:'TOEIC・OPIc',zh:'CET・TOEIC'}[UI]||'英検・TOEIC')+'</small></button>':'')+'</div>';
+    (x?'<button type="button" data-mode-set="exam" aria-pressed="'+(m==='exam')+'"><b>検定</b><small>'+esc(xSwLabel(save.lang))+'</small></button>':'')+'</div>';
 }
 function stopStatus(L,uid,nextId){
   var r=unitRec(L,uid);

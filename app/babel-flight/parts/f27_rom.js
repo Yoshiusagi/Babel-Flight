@@ -140,3 +140,20 @@ var ROM_AR={
 "أنا صيني.":"anaa siinii.",
 "أسكن في بكين.":"askunu fii bikiin."
 };
+/* 検定コース(アラビア語 A2・B1, f17_xstarter.js) */
+ROM_AR["ذهبت إلى السينما مع أصدقائي أمس."]="dhahabtu ilaa as-siinamaa ma'a asdiqaa'ii ams.";
+ROM_AR["كم سعر هذه التذكرة؟"]="kam si'r haadhihi at-tadhkira?";
+ROM_AR["عادة أستيقظ في الساعة السابعة."]="'aadatan astayqidh fii as-saa'a as-saabi'a.";
+ROM_AR["أريد أن أحجز طاولة لشخصين."]="uriidu an ahjiza taawila li-shakhsayn.";
+ROM_AR["أدرس اللغة العربية منذ سنة."]="adrusu al-lugha al-'arabiyya mundhu sana.";
+ROM_AR["هل يمكنك أن تساعدني في حمل الحقيبة؟"]="hal yumkinuka an tusaa'idanii fii haml al-haqiiba?";
+ROM_AR["المتحف قريب من الساحة."]="al-mathaf qariib min as-saaha.";
+ROM_AR["الجو حار جدا في الصيف."]="al-jaww haarr jiddan fii as-sayf.";
+ROM_AR["لو كان عندي وقت أكثر، لسافرت في كل البلاد العربية."]="law kaana 'indii waqt akthar, la-saafartu fii kull al-bilaad al-'arabiyya.";
+ROM_AR["أتمنى أن تعجبك الهدية."]="atamannaa an tu'jibaka al-hadiyya.";
+ROM_AR["عندما كنت صغيرا، كنت أعيش في قرية."]="'indamaa kuntu saghiiran, kuntu a'iishu fii qarya.";
+ROM_AR["في رأيي، لوسائل التواصل الاجتماعي مزايا وعيوب."]="fii ra'yii, li-wasaa'il at-tawaasul al-ijtimaa'ii mazaayaa wa-'uyuub.";
+ROM_AR["أنصحك بزيارة الأهرامات."]="ansahuka bi-ziyaarat al-ahraamaat.";
+ROM_AR["عندما وصلت إلى المحطة، كان القطار قد غادر."]="'indamaa wasaltu ilaa al-mahatta, kaana al-qitaar qad ghaadara.";
+ROM_AR["أنا مهتم جدا بثقافات البلدان الأخرى."]="anaa muhtamm jiddan bi-thaqaafaat al-buldaan al-ukhraa.";
+ROM_AR["من المهم أن يقوم الجميع بإعادة التدوير."]="min al-muhimm an yaquuma al-jamii' bi-i'aadat at-tadwiir.";

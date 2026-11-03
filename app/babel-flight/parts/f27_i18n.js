@@ -61,11 +61,23 @@ function uiLook(s){
     key2=key2.replace(/\u0001([^\u0002]*)\u0002|[^\u0001]+/g,function(seg,lat){
       if(lat!=null){toks2.push(lat);return '{'+(toks2.length-1)+'}';}
       return seg.replace(re,function(nm){toks2.push(nm);return '{'+(toks2.length-1)+'}';});});
-    if(!toks2.length||key2===key||D[key2]==null){var pp=uiLookParts(core);return pp==null?null:m[1]+pp+m[3];}
-    v=D[key2];toks=toks2;
+    if(!toks2.length||key2===key||D[key2]==null){
+      /* last try: names first (a name with Latin letters in it, like 「HSK 3級」, stays one name), then Latin words */
+      var k3=uiKey3(core,re);
+      if(!k3[1].length||D[k3[0]]==null){var pp=uiLookParts(core);return pp==null?null:m[1]+pp+m[3];}
+      v=D[k3[0]];toks=k3[1];
+    }else{v=D[key2];toks=toks2;}
   }
   v=v.replace(/\{(\d+)\}/g,function(_,i){var t=toks[+i];if(t==null)return '';if(t.charAt(0)==='\u300c')return '\u201c'+t.slice(1,-1)+'\u201d';var tr=JPX.test(t)?D[t]:null;return tr!=null?tr:t;});
   return m[1]+v+m[3];
+}
+function uiKey3(core,re){
+  var toks=[],out='',last=0,mm;
+  function lat(seg){return seg.replace(UI_TOK,function(x){toks.push(x);return '{'+(toks.length-1)+'}';});}
+  re.lastIndex=0;
+  while((mm=re.exec(core))){if(!mm[0].length){re.lastIndex++;continue;}out+=lat(core.slice(last,mm.index));toks.push(mm[0]);out+='{'+(toks.length-1)+'}';last=mm.index+mm[0].length;}
+  re.lastIndex=0;
+  return [out+lat(core.slice(last)),toks];
 }
 /* a sentence with a remark in brackets at the end (読み方のヒント, イギリス英語では「…」): each part on its own */
 function uiLookParts(core){

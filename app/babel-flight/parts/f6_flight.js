@@ -216,7 +216,8 @@ function judge(ok){
   board.set(d.t);ledSet(d.jp,d.r);
   updateProfile();
   var h='<div class="sheet'+(ok?'':' bad')+'" role="status"><div class="sheet-in"><h3>'+(ok?PRAISE[Math.floor(Math.random()*PRAISE.length)]:'おしい！ 正解はこちら')+'</h3>'+
-    '<div class="ans'+koCls()+'"><b>'+esc(d.t)+'</b><br><span class="dim" style="font-size:13px">'+(d.r?esc(d.r)+' ・ ':'')+esc(d.jp)+'</span></div>'+
+    /* the class goes on the phrase only: the meaning under it is translated for the other display languages */
+    '<div class="ans"><b'+(lfc(F.lang)?' class="'+lfc(F.lang)+'"':'')+'>'+esc(d.t)+'</b><br><span class="dim" style="font-size:13px">'+(d.r?'<span translate="no">'+esc(d.r)+' ・ </span>':'')+'<span>'+esc(d.jp)+'</span></span></div>'+
     (d.n?'<div class="note"><b>ワンポイント</b>'+esc(d.n)+'</div>':'')+
     aiBtnHTML()+(typeof pronBoxHTML==='function'?pronBoxHTML():'')+
     '<div class="row2"><button class="sq" type="button" data-hear aria-label="発音を聞く">'+speakerIcon()+'</button>'+

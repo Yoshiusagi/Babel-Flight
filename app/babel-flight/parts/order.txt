@@ -72,6 +72,7 @@ f14_pwa.js
 f15_ai.js
 f16_share.js
 f17_exam.js
+f17_xstarter.js
 f17_cabin.js
 f18_layout.js
 f19_board.js

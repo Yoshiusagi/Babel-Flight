@@ -176,13 +176,13 @@ function examHomeHTML(L){
     h+='<div class="xg-head"><h2 class="jh">'+esc(t.name)+'</h2><button class="xg-chg" type="button" data-xgoal>目標を変える</button></div>'+trainBlockHTML(t.bank);
   }else{
     h+='<h2 class="jh">検定コース</h2><p class="dim" style="font-size:13.5px;margin-top:4px">目標の級やスコアを選ぶと、その問題集が地図に並びます。'+(lv<1?'':'今は検定ごとの最初のレッスンを一覧で表示中。')+'</p>'+
-       (lv<1?'<button class="ghost" type="button" data-xgoal>どんな目標があるか見る<small>英検の級・TOEICのスコアなど</small></button>'
-            :'<button class="go sm" type="button" data-xgoal>目標を選ぶ<small>英検の級・TOEICのスコアなど</small></button>');
+       (lv<1?'<button class="ghost" type="button" data-xgoal>どんな目標があるか見る<small>'+esc(XHINT[L]||XHINT.en)+'</small></button>'
+            :'<button class="go sm" type="button" data-xgoal>目標を選ぶ<small>'+esc(XHINT[L]||XHINT.en)+'</small></button>');
     if(lv<1)h+='<p class="dim hint">🔒 検定コースは「プレミアムエコノミー」から</p>';
   }
   h+=(lv>=3?'<button class="ghost" type="button" data-mock-open>本番形式の模試に挑戦<small>時間制限つき ・ 合格ラインの目安つき</small></button>'
           :'<p class="dim hint">🔒 本番形式の模試(時間制限つき)はファーストから</p>')+
-    '<p class="exam-tm">英検®・TOEIC®・IELTS・TOEFL®・TOPIK・DELE・CILSは、それぞれの団体の商標です。このコースは公式のものではなく、問題はすべてBabel Flightのオリジナルです。</p></section>';
+    xTmHTML(L)+'</section>';
   return h;
 }
 

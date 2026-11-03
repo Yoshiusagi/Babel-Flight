@@ -103,6 +103,11 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.07',items:[
+  ['🏅','スターター言語の検定','中国語(HSK)・フランス語(DELF)・ドイツ語(Goethe)・ロシア語(ТРКИ)・トルコ語(TYS)・ポルトガル語(Celpe-Bras)・インドネシア語(UKBI)・アラビア語の検定コースが加わりました。','exam',1,['ja','en','ko']],
+  ['🏅','スターター言語の検定','フランス語(DELF)・ドイツ語(Goethe)・ロシア語(ТРКИ)・トルコ語(TYS)・ポルトガル語(Celpe-Bras)・インドネシア語(UKBI)・アラビア語の検定コースが加わりました。','exam',1,['zh']],
+  ['🗾','JLPT(日本語能力試験)','日本語コースに、JLPT N5・N4・N3の検定コースが加わりました。','exam',1,['en','ko','zh']]
+ ]},
  {v:'2026.11.06',items:[
   ['💼','職業モード','パイロット・医療・IT・ビジネス・ホテル観光など13職業の、仕事で使う会話を学べるようになりました。','job',0,['en','ko','zh']]
  ]},

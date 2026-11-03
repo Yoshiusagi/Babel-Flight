@@ -115,6 +115,18 @@ that had no translation is counted there.
   to pick again. 「仕事で使いたい」 and the job question are in every display language.
 - AI管制官, the job certificates (検定モード) and the AI practice stay with 日本語.
 
+## 検定モード for the スターター languages and JLPT — `parts/f17_xstarter.js`
+
+- Every スターター language has an exam course now: 中国語 HSK (2級・3級), フランス語 DELF (A2・B1), ドイツ語
+  Goethe-Zertifikat (A2・B1), ロシア語 ТРКИ/TORFL (A2・B1), トルコ語 TYS (A2・B1), ポルトガル語 Celpe-Bras (中級・上級),
+  インドネシア語 UKBI (基礎・実用), アラビア語 CEFR A2・B1 (for tests like the Hamza test). The 日本語 course (other
+  display languages only) has JLPT N5・N4・N3. First lesson プレミアムエコノミー, second ビジネス (JLPT: N5・N4 / N3).
+- `XSTARTER` lists each language's group, banks and goals; the exam tab label (`xSwLabel`), the hint under 目標を選ぶ
+  (`XHINT`) and the trademark line (`xTmHTML`) follow the language being learnt. Most meanings are shared with
+  DELE/CILS, so the dictionaries reuse them (`i18n/<ui>/xstarter.tsv`; JLPT notes in `ja.tsv`).
+- Chinese and Japanese exam phrases carry the word split (5th column of `XU`) for 並べ替え; the Arabic readings for
+  the other display languages are in `ROM_AR` (`f27_rom.js`).
+
 ## 検定モード in the other display languages — `parts/f30_xui.js`
 
 - English / 한국어 / 简体中文 show the international exams (TOEIC・IELTS・TOEFL・ICAO・TOPIK・DELE・CILS) and their own

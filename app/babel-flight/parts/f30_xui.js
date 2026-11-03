@@ -109,6 +109,7 @@ function xuiUnits(ui){
   var out=[],seen={};
   function add(L,b){if(L===ui||!XBANK[b])return;XBANK[b].ids.forEach(function(u){if(!seen[L+u]){seen[L+u]=1;out.push([L,u]);}});}
   [['en','toeic'],['en','ielts'],['en','toefl'],['en','icao'],['ko','topik1'],['ko','topik2'],['es','dele-a2'],['es','dele-b1'],['it','cils-a2'],['it','cils-b1']].forEach(function(p){add(p[0],p[1]);});
+  if(typeof XSTARTER==='object')XSTARTER.forEach(function(x){x[4].forEach(function(b){add(x[0],b[0]);});});
   var x=XUI_EXTRA[ui]||{};
   Object.keys(x).forEach(function(L){x[L].forEach(function(e){e.slice(1).forEach(function(k){k.goals.forEach(function(g){add(L,g[1]);});});});});
   return out;
@@ -123,7 +124,7 @@ if(typeof jobxApply==='function'&&typeof render==='function'){
     /* 英検 only: the full-format mock tests; the job line belongs to 職業モード (日本語 only) */
     h=h.replace(/<button class="ghost" type="button" data-mock-open>[\s\S]*?<\/button>/,'').replace(/<p class="dim hint">🔒 本番形式の模試[^<]*<\/p>/,'').replace(/<p class="dim hint jobx-line">[\s\S]*?<\/p>/,'');
     h=h.split('英検の級・TOEICのスコアなど').join(XUI_HINT[UI]||'TOEIC・TOPIK など');
-    h=h.replace(/<p class="exam-tm">[\s\S]*?<\/p>/,'<p class="exam-tm">TOEIC®・IELTS・TOEFL®・TOPIK・DELE・CILS'+(UI==='ko'?'・OPIc':'')+'は、それぞれの団体の商標です。このコースは公式のものではなく、問題はすべてBabel Flightのオリジナルです。</p>');
+    h=h.replace(/<p class="exam-tm">[\s\S]*?<\/p>/,xTmHTML(L,L==='en'?'TOEIC®・IELTS・TOEFL®'+(UI==='ko'?'・OPIc':''):undefined));
     return h;
   };
 }

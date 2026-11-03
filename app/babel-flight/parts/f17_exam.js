@@ -1,10 +1,10 @@
 /* ================= 検定コース: content (standalone site, test account only for now) =================
    Every sentence here is original practice material written for Babel Flight. Nothing is taken from
    real past papers. Exam names are trademarks of their owners; these courses are not official. */
-/* XU(uid, title, latin title, language, [[target, reading, Japanese, note], ...]) */
+/* XU(uid, title, latin title, language, [[target, reading, Japanese, note, (words for 並べ替え: Chinese, Japanese)], ...]) */
 function XU(uid,jp,lat,L,list){
   UM[uid]={jp:jp,lat:lat};
-  UNITS[L][uid]={id:uid,items:list.map(function(x){return {jp:x[2],t:x[0],r:x[1]||'',n:x[3]||''};}),track:'exam'};
+  UNITS[L][uid]={id:uid,items:list.map(function(x){return {jp:x[2],t:x[0],r:x[1]||'',n:x[3]||'',s:x[4]||''};}),track:'exam'};
 }
 /* ---- English: 英検 ---- */
 XU('x-ek5','英検5級 ステップ1','EIKEN 5 STEP 1','en',[
