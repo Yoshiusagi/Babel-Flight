@@ -64,11 +64,12 @@ function centerRails(){
 /* ---- スイート: home, one screen at a time ---- */
 function suiteHomeHTML(){
   var L=save.lang,LG=LANGS[L],ids=pathIds(L),h=topBar('','progress');
-  var nextId=nextPathUnit(L),title=unitTitle(nextId),sp=title.indexOf(' '),t1=sp>0?title.slice(0,sp):title,t2=sp>0?title.slice(sp+1):'';
+  /* the title on two lines: split after translating (「DELF A2 ステップ1」 → 「DELF」「A2 Step 1」), so each half is not looked up alone */
+  var nextId=nextPathUnit(L),title=T(unitTitle(nextId)),sp=title.indexOf(' '),t1=sp>0?title.slice(0,sp):title,t2=sp>0?title.slice(sp+1):'',tn=UI==='ja'?'':' translate="no"';
   var sz=unitSize(L,nextId),due=dueList(L).length,weak=weakList(L).length,done=unitsDone(L,ids);
   h+='<div class="suite-wrap"><div class="suite-pages" id="suitePages">';
   h+='<section class="suite-pg sp-next" aria-label="次のフライト"><button class="sp-ctx" type="button" data-suite-go="3">'+esc(LG.name)+' ・ '+esc(modeName(L))+'</button>'+
-     '<span class="sp-it">Next flight</span><h1 class="sp-big">'+esc(t1)+'</h1>'+(t2?'<div class="sp-big2">'+esc(t2)+'</div>':'')+
+     '<span class="sp-it">Next flight</span><h1 class="sp-big"'+tn+'>'+esc(t1)+'</h1>'+(t2?'<div class="sp-big2"'+tn+'>'+esc(t2)+'</div>':'')+
      '<svg class="sp-line" viewBox="0 0 322 60" aria-hidden="true" fill="none"><path d="M2 52C90 52 140 12 250 12" stroke="currentColor" stroke-width="1" stroke-dasharray="2 5" opacity=".5"/><path d="M252 12l26-3 4 2-24 6z M262 10l-6-9h4l10 8z M262 13l-6 9h4l10-8z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>'+
      '<div class="sp-meta"><span>'+kindSize(L,nextId)+'</span><span>'+sz.min+'</span></div>'+
      '<button class="sp-board" type="button" data-node="'+esc(nextId)+'">搭乗</button>'+

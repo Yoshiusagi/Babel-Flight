@@ -249,7 +249,7 @@ function xaiStart(key){
     if(!x||!XBANK[x.bank])return h;
     var b=XBANK[x.bank],m=bankMeter(b);
     return (bankFull(b)?'<div class="card xm-land">'+meterHTML(b,m,Math.max(0,m.pct-x.before))+'</div>':'')+
-      (xtrainPick(b,10).length>=4?'<button class="go" type="button" data-xtrain="'+esc(b.key)+'">続けてトレーニング<small>'+esc(b.name)+' ・ 10問</small></button>':'')+h;
+      (xtrainPick(b,10).length>=4?'<button class="go" type="button" data-xtrain="'+esc(b.key)+'">続けてトレーニング<small>もう10問 ・ '+esc(b.name)+'</small></button>':'')+h;
   };
 })();
 
