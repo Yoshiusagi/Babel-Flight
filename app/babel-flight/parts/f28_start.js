@@ -40,7 +40,7 @@ function lvBlockHTML(){
   var L=save.lang,v=lvOf(L);
   return '<div class="set-block"><span class="lbl">今のレベル ・ '+esc(LANGS[L].name)+'</span>'+seg('data-level',v,LEVELS)+'<p class="dim hint">'+LEVEL_HINT[v]+'</p></div>'+
     '<div class="set-block"><span class="lbl">新しいフレーズの出し方</span>'+seg('data-nw-set',save.nw,NW_OPTS)+
-    '<p class="dim hint">'+(save.nw==='card'?'はじめて出るフレーズは、カードで意味と読み方を見てから問題に進みます。':save.nw==='hint'?'はじめて出るフレーズの問題に「ヒント」ボタンがつきます。見てもミスになりません。':'「はじめて」はカードで見てから、「少しわかる」以上はヒントつき問題になります。')+'</p></div>';
+    '<p class="dim hint">'+(save.nw==='card'?'はじめて出るフレーズは、カードで意味と読み方を見てから問題に進みます。':save.nw==='hint'?'はじめて出るフレーズの問題に「ヒント」ボタンがつきます。答えは出ず、手がかりと選択肢減らしの2段階。使うと、あとでもう一度出ます。':'「はじめて」はカードで見てから、「少しわかる」以上はヒントつき問題になります。')+'</p></div>';
 }
 /* ---- 学ぶ理由 and 苦手なこと ---- */
 var WHY=[['travel','✈️','旅行で使いたい','空港・ホテル・レストランの場面から'],

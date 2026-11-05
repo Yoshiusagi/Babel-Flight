@@ -136,7 +136,7 @@ function newTag(it){return itemRec(F.lang,it.uid,it.i).b===0?'<span class="newta
 function showStep(){
   var q=F.queue[F.idx];
   if(!q){land();return;}
-  F.cur=q;F.answered=false;F.build=null;F.peeked=false;F.shownAt=performance.now();closeSheet();
+  F.cur=q;F.answered=false;F.build=null;F.peeked=false;F.hl=0;F.shownAt=performance.now();closeSheet();
   var d=dat(q.it),LG=LANGS[F.lang],box=$('q'),beg=showYomi(F.lang);
   updateProfile();
   var tag=newTag(q.it);
@@ -152,7 +152,7 @@ function showStep(){
     board.set(d.t);ledSet('? ? ?',beg&&d.r?'読み: '+d.r:'意味を選ぼう');optsFor(q.it,'jp');
     if(beg&&d.r){var ls=$('led').querySelector('.s');if(ls)ls.innerHTML='読み: <span translate="no">'+esc(d.r)+'</span>';}  /* the reading itself is never translated */
     box.innerHTML='<span class="qh">意味はどれ？'+tag+'</span>'+hearBtns()+optsHTML('')+
-      (q.nh?'<button class="sq hint-go" type="button" data-q-hint><span aria-hidden="true">💡</span><span>ヒントを見る<small>見てもミスになりません</small></span></button>':'');
+      (q.nh?'<button class="sq hint-go" type="button" data-q-hint><span aria-hidden="true">💡</span><span>ヒントを見る<small>答えは出ません。手がかりだけ</small></span></button>':'');
     if(beg||q.nh)speak(d.t,LG.tts,false);
   }else if(q.k==='cloze'){
     q.ck=q.ck||clozeKey(d);var co=clozeOpts(F.lang,q.ck);F.opts=co.opts;F.optR=[];F.ci=co.ci;
@@ -198,16 +198,36 @@ function drawBuild(){
 }
 function normAns(s){return s.toLowerCase().replace(/ı/g,'i').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' ').trim();}
 function pushRetry(q){
-  if(F.mode==='skip'||F.mode==='ai')return;
+  if(F.mode==='skip'||F.mode==='ai')return false;
   var key=ik(q.it.uid,q.it.i);
-  if((F.retry[key]||0)>=2)return;
+  if((F.retry[key]||0)>=2)return false;
   F.retry[key]=(F.retry[key]||0)+1;
   var d=dat(q.it),list=isLong(d)?['listenjp','t2j','j2t']:['j2t','t2j','build','listen'];
   F.queue.push({k:firstOK(list,q.it,q.k),it:q.it,w:1,retry:true});F.wTotal+=1;
+  return true;
+}
+/* 💡 never gives the answer away (あたまを使わないと覚えない): the 1st press shows a clue (the phrase's note, or its
+   reading and a slow replay), the 2nd takes one wrong choice away. A phrase answered with a hint comes back once
+   more later in the same flight, without one (it is not a mistake). */
+function qHint(btn){
+  if(!F.cur||F.answered)return;
+  var d=dat(F.cur.it);F.hl=(F.hl||0)+1;
+  if(F.hl===1){
+    if(d.n)ledSet('ヒント',d.n);
+    else{ledSet('ヒント',d.r||'ゆっくり、もう一度聞いてみよう');speak(d.t,LANGS[F.lang].tts,true);}
+    btn.innerHTML='<span aria-hidden="true">💡</span><span>もう1つヒント<small>まちがいの選択肢を1つ消します</small></span>';
+    return;
+  }
+  var ob=document.querySelectorAll('.opt'),wrong=[];
+  for(var i=0;i<ob.length;i++)if(i!==F.ci&&!ob[i].disabled)wrong.push(ob[i]);
+  var w=wrong[Math.floor(Math.random()*wrong.length)];
+  if(w){w.disabled=true;w.classList.add('struck');w.setAttribute('aria-hidden','true');}
+  if(btn.parentNode)btn.parentNode.removeChild(btn);
 }
 function judge(ok){
   if(F.answered)return;F.answered=true;
   var q=F.cur,d=dat(q.it),key=ik(q.it.uid,q.it.i);
+  var hinted=ok&&F.hl>0&&!q.retry&&pushRetry(q);
   if(ok){F.corr++;chimeOK();fxGood();F.combo=(F.combo||0)+1;if(typeof fxCombo==='function'&&COMBO_AT.indexOf(F.combo)>=0)fxCombo(F.combo);}
   else{F.combo=0;F.mist++;fxBad();F.wrong[key]=(F.wrong[key]||0)+1;chimeBad();buzz(40);pushRetry(q);}
   if(typeof repNote==='function')repNote(F.lang,q.k,ok);
@@ -219,6 +239,7 @@ function judge(ok){
     /* the class goes on the phrase only: the meaning under it is translated for the other display languages */
     '<div class="ans"><b'+(lfc(F.lang)?' class="'+lfc(F.lang)+'"':'')+'>'+esc(d.t)+'</b><br><span class="dim" style="font-size:13px">'+(d.r?'<span translate="no">'+esc(d.r)+' ・ </span>':'')+'<span>'+esc(d.jp)+'</span></span></div>'+
     (d.n?'<div class="note"><b>ワンポイント</b>'+esc(d.n)+'</div>':'')+
+    (hinted?'<p class="dim hint-again">ヒントを使ったので、あとでヒントなしでもう一度出ます</p>':'')+
     aiBtnHTML()+(typeof pronBoxHTML==='function'?pronBoxHTML():'')+
     '<div class="row2"><button class="sq" type="button" data-hear aria-label="発音を聞く">'+speakerIcon()+'</button>'+
     '<button class="go" type="button" data-next style="flex:1;width:auto;margin:0">次へ</button></div></div></div>';
@@ -239,6 +260,7 @@ document.addEventListener('click',function(e){
 },true);
 function onOption(i){
   if(F.answered||!F.cur)return;
+  var bt=document.querySelectorAll('.opt')[i];if(bt&&bt.classList.contains('struck'))return;
   var btns=document.querySelectorAll('.opt'),ok=(i===F.ci);
   for(var k=0;k<btns.length;k++){btns[k].disabled=true;if(k===F.ci)btns[k].classList.add('ok');else if(k===i)btns[k].classList.add('no');else btns[k].classList.add('off');}
   judge(ok);

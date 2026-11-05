@@ -103,6 +103,9 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.12',items:[
+  ['💡','ヒントは「考える」ヒントに','ヒントで答えが出なくなりました。1回目は手がかり、2回目はまちがいの選択肢を1つ消します。ヒントを使った問題は、あとでヒントなしでもう一度出ます。','',0,['ja','en','ko','zh']]
+ ]},
  {v:'2026.11.11',items:[
   ['🏅','DELE・CILS・TOPIKも40フレーズに','スペイン語(DELE)・イタリア語(CILS)・韓国語(TOPIK)の検定も、レベルごとにステップ1〜5の40フレーズになりました。目標を選ぶと合格圏メーターが動きます。','exam',1,['ja','en','zh']],
   ['🏅','DELE・CILSも40フレーズに','スペイン語(DELE)・イタリア語(CILS)の検定も、レベルごとにステップ1〜5の40フレーズになりました。目標を選ぶと合格圏メーターが動きます。','exam',1,['ko']]

@@ -72,8 +72,10 @@ that had no translation is counted there.
   level to every language already started. 「少しわかる」 and up can take the 飛び級テスト in a new language right away.
 - **はじめて**: the `first` unit (はじめの一歩, `parts/e3h_first.js`, 8 short words in all 12 languages) comes first until
   あいさつ is flown; lessons start with their shortest phrases; 3 choices instead of 4; readings shown.
-- **New phrases**: a card before the first question (default at はじめて) or a hint button on it that is not a mistake
-  (default from 少しわかる); 記録 → 新しいフレーズの出し方 picks either.
+- **New phrases**: a card before the first question (default at はじめて) or a hint button on it (default from 少しわかる);
+  記録 → 新しいフレーズの出し方 picks either. The hint never gives the answer away (`qHint`): the 1st press shows a clue
+  (the phrase's note, or its reading and a slow replay), the 2nd takes one wrong choice away. Using it is not a
+  mistake, but the phrase comes back once more later in the same flight, without a hint.
 - **学ぶ理由** picks the starting mode (仕事 → 職業, 留学 → 留学, 検定/学校+英語 → 検定 only where its lessons are open)
   and the 日常会話 order (旅行: travel first; 友達・推し: 雑談・気持ち earlier). **苦手なこと** makes every other round-2
   question train it (発音・聞き取り: listening, とっさに言えない: 言い方/並べ替え, 文法: 並べ替え/穴うめ), 単語 halves the
