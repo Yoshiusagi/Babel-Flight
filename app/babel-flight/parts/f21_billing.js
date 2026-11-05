@@ -108,7 +108,7 @@ function billBodyHTML(){
   var c0=cabinCardHTML;
   cabinCardHTML=function(){
     var h=c0.apply(this,arguments);
-    if(!h||!ACCT.on||!cabinTester())return h;
+    if(!h||!ACCT.on||!cabinTester()||UI!=='ja')return h;   /* buying (and its 特定商取引法 screen) is 日本語 only for now */
     if(ACCT.me&&!BILL.loading&&(!BILL.st||Date.now()-BILL.t>30000))setTimeout(billFetch,0);
     return h+'<section class="card bill-card" id="billCard"><div class="card-h"><h2 class="jh">プランの購入</h2><span class="lbl">テスト用アカウントだけ</span></div><div id="billBody">'+billBodyHTML()+'</div></section>';
   };

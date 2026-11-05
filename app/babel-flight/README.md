@@ -49,7 +49,7 @@ first visit) or in 記録 → 学習の設定; switching reloads the page. With 
 course is hidden (`learnOrder()`), every mode is open (`uiModeOpen`; 職業 only for the jobs in `JOB_UI`),
 phrase readings are romanized (Korean and Russian computed in `f27_i18n.js`, Chinese pinyin from the data, Arabic from `ROM_AR` in `f27_rom.js`; none for Latin-script languages), answer choices only
 use phrases whose meaning is translated, and the AI teacher answers in that language (`ui` in `/api/ai/ask`). Cards
-that are still Japanese-only (機長アナウンス, 搭乗クラス, 英検の面接練習・模試) are hidden.
+that are still Japanese-only (英検の面接練習, the plan purchase card) are hidden.
 The few phrases written for a learner from Japan (「日本人です」「東京に住んでいます」…) are swapped for the display
 language's country (`f27_swap.js`: 한국어 → Korea / Seoul, 简体中文 → China / Beijing; English keeps Japan), and the
 dictionaries give those meanings the same country. 中文 is Simplified Chinese. Only the display languages that have a
@@ -123,7 +123,11 @@ that had no translation is counted there.
   course (`role:<scene>:ja`, Japanese starter lines in `ROLE_SC`).
 - What the AI wrote is already in the display language, so the page translation leaves it alone: feedback in
   `translate="no"` spans, the AI answer boxes while showing an answer, and the drill sentences via `uiKeep()`.
-- The class switch (搭乗クラス) is still 日本語 only: the test account picks its class with the Japanese display first.
+- 搭乗クラス (記録) shows in every display language: `cabFeat()` / `cabPitch()` leave out what is 日本語 only (英検 and
+  its 面接練習, 授業の用語(くわしく)) and name the exams by level. Buying a plan (`f21_billing.js`, with its 特定商取引法
+  confirmation) stays 日本語 only for now.
+- リスニング特訓 (機長アナウンス, in 復習) works in every display language; the card only shows for the courses that
+  have the announcements (`pilot-ann`: 英語・韓国語・スペイン語・イタリア語).
 
 ## 検定モード for the スターター languages and JLPT — `parts/f17_xstarter.js`
 

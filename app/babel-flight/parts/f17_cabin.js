@@ -16,6 +16,14 @@ var CAB_FEAT=[
  ['弱点レポート',['—','かんたん版','詳しい版','詳しい版+AIコーチ']],
  ['専用デザイン',['—','窓側の席','+ラウンジ','+スイート']]
 ];
+/* the other display languages: 英検 (and its 面接練習) and 授業の用語(くわしく) are 日本語 only, so their table leaves
+   those rows out and names the exams by level (the rows added later by f19/f24/f25 are kept) */
+var CAB_JA_ONLY=['授業の用語(くわしく)','面接練習(英検)'];
+function cabFeat(){
+  if(typeof UI==='undefined'||UI==='ja')return CAB_FEAT;
+  return CAB_FEAT.filter(function(f){return CAB_JA_ONLY.indexOf(f[0])<0;}).map(function(f){
+    return f[0]==='検定コース'?[f[0],['—','初級レベルの検定','すべての検定','すべて+模試']]:f;});
+}
 var CAB_KEY='babelflight.cabin',CAB_DKEY='babelflight.cabinDesign';
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
@@ -34,6 +42,11 @@ var CAB_PITCH=['',
   '検定コース(英検5級〜準2級など) ・ 面接練習(3級・準2級) ・ AI会話ロールプレイ 1日5回 ・ 弱点レポート ・ 授業の用語(くわしく) ・ 筆記体のつなげ書き・名前 ・ 窓側の席デザイン',
   'プレエコの全部 ＋ すべての検定と面接練習 ・ ロールプレイ 1日15回 ・ 詳しい弱点レポート ・ ラウンジデザイン',
   'ビジネスの全部 ＋ 本番形式の模試 ・ ロールプレイ 1日30回 ・ AIコーチ ・ スイートデザイン'];
+var CAB_PITCH_X=['',
+  '検定コース(初級レベル) ・ AI会話ロールプレイ 1日5回 ・ 弱点レポート ・ 筆記体のつなげ書き・名前 ・ 窓側の席デザイン',
+  'プレエコの全部 ＋ すべての検定 ・ ロールプレイ 1日15回 ・ 詳しい弱点レポート ・ 出発案内板デザイン',
+  CAB_PITCH[3]];
+function cabPitch(i){return (typeof UI==='undefined'||UI==='ja'?CAB_PITCH:CAB_PITCH_X)[i];}
 function cabinName(lv){return CABINS[lv]?CABINS[lv][1]:'';}
 function cabinDesign(){var lv=cabinLv();if(lv<0)return -1;var d=parseInt(lsGet(CAB_DKEY),10);if(!(d>=0&&d<=lv))d=lv;return d;}
 function applyCabin(){
@@ -44,15 +57,15 @@ function applyCabin(){
 }
 (function(){var e0=entSet;entSet=function(){var r=e0.apply(this,arguments);applyCabin();return r;};})();
 function cabinFeatHTML(lv){
-  return '<ul class="cabin-feat">'+CAB_FEAT.map(function(f){var v=f[1][lv];return '<li class="'+(v==='—'?'off':'on')+'"><span>'+f[0]+'</span><b>'+(v==='—'?'🔒':esc(v))+'</b></li>';}).join('')+'</ul>';
+  return '<ul class="cabin-feat">'+cabFeat().map(function(f){var v=f[1][lv];return '<li class="'+(v==='—'?'off':'on')+'"><span>'+f[0]+'</span><b>'+(v==='—'?'🔒':esc(v))+'</b></li>';}).join('')+'</ul>';
 }
 function cabinCardHTML(){
-  var lv=cabinLv();if(lv<0||UI!=='ja')return '';
+  var lv=cabinLv();if(lv<0)return '';
   if(!cabinTester()){
     return '<section class="card cabin-card eco"><div class="card-h"><h2 class="jh">搭乗クラス</h2><span class="lbl">'+CABINS[lv][2]+'</span></div>'+
       '<div class="cab-now"><b>'+CABINS[lv][1]+'</b><small>'+(lv?'':'無料 ・ ')+'いまのクラス</small></div>'+cabinFeatHTML(lv)+
       '<div class="cabin-up"><span class="lbl">もうすぐ ・ 上のクラス</span>'+CABINS.slice(lv+1).map(function(c,j){
-        return '<div class="cu-row"><div class="cu-h"><b>'+c[1]+'</b><span class="cu-soon">準備中</span></div><small>'+esc(CAB_PITCH[lv+1+j])+'</small></div>';}).join('')+'</div>'+
+        return '<div class="cu-row"><div class="cu-h"><b>'+c[1]+'</b><span class="cu-soon">準備中</span></div><small>'+esc(cabPitch(lv+1+j))+'</small></div>';}).join('')+'</div>'+
       '<p class="dim hint">'+CAB_SOON+'</p></section>';
   }
   var d=cabinDesign();
