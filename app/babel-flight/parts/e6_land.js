@@ -108,7 +108,7 @@ function completeLesson(o){
   h+='<div class="receipt" aria-label="獲得マイルの明細">'+lines.map(function(x){return '<div class="ln"><span>'+esc(x[0])+'</span><span>+'+x[1]+'</span></div>';}).join('')+
      '<div class="ln tot"><span>獲得マイル</span><span>+'+miles+' mi</span></div></div>';
   if(firstCap)h+='<div class="up-note">キャプテンに到達！ 記念のキャプテンスタンプをもらいました(ずっと残ります)</div>';
-  else if(rankAfter>rankBefore)h+='<div class="up-note">ステータスアップ！ '+RANKS[rankAfter][0]+'になりました(6ヶ月有効)'+(typeof perkNote==='function'?perkNote(rankAfter):'')+'</div>';
+  else if(rankAfter>rankBefore)h+='<div class="up-note"><span>ステータスアップ！ '+RANKS[rankAfter][0]+'になりました(6ヶ月有効)</span>'+(typeof perkNote==='function'?perkNote(rankAfter):'')+'</div>';
   if(remAdded)h+='<div class="up-note rem-note">苦手が多かったので「補習フライト」を追加しました(苦手 '+remAdded+'フレーズ)</div>';
   if(o.wrong&&o.wrong.length){
     h+='<div class="card" style="text-align:left"><div class="card-h"><h2 class="jh">'+esc(o.wrongTitle)+'</h2><span class="lbl">'+esc(o.wrongNote)+'</span></div>'+

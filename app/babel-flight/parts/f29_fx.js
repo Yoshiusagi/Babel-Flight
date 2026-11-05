@@ -103,6 +103,10 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.11',items:[
+  ['🏅','DELE・CILS・TOPIKも40フレーズに','スペイン語(DELE)・イタリア語(CILS)・韓国語(TOPIK)の検定も、レベルごとにステップ1〜5の40フレーズになりました。目標を選ぶと合格圏メーターが動きます。','exam',1,['ja','en','zh']],
+  ['🏅','DELE・CILSも40フレーズに','スペイン語(DELE)・イタリア語(CILS)の検定も、レベルごとにステップ1〜5の40フレーズになりました。目標を選ぶと合格圏メーターが動きます。','exam',1,['ko']]
+ ]},
  {v:'2026.11.10',items:[
   ['🎧','リスニング特訓','機長アナウンスを聞いて内容を当てる「リスニング特訓」(復習タブ)が、この表示言語でも使えるようになりました。','',0,['en','ko','zh']],
   ['💺','搭乗クラス','「記録」の搭乗クラスの説明が、この表示言語でも見られるようになりました。','',1,['en','ko','zh']]

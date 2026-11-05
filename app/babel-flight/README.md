@@ -141,7 +141,7 @@ that had no translation is counted there.
 - Chinese and Japanese exam phrases carry the word split (5th column of `XU`) for 並べ替え; the Arabic readings for
   the other display languages are in `ROM_AR` (`f27_rom.js`).
 - Each level is 5 steps of 8 phrases, like 英検 (`x-hsk2`, `x-hsk2b` … `x-hsk2e`; `xSteps` collects them into the
-  bank), so a goal has the 40 phrases (`XBANK_FULL`) the 合格圏メーター needs. Steps 2–5 have themes (初級: 買い物・食事 /
+  bank; DELE・CILS・TOPIK in `f17_exam.js` list their steps in `XBANK`), so a goal has the 40 phrases (`XBANK_FULL`) the 合格圏メーター needs. Steps 2–5 have themes (初級: 買い物・食事 /
   旅行・道案内 / 家族・趣味・予定 / 体調・天気・連絡, 中級: 意見・比較 / 仕事・学校 / 経験 / 社会・環境・未来), and their meanings
   are shared by every language, so each display language translates a meaning once (`i18n/<ui>/xstarter2.tsv`,
   together with the step titles and the notes). JLPT does the same: N5 has its own simple sentences, N4 and N3

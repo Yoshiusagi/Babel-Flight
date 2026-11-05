@@ -178,6 +178,36 @@ JLPT N3 ステップ2	JLPT N3 第2步
 JLPT N3 ステップ3	JLPT N3 第3步
 JLPT N3 ステップ4	JLPT N3 第4步
 JLPT N3 ステップ5	JLPT N3 第5步
+DELE A2 ステップ1	DELE A2 第1步
+DELE A2 ステップ2	DELE A2 第2步
+DELE A2 ステップ3	DELE A2 第3步
+DELE A2 ステップ4	DELE A2 第4步
+DELE A2 ステップ5	DELE A2 第5步
+DELE B1 ステップ1	DELE B1 第1步
+DELE B1 ステップ2	DELE B1 第2步
+DELE B1 ステップ3	DELE B1 第3步
+DELE B1 ステップ4	DELE B1 第4步
+DELE B1 ステップ5	DELE B1 第5步
+CILS A2 ステップ1	CILS A2 第1步
+CILS A2 ステップ2	CILS A2 第2步
+CILS A2 ステップ3	CILS A2 第3步
+CILS A2 ステップ4	CILS A2 第4步
+CILS A2 ステップ5	CILS A2 第5步
+CILS B1 ステップ1	CILS B1 第1步
+CILS B1 ステップ2	CILS B1 第2步
+CILS B1 ステップ3	CILS B1 第3步
+CILS B1 ステップ4	CILS B1 第4步
+CILS B1 ステップ5	CILS B1 第5步
+TOPIK Ⅰ ステップ1	TOPIK Ⅰ 第1步
+TOPIK Ⅰ ステップ2	TOPIK Ⅰ 第2步
+TOPIK Ⅰ ステップ3	TOPIK Ⅰ 第3步
+TOPIK Ⅰ ステップ4	TOPIK Ⅰ 第4步
+TOPIK Ⅰ ステップ5	TOPIK Ⅰ 第5步
+TOPIK Ⅱ ステップ1	TOPIK Ⅱ 第1步
+TOPIK Ⅱ ステップ2	TOPIK Ⅱ 第2步
+TOPIK Ⅱ ステップ3	TOPIK Ⅱ 第3步
+TOPIK Ⅱ ステップ4	TOPIK Ⅱ 第4步
+TOPIK Ⅱ ステップ5	TOPIK Ⅱ 第5步
 أكبر=もっと大きい。	أكبر=更大的。
 هل يمكنني 〜؟=〜できますか。	هل يمكنني ……؟=我可以……吗？
 من فضلك=お願いします。	من فضلك=请。
@@ -241,6 +271,43 @@ zu 〜 werden=〜になる。	zu …… werden=成为……。
 wohl=たぶん。	wohl=大概。
 ehrenamtlich=ボランティアで。	ehrenamtlich=义务地，当志愿者。
 dank+2格=〜のおかげで。	dank+第二格=多亏……。
+職業の前には冠詞をつけません(ser piloto)。	职业前面不加冠词（ser piloto）。
+talla=服のサイズ。	talla=衣服的尺码。
+レストランのメニューは la carta。	餐厅的菜单是 la carta。
+スペイン語では主語(yo)をよく省きます。	西班牙语常常省略主语（yo）。
+料理がおいしい=estar rico。	饭菜好吃=estar rico。
+¿Cómo se va a 〜?=〜へはどう行きますか。	¿Cómo se va a ……?=去……怎么走？
+a la derecha=右へ、a la izquierda=左へ。	a la derecha=向右，a la izquierda=向左。
+al=a+el(〜へ)。	al=a+el（到……）。
+hay=〜がある(数に関係なく同じ形)。	hay=有……（单复数同形）。
+mayor=年上の、menor=年下の。	mayor=年长的，menor=年幼的。
+スポーツをする=jugar a 〜。	做运动=jugar a ……。
+Me gusta+動詞の原形=〜するのが好き。	Me gusta+动词原形=我喜欢做……。
+si+現在形=もし〜なら(未来のことでも現在形)。	si+现在时=如果……（说将来也用现在时）。
+quedar=(友だちと)会う約束をする。	quedar=（和朋友）约见面。
+人が目的語のときは a をつけます(a mis abuelos)。	宾语是人时要加 a（a mis abuelos）。
+Me duele 〜=〜が痛い(gustar と同じ形)。	Me duele ……=我的……疼（用法和 gustar 一样）。
+así que=だから。	así que=所以。
+hará は hacer の未来形。	hará 是 hacer 的将来时。
+Gracias por 〜=〜をありがとう。	Gracias por ……=谢谢……。
+mejor que 〜=〜よりよく。	mejor que ……=比……好。
+Por otro lado=一方で。	Por otro lado=另一方面。
+estar de acuerdo con 〜=〜に賛成だ。	estar de acuerdo con ……=同意……。
+seguir+現在分詞=〜し続ける。	seguir+副动词=继续……。
+En conclusión=結論として(作文のしめくくり)。	En conclusión=总之（作文的结尾）。
+tener que+動詞の原形=〜しなければならない。	tener que+动词原形=必须……。
+aprobar=(試験に)受かる。	aprobar=通过（考试）。
+dijo que のあとは時制を合わせて線過去(eran)。	dijo que 后面要配合时态，用过去未完成时（eran）。
+no duden en 〜=遠慮なく〜してください。	no duden en ……=别客气，尽管……。
+現在完了(he estado)=これまでの経験。	现在完成时（he estado）=至今为止的经历。
+perderse=道に迷う。	perderse=迷路。
+conocer a 〜=(人と)知り合う。	conocer a ……=认识（某人）。
+deberíamos=〜するべきだ(deber の過去未来)。	deberíamos=我们应该（deber 的条件式）。
+convertirse en 〜=〜になる。	convertirse en ……=变成……。
+harán は hacer の未来形。	harán 是 hacer 的将来时。
+hacer voluntariado=ボランティアをする。	hacer voluntariado=做志愿者。
+gracias a 〜=〜のおかげで。	gracias a ……=多亏……。
+dentro de+期間=(今から)〜後に。	dentro de+时间=（从现在起）……以后。
 plus grande=もっと大きい。taille(サイズ)が女性名詞なので grande。	plus grande=更大的。taille（尺码）是阴性名词，所以用 grande。
 s'il vous plaît=お願いします(ていねい)。	s'il vous plaît=请（礼貌的说法）。
 レストランのメニューは la carte。le menu はコース料理のこと。	餐厅的菜单是 la carte；le menu 指的是套餐。
@@ -308,6 +375,79 @@ pernah=〜したことがある。	pernah=曾经……。
 mungkin=たぶん。	mungkin=也许。
 relawan=ボランティア、lansia=お年寄り。	relawan=志愿者，lansia=老人。
 berkat 〜=〜のおかげで。	berkat ……=多亏……。
+taglia=服のサイズ。	taglia=衣服的尺码。
+イタリア語では主語(io)をよく省きます。	意大利语常常省略主语（io）。
+-issimo=とても〜。	-issimo=非常……。
+Come si arriva a 〜?=〜へはどう行きますか。	Come si arriva a ……?=去……怎么走？
+a destra=右へ、a sinistra=左へ。	a destra=向右，a sinistra=向左。
+h は読みません(Ho=オ)。	h 不发音（Ho 读作 o）。
+c'è / ci sono=〜がある(単数/複数)。	c'è / ci sono=有……（单数/复数）。
+maggiore=年上の、minore=年下の。	maggiore=年长的，minore=年幼的。
+スポーツをする=giocare a 〜。	做运动=giocare a ……。
+Mi piace+動詞の原形=〜するのが好き。	Mi piace+动词原形=我喜欢做……。
+話し言葉では、未来のことも現在形でよく言います。	口语里，将来的事也常用现在时。
+andare a trovare 〜=〜に会いに行く。	andare a trovare ……=去看望……。
+Mi fa male 〜=〜が痛い。	Mi fa male ……=我的……疼。
+quindi=だから。	quindi=所以。
+secondo 〜=〜によると。	secondo ……=根据……。
+in ritardo=遅れて。	in ritardo=迟到。
+meglio che 〜=〜よりよく。	meglio che ……=比……好。
+D'altra parte=一方で。	D'altra parte=另一方面。
+essere d'accordo con 〜=〜に賛成だ。	essere d'accordo con ……=同意……。
+In conclusione=結論として(作文のしめくくり)。	In conclusione=总之（作文的结尾）。
+職業は fare il 〜 でも言えます(fare il pilota)。	职业也可以用 fare il …… 表达（fare il pilota）。
+entro 〜=〜までに(期限)。	entro ……=在……之前（期限）。
+colloquio=(仕事の)面接。	colloquio=（工作）面试。
+superare l'esame=試験に受かる。	superare l'esame=通过考试。
+ha detto che のあとは時制を合わせて半過去(erano)。	ha detto che 后面要配合时态，用未完成过去时（erano）。
+Penso che のあとは接続法(apra)。	Penso che 后面用虚拟式（apra）。
+non 〜 mai=一度も〜ない。	non …… mai=从来没有……。
+perdersi=道に迷う。過去形は essere を使います。	perdersi=迷路；它的近过去时用 essere。
+conoscere=(人と)知り合う。	conoscere=认识（人）。
+dovremmo=〜するべきだ(dovere の条件法)。	dovremmo=我们应该（dovere 的条件式）。
+faranno は fare の未来形。	faranno 是 fare 的将来时。
+fare volontariato=ボランティアをする。	fare volontariato=做志愿者。
+grazie a 〜=〜のおかげで。	grazie a ……=多亏……。
+fra+期間=(今から)〜後に。	fra+时间=（从现在起）……以后。
+더=もっと。	더=更。
+-(으)ㄹ 수 있다=〜できる。	-(으)ㄹ 수 있다=能……。
+병=びんを数える単位。	병=数瓶子的量词。
+-아/어 주시겠어요?=〜していただけますか。	-아/어 주시겠어요?=能请您……吗？
+안+動詞=〜しない。	안+动词=不……。
+몇 시에=何時に。	몇 시에=几点。
+오른쪽=右、왼쪽=左。	오른쪽=右，왼쪽=左。
+타다=(乗り物に)乗る。	타다=乘坐（交通工具）。
+3박=3泊。漢字語の数(삼)で数えます。	3박=三晚，用汉字词数字（삼）来数。
+없다=ない(있다の反対)。	없다=没有（있다 的反义）。
+형は男性から見た兄。女性なら 오빠。	형=男性称呼哥哥；女性说 오빠。
+-는 걸 좋아하다=〜するのが好き。	-는 걸 좋아하다=喜欢做……。
+-(으)면=〜なら。	-(으)면=如果……。
+-(으)ㄹ래?=〜する?(友だちに)。	-(으)ㄹ래?=要不要……？（对朋友）
+댁=お宅(집の敬語)。	댁=府上（집 的敬语）。
+누나=男性から見た姉。女性なら 언니。	누나=男性称呼姐姐；女性说 언니。
+-아/어서=〜ので(理由)。	-아/어서=因为……（理由）。
+-대요=〜だそうです(聞いた話)。	-대요=听说……。
+-(으)니까=〜から(理由)。	-(으)니까=因为……。
+-(으)ㄹ 것 같다=〜しそうだ。	-(으)ㄹ 것 같다=好像会……。
+-아/어도 되다=〜してもいい。	-아/어도 되다=可以……。
+AよりB=A보다 B。	보다=比……。
+한편=一方で。	한편=另一方面。
+별로 〜지 않다=あまり〜ない。	별로 ……지 않다=不太……。
+꾸준히=こつこつと。	꾸준히=坚持不懈地。
+〜이/가 되다=〜になる。	……이/가 되다=成为……。
+-아/어야 하다=〜しなければならない。	-아/어야 하다=必须……。
+〜에 대해=〜について。	……에 대해=关于……。
+-(이)라고 하다=〜だと言う(引用)。	-(이)라고 하다=说是……（引用）。
+-아/어 본 적이 있다/없다=〜したことがある/ない。	-아/어 본 적이 있다/없다=有过/没有过……的经历。
+-아/어 버리다=〜してしまう。	-아/어 버리다=……掉了（完成、遗憾）。
+-았/었을 때=〜したとき。	-았/었을 때=……的时候（过去）。
+-는 동안=〜している間。	-는 동안=在……期间。
+못 〜=(どうしても)〜できない。	못 ……=（怎么也）不能……。
+-ㅂ니다/습니다=かたいていねい語(発表や作文)。	-ㅂ니다/습니다=正式的敬语（演讲、作文）。
+-게 되다=〜するようになる。	-게 되다=变得……，会……。
+-아/어지다=〜になる(変化)。	-아/어지다=变得……（变化）。
+〜마다=〜ごとに。	……마다=每……。
+〜 덕분에=〜のおかげで。	…… 덕분에=多亏……。
 maior=もっと大きい。	maior=更大的。
 por favor=お願いします。	por favor=请。
 ブラジルではメニューは cardápio。	在巴西，菜单叫 cardápio。
@@ -330,7 +470,6 @@ melhor do que 〜=〜よりよい。	melhor do que ……=比……好。
 Por outro lado=一方で。	Por outro lado=另一方面。
 dá para 〜=〜できる(話し言葉)。	dá para ……=可以……（口语）。
 Em conclusão=結論として(作文のしめくくり)。	Em conclusão=总之（作文的结尾）。
-職業の前には冠詞をつけません(ser piloto)。	职业前面不加冠词（ser piloto）。
 preciso+動詞の原形=〜しなければならない。	preciso+动词原形=我必须……。
 passar na prova=試験に受かる。	passar na prova=通过考试。
 ficar à vontade=遠慮しない、気楽にする。	ficar à vontade=别客气，随意。

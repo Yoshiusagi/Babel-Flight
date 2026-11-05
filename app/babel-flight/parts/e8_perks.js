@@ -23,7 +23,7 @@ function entSet(e){
 /* the highest status ever reached (perks you keep) and the status held now (perks while it lasts) */
 function perkEver(){return Math.max(save.stMax||0,statusIdx());}
 function perkHas(lv){if(entitled())return true;var p=null;PERKS.forEach(function(x){if(x.lv===lv)p=x;});return p?(p.keep?perkEver():statusIdx())>=lv:false;}
-function perkNote(lv){var p=null;PERKS.forEach(function(x){if(x.lv===lv)p=x;});return p?' ・ 特典: '+p.jp:'';}
+function perkNote(lv){var p=null;PERKS.forEach(function(x){if(x.lv===lv)p=x;});return p?' ・ <span>特典: </span><span>'+esc(p.jp)+'</span>':'';}   /* own text nodes: each part is translated on its own */
 function perksCardHTML(){
   var now=statusIdx(),ever=perkEver();
   return '<section class="card perks"><div class="card-h"><h2 class="jh">ステータス特典</h2><span class="lbl">いまは '+RANKS[now][0]+'</span></div><ul class="perk-list">'+

@@ -5390,7 +5390,7 @@ function completeLesson(o){
   h+='<div class="receipt" aria-label="獲得マイルの明細">'+lines.map(function(x){return '<div class="ln"><span>'+esc(x[0])+'</span><span>+'+x[1]+'</span></div>';}).join('')+
      '<div class="ln tot"><span>獲得マイル</span><span>+'+miles+' mi</span></div></div>';
   if(firstCap)h+='<div class="up-note">キャプテンに到達！ 記念のキャプテンスタンプをもらいました(ずっと残ります)</div>';
-  else if(rankAfter>rankBefore)h+='<div class="up-note">ステータスアップ！ '+RANKS[rankAfter][0]+'になりました(6ヶ月有効)'+(typeof perkNote==='function'?perkNote(rankAfter):'')+'</div>';
+  else if(rankAfter>rankBefore)h+='<div class="up-note"><span>ステータスアップ！ '+RANKS[rankAfter][0]+'になりました(6ヶ月有効)</span>'+(typeof perkNote==='function'?perkNote(rankAfter):'')+'</div>';
   if(remAdded)h+='<div class="up-note rem-note">苦手が多かったので「補習フライト」を追加しました(苦手 '+remAdded+'フレーズ)</div>';
   if(o.wrong&&o.wrong.length){
     h+='<div class="card" style="text-align:left"><div class="card-h"><h2 class="jh">'+esc(o.wrongTitle)+'</h2><span class="lbl">'+esc(o.wrongNote)+'</span></div>'+
@@ -5998,7 +5998,7 @@ function entSet(e){
 /* the highest status ever reached (perks you keep) and the status held now (perks while it lasts) */
 function perkEver(){return Math.max(save.stMax||0,statusIdx());}
 function perkHas(lv){if(entitled())return true;var p=null;PERKS.forEach(function(x){if(x.lv===lv)p=x;});return p?(p.keep?perkEver():statusIdx())>=lv:false;}
-function perkNote(lv){var p=null;PERKS.forEach(function(x){if(x.lv===lv)p=x;});return p?' ・ 特典: '+p.jp:'';}
+function perkNote(lv){var p=null;PERKS.forEach(function(x){if(x.lv===lv)p=x;});return p?' ・ <span>特典: </span><span>'+esc(p.jp)+'</span>':'';}   /* own text nodes: each part is translated on its own */
 function perksCardHTML(){
   var now=statusIdx(),ever=perkEver();
   return '<section class="card perks"><div class="card-h"><h2 class="jh">ステータス特典</h2><span class="lbl">いまは '+RANKS[now][0]+'</span></div><ul class="perk-list">'+
@@ -7405,7 +7405,7 @@ XU('x-icao','ICAO航空英語','ICAO ENGLISH','en',[
  ["Request priority landing.","","優先着陸をお願いします。",""],
  ["Confirm runway in use.","","使用中の滑走路を確認してください。",""]]);
 /* ---- Korean: TOPIK ---- */
-XU('x-topik1','TOPIK Ⅰ','TOPIK I','ko',[
+XU('x-topik1','TOPIK Ⅰ ステップ1','TOPIK I STEP 1','ko',[
  ["저는 학생이에요.","チョヌン ハクセンイエヨ","私は学生です。","이에요/예요=〜です。パッチムがあるときは 이에요。"],
  ["주말에 친구를 만났어요.","チュマレ チングルル マンナッソヨ","週末に友だちに会いました。","「〜に会う」は 를/을 만나다。日本語の「に」とちがうので注意。"],
  ["이 가방은 얼마예요?","イ カバンウン オルマエヨ","このかばんはいくらですか。",""],
@@ -7414,7 +7414,43 @@ XU('x-topik1','TOPIK Ⅰ','TOPIK I','ko',[
  ["도서관에서 책을 읽어요.","トソグァネソ チェグル イルゴヨ","図書館で本を読みます。","에서=(場所)で。"],
  ["지하철역이 어디에 있어요?","チハチョルリョギ オディエ イッソヨ","地下鉄の駅はどこにありますか。",""],
  ["같이 영화를 볼까요?","カチ ヨンファルル ボルッカヨ","一緒に映画を見ましょうか。","-(으)ㄹ까요?=〜しましょうか(誘い)。"]]);
-XU('x-topik2','TOPIK Ⅱ','TOPIK II','ko',[
+XU('x-topik1b','TOPIK Ⅰ ステップ2','TOPIK I STEP 2','ko',[
+ ["이 셔츠 더 큰 사이즈 있어요?","イ ショチュ ト クン サイジュ イッソヨ","このシャツの、もっと大きいサイズはありますか。","더=もっと。"],
+ ["카드로 계산할 수 있어요?","カドゥロ ケサナル ス イッソヨ","カードで払えますか。","-(으)ㄹ 수 있다=〜できる。"],
+ ["물 한 병 주세요.","ムル ハン ビョン チュセヨ","水を1本ください。","병=びんを数える単位。"],
+ ["메뉴 좀 보여 주시겠어요?","メニュ チョム ポヨ ジュシゲッソヨ","メニューを見せてもらえますか。","-아/어 주시겠어요?=〜していただけますか。"],
+ ["계산해 주세요.","ケサネ ジュセヨ","お会計をお願いします。",""],
+ ["저는 고기를 안 먹어요.","チョヌン コギルル アン モゴヨ","私は肉を食べません。","안+動詞=〜しない。"],
+ ["이 국은 정말 맛있어요.","イ クグン チョンマル マシッソヨ","このスープはとてもおいしいです。",""],
+ ["빵집은 몇 시에 문을 열어요?","ッパンチブン ミョッ シエ ムヌル ヨロヨ","パン屋は何時に開きますか。","몇 시에=何時に。"]]);
+XU('x-topik1c','TOPIK Ⅰ ステップ3','TOPIK I STEP 3','ko',[
+ ["역에 어떻게 가요?","ヨゲ オットッケ カヨ","駅へはどうやって行けばいいですか。",""],
+ ["쭉 가서 두 번째 골목에서 오른쪽으로 도세요.","ッチュク カソ トゥ ボンッチェ コルモゲソ オルンッチョグロ トセヨ","まっすぐ行って、2つ目の角を右に曲がってください。","오른쪽=右、왼쪽=左。"],
+ ["공항 가는 버스는 어디에서 타요?","コンハン カヌン ボスヌン オディエソ タヨ","空港行きのバスはどこから出ますか。","타다=(乗り物に)乗る。"],
+ ["다음 기차는 몇 시예요?","タウム キチャヌン ミョッ シエヨ","次の電車は何時ですか。",""],
+ ["3박 예약했어요.","サムバク イェヤケッソヨ","3泊の予約をしています。","3박=3泊。漢字語の数(삼)で数えます。"],
+ ["방에 수건이 없어요.","パンエ スゴニ オプソヨ","部屋にタオルがありません。","없다=ない(있다の反対)。"],
+ ["이 근처에 약국 있어요?","イ クンチョエ ヤックク イッソヨ","この近くに薬局はありますか。",""],
+ ["지도에서 위치를 보여 주시겠어요?","チドエソ ウィチルル ポヨ ジュシゲッソヨ","地図で場所を見せてもらえますか。",""]]);
+XU('x-topik1d','TOPIK Ⅰ ステップ4','TOPIK I STEP 4','ko',[
+ ["형 한 명하고 여동생 한 명이 있어요.","ヒョン ハン ミョンハゴ ヨドンセン ハン ミョンイ イッソヨ","兄が1人と妹が1人います。","형は男性から見た兄。女性なら 오빠。"],
+ ["주말에는 자주 축구를 해요.","チュマレヌン チャジュ チュックルル ヘヨ","週末はよくサッカーをします。",""],
+ ["요리하는 걸 좋아해요.","ヨリハヌン ゴル チョアヘヨ","料理をするのが好きです。","-는 걸 좋아하다=〜するのが好き。"],
+ ["내일 비가 오면 집에 있을 거예요.","ネイル ピガ オミョン チベ イッスル コエヨ","明日雨が降ったら、家にいます。","-(으)면=〜なら。"],
+ ["토요일에 같이 놀러 갈래?","トヨイレ カチ ノルロ カルレ","土曜日、いっしょに出かけない?","-(으)ㄹ래?=〜する?(友だちに)。"],
+ ["다음 달에 할머니 할아버지 댁에 갈 거예요.","タウム タレ ハルモニ ハラボジ テゲ カル コエヨ","来月、祖父母の家に行く予定です。","댁=お宅(집の敬語)。"],
+ ["누나는 은행에서 일해요.","ヌナヌン ウネンエソ イレヨ","姉は銀行で働いています。","누나=男性から見た姉。女性なら 언니。"],
+ ["생일 축하해!","センイル チュカヘ","誕生日おめでとう!",""]]);
+XU('x-topik1e','TOPIK Ⅰ ステップ5','TOPIK I STEP 5','ko',[
+ ["머리가 아파요.","モリガ アパヨ","頭が痛いです。",""],
+ ["열이 나서 오늘은 쉴게요.","ヨリ ナソ オヌルン シュイルケヨ","熱があるので、今日は休みます。","-아/어서=〜ので(理由)。"],
+ ["일기 예보에 따르면 내일은 맑대요.","イルギ イェボエ ッタルミョン ネイルン マクテヨ","天気予報によると、明日は晴れです。","-대요=〜だそうです(聞いた話)。"],
+ ["밖이 많이 추우니까 코트 입어.","パッキ マニ チュウニッカ コトゥ イボ","外はとても寒いから、コートを着てね。","-(으)니까=〜から(理由)。"],
+ ["조금 늦을 것 같아요. 미안해요.","チョグム ヌジュル コッ カタヨ ミアネヨ","少し遅れます。ごめんなさい。","-(으)ㄹ 것 같다=〜しそうだ。"],
+ ["이따가 전화해도 돼?","イッタガ チョナヘド トェ","あとで電話してもいい?","-아/어도 되다=〜してもいい。"],
+ ["메시지 고마워.","メシジ コマウォ","メッセージをありがとう。",""],
+ ["다음 주에 또 만나요!","タウム チュエ ット マンナヨ","また来週会いましょう。",""]]);
+XU('x-topik2','TOPIK Ⅱ ステップ1','TOPIK II STEP 1','ko',[
  ["환경을 보호하기 위해 일회용품 사용을 줄여야 합니다.","ファンギョンウル ポホハギ ウィヘ イルェヨンプム サヨンウル チュリョヤ ハムニダ","環境を守るために、使い捨て用品の使用を減らさなければなりません。","-기 위해=〜するために。"],
  ["바쁘더라도 아침은 꼭 먹는 게 좋아요.","パップドラド アチムン ッコク モンヌン ゲ チョアヨ","忙しくても、朝ごはんは必ず食べたほうがいいです。","-더라도=〜しても。"],
  ["회의가 연기되었다는 연락을 받았어요.","フェイガ ヨンギドェオッタヌン ヨルラグル パダッソヨ","会議が延期されたという連絡を受けました。",""],
@@ -7423,8 +7459,44 @@ XU('x-topik2','TOPIK Ⅱ','TOPIK II','ko',[
  ["이 문제에는 여러 가지 원인이 있다고 생각합니다.","イ ムンジェエヌン ヨロ ガジ ウォニニ イッタゴ センガカムニダ","この問題にはいろいろな原因があると思います。",""],
  ["기술이 발달하면서 생활이 편리해졌습니다.","キスリ パルタラミョンソ センファリ ピョルリヘジョッスムニダ","技術が発達するにつれて、生活が便利になりました。",""],
  ["결론적으로 저는 이 정책에 찬성합니다.","キョルロンジョグロ チョヌン イ チョンチェゲ チャンソンハムニダ","結論として、私はこの政策に賛成です。","作文(쓰기)のまとめで使える表現。"]]);
+XU('x-topik2b','TOPIK Ⅱ ステップ2','TOPIK II STEP 2','ko',[
+ ["도시보다 시골이 살기 편하다고 생각해요.","トシボダ シゴリ サルギ ピョナダゴ センガケヨ","都会より田舎のほうが暮らしやすいと思います。","AよりB=A보다 B。"],
+ ["한편 시골은 교통이 불편해요.","ハンピョン シゴルン キョトンイ プルピョネヨ","一方で、田舎は交通が不便です。","한편=一方で。"],
+ ["저는 그 의견에 찬성해요.","チョヌン ク ウィギョネ チャンソンヘヨ","私はその意見に賛成です。",""],
+ ["그 생각에는 별로 동의하지 않아요.","ク センガゲヌン ピョルロ トンイハジ アナヨ","その考えにはあまり賛成できません。","별로 〜지 않다=あまり〜ない。"],
+ ["온라인으로 배우는 것에는 장점이 많아요.","オンライヌロ ペウヌン ゴセヌン チャンッチョミ マナヨ","オンラインで学ぶことには、多くの利点があります。",""],
+ ["가장 중요한 것은 매일 꾸준히 하는 거예요.","カジャン チュンヨハン ゴスン メイル ックジュニ ハヌン ゴエヨ","いちばん大切なのは、毎日続けることです。","꾸준히=こつこつと。"],
+ ["맞는 말이지만 다른 시각도 있어요.","マンヌン マリジマン タルン シガクト イッソヨ","たしかにそうですが、別の見方もあります。",""],
+ ["결론적으로 둘 다 좋은 점이 있어요.","キョルロンジョグロ トゥル ダ チョウン ジョミ イッソヨ","結論として、どちらにも良い点があります。",""]]);
+XU('x-topik2c','TOPIK Ⅱ ステップ3','TOPIK II STEP 3','ko',[
+ ["장래에 파일럿이 되고 싶어요.","チャンネエ パイルロシ トェゴ シポヨ","将来、パイロットになりたいです。","〜이/가 되다=〜になる。"],
+ ["다음 주까지 보고서를 다 써야 해요.","タウム チュッカジ ポゴソルル タ ッソヤ ヘヨ","来週までにレポートを書き終えなければなりません。","-아/어야 하다=〜しなければならない。"],
+ ["면접에서 제 장점에 대해 이야기했어요.","ミョンジョベソ チェ チャンッチョメ テヘ イヤギヘッソヨ","面接では、自分の長所について話しました。","〜에 대해=〜について。"],
+ ["이 일에서는 팀워크가 아주 중요해요.","イ イレソヌン ティムウォクガ アジュ チュンヨヘヨ","この仕事ではチームワークがとても大切です。",""],
+ ["시험에 합격하기 위해 매일 밤 공부하고 있어요.","シホメ ハプキョカギ ウィヘ メイル パム コンブハゴ イッソヨ","試験に受かるために、毎晩勉強しています。","-기 위해=〜するために。"],
+ ["선생님이 숙제는 금요일까지라고 하셨어요.","ソンセンニミ スクチェヌン クミョイルッカジラゴ ハショッソヨ","先生は、宿題は金曜日までだと言いました。","-(이)라고 하다=〜だと言う(引用)。"],
+ ["유학을 가면 시야가 넓어질 거라고 생각해요.","ユハグル カミョン シヤガ ノルボジル コラゴ センガケヨ","留学すれば、視野が広がると思います。",""],
+ ["질문이 있으면 편하게 물어보세요.","チルムニ イッスミョン ピョナゲ ムロボセヨ","質問があれば、遠慮なく聞いてください。",""]]);
+XU('x-topik2d','TOPIK Ⅱ ステップ4','TOPIK II STEP 4','ko',[
+ ["외국에 가 본 적이 한 번도 없어요.","ウェグゲ カ ボン ジョギ ハン ボンド オプソヨ","外国に行ったことは一度もありません。","-아/어 본 적이 있다/없다=〜したことがある/ない。"],
+ ["지난주에 지갑을 잃어버렸어요.","チナンジュエ チガブル イロボリョッソヨ","先週、財布をなくしてしまいました。","-아/어 버리다=〜してしまう。"],
+ ["길을 잃었을 때 친절한 사람이 도와줬어요.","キルル イロッスル ッテ チンジョラン サラミ トワジュォッソヨ","道に迷っていたとき、親切な人が助けてくれました。","-았/었을 때=〜したとき。"],
+ ["그 영화를 보고 정말 감동했어요.","ク ヨンファルル ポゴ チョンマル カムドンヘッソヨ","その映画を見て、とても感動しました。",""],
+ ["여행하는 동안 많은 사람들을 알게 됐어요.","ヨヘンハヌン ドンアン マヌン サラムドゥルル アルゲ トェッソヨ","旅行中に、たくさんの人と知り合いました。","-는 동안=〜している間。"],
+ ["어렸을 때 할머니와 자주 요리를 했어요.","オリョッスル ッテ ハルモニワ チャジュ ヨリルル ヘッソヨ","子どものころ、よく祖母と料理をしていました。",""],
+ ["3년 동안 피아노를 배웠어요.","サムニョン ドンアン ピアノルル ペウォッソヨ","3年間ピアノを習っていました。",""],
+ ["그날을 절대 잊지 못할 거예요.","クナルル チョルテ イッチ モタル コエヨ","あの日のことは決して忘れません。","못 〜=(どうしても)〜できない。"]]);
+XU('x-topik2e','TOPIK Ⅱ ステップ5','TOPIK II STEP 5','ko',[
+ ["플라스틱 사용을 줄여야 합니다.","プルラスティク サヨンウル チュリョヤ ハムニダ","プラスチックの使用を減らすべきです。","-ㅂ니다/습니다=かたいていねい語(発表や作文)。"],
+ ["기후 변화는 전 세계적으로 큰 문제가 되고 있습니다.","キフ ピョヌァヌン チョン セゲジョグロ クン ムンジェガ トェゴ イッスムニダ","気候変動は世界中で大きな問題になっています。",""],
+ ["젊은이들이 지역 활동에 참여하는 것은 중요합니다.","チョルムニドゥリ チヨク ファルトンエ チャミョハヌン ゴスン チュンヨハムニダ","若い人が地域の活動に参加するのは大切です。",""],
+ ["앞으로 로봇이 많은 일을 하게 될 것입니다.","アプロ ロボシ マヌン イルル ハゲ トェル コシムニダ","将来、ロボットが多くの仕事をするようになるでしょう。","-게 되다=〜するようになる。"],
+ ["대중교통을 이용하면 공기가 깨끗해질 거예요.","テジュンギョトンウル イヨンハミョン コンギガ ッケックテジル コエヨ","公共交通機関を使えば、空気がきれいになります。","-아/어지다=〜になる(変化)。"],
+ ["주말마다 어르신들을 돕는 봉사 활동을 하고 있어요.","チュマルマダ オルシンドゥルル トムヌン ポンサ ファルトンウル ハゴ イッソヨ","週末に、お年寄りを手伝うボランティアをしています。","〜마다=〜ごとに。"],
+ ["인터넷 덕분에 정보를 바로 얻을 수 있어요.","イントネッ トクプネ チョンボルル パロ オドゥル ス イッソヨ","インターネットのおかげで、すぐに情報が手に入ります。","〜 덕분에=〜のおかげで。"],
+ ["10년 후에 세상은 어떻게 변해 있을 것 같아요?","シムニョン フエ セサンウン オットッケ ピョネ イッスル コッ カタヨ","10年後、世界はどうなっていると思いますか。",""]]);
 /* ---- Spanish: DELE ---- */
-XU('x-dele-a2','DELE A2','DELE A2','es',[
+XU('x-dele-a2','DELE A2 ステップ1','DELE A2 STEP 1','es',[
  ["Ayer fui al cine con mis amigos.","アジェル フイ アル シネ コン ミス アミゴス","昨日、友だちと映画に行きました。","fui は ir(行く)の点過去。"],
  ["¿Cuánto cuesta este billete?","クアント クエスタ エステ ビジェテ","この切符はいくらですか。",""],
  ["Normalmente me levanto a las siete.","ノルマルメンテ メ レバント ア ラス シエテ","ふだんは7時に起きます。",""],
@@ -7433,7 +7505,43 @@ XU('x-dele-a2','DELE A2','DELE A2','es',[
  ["¿Puedes ayudarme con la maleta?","プエデス アジュダルメ コン ラ マレタ","スーツケースを手伝ってくれる?",""],
  ["El museo está cerca de la plaza.","エル ムセオ エスタ セルカ デ ラ プラサ","美術館は広場の近くにあります。",""],
  ["En verano hace mucho calor.","エン ベラノ アセ ムチョ カロル","夏はとても暑いです。","天気は hacer を使って言います。"]]);
-XU('x-dele-b1','DELE B1','DELE B1','es',[
+XU('x-dele-a2b','DELE A2 ステップ2','DELE A2 STEP 2','es',[
+ ["¿Tiene esta camisa en una talla más grande?","ティエネ エスタ カミサ エン ウナ タジャ マス グランデ","このシャツの、もっと大きいサイズはありますか。","talla=服のサイズ。"],
+ ["¿Puedo pagar con tarjeta?","プエド パガル コン タルヘタ","カードで払えますか。",""],
+ ["Una botella de agua, por favor.","ウナ ボテジャ デ アグア ポル ファボル","水を1本ください。",""],
+ ["¿Me trae la carta, por favor?","メ トラエ ラ カルタ ポル ファボル","メニューを見せてもらえますか。","レストランのメニューは la carta。"],
+ ["La cuenta, por favor.","ラ クエンタ ポル ファボル","お会計をお願いします。",""],
+ ["No como carne.","ノ コモ カルネ","私は肉を食べません。","スペイン語では主語(yo)をよく省きます。"],
+ ["Esta sopa está muy rica.","エスタ ソパ エスタ ムイ リカ","このスープはとてもおいしいです。","料理がおいしい=estar rico。"],
+ ["¿A qué hora abre la panadería?","ア ケ オラ アブレ ラ パナデリア","パン屋は何時に開きますか。",""]]);
+XU('x-dele-a2c','DELE A2 ステップ3','DELE A2 STEP 3','es',[
+ ["¿Cómo se va a la estación?","コモ セ バ ア ラ エスタシオン","駅へはどうやって行けばいいですか。","¿Cómo se va a 〜?=〜へはどう行きますか。"],
+ ["Siga todo recto y gire a la derecha en la segunda esquina.","シガ トド レクト イ ヒレ ア ラ デレチャ エン ラ セグンダ エスキナ","まっすぐ行って、2つ目の角を右に曲がってください。","a la derecha=右へ、a la izquierda=左へ。"],
+ ["¿De dónde sale el autobús al aeropuerto?","デ ドンデ サレ エル アウトブス アル アエロプエルト","空港行きのバスはどこから出ますか。","al=a+el(〜へ)。"],
+ ["¿A qué hora sale el próximo tren?","ア ケ オラ サレ エル プロクシモ トレン","次の電車は何時ですか。",""],
+ ["Tengo una reserva para tres noches.","テンゴ ウナ レセルバ パラ トレス ノチェス","3泊の予約をしています。",""],
+ ["No hay toallas en mi habitación.","ノ アイ トアジャス エン ミ アビタシオン","部屋にタオルがありません。","hay=〜がある(数に関係なく同じ形)。"],
+ ["¿Hay una farmacia cerca de aquí?","アイ ウナ ファルマシア セルカ デ アキ","この近くに薬局はありますか。",""],
+ ["¿Me puede indicar en el mapa dónde está?","メ プエデ インディカル エン エル マパ ドンデ エスタ","地図で場所を見せてもらえますか。",""]]);
+XU('x-dele-a2d','DELE A2 ステップ4','DELE A2 STEP 4','es',[
+ ["Tengo un hermano mayor y una hermana menor.","テンゴ ウン エルマノ マジョル イ ウナ エルマナ メノル","兄が1人と妹が1人います。","mayor=年上の、menor=年下の。"],
+ ["Los fines de semana juego al fútbol a menudo.","ロス フィネス デ セマナ フエゴ アル フトボル ア メヌド","週末はよくサッカーをします。","スポーツをする=jugar a 〜。"],
+ ["Me gusta cocinar.","メ グスタ コシナル","料理をするのが好きです。","Me gusta+動詞の原形=〜するのが好き。"],
+ ["Si mañana llueve, me quedo en casa.","シ マニャナ ジュエベ メ ケド エン カサ","明日雨が降ったら、家にいます。","si+現在形=もし〜なら(未来のことでも現在形)。"],
+ ["¿Quedamos el sábado?","ケダモス エル サバド","土曜日、いっしょに出かけない?","quedar=(友だちと)会う約束をする。"],
+ ["El mes que viene voy a visitar a mis abuelos.","エル メス ケ ビエネ ボイ ア ビシタル ア ミス アブエロス","来月、祖父母の家に行く予定です。","人が目的語のときは a をつけます(a mis abuelos)。"],
+ ["Mi hermana mayor trabaja en un banco.","ミ エルマナ マジョル トラバハ エン ウン バンコ","姉は銀行で働いています。",""],
+ ["¡Feliz cumpleaños!","フェリス クンプレアニョス","誕生日おめでとう!",""]]);
+XU('x-dele-a2e','DELE A2 ステップ5','DELE A2 STEP 5','es',[
+ ["Me duele la cabeza.","メ ドゥエレ ラ カベサ","頭が痛いです。","Me duele 〜=〜が痛い(gustar と同じ形)。"],
+ ["Tengo fiebre, así que hoy me quedo en casa.","テンゴ フィエブレ アシ ケ オイ メ ケド エン カサ","熱があるので、今日は休みます。","así que=だから。"],
+ ["Según el pronóstico, mañana hará sol.","セグン エル プロノスティコ マニャナ アラ ソル","天気予報によると、明日は晴れです。","hará は hacer の未来形。"],
+ ["Hace mucho frío fuera, ponte el abrigo.","アセ ムチョ フリオ フエラ ポンテ エル アブリゴ","外はとても寒いから、コートを着てね。",""],
+ ["Voy a llegar un poco tarde. Lo siento.","ボイ ア ジェガル ウン ポコ タルデ ロ シエント","少し遅れます。ごめんなさい。",""],
+ ["¿Te puedo llamar más tarde?","テ プエド ジャマル マス タルデ","あとで電話してもいい?",""],
+ ["Gracias por tu mensaje.","グラシアス ポル トゥ メンサヘ","メッセージをありがとう。","Gracias por 〜=〜をありがとう。"],
+ ["¡Hasta la semana que viene!","アスタ ラ セマナ ケ ビエネ","また来週会いましょう。",""]]);
+XU('x-dele-b1','DELE B1 ステップ1','DELE B1 STEP 1','es',[
  ["Si tuviera más tiempo, viajaría por toda España.","シ トゥビエラ マス ティエンポ ビアハリア ポル トダ エスパニャ","もっと時間があれば、スペイン中を旅するのに。","接続法過去+過去未来で「もし〜なら…するのに」。"],
  ["Espero que te guste el regalo.","エスペロ ケ テ グステ エル レガロ","プレゼントを気に入ってくれるといいな。","esperar que のあとは接続法(guste)。"],
  ["Cuando era niño, vivía en el campo.","クアンド エラ ニニョ ビビア エン エル カンポ","子どものころ、田舎に住んでいました。","線過去=過去の習慣や状態。"],
@@ -7442,8 +7550,44 @@ XU('x-dele-b1','DELE B1','DELE B1','es',[
  ["Cuando llegué a la estación, el tren ya había salido.","クアンド ジェゲ ア ラ エスタシオン エル トレン ジャ アビア サリド","駅に着いたとき、電車はもう出ていました。","había salido=過去完了(もう〜していた)。"],
  ["Me interesa mucho la cultura de otros países.","メ インテレサ ムチョ ラ クルトゥラ デ オトロス パイセス","ほかの国の文化にとても興味があります。",""],
  ["Es importante que todos reciclemos.","エス インポルタンテ ケ トドス レシクレモス","みんながリサイクルすることが大切です。","Es importante que のあとは接続法。"]]);
+XU('x-dele-b1b','DELE B1 ステップ2','DELE B1 STEP 2','es',[
+ ["Creo que en el campo se vive mejor que en la ciudad.","クレオ ケ エン エル カンポ セ ビベ メホル ケ エン ラ シウダ","都会より田舎のほうが暮らしやすいと思います。","mejor que 〜=〜よりよく。"],
+ ["Por otro lado, en el campo el transporte no es muy práctico.","ポル オトロ ラド エン エル カンポ エル トランスポルテ ノ エス ムイ プラクティコ","一方で、田舎は交通が不便です。","Por otro lado=一方で。"],
+ ["Estoy de acuerdo con esa opinión.","エストイ デ アクエルド コン エサ オピニオン","私はその意見に賛成です。","estar de acuerdo con 〜=〜に賛成だ。"],
+ ["No estoy muy de acuerdo con esa idea.","ノ エストイ ムイ デ アクエルド コン エサ イデア","その考えにはあまり賛成できません。",""],
+ ["Estudiar en línea tiene muchas ventajas.","エストゥディアル エン リネア ティエネ ムチャス ベンタハス","オンラインで学ぶことには、多くの利点があります。",""],
+ ["Lo más importante es seguir practicando todos los días.","ロ マス インポルタンテ エス セギル プラクティカンド トドス ロス ディアス","いちばん大切なのは、毎日続けることです。","seguir+現在分詞=〜し続ける。"],
+ ["Es verdad, pero también se puede ver de otra manera.","エス ベルダ ペロ タンビエン セ プエデ ベル デ オトラ マネラ","たしかにそうですが、別の見方もあります。",""],
+ ["En conclusión, los dos tienen aspectos positivos.","エン コンクルシオン ロス ドス ティエネン アスペクトス ポシティボス","結論として、どちらにも良い点があります。","En conclusión=結論として(作文のしめくくり)。"]]);
+XU('x-dele-b1c','DELE B1 ステップ3','DELE B1 STEP 3','es',[
+ ["En el futuro quiero ser piloto.","エン エル フトゥロ キエロ セル ピロト","将来、パイロットになりたいです。","職業の前には冠詞をつけません(ser piloto)。"],
+ ["Tengo que terminar el informe antes de la semana que viene.","テンゴ ケ テルミナル エル インフォルメ アンテス デ ラ セマナ ケ ビエネ","来週までにレポートを書き終えなければなりません。","tener que+動詞の原形=〜しなければならない。"],
+ ["En la entrevista hablé de mis puntos fuertes.","エン ラ エントレビスタ アブレ デ ミス プントス フエルテス","面接では、自分の長所について話しました。",""],
+ ["En este trabajo, el trabajo en equipo es muy importante.","エン エステ トラバホ エル トラバホ エン エキポ エス ムイ インポルタンテ","この仕事ではチームワークがとても大切です。",""],
+ ["Estudio todas las noches para aprobar el examen.","エストゥディオ トダス ラス ノチェス パラ アプロバル エル エクサメン","試験に受かるために、毎晩勉強しています。","aprobar=(試験に)受かる。"],
+ ["El profesor dijo que los deberes eran para el viernes.","エル プロフェソル ディホ ケ ロス デベレス エラン パラ エル ビエルネス","先生は、宿題は金曜日までだと言いました。","dijo que のあとは時制を合わせて線過去(eran)。"],
+ ["Creo que estudiar en el extranjero abre la mente.","クレオ ケ エストゥディアル エン エル エクストランヘロ アブレ ラ メンテ","留学すれば、視野が広がると思います。",""],
+ ["Si tienen alguna pregunta, no duden en preguntar.","シ ティエネン アルグナ プレグンタ ノ ドゥデン エン プレグンタル","質問があれば、遠慮なく聞いてください。","no duden en 〜=遠慮なく〜してください。"]]);
+XU('x-dele-b1d','DELE B1 ステップ4','DELE B1 STEP 4','es',[
+ ["Nunca he estado en el extranjero.","ヌンカ エ エスタド エン エル エクストランヘロ","外国に行ったことは一度もありません。","現在完了(he estado)=これまでの経験。"],
+ ["La semana pasada perdí la cartera.","ラ セマナ パサダ ペルディ ラ カルテラ","先週、財布をなくしてしまいました。",""],
+ ["Cuando me perdí, una persona amable me ayudó.","クアンド メ ペルディ ウナ ペルソナ アマブレ メ アジュド","道に迷っていたとき、親切な人が助けてくれました。","perderse=道に迷う。"],
+ ["Esa película me emocionó mucho.","エサ ペリクラ メ エモシオノ ムチョ","その映画を見て、とても感動しました。",""],
+ ["Durante el viaje conocí a mucha gente.","ドゥランテ エル ビアヘ コノシ ア ムチャ ヘンテ","旅行中に、たくさんの人と知り合いました。","conocer a 〜=(人と)知り合う。"],
+ ["De pequeño, cocinaba a menudo con mi abuela.","デ ペケニョ コシナバ ア メヌド コン ミ アブエラ","子どものころ、よく祖母と料理をしていました。",""],
+ ["Fui a clases de piano durante tres años.","フイ ア クラセス デ ピアノ ドゥランテ トレス アニョス","3年間ピアノを習っていました。",""],
+ ["Nunca olvidaré aquel día.","ヌンカ オルビダレ アケル ディア","あの日のことは決して忘れません。",""]]);
+XU('x-dele-b1e','DELE B1 ステップ5','DELE B1 STEP 5','es',[
+ ["Deberíamos usar menos plástico.","デベリアモス ウサル メノス プラスティコ","プラスチックの使用を減らすべきです。","deberíamos=〜するべきだ(deber の過去未来)。"],
+ ["El cambio climático se ha convertido en un gran problema en todo el mundo.","エル カンビオ クリマティコ セ ア コンベルティド エン ウン グラン プロブレマ エン トド エル ムンド","気候変動は世界中で大きな問題になっています。","convertirse en 〜=〜になる。"],
+ ["Es importante que los jóvenes participen en la vida del barrio.","エス インポルタンテ ケ ロス ホベネス パルティシペン エン ラ ビダ デル バリオ","若い人が地域の活動に参加するのは大切です。",""],
+ ["En el futuro, probablemente los robots harán muchos trabajos.","エン エル フトゥロ プロバブレメンテ ロス ロボッツ アラン ムチョス トラバホス","将来、ロボットが多くの仕事をするようになるでしょう。","harán は hacer の未来形。"],
+ ["Si usamos el transporte público, el aire estará más limpio.","シ ウサモス エル トランスポルテ プブリコ エル アイレ エスタラ マス リンピオ","公共交通機関を使えば、空気がきれいになります。",""],
+ ["Los fines de semana hago voluntariado con personas mayores.","ロス フィネス デ セマナ アゴ ボルンタリアド コン ペルソナス マジョレス","週末に、お年寄りを手伝うボランティアをしています。","hacer voluntariado=ボランティアをする。"],
+ ["Gracias a internet, podemos conseguir información al instante.","グラシアス ア インテルネット ポデモス コンセギル インフォルマシオン アル インスタンテ","インターネットのおかげで、すぐに情報が手に入ります。","gracias a 〜=〜のおかげで。"],
+ ["¿Cómo crees que será el mundo dentro de diez años?","コモ クレエス ケ セラ エル ムンド デントロ デ ディエス アニョス","10年後、世界はどうなっていると思いますか。","dentro de+期間=(今から)〜後に。"]]);
 /* ---- Italian: CILS ---- */
-XU('x-cils-a2','CILS A2','CILS A2','it',[
+XU('x-cils-a2','CILS A2 ステップ1','CILS A2 STEP 1','it',[
  ["Ieri sono andato al mare con la mia famiglia.","イエーリ ソーノ アンダート アル マーレ コン ラ ミア ファミーリア","昨日、家族と海に行きました。","女性が話すときは andata になります。"],
  ["Quanto costa questo biglietto?","クアント コスタ クエスト ビリエット","この切符はいくらですか。",""],
  ["Di solito mi alzo alle sette.","ディ ソーリト ミ アルツォ アッレ セッテ","ふだんは7時に起きます。",""],
@@ -7452,7 +7596,43 @@ XU('x-cils-a2','CILS A2','CILS A2','it',[
  ["Mi puoi aiutare con la valigia?","ミ プオイ アイウターレ コン ラ ヴァリージャ","スーツケースを手伝ってくれる?",""],
  ["Il museo è vicino alla piazza.","イル ムゼーオ エ ヴィチーノ アッラ ピアッツァ","美術館は広場の近くにあります。",""],
  ["D'estate fa molto caldo.","デスターテ ファ モルト カルド","夏はとても暑いです。","天気は fare を使って言います。"]]);
-XU('x-cils-b1','CILS B1','CILS B1','it',[
+XU('x-cils-a2b','CILS A2 ステップ2','CILS A2 STEP 2','it',[
+ ["Avete questa camicia in una taglia più grande?","アヴェーテ クエスタ カミーチャ イン ウナ ターリャ ピウ グランデ","このシャツの、もっと大きいサイズはありますか。","taglia=服のサイズ。"],
+ ["Posso pagare con la carta?","ポッソ パガーレ コン ラ カルタ","カードで払えますか。",""],
+ ["Una bottiglia d'acqua, per favore.","ウナ ボッティーリャ ダックア ペル ファヴォーレ","水を1本ください。",""],
+ ["Posso vedere il menù?","ポッソ ヴェデーレ イル メヌー","メニューを見せてもらえますか。",""],
+ ["Il conto, per favore.","イル コント ペル ファヴォーレ","お会計をお願いします。",""],
+ ["Non mangio carne.","ノン マンジョ カルネ","私は肉を食べません。","イタリア語では主語(io)をよく省きます。"],
+ ["Questa zuppa è buonissima.","クエスタ ズッパ エ ブオニッスィマ","このスープはとてもおいしいです。","-issimo=とても〜。"],
+ ["A che ora apre il panificio?","ア ケ オーラ アープレ イル パニフィーチョ","パン屋は何時に開きますか。",""]]);
+XU('x-cils-a2c','CILS A2 ステップ3','CILS A2 STEP 3','it',[
+ ["Come si arriva alla stazione?","コメ スィ アッリーヴァ アッラ スタツィオーネ","駅へはどうやって行けばいいですか。","Come si arriva a 〜?=〜へはどう行きますか。"],
+ ["Vada sempre dritto e giri a destra al secondo incrocio.","ヴァーダ センプレ ドリット エ ジーリ ア デストラ アル セコンド インクローチョ","まっすぐ行って、2つ目の角を右に曲がってください。","a destra=右へ、a sinistra=左へ。"],
+ ["Da dove parte l'autobus per l'aeroporto?","ダ ドーヴェ パルテ ラウトブス ペル ラエロポルト","空港行きのバスはどこから出ますか。",""],
+ ["A che ora parte il prossimo treno?","ア ケ オーラ パルテ イル プロッスィモ トレーノ","次の電車は何時ですか。",""],
+ ["Ho una prenotazione per tre notti.","オ ウナ プレノタツィオーネ ペル トレ ノッティ","3泊の予約をしています。","h は読みません(Ho=オ)。"],
+ ["Nella mia camera non ci sono asciugamani.","ネッラ ミア カーメラ ノン チ ソーノ アッシュガマーニ","部屋にタオルがありません。","c'è / ci sono=〜がある(単数/複数)。"],
+ ["C'è una farmacia qui vicino?","チェ ウナ ファルマチーア クイ ヴィチーノ","この近くに薬局はありますか。",""],
+ ["Mi può mostrare sulla mappa dov'è?","ミ プオ モストラーレ スッラ マッパ ドヴェ","地図で場所を見せてもらえますか。",""]]);
+XU('x-cils-a2d','CILS A2 ステップ4','CILS A2 STEP 4','it',[
+ ["Ho un fratello maggiore e una sorella minore.","オ ウン フラテッロ マッジョーレ エ ウナ ソレッラ ミノーレ","兄が1人と妹が1人います。","maggiore=年上の、minore=年下の。"],
+ ["Nel fine settimana gioco spesso a calcio.","ネル フィーネ セッティマーナ ジョーコ スペッソ ア カルチョ","週末はよくサッカーをします。","スポーツをする=giocare a 〜。"],
+ ["Mi piace cucinare.","ミ ピアーチェ クチナーレ","料理をするのが好きです。","Mi piace+動詞の原形=〜するのが好き。"],
+ ["Se domani piove, resto a casa.","セ ドマーニ ピオーヴェ レスト ア カーザ","明日雨が降ったら、家にいます。","話し言葉では、未来のことも現在形でよく言います。"],
+ ["Usciamo insieme sabato?","ウッシャーモ インスィエーメ サーバト","土曜日、いっしょに出かけない?",""],
+ ["Il mese prossimo vado a trovare i nonni.","イル メーゼ プロッスィモ ヴァード ア トロヴァーレ イ ノンニ","来月、祖父母の家に行く予定です。","andare a trovare 〜=〜に会いに行く。"],
+ ["Mia sorella maggiore lavora in banca.","ミア ソレッラ マッジョーレ ラヴォーラ イン バンカ","姉は銀行で働いています。",""],
+ ["Buon compleanno!","ブオン コンプレアンノ","誕生日おめでとう!",""]]);
+XU('x-cils-a2e','CILS A2 ステップ5','CILS A2 STEP 5','it',[
+ ["Mi fa male la testa.","ミ ファ マーレ ラ テスタ","頭が痛いです。","Mi fa male 〜=〜が痛い。"],
+ ["Ho la febbre, quindi oggi resto a casa.","オ ラ フェッブレ クインディ オッジ レスト ア カーザ","熱があるので、今日は休みます。","quindi=だから。"],
+ ["Secondo le previsioni, domani ci sarà il sole.","セコンド レ プレヴィズィオーニ ドマーニ チ サラ イル ソーレ","天気予報によると、明日は晴れです。","secondo 〜=〜によると。"],
+ ["Fuori fa molto freddo, mettiti il cappotto.","フオーリ ファ モルト フレッド メッティティ イル カッポット","外はとても寒いから、コートを着てね。",""],
+ ["Arrivo un po' in ritardo. Scusa.","アッリーヴォ ウン ポ イン リタルド スクーザ","少し遅れます。ごめんなさい。","in ritardo=遅れて。"],
+ ["Ti posso chiamare più tardi?","ティ ポッソ キアマーレ ピウ タルディ","あとで電話してもいい?",""],
+ ["Grazie per il messaggio.","グラーツィエ ペル イル メッサッジョ","メッセージをありがとう。",""],
+ ["Ci vediamo la settimana prossima!","チ ヴェディアーモ ラ セッティマーナ プロッスィマ","また来週会いましょう。",""]]);
+XU('x-cils-b1','CILS B1 ステップ1','CILS B1 STEP 1','it',[
  ["Se avessi più tempo, viaggerei in tutta Italia.","セ アヴェッスィ ピウ テンポ ヴィアッジェレイ イン トゥッタ イターリア","もっと時間があれば、イタリア中を旅するのに。","接続法半過去+条件法で「もし〜なら…するのに」。"],
  ["Spero che il regalo ti piaccia.","スペーロ ケ イル レガーロ ティ ピアッチャ","プレゼントを気に入ってくれるといいな。","sperare che のあとは接続法(piaccia)。"],
  ["Quando ero bambino, abitavo in campagna.","クアンド エーロ バンビーノ アビターヴォ イン カンパーニャ","子どものころ、田舎に住んでいました。","半過去=過去の習慣や状態。"],
@@ -7461,6 +7641,42 @@ XU('x-cils-b1','CILS B1','CILS B1','it',[
  ["Quando sono arrivato in stazione, il treno era già partito.","クアンド ソーノ アッリヴァート イン スタツィオーネ イル トレーノ エーラ ジャ パルティート","駅に着いたとき、電車はもう出ていました。","era partito=大過去(もう〜していた)。"],
  ["Mi interessa molto la cultura degli altri paesi.","ミ インテレッサ モルト ラ クルトゥーラ デッリ アルトリ パエーズィ","ほかの国の文化にとても興味があります。",""],
  ["È importante che tutti facciano la raccolta differenziata.","エ インポルタンテ ケ トゥッティ ファッチャーノ ラ ラッコルタ ディッフェレンツィアータ","みんなが分別収集をすることが大切です。","È importante che のあとは接続法。"]]);
+XU('x-cils-b1b','CILS B1 ステップ2','CILS B1 STEP 2','it',[
+ ["Secondo me, in campagna si vive meglio che in città.","セコンド メ イン カンパーニャ スィ ヴィーヴェ メッリョ ケ イン チッタ","都会より田舎のほうが暮らしやすいと思います。","meglio che 〜=〜よりよく。"],
+ ["D'altra parte, in campagna i trasporti non sono comodi.","ダルトラ パルテ イン カンパーニャ イ トラスポルティ ノン ソーノ コーモディ","一方で、田舎は交通が不便です。","D'altra parte=一方で。"],
+ ["Sono d'accordo con questa opinione.","ソーノ ダッコルド コン クエスタ オピニオーネ","私はその意見に賛成です。","essere d'accordo con 〜=〜に賛成だ。"],
+ ["Non sono del tutto d'accordo con questa idea.","ノン ソーノ デル トゥット ダッコルド コン クエスタ イデーア","その考えにはあまり賛成できません。",""],
+ ["Studiare online ha molti vantaggi.","ストゥディアーレ オンライン ア モルティ ヴァンタッジ","オンラインで学ぶことには、多くの利点があります。",""],
+ ["La cosa più importante è continuare ogni giorno.","ラ コーザ ピウ インポルタンテ エ コンティヌアーレ オンニ ジョルノ","いちばん大切なのは、毎日続けることです。",""],
+ ["È vero, ma si può vedere anche in un altro modo.","エ ヴェーロ マ スィ プオ ヴェデーレ アンケ イン ウン アルトロ モード","たしかにそうですが、別の見方もあります。",""],
+ ["In conclusione, tutti e due hanno aspetti positivi.","イン コンクルズィオーネ トゥッティ エ ドゥーエ アンノ アスペッティ ポズィティーヴィ","結論として、どちらにも良い点があります。","In conclusione=結論として(作文のしめくくり)。"]]);
+XU('x-cils-b1c','CILS B1 ステップ3','CILS B1 STEP 3','it',[
+ ["In futuro voglio fare il pilota.","イン フトゥーロ ヴォッリョ ファーレ イル ピロータ","将来、パイロットになりたいです。","職業は fare il 〜 でも言えます(fare il pilota)。"],
+ ["Devo finire la relazione entro la settimana prossima.","デーヴォ フィニーレ ラ レラツィオーネ エントロ ラ セッティマーナ プロッスィマ","来週までにレポートを書き終えなければなりません。","entro 〜=〜までに(期限)。"],
+ ["Al colloquio ho parlato dei miei punti di forza.","アル コッローキオ オ パルラート デイ ミエイ プンティ ディ フォルツァ","面接では、自分の長所について話しました。","colloquio=(仕事の)面接。"],
+ ["In questo lavoro il lavoro di squadra è molto importante.","イン クエスト ラヴォーロ イル ラヴォーロ ディ スクアードラ エ モルト インポルタンテ","この仕事ではチームワークがとても大切です。",""],
+ ["Studio ogni sera per superare l'esame.","ストゥーディオ オンニ セーラ ペル スペラーレ レザーメ","試験に受かるために、毎晩勉強しています。","superare l'esame=試験に受かる。"],
+ ["Il professore ha detto che i compiti erano per venerdì.","イル プロフェッソーレ ア デット ケ イ コンピティ エーラノ ペル ヴェネルディ","先生は、宿題は金曜日までだと言いました。","ha detto che のあとは時制を合わせて半過去(erano)。"],
+ ["Penso che studiare all'estero apra la mente.","ペンソ ケ ストゥディアーレ アッレステーロ アープラ ラ メンテ","留学すれば、視野が広がると思います。","Penso che のあとは接続法(apra)。"],
+ ["Se avete domande, non esitate a chiedere.","セ アヴェーテ ドマンデ ノン エズィターテ ア キエデーレ","質問があれば、遠慮なく聞いてください。",""]]);
+XU('x-cils-b1d','CILS B1 ステップ4','CILS B1 STEP 4','it',[
+ ["Non sono mai stato all'estero.","ノン ソーノ マイ スタート アッレステーロ","外国に行ったことは一度もありません。","non 〜 mai=一度も〜ない。"],
+ ["La settimana scorsa ho perso il portafoglio.","ラ セッティマーナ スコルサ オ ペルソ イル ポルタフォッリョ","先週、財布をなくしてしまいました。",""],
+ ["Quando mi sono perso, una persona gentile mi ha aiutato.","クアンド ミ ソーノ ペルソ ウナ ペルソーナ ジェンティーレ ミ ア アイウタート","道に迷っていたとき、親切な人が助けてくれました。","perdersi=道に迷う。過去形は essere を使います。"],
+ ["Quel film mi ha commosso molto.","クエル フィルム ミ ア コンモッソ モルト","その映画を見て、とても感動しました。",""],
+ ["Durante il viaggio ho conosciuto molte persone.","ドゥランテ イル ヴィアッジョ オ コノシュート モルテ ペルソーネ","旅行中に、たくさんの人と知り合いました。","conoscere=(人と)知り合う。"],
+ ["Da piccolo cucinavo spesso con la nonna.","ダ ピッコロ クチナーヴォ スペッソ コン ラ ノンナ","子どものころ、よく祖母と料理をしていました。",""],
+ ["Ho preso lezioni di pianoforte per tre anni.","オ プレーゾ レツィオーニ ディ ピアノフォルテ ペル トレ アンニ","3年間ピアノを習っていました。",""],
+ ["Non dimenticherò mai quel giorno.","ノン ディメンティケロ マイ クエル ジョルノ","あの日のことは決して忘れません。",""]]);
+XU('x-cils-b1e','CILS B1 ステップ5','CILS B1 STEP 5','it',[
+ ["Dovremmo usare meno plastica.","ドヴレンモ ウザーレ メーノ プラスティカ","プラスチックの使用を減らすべきです。","dovremmo=〜するべきだ(dovere の条件法)。"],
+ ["Il cambiamento climatico è diventato un grande problema in tutto il mondo.","イル カンビアメント クリマーティコ エ ディヴェンタート ウン グランデ プロブレーマ イン トゥット イル モンド","気候変動は世界中で大きな問題になっています。",""],
+ ["È importante che i giovani partecipino alla vita del quartiere.","エ インポルタンテ ケ イ ジョーヴァニ パルテーチピノ アッラ ヴィータ デル クアルティエーレ","若い人が地域の活動に参加するのは大切です。",""],
+ ["In futuro i robot probabilmente faranno molti lavori.","イン フトゥーロ イ ロボット プロバビルメンテ ファランノ モルティ ラヴォーリ","将来、ロボットが多くの仕事をするようになるでしょう。","faranno は fare の未来形。"],
+ ["Se usiamo i mezzi pubblici, l'aria sarà più pulita.","セ ウズィアーモ イ メッツィ プッブリチ ラーリア サラ ピウ プリータ","公共交通機関を使えば、空気がきれいになります。",""],
+ ["Nel fine settimana faccio volontariato con gli anziani.","ネル フィーネ セッティマーナ ファッチョ ヴォロンタリアート コン リ アンツィアーニ","週末に、お年寄りを手伝うボランティアをしています。","fare volontariato=ボランティアをする。"],
+ ["Grazie a internet possiamo trovare informazioni subito.","グラーツィエ ア インテルネット ポッスィアーモ トロヴァーレ インフォルマツィオーニ スービト","インターネットのおかげで、すぐに情報が手に入ります。","grazie a 〜=〜のおかげで。"],
+ ["Come pensi che sarà il mondo fra dieci anni?","コメ ペンスィ ケ サラ イル モンド フラ ディエーチ アンニ","10年後、世界はどうなっていると思いますか。","fra+期間=(今から)〜後に。"]]);
 /* ================= 授業の用語(くわしく): 数学と理科 in English (プレミアムエコノミーから, test account only for now) =================
    Each item: [English term, Japanese, what it means + how a teacher might use it in class]. Original material. */
 function SU(uid,jp,lat,list){
@@ -7637,12 +7853,12 @@ var XBANK={
  ielts:{L:'en',name:'IELTS',tier:2,ids:['x-ielts']},
  toefl:{L:'en',name:'TOEFL iBT',tier:2,ids:['x-toefl']},
  icao:{L:'en',name:'航空英語(ICAO)',tier:2,ids:['x-icao']},
- topik1:{L:'ko',name:'TOPIK Ⅰ',tier:1,ids:['x-topik1']},
- topik2:{L:'ko',name:'TOPIK Ⅱ',tier:2,ids:['x-topik2']},
- 'dele-a2':{L:'es',name:'DELE A2',tier:1,ids:['x-dele-a2']},
- 'dele-b1':{L:'es',name:'DELE B1',tier:2,ids:['x-dele-b1']},
- 'cils-a2':{L:'it',name:'CILS A2',tier:1,ids:['x-cils-a2']},
- 'cils-b1':{L:'it',name:'CILS B1',tier:2,ids:['x-cils-b1']},
+ topik1:{L:'ko',name:'TOPIK Ⅰ',tier:1,ids:['x-topik1','x-topik1b','x-topik1c','x-topik1d','x-topik1e']},
+ topik2:{L:'ko',name:'TOPIK Ⅱ',tier:2,ids:['x-topik2','x-topik2b','x-topik2c','x-topik2d','x-topik2e']},
+ 'dele-a2':{L:'es',name:'DELE A2',tier:1,ids:['x-dele-a2','x-dele-a2b','x-dele-a2c','x-dele-a2d','x-dele-a2e']},
+ 'dele-b1':{L:'es',name:'DELE B1',tier:2,ids:['x-dele-b1','x-dele-b1b','x-dele-b1c','x-dele-b1d','x-dele-b1e']},
+ 'cils-a2':{L:'it',name:'CILS A2',tier:1,ids:['x-cils-a2','x-cils-a2b','x-cils-a2c','x-cils-a2d','x-cils-a2e']},
+ 'cils-b1':{L:'it',name:'CILS B1',tier:2,ids:['x-cils-b1','x-cils-b1b','x-cils-b1c','x-cils-b1d','x-cils-b1e']},
  /* 授業の用語(くわしく) in 留学モード: プレミアムエコノミーから */
  'sd-math':{L:'en',name:'数学の用語',tier:1,study:1,ids:['sd-num1','sd-num2','sd-geo1','sd-geo2','sd-func1','sd-func2','sd-prob1','sd-prob2']},
  'sd-sci':{L:'en',name:'理科の用語',tier:1,study:1,ids:['sd-phy1','sd-phy2','sd-chem1','sd-chem2','sd-bio1','sd-bio2','sd-earth1','sd-earth2']}
@@ -11903,7 +12119,7 @@ function uiSwap(){
 }
 /* 表示言語: the version of public/i18n/*.json and the display languages that have one
    (written by babel-flight/i18n/build.py) */
-var I18N_V='a3dfa713ac',I18N_UIS=["en", "ko", "zh"];
+var I18N_V='1cb6f14d17',I18N_UIS=["en", "ko", "zh"];
 /* ================= 表示言語 (display language: 日本語 / English / 한국어 / 简体中文) =================
    The page is written in Japanese. For another display language the dictionary public/i18n/<ui>.json
    (built from babel-flight/i18n/<ui>/*.tsv by i18n/build.py) is loaded, kept on the device, and every
@@ -12422,6 +12638,10 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.11',items:[
+  ['🏅','DELE・CILS・TOPIKも40フレーズに','スペイン語(DELE)・イタリア語(CILS)・韓国語(TOPIK)の検定も、レベルごとにステップ1〜5の40フレーズになりました。目標を選ぶと合格圏メーターが動きます。','exam',1,['ja','en','zh']],
+  ['🏅','DELE・CILSも40フレーズに','スペイン語(DELE)・イタリア語(CILS)の検定も、レベルごとにステップ1〜5の40フレーズになりました。目標を選ぶと合格圏メーターが動きます。','exam',1,['ko']]
+ ]},
  {v:'2026.11.10',items:[
   ['🎧','リスニング特訓','機長アナウンスを聞いて内容を当てる「リスニング特訓」(復習タブ)が、この表示言語でも使えるようになりました。','',0,['en','ko','zh']],
   ['💺','搭乗クラス','「記録」の搭乗クラスの説明が、この表示言語でも見られるようになりました。','',1,['en','ko','zh']]
