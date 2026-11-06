@@ -49,7 +49,7 @@ first visit) or in 記録 → 学習の設定; switching reloads the page. With 
 course is hidden (`learnOrder()`), every mode is open (`uiModeOpen`; 職業 only for the jobs in `JOB_UI`),
 phrase readings are romanized (Korean and Russian computed in `f27_i18n.js`, Chinese pinyin from the data, Arabic from `ROM_AR` in `f27_rom.js`; none for Latin-script languages), answer choices only
 use phrases whose meaning is translated, and the AI teacher answers in that language (`ui` in `/api/ai/ask`). Cards
-that are still Japanese-only (英検の面接練習, the plan purchase card) are hidden.
+that are still Japanese-only (英検 with its 模試 and 面接練習, the plan purchase card) are hidden.
 The few phrases written for a learner from Japan (「日本人です」「東京に住んでいます」…) are swapped for the display
 language's country (`f27_swap.js`: 한국어 → Korea / Seoul, 简体中文 → China / Beijing; English keeps Japan), and the
 dictionaries give those meanings the same country. 中文 is Simplified Chinese. Only the display languages that have a
@@ -143,7 +143,8 @@ that had no translation is counted there.
 - Chinese and Japanese exam phrases carry the word split (5th column of `XU`) for 並べ替え; the Arabic readings for
   the other display languages are in `ROM_AR` (`f27_rom.js`).
 - Each level is 5 steps of 8 phrases, like 英検 (`x-hsk2`, `x-hsk2b` … `x-hsk2e`; `xSteps` collects them into the
-  bank; DELE・CILS・TOPIK in `f17_exam.js` list their steps in `XBANK`), so a goal has the 40 phrases (`XBANK_FULL`) the 合格圏メーター needs. Steps 2–5 have themes (初級: 買い物・食事 /
+  bank; DELE・CILS・TOPIK in `f17_exam.js` list their steps in `XBANK`; TOEIC・IELTS・TOEFL・ICAO・英検準1級/1級 and
+  TOEIC Speaking・OPIc・CET too, with their own meanings, translated in `i18n/<ui>/xen.tsv`), so a goal has the 40 phrases (`XBANK_FULL`) the 合格圏メーター needs. Steps 2–5 have themes (初級: 買い物・食事 /
   旅行・道案内 / 家族・趣味・予定 / 体調・天気・連絡, 中級: 意見・比較 / 仕事・学校 / 経験 / 社会・環境・未来), and their meanings
   are shared by every language, so each display language translates a meaning once (`i18n/<ui>/xstarter2.tsv`,
   together with the step titles and the notes). JLPT does the same: N5 has its own simple sentences, N4 and N3

@@ -16,13 +16,13 @@ var CAB_FEAT=[
  ['弱点レポート',['—','かんたん版','詳しい版','詳しい版+AIコーチ']],
  ['専用デザイン',['—','窓側の席','+ラウンジ','+スイート']]
 ];
-/* the other display languages: 英検 (and its 面接練習) and 授業の用語(くわしく) are 日本語 only, so their table leaves
-   those rows out and names the exams by level (the rows added later by f19/f24/f25 are kept) */
+/* the other display languages: 英検 (with its 模試 and 面接練習) and 授業の用語(くわしく) are 日本語 only, so their table
+   leaves those rows out, names the exams by level and has no 模試 (the rows added later by f19/f24/f25 are kept) */
 var CAB_JA_ONLY=['授業の用語(くわしく)','面接練習(英検)'];
 function cabFeat(){
   if(typeof UI==='undefined'||UI==='ja')return CAB_FEAT;
   return CAB_FEAT.filter(function(f){return CAB_JA_ONLY.indexOf(f[0])<0;}).map(function(f){
-    return f[0]==='検定コース'?[f[0],['—','初級レベルの検定','すべての検定','すべて+模試']]:f;});
+    return f[0]==='検定コース'?[f[0],['—','初級レベルの検定','すべての検定','すべての検定']]:f;});
 }
 var CAB_KEY='babelflight.cabin',CAB_DKEY='babelflight.cabinDesign';
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
@@ -45,7 +45,7 @@ var CAB_PITCH=['',
 var CAB_PITCH_X=['',
   '検定コース(初級レベル) ・ AI会話ロールプレイ 1日5回 ・ 弱点レポート ・ 筆記体のつなげ書き・名前 ・ 窓側の席デザイン',
   'プレエコの全部 ＋ すべての検定 ・ ロールプレイ 1日15回 ・ 詳しい弱点レポート ・ 出発案内板デザイン',
-  CAB_PITCH[3]];
+  'ビジネスの全部 ＋ ロールプレイ 1日30回 ・ AIコーチ ・ スイートデザイン'];
 function cabPitch(i){return (typeof UI==='undefined'||UI==='ja'?CAB_PITCH:CAB_PITCH_X)[i];}
 function cabinName(lv){return CABINS[lv]?CABINS[lv][1]:'';}
 function cabinDesign(){var lv=cabinLv();if(lv<0)return -1;var d=parseInt(lsGet(CAB_DKEY),10);if(!(d>=0&&d<=lv))d=lv;return d;}

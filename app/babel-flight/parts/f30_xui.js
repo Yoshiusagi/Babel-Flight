@@ -22,6 +22,33 @@ XU('x-toeics2','TOEIC Speaking ステップ2','TOEIC SPEAKING 2','en',[
  ["I agree with the statement for two reasons.","","2つの理由から、その意見に賛成です。","意見を述べる問題(Express an opinion)の書き出しの型。"],
  ["On top of that, it helps people stay healthy.","","それに加えて、人が健康でいる助けになります。","On top of that=それに加えて。"],
  ["For these reasons, I think it's a good idea.","","これらの理由から、良い考えだと思います。",""]]);
+XU('x-toeics3','TOEIC Speaking ステップ3','TOEIC SPEAKING 3','en',[
+ ["Welcome to today's tour of the city museum.","","本日の市立博物館ツアーへようこそ。","音読問題(Read a text aloud)によく出る案内文の書き出し。"],
+ ["Please make sure your mobile phones are switched off.","","携帯電話の電源が切れているか確かめてください。","make sure 〜=〜を確かめる。"],
+ ["On the left side of the picture, a woman is holding an umbrella.","","写真の左側では、女性が傘を持っています。","On the left side of the picture=写真の左側に(位置から説明する)。"],
+ ["A man is sitting at a table, reading a newspaper.","","男性がテーブルに座って新聞を読んでいます。","動作は現在進行形で説明します。"],
+ ["It seems to be a sunny day.","","晴れた日のようです。","It seems to be 〜=〜のようだ(推測)。"],
+ ["There are several bicycles parked along the street.","","通りに沿って何台か自転車が止めてあります。",""],
+ ["The people in the picture look busy.","","写真の人たちは忙しそうです。","look+形容詞=〜に見える。"],
+ ["That's all I can see in this picture.","","この写真で見えるのは以上です。","写真描写の終わり方の型。"]]);
+XU('x-toeics4','TOEIC Speaking ステップ4','TOEIC SPEAKING 4','en',[
+ ["I usually go shopping on weekends because I'm busy on weekdays.","","平日は忙しいので、ふだんは週末に買い物に行きます。",""],
+ ["I'd prefer to buy clothes online because it's cheaper.","","安いので、服はネットで買うほうがいいです。","I'd prefer to 〜=〜するほうがいい。"],
+ ["The last time I went to a concert was about a month ago.","","最後にコンサートに行ったのは1か月ほど前です。",""],
+ ["According to the schedule, the workshop starts at 10 a.m.","","予定表によると、ワークショップは午前10時に始まります。","表を見て答える問題(Respond using information)の型。"],
+ ["It will be held in Conference Room B.","","それは会議室Bで行われます。","be held=(会などが)開かれる。"],
+ ["Unfortunately, the lunch session has been canceled.","","あいにく、昼のセッションは中止になりました。",""],
+ ["There are two presentations in the afternoon.","","午後には発表が2つあります。",""],
+ ["The registration fee is fifty dollars.","","参加費は50ドルです。","registration fee=参加費、登録料。"]]);
+XU('x-toeics5','TOEIC Speaking ステップ5','TOEIC SPEAKING 5','en',[
+ ["In my opinion, working from home is more productive.","","私の意見では、在宅勤務のほうがはかどります。","productive=生産的な、はかどる。"],
+ ["The main reason is that I don't have to commute.","","主な理由は、通勤しなくていいことです。","commute=通勤する。"],
+ ["This saves me about two hours every day.","","これで毎日2時間ほど節約できます。",""],
+ ["For example, I can use that time to exercise.","","たとえば、その時間を運動に使えます。",""],
+ ["Some people might disagree, but I still think so.","","反対する人もいるかもしれませんが、それでもそう思います。",""],
+ ["Another advantage is that it reduces stress.","","もう一つの利点は、ストレスが減ることです。",""],
+ ["Of course, it also has some disadvantages.","","もちろん、欠点もあります。",""],
+ ["Overall, I believe the benefits are greater.","","全体として、利点のほうが大きいと思います。","Overall=全体として(まとめの言葉)。"]]);
 XU('x-opic1','OPIc ステップ1','OPIC 1','en',[
  ["Let me introduce myself.","","自己紹介をさせてください。","OPIcは自己紹介の質問から始まります。"],
  ["I'm a university student majoring in business.","","経営学を専攻している大学生です。","major in 〜=〜を専攻する。"],
@@ -40,6 +67,33 @@ XU('x-opic2','OPIc ステップ2','OPIC 2','en',[
  ["What time do you open on weekends?","","週末は何時に開きますか。",""],
  ["Is there a discount for students?","","学生割引はありますか。",""],
  ["Thank you. That's very helpful.","","ありがとうございます。とても助かります。",""]]);
+XU('x-opic3','OPIc ステップ3','OPIC 3','en',[
+ ["I usually wake up at seven and have a quick breakfast.","","ふだんは7時に起きて、さっと朝ごはんを食べます。",""],
+ ["I've been into cooking lately.","","最近、料理にはまっています。","be into 〜=〜にはまっている。"],
+ ["I listen to music whenever I have time.","","時間があるときはいつも音楽を聴きます。","whenever=〜するときはいつも。"],
+ ["My favorite singer is someone who writes her own songs.","","好きな歌手は、自分で曲を作る人です。",""],
+ ["I first got interested in it when I was in middle school.","","最初に興味を持ったのは中学生のときです。",""],
+ ["It's a great way to relieve stress.","","ストレス解消にぴったりです。","relieve stress=ストレスを解消する。"],
+ ["My neighborhood is quiet and has a lot of trees.","","私の住んでいる地域は静かで、木がたくさんあります。",""],
+ ["There's a convenience store right around the corner.","","すぐそこの角にコンビニがあります。","right around the corner=すぐ近くに。"]]);
+XU('x-opic4','OPIc ステップ4','OPIC 4','en',[
+ ["Compared to ten years ago, people use their phones much more.","","10年前と比べて、人々はずっと多くスマホを使います。","Compared to 〜=〜と比べて(比較の質問の型)。"],
+ ["Back then, we used to meet our friends in person.","","当時は、友だちに直接会っていたものです。","used to 〜=以前は〜したものだ。"],
+ ["The most memorable experience was when I got lost abroad.","","いちばん思い出に残っているのは、外国で道に迷ったときです。",""],
+ ["I was really nervous, but a stranger helped me.","","とても不安でしたが、知らない人が助けてくれました。",""],
+ ["Since then, I always carry a paper map.","","それ以来、いつも紙の地図を持ち歩いています。",""],
+ ["It taught me to stay calm in difficult situations.","","その経験で、大変なときこそ落ち着くことを学びました。",""],
+ ["These days, more people prefer to travel alone.","","最近は、一人旅を好む人が増えています。",""],
+ ["I think the biggest change is the use of technology.","","いちばん大きな変化は、技術の使い方だと思います。",""]]);
+XU('x-opic5','OPIc ステップ5','OPIC 5','en',[
+ ["Hello, I'm calling because there's a problem with my order.","","もしもし、注文に問題があってお電話しました。","ロールプレイの問題解決の書き出し。"],
+ ["I received the wrong item.","","ちがう商品が届きました。",""],
+ ["Would it be possible to exchange it?","","交換していただくことはできますか。","Would it be possible to 〜?=〜することはできますか(ていねい)。"],
+ ["If not, I'd like a full refund.","","できなければ、全額返金してほしいです。","refund=返金。"],
+ ["I'm sorry, but I can't make it to our dinner tonight.","","ごめん、今夜の夕食に行けなくなっちゃった。","can't make it=都合がつかない、間に合わない。"],
+ ["Something urgent came up at work.","","仕事で急な用事ができたんだ。","come up=(用事などが)急に起こる。"],
+ ["How about meeting this Saturday instead?","","代わりに今週の土曜日に会うのはどう?","How about 〜ing?=〜するのはどう?"],
+ ["Thanks for understanding.","","わかってくれてありがとう。",""]]);
 XU('x-cet4-1','CET-4 ステップ1','CET-4 STEP 1','en',[
  ["Nowadays, more and more students are taking part-time jobs.","","最近、アルバイトをする学生がますます増えています。","ライティングの書き出しの型。"],
  ["There are several reasons for this phenomenon.","","この現象にはいくつかの理由があります。","phenomenon=現象。"],
@@ -58,6 +112,33 @@ XU('x-cet4-2','CET-4 ステップ2','CET-4 STEP 2','en',[
  ["The lecture has been moved to Room 302.","","講義は302号室に変更されました。",""],
  ["I'm afraid I can't make it to the club meeting.","","残念ですが、サークルの集まりに行けそうにありません。","make it=間に合う・参加できる。"],
  ["The woman suggests that the man join a study group.","","女性は男性に勉強会に入るよう提案しています。","リスニングの選択肢の型。suggest that のあとは動詞の原形(join)。"]]);
+XU('x-cet4-3','CET-4 ステップ3','CET-4 STEP 3','en',[
+ ["With the development of technology, online shopping has become popular.","","技術の発達とともに、ネットショッピングが広まりました。","With the development of 〜=〜の発達とともに(作文の書き出しの型)。"],
+ ["It not only saves time but also offers more choices.","","それは時間を節約するだけでなく、選択肢も増やします。","not only A but also B=AだけでなくBも。"],
+ ["Nevertheless, there are some problems that cannot be ignored.","","それでも、無視できない問題もあります。","Nevertheless=それでも。"],
+ ["For one thing, the quality of products is sometimes poor.","","一つには、商品の質が悪いことがあります。","For one thing 〜, for another …=一つには〜、もう一つには…。"],
+ ["For another, personal information may be leaked.","","もう一つには、個人情報がもれるおそれがあります。",""],
+ ["It is high time that we took measures to solve this problem.","","そろそろこの問題を解決する対策をとるべきときです。","It is high time that+過去形=もう〜すべきときだ。"],
+ ["Only by working together can we build a better society.","","協力してこそ、より良い社会をつくれます。","Only by 〜 can we …=〜してこそ…できる(倒置)。"],
+ ["In a word, we should make good use of the Internet.","","ひとことで言えば、インターネットをうまく活用すべきです。","In a word=ひとことで言えば。"]]);
+XU('x-cet4-4','CET-4 ステップ4','CET-4 STEP 4','en',[
+ ["Chinese calligraphy is an important part of traditional culture.","","中国の書道は伝統文化の大切な一部です。",""],
+ ["The Great Wall attracts millions of tourists every year.","","万里の長城には毎年何百万人もの観光客が訪れます。",""],
+ ["Dumplings are a must on the eve of the Spring Festival.","","春節の前夜には、ギョーザが欠かせません。","a must=欠かせないもの。"],
+ ["Shared bicycles have made short trips more convenient.","","シェアサイクルで短い移動がより便利になりました。",""],
+ ["Kung fu has become popular all over the world.","","カンフーは世界中で人気になりました。",""],
+ ["The Dragon Boat Festival is held to honor an ancient poet.","","端午節は、古代の詩人をしのんで行われます。","honor=敬う、記念する。"],
+ ["The giant panda is regarded as a national treasure of China.","","ジャイアントパンダは中国の国宝とされています。","be regarded as 〜=〜とみなされる。"],
+ ["More and more young people choose to start their own businesses.","","自分で起業することを選ぶ若者がますます増えています。",""]]);
+XU('x-cet4-5','CET-4 ステップ5','CET-4 STEP 5','en',[
+ ["What is the speaker mainly talking about?","","話し手は主に何について話していますか。","リスニングでよく出る設問の形。"],
+ ["What does the man mean?","","男性は何を言いたいのですか。",""],
+ ["The woman is probably a librarian.","","女性はおそらく図書館員です。","probably=おそらく(推測の選択肢)。"],
+ ["Which of the following is true according to the passage?","","本文によると、次のうち正しいものはどれですか。",""],
+ ["The author mentions the example in order to show a trend.","","筆者は、ある傾向を示すためにその例を挙げています。","in order to 〜=〜するために。"],
+ ["The word in the third paragraph most probably means 'useful'.","","第3段落のその語は、おそらく「役に立つ」という意味です。",""],
+ ["The passage is most likely taken from a newspaper.","","この文章はおそらく新聞からとられたものです。",""],
+ ["The best title for the passage would be 'Saving Water at Home'.","","この文章にいちばんふさわしい題は「家庭での節水」でしょう。",""]]);
 XU('x-cet6-1','CET-6 ステップ1','CET-6 STEP 1','en',[
  ["It is widely acknowledged that education plays a vital role in society.","","教育が社会で非常に重要な役割を果たすことは、広く認められています。",""],
  ["With the rapid development of technology, our lifestyles have changed dramatically.","","技術の急速な発展にともなって、私たちの生活様式は劇的に変わりました。",""],
@@ -76,11 +157,38 @@ XU('x-cet6-2','CET-6 ステップ2','CET-6 STEP 2','en',[
  ["Mobile payment has become part of daily life in China.","","モバイル決済は中国で日常生活の一部になりました。",""],
  ["The speaker implies that the experiment was not successful.","","話し手は、その実験がうまくいかなかったことをほのめかしています。","imply=ほのめかす。"],
  ["Volunteers play an indispensable role in the community.","","ボランティアは地域社会で欠かせない役割を果たしています。","indispensable=欠かせない。"]]);
+XU('x-cet6-3','CET-6 ステップ3','CET-6 STEP 3','en',[
+ ["It is widely acknowledged that education plays a vital role in society.","","教育が社会でとても重要な役割を果たすことは、広く認められています。","It is widely acknowledged that 〜=〜は広く認められている(作文の書き出し)。"],
+ ["However, opinions vary as to how it should be reformed.","","しかし、どのように改革すべきかについては意見が分かれます。","as to 〜=〜について。"],
+ ["Those in favor argue that competition motivates students.","","賛成する人は、競争が学生のやる気を高めると主張します。","Those in favor=賛成の人たち、Those against=反対の人たち。"],
+ ["Those against it, however, believe it causes excessive pressure.","","しかし反対する人は、それが過度のプレッシャーを生むと考えます。",""],
+ ["Personally, I side with the latter view.","","個人的には、後者の意見を支持します。","side with 〜=〜の側につく。the latter=後者。"],
+ ["Admittedly, a certain amount of pressure can be beneficial.","","確かに、ある程度のプレッシャーは役に立つこともあります。","Admittedly=確かに(いったん認める言い方)。"],
+ ["Nonetheless, students' mental health should come first.","","それでも、学生の心の健康を最優先すべきです。","come first=最優先される。"],
+ ["To conclude, a balanced approach is the key.","","結論として、バランスのとれたやり方が鍵です。",""]]);
+XU('x-cet6-4','CET-6 ステップ4','CET-6 STEP 4','en',[
+ ["Rapid urbanization has lifted millions of people out of poverty.","","急速な都市化によって、何百万もの人が貧困から抜け出しました。","lift 〜 out of poverty=〜を貧困から抜け出させる。"],
+ ["E-commerce has reshaped the retail industry.","","電子商取引は小売業のあり方を作り変えました。","reshape=作り変える。"],
+ ["The aging population poses new challenges to society.","","高齢化は社会に新たな課題をもたらしています。",""],
+ ["Green development has become a national priority.","","環境にやさしい発展は、国の優先課題になりました。",""],
+ ["Ancient Chinese inventions had a profound influence on the world.","","中国古代の発明は世界に大きな影響を与えました。","profound=深い、大きな。"],
+ ["Traditional villages are being restored to attract tourists.","","観光客を呼ぶために、伝統的な村が修復されています。",""],
+ ["The high-speed rail network now connects most major cities.","","高速鉄道網は今では主要都市のほとんどを結んでいます。",""],
+ ["Online education narrows the gap between urban and rural schools.","","オンライン教育は、都市と農村の学校の差を縮めます。","narrow the gap=差を縮める。"]]);
+XU('x-cet6-5','CET-6 ステップ5','CET-6 STEP 5','en',[
+ ["The lecture focuses on the effects of sleep on memory.","","その講義は、睡眠が記憶に与える影響に焦点を当てています。",""],
+ ["Researchers found a strong correlation between the two factors.","","研究者たちは、その2つの要因の間に強い相関を見つけました。","correlation=相関関係。"],
+ ["The study was conducted over a period of five years.","","その研究は5年にわたって行われました。","conduct=(調査などを)行う。"],
+ ["The findings challenge the conventional wisdom.","","その結果は、一般に信じられている考えに疑問を投げかけます。","conventional wisdom=一般に信じられている考え。"],
+ ["The author is skeptical about the proposed solution.","","筆者は、提案された解決策に懐疑的です。","skeptical=懐疑的な(筆者の態度を問う設問)。"],
+ ["This paragraph serves as a transition to the next topic.","","この段落は、次の話題への橋渡しの役割をしています。","serve as 〜=〜の役割を果たす。"],
+ ["It can be inferred that the policy will be revised.","","その政策は見直されると推測できます。","infer=推測する(推測問題の型)。"],
+ ["The speaker concludes by calling for further research.","","話し手は、さらなる研究を呼びかけて話を締めくくっています。","call for 〜=〜を求める、呼びかける。"]]);
 ORDER.forEach(function(l){ALL_IDS[l]=Object.keys(UNITS[l]);});
-XBANK.toeics={L:'en',name:'TOEIC Speaking',tier:2,ids:['x-toeics1','x-toeics2']};
-XBANK.opic={L:'en',name:'OPIc',tier:2,ids:['x-opic1','x-opic2']};
-XBANK.cet4={L:'en',name:'CET-4',tier:1,ids:['x-cet4-1','x-cet4-2']};
-XBANK.cet6={L:'en',name:'CET-6',tier:2,ids:['x-cet6-1','x-cet6-2']};
+XBANK.toeics={L:'en',name:'TOEIC Speaking',tier:2,ids:['x-toeics1','x-toeics2','x-toeics3','x-toeics4','x-toeics5']};
+XBANK.opic={L:'en',name:'OPIc',tier:2,ids:['x-opic1','x-opic2','x-opic3','x-opic4','x-opic5']};
+XBANK.cet4={L:'en',name:'CET-4',tier:1,ids:['x-cet4-1','x-cet4-2','x-cet4-3','x-cet4-4','x-cet4-5']};
+XBANK.cet6={L:'en',name:'CET-6',tier:2,ids:['x-cet6-1','x-cet6-2','x-cet6-3','x-cet6-4','x-cet6-5']};
 ['toeics','opic','cet4','cet6'].forEach(function(k){XBANK[k].key=k;XBANK[k].ids.forEach(function(u){XBANK_OF[u]=k;});});
 /* what another display language shows in 検定モード: [group, goal kind] per learning language */
 var XUI_ICAO={key:'icao',title:'航空英語(ICAO)',sub:'パイロットや管制官に必要な英語',ids:['x-icao']},

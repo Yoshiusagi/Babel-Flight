@@ -44,3 +44,9 @@ DELE・CILS・TOPIKも40フレーズに	DELE, CILS and TOPIK now have 40 phrases
 # NOTAM 2026.11.12
 ヒントは「考える」ヒントに	Hints now make you think
 ヒントで答えが出なくなりました。1回目は手がかり、2回目はまちがいの選択肢を1つ消します。ヒントを使った問題は、あとでヒントなしでもう一度出ます。	Hints no longer show the answer. The 1st gives a clue, the 2nd removes one wrong choice. A question you answer with a hint comes back later without one.
+# 目標の名前 (TOEIC・ICAO) in the other display languages
+{0} {1}点	{0} {1}
+{0} {1}点をめざす	Aim for {0} {1}
+{0} レベル{1}	{0} Level {1}
+{0} レベル{1}をめざす	Aim for {0} Level {1}
+目標をはずす(検定を一覧で見る)	Remove the goal (see all exams)

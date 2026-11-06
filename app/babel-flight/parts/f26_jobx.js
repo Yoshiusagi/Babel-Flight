@@ -15,6 +15,33 @@ XU('x-icao2','ICAO航空英語 ステップ2','ICAO ENGLISH 2','en',[
  ["We will need fire trucks standing by on landing.","","着陸のとき、消防車に待機してほしいです。","standing by=待機して。"],
  ["A passenger is refusing to follow the crew's instructions.","","乗務員の指示に従わない乗客がいます。",""],
  ["We have lost contact with our company on the radio.","","無線で会社と連絡が取れなくなりました。","lose contact with=〜と連絡が取れなくなる。"]]);
+XU('x-icao3','ICAO航空英語 ステップ3','ICAO ENGLISH 3','en',[
+ ["We are unable to start engine number two.","","2番エンジンを始動できません。","unable to 〜=〜できない。無線でよく使う言い方。"],
+ ["Request to return to the stand.","","駐機場に戻る許可をお願いします。","stand=駐機場(スポット)。"],
+ ["There is a vehicle blocking the taxiway.","","誘導路をふさいでいる車両があります。","taxiway=誘導路。"],
+ ["We need a few more minutes to complete our checks.","","点検を終えるのに、あと数分必要です。",""],
+ ["Our departure is delayed due to a technical problem.","","機材の不具合で出発が遅れています。",""],
+ ["We have a passenger who needs to disembark.","","降機が必要な乗客がいます。","disembark=(飛行機から)降りる。"],
+ ["Ready for departure in two minutes.","","2分で出発の準備ができます。",""],
+ ["We are rejecting takeoff.","","離陸を中止します。","reject takeoff=離陸中止(滑走中にやめる)。"]]);
+XU('x-icao4','ICAO航空英語 ステップ4','ICAO ENGLISH 4','en',[
+ ["We would like to climb to avoid the turbulence.","","乱気流を避けるために上昇したいです。",""],
+ ["Moderate icing reported at flight level one two zero.","","フライトレベル120で、中程度の着氷の報告があります。","icing=機体に氷がつくこと。"],
+ ["We are deviating twenty miles left of track due to weather.","","悪天候のため、航路の左へ20マイルそれて飛行しています。","deviate=航路からそれる。"],
+ ["Thunderstorms are building ahead of us.","","前方で雷雲が発達しています。",""],
+ ["Visibility at the airport has dropped to five hundred meters.","","空港の視程が500メートルまで下がりました。","visibility=視程(見通せる距離)。"],
+ ["Request descent due to a pressurization problem.","","与圧の不具合のため、降下の許可をお願いします。","pressurization=与圧(機内の気圧を保つこと)。"],
+ ["We are low on fuel and need to land soon.","","燃料が少なくなってきたので、早めに着陸する必要があります。",""],
+ ["Is there any report of volcanic ash in the area?","","この空域で火山灰の報告はありますか。",""]]);
+XU('x-icao5','ICAO航空英語 ステップ5','ICAO ENGLISH 5','en',[
+ ["We are going around.","","着陸をやり直します。","go around=着陸復行(着陸をやめて上昇し、やり直す)。"],
+ ["The runway is not in sight.","","滑走路が見えません。","in sight=見えている。"],
+ ["We have a problem with our landing gear.","","着陸装置(車輪)に問題があります。","landing gear=着陸装置。"],
+ ["Mayday, mayday, mayday, engine fire.","","メーデー、メーデー、メーデー、エンジン火災。","Mayday=遭難信号。命に関わる緊急事態で3回言います。"],
+ ["Pan-pan, pan-pan, pan-pan, a crew member is injured.","","パンパン、パンパン、パンパン、乗務員がけがをしました。","Pan-pan=緊急だが命にすぐは関わらないとき。Mayday より一段下です。"],
+ ["We will need medical assistance on arrival.","","到着時に医療の手配が必要です。",""],
+ ["We are evacuating the aircraft on the runway.","","滑走路上で機体から緊急脱出します。","evacuate=(乗客を)緊急脱出させる。"],
+ ["Request the full length of the runway.","","滑走路を端から全部使わせてください。","full length=滑走路の全長(途中から入らない)。"]]);
 XU('x-aero1','航空無線通信士 英語 ステップ1','AERO RADIO 1','en',[
  ["Tokyo Ground, Japan Air 123, request taxi.","","東京グランド、ジャパンエア123便、地上走行の許可をお願いします。","request taxi=タキシング(地上走行)の許可を求める。最初に相手、次に自分のコールサイン。"],
  ["Taxi to holding point runway three four right.","","滑走路34Rの停止位置まで地上走行してください。","数字は1つずつ読みます(three four)。right=Rの滑走路。"],
@@ -254,7 +281,7 @@ XU('x-sport2','スポーツ選手の英語 ケガ・インタビュー','SPORTS 
 ORDER.forEach(function(l){ALL_IDS[l]=Object.keys(UNITS[l]);});
 
 /* banks (ビジネス = tier 2, like ICAO) */
-XBANK.icao.ids.push('x-icao2');
+XBANK.icao.ids.push('x-icao2','x-icao3','x-icao4','x-icao5');
 [['aero','en','航空無線通信士(英語)',['x-aero1']],['oet','en','OET',['x-oet1','x-oet2']],['oetph','en','OET(薬剤師)',['x-oetph1']],
  ['toles','en','TOLES',['x-toles1']],['bec','en','ケンブリッジ英検ビジネス',['x-bec1']],['servsafe','en','ServSafe Food Handler',['x-servsafe1']],
  ['celta','en','CELTA・TEFL',['x-celta1']],['kanko','en','観光英語検定',['x-kanko1']],['guide-en','en','全国通訳案内士(英語)',['x-guide1']],
