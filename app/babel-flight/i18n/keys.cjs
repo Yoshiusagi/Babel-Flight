@@ -4,9 +4,10 @@
    Used by build.py to check that each dictionary covers them all. */
 const fs = require('fs'), vm = require('vm'), path = require('path');
 const P = path.join(__dirname, '..', 'parts') + '/';
-const order = fs.readFileSync(P + 'order.txt', 'utf8').split(/\s+/).filter(f => /^(p3|e3|d[1-8])/.test(f)).concat(['f17_exam.js', 'f17_xstarter.js', 'f30_xui.js']);
+const order = fs.readFileSync(P + 'order.txt', 'utf8').split(/\s+/).filter(f => /^(p3|e3|d[1-8])/.test(f)).concat(['f17_exam.js', 'f17_xstarter.js', 'f26_jobx.js', 'f30_xui.js']);
 const stub = () => new Proxy(function () {}, { get: (t, k) => k === Symbol.toPrimitive ? () => '' : stub(), apply: () => stub() });
-const ctx = { console, document: stub(), navigator: { userAgent: '' }, localStorage: { getItem: () => null, setItem() {} }, location: { href: '', search: '', hostname: '' } };
+const ctx = { console, document: stub(), navigator: { userAgent: '' }, localStorage: { getItem: () => null, setItem() {} }, location: { href: '', search: '', hostname: '' },
+  /* f26_jobx.js (the job certificates) wraps these when they exist */ render: null, examHomeHTML: null, save: {} };
 ctx.window = ctx; vm.createContext(ctx);
 vm.runInContext(order.map(f => fs.readFileSync(P + f, 'utf8')).join('\n') + '\n;this.__d={LANGS,DU,SCN,ORDER,UM,SCENE_META,CITIES,PROF,EN_UK,SC_UK,USUK,UNITS,xuiUnits,STUDY_ALL,JOB_UI};', ctx);
 const d = ctx.__d, JP = /[぀-ヿ㐀-鿿]/, out = {};

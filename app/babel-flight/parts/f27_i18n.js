@@ -36,6 +36,7 @@ function uiNames(){
   if(typeof PROF==='object'&&PROF.forEach)PROF.forEach(function(p){if(p&&p.jp)n[p.jp]=1;});
   if(typeof UM==='object')Object.keys(UM).forEach(function(k){if(UM[k]&&UM[k].jp)n[UM[k].jp]=1;});
   if(typeof XBANK==='object')Object.keys(XBANK).forEach(function(k){if(XBANK[k]&&XBANK[k].name)n[XBANK[k].name]=1;});  /* 「HSK 3級」 inside 「HSK 3級をめざす」 */
+  if(typeof JOBX_C==='object')Object.keys(JOBX_C).forEach(function(k){n[JOBX_C[k].title]=1;});  /* the certificates in the 💼 line */
   if(typeof SCENE_META==='object')Object.keys(SCENE_META).forEach(function(k){n[SCENE_META[k].role]=1;});
   if(typeof RANKS==='object')RANKS.forEach(function(r){n[r[0]]=1;});
   if(typeof CABINS==='object')CABINS.forEach(function(c){n[c[1]]=1;});

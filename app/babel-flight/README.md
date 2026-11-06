@@ -150,13 +150,21 @@ that had no translation is counted there.
   together with the step titles and the notes). JLPT does the same: N5 has its own simple sentences, N4 and N3
   are the 初級 and 中級 meanings said in Japanese (notes in `ja.tsv`). The meter and the training texts
   for the other display languages are in `i18n/<ui>/meter.tsv`.
+- The 職業の資格 banks (`f26_jobx.js`: 航空無線通信士・OET・TOLES・ケンブリッジ英検ビジネス・ServSafe・CELTA・観光英語検定・
+  全国通訳案内士・研究・大学院・客室乗務員・IT・美容師・スポーツ) are 5 lessons of 8 phrases too. Certificates that were
+  already called ステップ1 keep step titles; the others have a theme per lesson (OET 病棟の英語, TOLES 訴訟と紛争 …).
+  Korean lessons carry a katakana reading like the rest of the Korean course.
 
 ## 検定モード in the other display languages — `parts/f30_xui.js`
 
 - English / 한국어 / 简体中文 show the international exams (TOEIC・IELTS・TOEFL・ICAO・TOPIK・DELE・CILS) and their own
-  country's tests: 한국어 → **TOEIC Speaking・OPIc**, 简体中文 → **CET-4・CET-6**. 英検 (with its 模試 and 面接練習),
-  the job certificates and the AI practice stay with 日本語. `xuiApply()` rebuilds `EXAMS` / `XGOALS` for the display
-  language after `jobxApply()`; `XUI_EXTRA` lists each country's tests.
+  country's tests: 한국어 → **TOEIC Speaking・OPIc**, 简体中文 → **CET-4・CET-6**. 英検 (with its 模試 and 面接練習)
+  and the AI practice stay with 日本語. `xuiApply()` rebuilds `EXAMS` / `XGOALS` for the display language after
+  `jobxApply()`; `XUI_EXTRA` lists each country's tests.
+- The job certificates show too (`XUI_JOB`: OET・TOLES・ケンブリッジ英検ビジネス・ServSafe・CELTA・研究・大学院・客室乗務員 and
+  the IT / 美容師 / スポーツ practice), with the 💼 line naming them (`jobxLineList`). The ones made for working in Japan
+  (航空無線通信士・観光英語検定・全国通訳案内士) stay with 日本語. Their texts are in `i18n/<ui>/xjobc.tsv`; the certificate
+  titles are names for the dictionary (`uiNames`), so 「{0}」の資格: {1} finds them inside the line.
 - The lessons are written like any unit (Japanese meaning + note); `i18n/keys.cjs` lists the ones each display language
   shows (`xuiUnits`), and `build.py` checks they are translated (`i18n/<ui>/exam.tsv`, `xui.tsv`).
 

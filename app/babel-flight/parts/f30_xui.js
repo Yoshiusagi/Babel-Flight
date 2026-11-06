@@ -158,7 +158,7 @@ XU('x-cet6-2','CET-6 ステップ2','CET-6 STEP 2','en',[
  ["The speaker implies that the experiment was not successful.","","話し手は、その実験がうまくいかなかったことをほのめかしています。","imply=ほのめかす。"],
  ["Volunteers play an indispensable role in the community.","","ボランティアは地域社会で欠かせない役割を果たしています。","indispensable=欠かせない。"]]);
 XU('x-cet6-3','CET-6 ステップ3','CET-6 STEP 3','en',[
- ["It is widely acknowledged that education plays a vital role in society.","","教育が社会でとても重要な役割を果たすことは、広く認められています。","It is widely acknowledged that 〜=〜は広く認められている(作文の書き出し)。"],
+ ["It is generally believed that reading broadens our horizons.","","読書は視野を広げると、一般に考えられています。","It is generally believed that 〜=一般に〜と考えられている(作文の書き出し)。broaden one's horizons=視野を広げる。"],
  ["However, opinions vary as to how it should be reformed.","","しかし、どのように改革すべきかについては意見が分かれます。","as to 〜=〜について。"],
  ["Those in favor argue that competition motivates students.","","賛成する人は、競争が学生のやる気を高めると主張します。","Those in favor=賛成の人たち、Those against=反対の人たち。"],
  ["Those against it, however, believe it causes excessive pressure.","","しかし反対する人は、それが過度のプレッシャーを生むと考えます。",""],
@@ -200,6 +200,13 @@ var XUI_EXTRA={
  zh:{en:[[{key:'cn-en',title:'CET-4・CET-6(大学英語)',sub:'中国の大学英語試験。425点が合格ライン(710点満点)',ids:['x-cet4-1','x-cet6-1']},
          {key:'cet',title:'CET(大学英語)',pre:'',sub:'425点が合格ライン(710点満点)',goals:[['CET-4','cet4'],['CET-6','cet6']]}]]}
 };
+/* 職業の資格 the other display languages show too. The ones made for working in Japan (航空無線通信士・観光英語検定・
+   全国通訳案内士) stay in 日本語; ICAO is always there for English (XUI_ICAO). */
+var XUI_JOB=['oet','oetph','toles','bec','servsafe','celta','acad-en','acad-ko','acad-es','acad-it','crew','it-en','beauty-en','sport-en'],
+    XUI_JOB_TM={oet:'OET',oetph:'OET',toles:'TOLES',bec:'Cambridge English',servsafe:'ServSafe',celta:'CELTA'};
+function xuiJobList(L){return jobxList(L).filter(function(k){return XUI_JOB.indexOf(k)>=0;});}
+/* the certificates the 💼 line names (ICAO included: it is in the list for English anyway) */
+function jobxLineList(L){var ks=jobxList(L);return UI==='ja'?ks:ks.filter(function(k){return k==='icao'||XUI_JOB.indexOf(k)>=0;});}
 var XUI_HINT={en:'TOPIK・DELE・CILS など',ko:'TOEIC Speaking・OPIc・TOEIC など',zh:'CET-4・CET-6・TOEIC など'};
 /* the exam groups and goal kinds a display language shows (日本語: everything, unchanged) */
 function xuiApply(){
@@ -207,6 +214,9 @@ function xuiApply(){
   Object.keys(EXAMS).forEach(function(L){
     var ex=(JOBX_EX0[L]||[]).filter(function(g){return g.key!=='eiken';}),xg=(JOBX_XG0[L]||[]).filter(function(k){return k.key!=='eiken';});
     if(L==='en'){ex=ex.concat([XUI_ICAO]);xg=xg.concat([XUI_ICAO_G]);}
+    var ks=xuiJobList(L);
+    ex=ex.concat(ks.map(function(k){var c=JOBX_C[k];return {key:'job-'+k,title:c.title,sub:c.sub,ids:XBANK[k].ids.slice()};}));
+    xg=xg.concat(ks.filter(function(k){return !JOBX_C[k].practice;}).map(function(k){var c=JOBX_C[k];return {key:k,title:c.title,pre:c.pre,sub:c.gsub,goals:c.goals};}));
     EXAMS[L]=ex;XGOALS[L]=xg;
   });
   var x=XUI_EXTRA[UI]||{};
@@ -220,6 +230,8 @@ function xuiUnits(ui){
   if(typeof XSTARTER==='object')XSTARTER.forEach(function(x){x[4].forEach(function(b){add(x[0],b[0]);});});
   var x=XUI_EXTRA[ui]||{};
   Object.keys(x).forEach(function(L){x[L].forEach(function(e){e.slice(1).forEach(function(k){k.goals.forEach(function(g){add(L,g[1]);});});});});
+  XUI_JOB.forEach(function(k){if(XBANK[k])add(XBANK[k].L,k);});
+  ['sd-math','sd-sci'].forEach(function(k){add('en',k);});   /* 授業の用語(くわしく) in 留学モード */
   return out;
 }
 if(typeof jobxApply==='function'&&typeof render==='function'){
@@ -229,10 +241,11 @@ if(typeof jobxApply==='function'&&typeof render==='function'){
   examHomeHTML=function(L){
     var h=exh0.apply(this,arguments);
     if(!h||UI==='ja'||save.mode!=='exam')return h;
-    /* 英検 only: the full-format mock tests; the job line belongs to 職業モード (日本語 only) */
-    h=h.replace(/<button class="ghost" type="button" data-mock-open>[\s\S]*?<\/button>/,'').replace(/<p class="dim hint">🔒 本番形式の模試[^<]*<\/p>/,'').replace(/<p class="dim hint jobx-line">[\s\S]*?<\/p>/,'');
+    /* 英検 only: the full-format mock tests */
+    h=h.replace(/<button class="ghost" type="button" data-mock-open>[\s\S]*?<\/button>/,'').replace(/<p class="dim hint">🔒 本番形式の模試[^<]*<\/p>/,'');
     h=h.split('英検の級・TOEICのスコアなど').join(XUI_HINT[UI]||'TOEIC・TOPIK など');
-    h=h.replace(/<p class="exam-tm">[\s\S]*?<\/p>/,xTmHTML(L,L==='en'?'TOEIC®・IELTS・TOEFL®'+(UI==='ko'?'・OPIc':''):undefined));
+    var tm=[];xuiJobList(L).forEach(function(k){var n=XUI_JOB_TM[k];if(n&&tm.indexOf(n)<0)tm.push(n);});
+    h=h.replace(/<p class="exam-tm">[\s\S]*?<\/p>/,xTmHTML(L,L==='en'?'TOEIC®・IELTS・TOEFL®'+(UI==='ko'?'・OPIc':'')+(tm.length?'・'+tm.join('・'):''):undefined));
     return h;
   };
 }

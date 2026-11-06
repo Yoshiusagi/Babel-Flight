@@ -2,7 +2,8 @@
 var pendingFly=null,MAP=null,MODEPREV=null,HOME_ANIM='first',DOTC={};
 function cityFor(L,i){var c=CITIES[L];return c[((i%c.length)+c.length)%c.length];}
 function posKey(L){return L+'-'+save.mode;}
-function curPos(L){var p=save.pos&&save.pos[posKey(L)];return typeof p==='number'?p:-1;}
+/* where the plane is on the path (-1: Tokyo). The path can get shorter (another job, an exam goal), so a place past its end is not used */
+function curPos(L){var p=save.pos&&save.pos[posKey(L)];return typeof p==='number'&&p<pathIds(L).length?p:-1;}
 function proj(L,lat,lon){var R=REGIONS[L],b=R.b;return {x:(lon-b[0])/(b[1]-b[0])*340,y:(b[3]-lat)/(b[3]-b[2])*R.H};}
 function inPoly(x,y,p){var ins=false,n=p.length/2,j=n-1;for(var i=0;i<n;i++){var xi=p[2*i],yi=p[2*i+1],xj=p[2*j],yj=p[2*j+1];if((yi>y)!==(yj>y)&&x<(xj-xi)*(y-yi)/(yj-yi)+xi)ins=!ins;j=i;}return ins;}
 function polyBox(p){var a=[1e9,-1e9,1e9,-1e9];for(var i=0;i<p.length;i+=2){a[0]=Math.min(a[0],p[i]);a[1]=Math.max(a[1],p[i]);a[2]=Math.min(a[2],p[i+1]);a[3]=Math.max(a[3],p[i+1]);}return a;}

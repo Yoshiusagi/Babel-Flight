@@ -16,9 +16,9 @@ var CAB_FEAT=[
  ['弱点レポート',['—','かんたん版','詳しい版','詳しい版+AIコーチ']],
  ['専用デザイン',['—','窓側の席','+ラウンジ','+スイート']]
 ];
-/* the other display languages: 英検 (with its 模試 and 面接練習) and 授業の用語(くわしく) are 日本語 only, so their table
-   leaves those rows out, names the exams by level and has no 模試 (the rows added later by f19/f24/f25 are kept) */
-var CAB_JA_ONLY=['授業の用語(くわしく)','面接練習(英検)'];
+/* the other display languages: 英検 (with its 模試 and 面接練習) is 日本語 only, so their table leaves that row out,
+   names the exams by level and has no 模試 (the rows added later by f19/f24/f25 are kept) */
+var CAB_JA_ONLY=['面接練習(英検)'];
 function cabFeat(){
   if(typeof UI==='undefined'||UI==='ja')return CAB_FEAT;
   return CAB_FEAT.filter(function(f){return CAB_JA_ONLY.indexOf(f[0])<0;}).map(function(f){
@@ -43,7 +43,7 @@ var CAB_PITCH=['',
   'プレエコの全部 ＋ すべての検定と面接練習 ・ ロールプレイ 1日15回 ・ 詳しい弱点レポート ・ ラウンジデザイン',
   'ビジネスの全部 ＋ 本番形式の模試 ・ ロールプレイ 1日30回 ・ AIコーチ ・ スイートデザイン'];
 var CAB_PITCH_X=['',
-  '検定コース(初級レベル) ・ AI会話ロールプレイ 1日5回 ・ 弱点レポート ・ 筆記体のつなげ書き・名前 ・ 窓側の席デザイン',
+  '検定コース(初級レベル) ・ AI会話ロールプレイ 1日5回 ・ 弱点レポート ・ 授業の用語(くわしく) ・ 筆記体のつなげ書き・名前 ・ 窓側の席デザイン',
   'プレエコの全部 ＋ すべての検定 ・ ロールプレイ 1日15回 ・ 詳しい弱点レポート ・ 出発案内板デザイン',
   'ビジネスの全部 ＋ ロールプレイ 1日30回 ・ AIコーチ ・ スイートデザイン'];
 function cabPitch(i){return (typeof UI==='undefined'||UI==='ja'?CAB_PITCH:CAB_PITCH_X)[i];}
@@ -205,7 +205,7 @@ var STUDY_MORE=[{bank:'sd-math',title:'数学の用語(くわしく)',sub:'数�
   var ps0=pathSections;
   pathSections=function(lang){
     var s=ps0.apply(this,arguments);
-    if(save.mode==='study'&&lang==='en'&&cabinLv()>=1&&UI==='ja')   /* くわしく: 日本語 only for now */
+    if(save.mode==='study'&&lang==='en'&&cabinLv()>=1)
       s=s.concat(STUDY_MORE.map(function(x){return {key:'study-'+x.bank,title:x.title,sub:x.sub,ids:bankUnits(XBANK[x.bank])};}));
     return s;
   };
@@ -217,7 +217,7 @@ var STUDY_MORE=[{bank:'sd-math',title:'数学の用語(くわしく)',sub:'数�
 })();
 function studyMoreHTML(L){
   var lv=cabinLv();
-  if(lv<0||L!=='en'||UI!=='ja')return '';
+  if(lv<0||L!=='en')return '';
   var h='<section class="card exam-card study-more"><span class="lbl">STUDY ・ '+CABINS[lv][2]+'</span><h2 class="jh">授業の用語(くわしく)</h2>';
   if(lv<1)return h+'<p class="dim" style="font-size:13.5px;margin-top:4px">数学と理科の用語128語を、意味と授業での使われ方つきで。</p><p class="dim hint">🔒 「プレミアムエコノミー」から</p></section>';
   h+='<p class="dim" style="font-size:13.5px;margin-top:4px">数学と理科の用語を、意味と授業での使われ方つきで。答えたあとの説明に、先生が授業で言いそうな英文がのっています。</p>';

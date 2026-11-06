@@ -103,6 +103,11 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.14',items:[
+  ['💼','職業の資格も40フレーズに','航空無線通信士・OET・TOLES・ケンブリッジ英検ビジネス・ServSafe・CELTA・観光英語検定・全国通訳案内士・研究・大学院・客室乗務員などの資格も、ステップ1〜5の40フレーズになりました。職業モードで職業を選ぶと、検定タブに並びます。','exam',1,['ja']],
+  ['💼','職業の資格も検定タブに','職業モードで選んだ職業の資格(OET・TOLES・ケンブリッジ英検ビジネス・ServSafe・CELTA・研究・大学院・客室乗務員など)が、検定タブにも並ぶようになりました。どれもステップ1〜5の40フレーズです。','exam',1,['en','ko','zh']],
+  ['📐','授業の用語(くわしく)も','留学モード(英語)で、数学と理科の用語128語を、意味と授業での使われ方つきで学べるようになりました(プレミアムエコノミーから)。','',1,['ko','zh']]
+ ]},
  {v:'2026.11.13',items:[
   ['🏅','英語の検定も40フレーズに','TOEIC・IELTS・TOEFL・航空英語(ICAO)・英検準1級・1級も、ステップ1〜5の40フレーズになりました。目標を選ぶと合格圏メーターが動きます。','exam',1,['ja']],
   ['🏅','英語の検定も40フレーズに','TOEIC・IELTS・TOEFL・航空英語(ICAO)・TOEIC Speaking・OPIcも、ステップ1〜5の40フレーズになりました。目標を選ぶと合格圏メーターが動きます。','exam',1,['ko']],
