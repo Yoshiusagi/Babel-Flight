@@ -12,12 +12,14 @@ var PERKS=[
 ];
 var LOUNGE_N=10,LOUNGE_BONUS=30;
 /* ---- full access: the test account (later also paid plans) gets every feature ----
-   Set from the server after sign-in (f13_account.js). Any future paid feature should check entitled(). */
-var ENT={all:false,plan:''};
+   Set from the server after sign-in (f13_account.js). Any future paid feature should check entitled().
+
+   until: when the hidden reward's ファースト ends (ms, from the server; f17_cabin.js). */
+var ENT={all:false,plan:'',until:0};
 function entitled(){return !!(ENT&&ENT.all);}
 function entSet(e){
-  var all=!!(e&&e.all),changed=all!==ENT.all;
-  ENT={all:all,plan:(e&&typeof e.plan==='string')?e.plan:''};
+  var all=!!(e&&e.all),until=e&&typeof e.until==='number'?e.until:0,now=Date.now(),changed=all!==ENT.all||(until>now)!==(ENT.until>now);
+  ENT={all:all,plan:(e&&typeof e.plan==='string')?e.plan:'',until:until};
   if(changed){if(typeof applyAccent==='function')applyAccent();if(typeof render==='function'&&view!=='flight'&&view!=='atc'&&view!=='scene')render();}
 }
 /* the highest status ever reached (perks you keep) and the status held now (perks while it lasts) */

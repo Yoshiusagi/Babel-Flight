@@ -238,6 +238,7 @@ async function handleDelete(request: Request, db: D1Database, projectId: string)
     db.prepare("DELETE FROM bf_users WHERE uid = ?").bind(session.uid),
     db.prepare("DELETE FROM bf_ai_usage WHERE uid = ?").bind(session.uid),
     db.prepare("DELETE FROM bf_entitlements WHERE uid = ?").bind(session.uid),
+    db.prepare("DELETE FROM bf_reward WHERE uid = ?").bind(session.uid),
   ]);
   return withClearedCookies(json({ ok: true }));
 }

@@ -89,7 +89,7 @@ function completeLesson(o){
   }
   save.miles+=miles;save.flights++;
   save.tq=(save.tq||0)+(o.answered||0);
-  if(o.mode!=='ai')accNote(L,o.corr,o.answered);
+  if(o.mode!=='ai'){accNote(L,o.corr,o.answered);if(typeof rewardTick==='function')rewardTick(o.corr);}
   /* many mistakes in a lesson: add a remedial flight made of those phrases */
   var remAdded=0;
   if(o.mode==='unit'&&!o.skip&&o.wrongKeys&&o.wrongKeys.length>=2&&o.answered>0&&o.corr/o.answered<0.75){remAdd(L,o.uid,o.wrongKeys);remAdded=o.wrongKeys.length;}

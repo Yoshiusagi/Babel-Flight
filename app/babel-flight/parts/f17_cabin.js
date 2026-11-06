@@ -29,8 +29,8 @@ function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
 function cabinTester(){try{return typeof entitled==='function'&&entitled();}catch(e){return false;}}
 function cabinOn(){return !(typeof BF_APP!=='undefined'&&BF_APP);}
-/* the class an ordinary account flies: エコノミー until paid plans open */
-function cabinPlanLv(){return 0;}
+/* the class an ordinary account flies: エコノミー until paid plans open (ファースト while the hidden reward lasts) */
+function cabinPlanLv(){return rewardUntil()?3:0;}
 function cabinLv(){
   if(!cabinOn())return -1;
   if(!cabinTester())return cabinPlanLv();
@@ -48,7 +48,8 @@ var CAB_PITCH_X=['',
   'ビジネスの全部 ＋ ロールプレイ 1日30回 ・ AIコーチ ・ スイートデザイン'];
 function cabPitch(i){return (typeof UI==='undefined'||UI==='ja'?CAB_PITCH:CAB_PITCH_X)[i];}
 function cabinName(lv){return CABINS[lv]?CABINS[lv][1]:'';}
-function cabinDesign(){var lv=cabinLv();if(lv<0)return -1;var d=parseInt(lsGet(CAB_DKEY),10);if(!(d>=0&&d<=lv))d=lv;return d;}
+/* the design picked in 「記録」; the test account starts with its class's own, others with いつもの */
+function cabinDesign(){var lv=cabinLv();if(lv<0)return -1;var d=parseInt(lsGet(CAB_DKEY),10);if(!(d>=0&&d<=lv))d=cabinTester()?lv:0;return d;}
 function applyCabin(){
   var d=cabinDesign(),name=d>0?CAB_DESIGN[d][0]:'';
   if(name)rootEl.setAttribute('data-cabin',name);else rootEl.removeAttribute('data-cabin');
@@ -59,8 +60,18 @@ function applyCabin(){
 function cabinFeatHTML(lv){
   return '<ul class="cabin-feat">'+cabFeat().map(function(f){var v=f[1][lv];return '<li class="'+(v==='—'?'off':'on')+'"><span>'+f[0]+'</span><b>'+(v==='—'?'🔒':esc(v))+'</b></li>';}).join('')+'</ul>';
 }
+function cabDesignHTML(lv,d){
+  return lv>0?'<div class="set-block"><span class="lbl">デザイン</span><div class="cabin-design" role="group" aria-label="デザイン">'+CAB_DESIGN.slice(0,lv+1).map(function(x,i){
+    return '<button type="button" data-cabin-design="'+i+'" aria-pressed="'+(i===d)+'"><i class="cd-sw cd-'+(x[0]||'base')+'" aria-hidden="true"></i><b>'+x[1]+'</b><small>'+x[2]+'</small></button>';}).join('')+'</div></div>':'';
+}
 function cabinCardHTML(){
   var lv=cabinLv();if(lv<0)return '';
+  var ru=rewardUntil();
+  if(!cabinTester()&&ru){
+    return '<section class="card cabin-card eco reward"><div class="card-h"><h2 class="jh">搭乗クラス</h2><span class="lbl">'+CABINS[lv][2]+'</span></div>'+
+      '<div class="cab-now"><b>'+CABINS[lv][1]+'</b><small><span>🏆 ごほうび</span> ・ <span>'+rewardDate(ru)+'</span></small></div>'+cabinFeatHTML(lv)+cabDesignHTML(lv,cabinDesign())+
+      '<p class="dim hint">正解10,000問のごほうびです。期限が来ると、エコノミーにもどります。</p></section>';
+  }
   if(!cabinTester()){
     return '<section class="card cabin-card eco"><div class="card-h"><h2 class="jh">搭乗クラス</h2><span class="lbl">'+CABINS[lv][2]+'</span></div>'+
       '<div class="cab-now"><b>'+CABINS[lv][1]+'</b><small>'+(lv?'':'無料 ・ ')+'いまのクラス</small></div>'+cabinFeatHTML(lv)+
@@ -73,10 +84,29 @@ function cabinCardHTML(){
     '<p class="dim hint">切り替えると、そのクラスで使える機能だけになります。ほかのアカウントは、切り替えなしのエコノミーです。</p>'+
     '<div class="cabin-seg" role="group" aria-label="搭乗クラス">'+CABINS.map(function(c,i){
       return '<button type="button" data-cabin-set="'+i+'" aria-pressed="'+(i===lv)+'"><b>'+c[1]+'</b><small>'+c[3]+'</small></button>';}).join('')+'</div>'+
-    cabinFeatHTML(lv)+
-    (lv>0?'<div class="set-block"><span class="lbl">デザイン</span><div class="cabin-design" role="group" aria-label="デザイン">'+CAB_DESIGN.slice(0,lv+1).map(function(x,i){
-      return '<button type="button" data-cabin-design="'+i+'" aria-pressed="'+(i===d)+'"><i class="cd-sw cd-'+(x[0]||'base')+'" aria-hidden="true"></i><b>'+x[1]+'</b><small>'+x[2]+'</small></button>';}).join('')+'</div></div>':'')+
+    cabinFeatHTML(lv)+cabDesignHTML(lv,d)+
     '<p class="dim hint">ステータス特典とAIの回数制限は、テスト用アカウントなのでどのクラスでも解放されたままです。</p></section>';
+}
+
+/* ---- 裏設定 (hidden reward): right answers are counted on the server for signed-in accounts (at most 300
+   a day, src/lib/reward.server.ts); reaching 10,000 once gives ファースト for 90 days. Nothing shows it before. ---- */
+function rewardUntil(){return ENT&&ENT.until>Date.now()?ENT.until:0;}
+function rewardDate(ms){var d=new Date(ms);return (d.getMonth()+1)+'月'+d.getDate()+'日まで';}
+function rewardTick(n){
+  if(!(n>0)||typeof ACCT!=='object'||!ACCT||!ACCT.me||typeof acctApi!=='function')return;
+  acctApi('POST','/api/reward/tick',{n:n}).then(function(j){
+    if(!j||!j.ok||typeof j.until!=='number')return;
+    if(j.until!==ENT.until){ENT.until=j.until;applyCabin();}
+    if(j.just&&cabinOn())rewardSheet(j.until);
+  }).catch(function(){});
+}
+function rewardSheet(until){
+  $('sheetHost').innerHTML='<div class="sheet plain reward-sheet" role="dialog" aria-label="ごほうび"><div class="sheet-in">'+
+    '<div class="rw-cup" aria-hidden="true">🏆</div><h3>正解 10,000問 達成!</h3>'+
+    '<p>ここまで続けてくれたお礼に、ファーストクラスを3か月無料で使えるようにしました。</p>'+
+    '<p class="rw-until"><b>'+rewardDate(until)+'</b></p>'+
+    '<p class="dim hint">すべての検定・AIロールプレイ・スイートデザインなど、全部の機能が使えます。デザインは「記録」の搭乗クラスで選べます。</p>'+
+    '<button class="go" type="button" data-close-sheet>ありがとう!</button></div></div>';
 }
 
 /* ---- 検定モード ---- */

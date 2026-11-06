@@ -30,7 +30,7 @@ jobs:
           if [ -z "$MOVE_KEY" ] || [ -z "$NEW_SITE" ]; then
             echo "::error::Set the secret MOVE_KEY and the variable NEW_SITE first."; exit 1
           fi
-          for t in bf_users bf_saves bf_entitlements bf_billing bf_auth bf_visitors bf_events; do
+          for t in bf_users bf_saves bf_entitlements bf_billing bf_reward bf_auth bf_visitors bf_events; do
             after=""; total=0; pages=0
             while :; do
               body="$(jq -nc --arg t "$t" --arg a "$after" '{table:$t, after:$a}')"

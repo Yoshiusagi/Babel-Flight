@@ -8,6 +8,7 @@ import { handleAnalytics } from "./lib/analytics.server";
 import { handleBilling } from "./lib/billing.server";
 import { appPreflight, withAppCors } from "./lib/http.server";
 import { handleMove } from "./lib/move.server";
+import { handleReward } from "./lib/reward.server";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
@@ -73,6 +74,9 @@ export default {
     // AI for the standalone site (Claude API, signed-in accounts, daily limits; see lib/ai.server.ts).
     const ai = await handleAi(request, url);
     if (ai) return applySecurityHeaders(withAppCors(request, ai));
+    // The hidden reward: right answers counted per account, at most 300 a day (see lib/reward.server.ts).
+    const reward = await handleReward(request, url);
+    if (reward) return applySecurityHeaders(withAppCors(request, reward));
     // Copying the data to the new address when the site moves (see lib/move.server.ts).
     const move = await handleMove(request, url);
     if (move) return applySecurityHeaders(move);

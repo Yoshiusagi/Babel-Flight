@@ -50,3 +50,5 @@ DELE・CILS・TOPIKも40フレーズに	DELE, CILS and TOPIK now have 40 phrases
 {0} レベル{1}	{0} Level {1}
 {0} レベル{1}をめざす	Aim for {0} Level {1}
 目標をはずす(検定を一覧で見る)	Remove the goal (see all exams)
+# the boarding pass of a lesson: how many times it was cleared
+{0}回クリア	cleared {0}×

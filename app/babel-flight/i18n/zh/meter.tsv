@@ -53,3 +53,5 @@ DELE・CILS・TOPIKも40フレーズに	DELE、CILS、TOPIK 也增加到40个句
 # NOTAM 2026.11.13
 英語の検定も40フレーズに	英语考试也增加到40个句子
 TOEIC・IELTS・TOEFL・航空英語(ICAO)・CET-4・CET-6も、ステップ1〜5の40フレーズになりました。目標を選ぶと合格圏メーターが動きます。	TOEIC、IELTS、TOEFL、航空英语（ICAO）、CET-4、CET-6 也都有第1～5步，共40个句子。选择目标后，合格线仪表就会开始变化。
+# the boarding pass of a lesson: how many times it was cleared
+{0}回クリア	已通关{0}次

@@ -13,7 +13,7 @@
 //
 // Safe to run again: accounts and visitors merge, a save is replaced only by a newer one (its
 // rev goes up so devices pull it), entitlements / billing / the stats password are kept when
-// already there, and usage events continue after the last one copied (never twice).
+// already there, the reward keeps the larger count, and usage events continue after the last one copied (never twice).
 // Login sessions are not copied: everyone signs in once on the new address.
 import type { D1Database, D1PreparedStatement } from "@cloudflare/workers-types";
 
@@ -50,6 +50,14 @@ export const MOVE_TABLES: Record<string, Table> = {
       ["period_end", "int"], ["cancel_at", "int"], ["livemode", "int"], ["updated_at", "int"],
     ],
     merge: "ON CONFLICT(uid) DO NOTHING",
+  },
+  // The hidden reward: the larger count wins, and a reward given on either site is kept.
+  bf_reward: {
+    key: "uid",
+    cols: [["uid", "text"], ["total", "int"], ["day", "text"], ["day_n", "int"], ["last_at", "int"], ["granted_at", "int"], ["until", "int"]],
+    merge:
+      "ON CONFLICT(uid) DO UPDATE SET total = MAX(bf_reward.total, excluded.total), " +
+      "granted_at = MAX(bf_reward.granted_at, excluded.granted_at), until = MAX(bf_reward.until, excluded.until)",
   },
   bf_auth: {
     key: "id",

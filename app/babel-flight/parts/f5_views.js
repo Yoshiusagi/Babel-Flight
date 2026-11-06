@@ -33,7 +33,7 @@ function passHTML(L,uid){
   var tp=profById(u.track),track=tp?tp.jp+'コース':({travel:'旅行フレーズ',daily:'日常会話',study:'留学'}[u.track]||'基本の会話');
   return '<section class="pass'+((typeof perkHas==='function'?perkHas(4):rk>=4)?' diamond':'')+'" aria-label="搭乗券"><div class="pass-main"><div class="card-h" style="margin:4px 0 0"><span class="lbl">搭乗券 ・ '+esc(track)+'</span><span class="lbl">'+RANKS[rk][1]+'</span></div>'+
     '<div class="pass-route"><div class="ap">HND<small>東京 羽田</small></div>'+planeIcon()+'<div class="ap">'+LG.code+'<small>'+esc(LG.city)+'</small></div></div>'+
-    '<div class="pass-title">'+esc(unitTitle(uid))+'</div><div class="lbl" style="margin-top:4px">'+esc(unitLat(uid))+(rec.n>0?'  ・  '+rec.n+'回クリア':'')+'</div>'+
+    '<div class="pass-title">'+esc(unitTitle(uid))+'</div><div class="lbl" style="margin-top:4px">'+'<span>'+esc(unitLat(uid))+'</span>'+(rec.n>0?'  ・  <span>'+rec.n+'回クリア</span>':'')+'</div>'+
     '<div class="pass-grid"><div><span class="lbl">便名</span><div class="v">'+flightNo(L,uid)+'</div></div>'+
     '<div><span class="lbl">ゲート</span><div class="v">'+gateNo(L,uid)+'</div></div>'+
     '<div><span class="lbl">問題数</span><div class="v">'+(u.items.length*2)+'問</div></div>'+

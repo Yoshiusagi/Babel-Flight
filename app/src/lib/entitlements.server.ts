@@ -1,10 +1,13 @@
 // What each account is allowed to use beyond the free app.
 //
-// Today there is one plan, "all": a test account that gets every feature, with no
-// status locks and no daily AI limits. Future paid plans (エコノミー / ビジネス / ファースト)
-// and the hidden "many questions answered" reward should be written to the same
-// bf_entitlements table, and every paid feature should be checked with `fullAccess()`
-// on the server / `entitled()` in the page, so the test account keeps getting everything.
+// Plans in bf_entitlements: "all" (the test account: every feature, no status locks, no daily AI
+// limits) and "family" (every class feature, First-class AI limits). Future paid plans
+// (エコノミー / ビジネス / ファースト) should be written to the same table, and every paid feature
+// checked with `fullAccess()` on the server / `entitled()` in the page, so the test account keeps
+// getting everything.
+//
+// The hidden reward (裏設定, reward.server.ts) is kept in its own table, bf_reward, and shows here
+// as `until`: ファースト (First-class AI limits on the server, cabinLv 3 in the page) until then.
 //
 // The test account is recognised by its sign-in email. Only a salted SHA-256 of the
 // address is kept in the code (the repository is public). Once matched, the grant is
@@ -29,10 +32,11 @@ const FAMILY_EMAIL_HASHES: readonly string[] = [
   "da9591957bf899abe62d880c2d86fa1739233e9029071eab23870a51c716ec27",
 ];
 
-export type Entitlements = { plan: string; all: boolean; family: boolean };
+/** until: when the hidden reward's ファースト ends (ms; 0 = none, see reward.server.ts). */
+export type Entitlements = { plan: string; all: boolean; family: boolean; until: number };
 export type AiTier = "all" | "family" | "free";
 
-const FREE: Entitlements = { plan: "", all: false, family: false };
+const FREE: Entitlements = { plan: "", all: false, family: false, until: 0 };
 
 /** Called when someone signs in: records the "all" plan for the test account. */
 export async function grantOnSignIn(db: D1Database, claims: FirebaseClaims): Promise<void> {
@@ -61,16 +65,28 @@ export async function grantOnSignIn(db: D1Database, claims: FirebaseClaims): Pro
     .run();
 }
 
-export async function entitlementsOf(db: D1Database, uid: string): Promise<Entitlements> {
-  const row = await db.prepare("SELECT plan FROM bf_entitlements WHERE uid = ?").bind(uid).first<Row>();
-  if (!row || typeof row.plan !== "string") return FREE;
-  return { plan: row.plan, all: row.plan === "all", family: row.plan === "family" };
+/** When the hidden reward's ファースト ends (ms; 0 = none). A missing table counts as none. */
+export async function rewardUntil(db: D1Database, uid: string): Promise<number> {
+  try {
+    const r = await db.prepare("SELECT until FROM bf_reward WHERE uid = ?").bind(uid).first<Row>();
+    return Number(r?.until) || 0;
+  } catch {
+    return 0;
+  }
 }
 
-/** How much AI the account gets per day: unlimited (test account), First-class (family) or free. */
+export async function entitlementsOf(db: D1Database, uid: string): Promise<Entitlements> {
+  const row = await db.prepare("SELECT plan FROM bf_entitlements WHERE uid = ?").bind(uid).first<Row>();
+  const until = await rewardUntil(db, uid);
+  if (!row || typeof row.plan !== "string") return { ...FREE, until };
+  return { plan: row.plan, all: row.plan === "all", family: row.plan === "family", until };
+}
+
+/** How much AI the account gets per day: unlimited (test account), First-class (family, or the
+ *  hidden reward while it lasts) or free. */
 export async function aiTier(db: D1Database, uid: string): Promise<AiTier> {
   const e = await entitlementsOf(db, uid);
-  return e.all ? "all" : e.family ? "family" : "free";
+  return e.all ? "all" : e.family || e.until > Date.now() ? "family" : "free";
 }
 
 /** True when the account may use every feature, including paid ones and unlimited AI. */

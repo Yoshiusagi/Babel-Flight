@@ -223,6 +223,18 @@ classes' features (検定コース, 模試, AI会話ロールプレイ, 弱点�
 「もうすぐ申し込めます」. When billing goes live, `cabinPlanLv()` should return the class the account has paid for
 (server-checked, like `entitled()`), and the plan card in `f21_billing.js` opens to everyone signed in.
 
+### 裏設定 (the hidden reward)
+
+`src/lib/reward.server.ts` + `migrations/0012_reward.sql` (table `bf_reward`). The landing screen of every lesson
+sends its right answers to `POST /api/reward/tick` (`rewardTick()` in `f17_cabin.js`, signed-in accounts only).
+The server counts at most 60 per lesson, 300 a day (Japan time) and one lesson per 20 s, so faking it is no
+faster than studying; the count starts at 0 when this shipped (counts kept on the device can be edited, so
+they are not used). Reaching 10,000 once gives ファースト for 90 days: `entitlementsOf()` reports `until`,
+`aiTier()` gives First-class AI limits, and `cabinPlanLv()` returns 3 while `ENT.until` is in the future.
+Nothing in the app mentions it until then; the replies never say how far along an account is. On the day it
+is reached a 🏆 sheet says so, and the cabin card in 記録 shows 🏆 ごほうび with the end date. Not in the iPhone
+app (`cabinOn()`). Account deletion removes the row; the data move keeps the larger count.
+
 ## 職業の資格 (検定モード)
 
 `parts/f26_jobx.js`. The third group of 検定 follows the job chosen in 職業モード (`save.prof`), replacing the

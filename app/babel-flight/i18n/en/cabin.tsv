@@ -55,3 +55,12 @@
 直近{0}ヶ月 {1} マイル	Last {0} months: {1} miles
 テーマカラー ・ ゴールド特典	Theme color · Gold perk
 ビジネスの全部 ＋ ロールプレイ 1日30回 ・ AIコーチ ・ スイートデザイン	Everything in Business + role-play 30 a day · AI coach · Suite design
+# 裏設定: the reward for 10,000 right answers (shown only once it is reached)
+ごほうび	Reward
+🏆 ごほうび	🏆 Reward
+{0}月{1}日まで	until {0}/{1}
+正解10,000問のごほうびです。期限が来ると、エコノミーにもどります。	This is your reward for 10,000 correct answers. When it ends, you go back to Economy.
+正解 10,000問 達成!	10,000 correct answers!
+ここまで続けてくれたお礼に、ファーストクラスを3か月無料で使えるようにしました。	To thank you for keeping it up, First class is yours free for 3 months.
+すべての検定・AIロールプレイ・スイートデザインなど、全部の機能が使えます。デザインは「記録」の搭乗クラスで選べます。	Every exam, AI role-play, the Suite design and every other feature are open. Pick a design under Cabin class in Record.
+ありがとう!	Thank you!
