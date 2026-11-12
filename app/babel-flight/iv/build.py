@@ -41,8 +41,15 @@ for k, spec in SPEC.items():
             elif not e.get('model'): bad(k, '%s: %s has no model answer' % (pn, e['q'][:30]))
             for m in models(e.get('model')):
                 if JA.search(m.replace('→', '')): bad(k, 'Japanese in a model answer: ' + m[:30])
-    titles = [c['card'].get('title') for c in t['cards']]
-    if len(t['cards']) > 1 and 'topics' not in spec and len(set(titles)) != len(titles): bad(k, 'two cards with the same title')
+    titles = [(c['card'].get('title'), c['card'].get('start')) for c in t['cards']]
+    if len(t['cards']) > 1 and 'topics' not in spec and len(set(titles)) != len(titles): bad(k, 'two cards with the same title / first sentence')
+    tops = [tp['t'] for c in t['cards'] for tp in c['card'].get('topics', [])]
+    if len(set(tops)) != len(tops): bad(k, 'a topic on two cards')
+    for c in t['cards']:
+        for tp in c['card'].get('topics', []):
+            if len(tp.get('qs', [])) != 2 or len(tp.get('outline', [])) != 4: bad(k, 'topic needs 2 questions + a 4-line outline: ' + tp['t'][:30])
+    tq = [q for c in t['cards'] for tp in c['card'].get('topics', []) for q in tp['qs']]
+    if len(set(tq)) != len(tq): bad(k, 'a topic question twice')
     for ci, c in enumerate(t['cards']):
         kk = '%s#%d' % (k, ci + 1)
         card, items = c['card'], dict(t.get('items', {}), **c['items'])
