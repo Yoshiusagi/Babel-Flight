@@ -9,6 +9,17 @@
 .iv .fl-top{margin-bottom:8px}
 .iv-flow{margin:8px 0 4px;padding-left:1.3em;font-size:14px;line-height:1.7}
 .iv-subt{margin-top:10px;font-size:13.5px}
+.iv-pick{margin-top:12px}
+.iv-cs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:6px}
+.iv-cs button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:7px 9px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);text-align:left}
+.iv-cs button b{font-size:13px}
+.iv-cs button small{font-size:11px;color:var(--ink2)}
+.iv-cs button[aria-pressed="true"]{border-color:var(--good);box-shadow:0 0 0 2px color-mix(in srgb,var(--good) 35%,transparent)}
+.iv-hint{margin:8px 0 0;font-size:14px;font-weight:600;line-height:1.5}
+.iv-door{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px}
+.iv-door li{display:grid;gap:1px;padding:7px 10px;border-radius:10px;background:var(--surface2);font-size:14px;line-height:1.45}
+.iv-door small{font-size:12px;color:var(--ink2)}
+.iv-res+.row2 .ghost small,[data-iv-again] small{display:block;font-size:11px;color:var(--ink2);font-weight:500}
 .iv-subt input{width:20px;height:20px;accent-color:var(--good)}
 .iv-ex{display:flex;align-items:flex-start;gap:10px;margin-top:6px}
 .iv-av{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:26px;background:var(--surface);border:1.5px solid var(--line)}

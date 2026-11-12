@@ -103,6 +103,10 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.15',items:[
+  ['🎤','面接練習がもっと本番に近く','英検の面接練習で、3級と準2級のカードが5枚ずつになりました。どのカードが出るかは本番と同じでおまかせ(選ぶこともできます)。カードを裏返したあとの質問は毎回変わり、面接官も毎回変わります。入室して面接カードを渡すところから、退室まで練習できます。','exam',1,['ja']],
+  ['💼','職業「ビジネス」の資格を訂正しました','ケンブリッジ英検ビジネス(BEC)は、2024年から中国以外では受けられなくなっていました。職業「ビジネス」の資格は TOEIC L&R にして、ビジネス英語の40フレーズは練習として残しています。','exam',1,['ja','ko']]
+ ]},
  {v:'2026.11.14',items:[
   ['💼','職業の資格も40フレーズに','航空無線通信士・OET・TOLES・ケンブリッジ英検ビジネス・ServSafe・CELTA・観光英語検定・全国通訳案内士・研究・大学院・客室乗務員などの資格も、ステップ1〜5の40フレーズになりました。職業モードで職業を選ぶと、検定タブに並びます。','exam',1,['ja']],
   ['💼','職業の資格も検定タブに','職業モードで選んだ職業の資格(OET・TOLES・ケンブリッジ英検ビジネス・ServSafe・CELTA・研究・大学院・客室乗務員など)が、検定タブにも並ぶようになりました。どれもステップ1〜5の40フレーズです。','exam',1,['en','ko','zh']],

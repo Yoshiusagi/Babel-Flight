@@ -949,7 +949,7 @@ ORDER.forEach(function(l){ALL_IDS[l]=Object.keys(UNITS[l]);});
 /* banks (ビジネス = tier 2, like ICAO) */
 XBANK.icao.ids.push('x-icao2','x-icao3','x-icao4','x-icao5');
 [['aero','en','航空無線通信士(英語)',['x-aero1','x-aero2','x-aero3','x-aero4','x-aero5']],['oet','en','OET',['x-oet1','x-oet2','x-oet3','x-oet4','x-oet5']],['oetph','en','OET(薬剤師)',['x-oetph1','x-oetph2','x-oetph3','x-oetph4','x-oetph5']],
- ['toles','en','TOLES',['x-toles1','x-toles2','x-toles3','x-toles4','x-toles5']],['bec','en','ケンブリッジ英検ビジネス',['x-bec1','x-bec2','x-bec3','x-bec4','x-bec5']],['servsafe','en','ServSafe Food Handler',['x-servsafe1','x-servsafe2','x-servsafe3','x-servsafe4','x-servsafe5']],
+ ['toles','en','TOLES',['x-toles1','x-toles2','x-toles3','x-toles4','x-toles5']],['bec','en','ビジネス英語',['x-bec1','x-bec2','x-bec3','x-bec4','x-bec5']],['servsafe','en','ServSafe Food Handler',['x-servsafe1','x-servsafe2','x-servsafe3','x-servsafe4','x-servsafe5']],
  ['celta','en','CELTA・TEFL',['x-celta1','x-celta2','x-celta3','x-celta4','x-celta5']],['kanko','en','観光英語検定',['x-kanko1','x-kanko2','x-kanko3','x-kanko4','x-kanko5']],['guide-en','en','全国通訳案内士(英語)',['x-guide1','x-guide2','x-guide3','x-guide4','x-guide5']],
  ['guide-ko','ko','全国通訳案内士(韓国語)',['x-guide-ko1','x-guide-ko2','x-guide-ko3','x-guide-ko4','x-guide-ko5']],['guide-es','es','全国通訳案内士(スペイン語)',['x-guide-es1','x-guide-es2','x-guide-es3','x-guide-es4','x-guide-es5']],['guide-it','it','全国通訳案内士(イタリア語)',['x-guide-it1','x-guide-it2','x-guide-it3','x-guide-it4','x-guide-it5']],
  ['acad-en','en','IELTS(研究・大学院)',['x-res1','x-res2','x-res3','x-res4','x-res5']],['acad-ko','ko','TOPIK(研究・大学院)',['x-res-ko1','x-res-ko2','x-res-ko3','x-res-ko4','x-res-ko5']],['acad-es','es','DELE(研究・大学院)',['x-res-es1','x-res-es2','x-res-es3','x-res-es4','x-res-es5']],
@@ -983,6 +983,10 @@ var JOBX_C={
   'beauty-en':{title:'美容師の英語',sub:'カウンセリング・施術の説明・アフターケア ・ 公式の資格ではありません',practice:true},
   'sport-en':{title:'スポーツ選手の英語',sub:'チームの会話・ケガの説明・インタビュー ・ 公式の資格ではありません',practice:true}
 };
+/* ケンブリッジ英検ビジネス (BEC) is held only in China since 2024, so it is a certificate for 简体中文 only. Everywhere
+   else the same 40 phrases are ビジネス英語 practice, and the 💼 line points to TOEIC L&R (in the list above). */
+var JOBX_BEC_PRACTICE={title:'ビジネス英語',sub:'電話・交渉・報告・会議とメール ・ 公式の資格ではありません',practice:true,line:'の資格: TOEIC L&R(上の一覧にあります)。ビジネス英語は仕事の場面の練習です'};
+function jobxC(k){return k==='bec'&&UI!=='zh'?JOBX_BEC_PRACTICE:JOBX_C[k];}
 var JOBX={pilot:{en:['icao','aero']},med:{en:['oet']},pharm:{en:['oetph']},law:{en:['toles']},biz:{en:['bec']},chef:{en:['servsafe']},teach:{en:['celta']},
   hosp:{en:['kanko','guide-en'],ko:['guide-ko'],es:['guide-es'],it:['guide-it']},
   lab:{en:['acad-en'],ko:['acad-ko'],es:['acad-es'],it:['acad-it']},crew:{en:['crew']},
@@ -994,8 +998,8 @@ function jobxList(L){var j=JOBX[save.prof];return (j&&j[L])||[];}
 function jobxApply(){
   Object.keys(JOBX_EX0).forEach(function(L){
     var ks=jobxList(L);
-    EXAMS[L]=JOBX_EX0[L].concat(ks.map(function(k){var c=JOBX_C[k];return {key:'job-'+k,title:c.title,sub:c.sub,ids:XBANK[k].ids.slice()};}));
-    XGOALS[L]=JOBX_XG0[L].concat(ks.filter(function(k){return !JOBX_C[k].practice;}).map(function(k){var c=JOBX_C[k];return {key:k,title:c.title,pre:c.pre,sub:c.gsub,goals:c.goals};}));
+    EXAMS[L]=JOBX_EX0[L].concat(ks.map(function(k){var c=jobxC(k);return {key:'job-'+k,title:c.title,sub:c.sub,ids:XBANK[k].ids.slice()};}));
+    XGOALS[L]=JOBX_XG0[L].concat(ks.filter(function(k){return !jobxC(k).practice;}).map(function(k){var c=jobxC(k);return {key:k,title:c.title,pre:c.pre,sub:c.gsub,goals:c.goals};}));
   });
 }
 jobxApply();
@@ -1009,10 +1013,11 @@ jobxApply();
     if(!h||save.mode!=='exam')return h;
     var p=profById(save.prof),ks=typeof jobxLineList==='function'?jobxLineList(L):jobxList(L),line;
     if(!p)line='職業モードで職業を選ぶと、その職業の資格もここに並びます。';
-    else if(ks.length&&ks.every(function(k){return JOBX_C[k].practice;}))line='「'+p.jp+'」には語学の資格がないので、仕事の場面の練習を入れています(公式の資格ではありません)。';
-    else if(ks.length)line='「'+p.jp+'」の資格: '+ks.map(function(k){return JOBX_C[k].title;}).join('・')+'(職業は職業モードで変えられます)';
+    else if(ks.length===1&&jobxC(ks[0]).line)line='「'+p.jp+'」'+jobxC(ks[0]).line;
+    else if(ks.length&&ks.every(function(k){return jobxC(k).practice;}))line='「'+p.jp+'」には語学の資格がないので、仕事の場面の練習を入れています(公式の資格ではありません)。';
+    else if(ks.length)line='「'+p.jp+'」の資格: '+ks.map(function(k){return jobxC(k).title;}).join('・')+'(職業は職業モードで変えられます)';
     else line='「'+p.jp+'」の'+(L==='en'?'英語の':'')+'資格は準備中です。';
-    if(L==='en')h=h.replace('TOEFL®</span>','TOEFL®・OET・TOLES・Cambridge English・ServSafe・CELTA</span>');
+    if(L==='en')h=h.replace('TOEFL®</span>','TOEFL®・OET・TOLES・ServSafe・CELTA</span>');
     var i=h.lastIndexOf('<p class="exam-tm">');
     return i<0?h:h.slice(0,i)+'<p class="dim hint jobx-line"><span aria-hidden="true">💼</span> '+esc(line)+'</p>'+h.slice(i);
   };

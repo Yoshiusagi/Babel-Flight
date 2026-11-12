@@ -215,8 +215,8 @@ function xuiApply(){
     var ex=(JOBX_EX0[L]||[]).filter(function(g){return g.key!=='eiken';}),xg=(JOBX_XG0[L]||[]).filter(function(k){return k.key!=='eiken';});
     if(L==='en'){ex=ex.concat([XUI_ICAO]);xg=xg.concat([XUI_ICAO_G]);}
     var ks=xuiJobList(L);
-    ex=ex.concat(ks.map(function(k){var c=JOBX_C[k];return {key:'job-'+k,title:c.title,sub:c.sub,ids:XBANK[k].ids.slice()};}));
-    xg=xg.concat(ks.filter(function(k){return !JOBX_C[k].practice;}).map(function(k){var c=JOBX_C[k];return {key:k,title:c.title,pre:c.pre,sub:c.gsub,goals:c.goals};}));
+    ex=ex.concat(ks.map(function(k){var c=jobxC(k);return {key:'job-'+k,title:c.title,sub:c.sub,ids:XBANK[k].ids.slice()};}));
+    xg=xg.concat(ks.filter(function(k){return !jobxC(k).practice;}).map(function(k){var c=jobxC(k);return {key:k,title:c.title,pre:c.pre,sub:c.gsub,goals:c.goals};}));
     EXAMS[L]=ex;XGOALS[L]=xg;
   });
   var x=XUI_EXTRA[UI]||{};
@@ -244,7 +244,7 @@ if(typeof jobxApply==='function'&&typeof render==='function'){
     /* 英検 only: the full-format mock tests */
     h=h.replace(/<button class="ghost" type="button" data-mock-open>[\s\S]*?<\/button>/,'').replace(/<p class="dim hint">🔒 本番形式の模試[^<]*<\/p>/,'');
     h=h.split('英検の級・TOEICのスコアなど').join(XUI_HINT[UI]||'TOEIC・TOPIK など');
-    var tm=[];xuiJobList(L).forEach(function(k){var n=XUI_JOB_TM[k];if(n&&tm.indexOf(n)<0)tm.push(n);});
+    var tm=[];xuiJobList(L).forEach(function(k){var n=jobxC(k).practice?'':XUI_JOB_TM[k];if(n&&tm.indexOf(n)<0)tm.push(n);});
     h=h.replace(/<p class="exam-tm">[\s\S]*?<\/p>/,xTmHTML(L,L==='en'?'TOEIC®・IELTS・TOEFL®'+(UI==='ko'?'・OPIc':'')+(tm.length?'・'+tm.join('・'):''):undefined));
     return h;
   };

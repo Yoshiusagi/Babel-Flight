@@ -150,7 +150,7 @@ that had no translation is counted there.
   together with the step titles and the notes). JLPT does the same: N5 has its own simple sentences, N4 and N3
   are the 初級 and 中級 meanings said in Japanese (notes in `ja.tsv`). The meter and the training texts
   for the other display languages are in `i18n/<ui>/meter.tsv`.
-- The 職業の資格 banks (`f26_jobx.js`: 航空無線通信士・OET・TOLES・ケンブリッジ英検ビジネス・ServSafe・CELTA・観光英語検定・
+- The 職業の資格 banks (`f26_jobx.js`: 航空無線通信士・OET・TOLES・ビジネス英語・ServSafe・CELTA・観光英語検定・
   全国通訳案内士・研究・大学院・客室乗務員・IT・美容師・スポーツ) are 5 lessons of 8 phrases too. Certificates that were
   already called ステップ1 keep step titles; the others have a theme per lesson (OET 病棟の英語, TOLES 訴訟と紛争 …).
   Korean lessons carry a katakana reading like the rest of the Korean course.
@@ -161,10 +161,12 @@ that had no translation is counted there.
   country's tests: 한국어 → **TOEIC Speaking・OPIc**, 简体中文 → **CET-4・CET-6**. 英検 (with its 模試 and 面接練習)
   and the AI practice stay with 日本語. `xuiApply()` rebuilds `EXAMS` / `XGOALS` for the display language after
   `jobxApply()`; `XUI_EXTRA` lists each country's tests.
-- The job certificates show too (`XUI_JOB`: OET・TOLES・ケンブリッジ英検ビジネス・ServSafe・CELTA・研究・大学院・客室乗務員 and
+- The job certificates show too (`XUI_JOB`: OET・TOLES・ServSafe・CELTA・研究・大学院・客室乗務員 and
   the IT / 美容師 / スポーツ practice), with the 💼 line naming them (`jobxLineList`). The ones made for working in Japan
   (航空無線通信士・観光英語検定・全国通訳案内士) stay with 日本語. Their texts are in `i18n/<ui>/xjobc.tsv`; the certificate
   titles are names for the dictionary (`uiNames`), so 「{0}」の資格: {1} finds them inside the line.
+- ケンブリッジ英検ビジネス (BEC) is held only in China since 2024: it is the ビジネス certificate (with its goals) in
+  简体中文 only. Everywhere else the same bank is ビジネス英語 practice and the 💼 line points to TOEIC L&R (`jobxC()`).
 - The lessons are written like any unit (Japanese meaning + note); `i18n/keys.cjs` lists the ones each display language
   shows (`xuiUnits`), and `build.py` checks they are translated (`i18n/<ui>/exam.tsv`, `xui.tsv`).
 
@@ -252,9 +254,17 @@ no language certificate (IT・美容師・スポーツ選手) get a practice gro
 Classes like 検定コース: 3級・準2級 from プレミアムエコノミー, 準2級プラス〜1級 from ビジネス; not in the iPhone app.
 
 The cards are written in `iv/cards.py` (original passages, emoji pictures, examiner lines, model answers) and
-built into `public/iv/<key>.json` by `python3 babel-flight/iv/build.py`, which checks them against the real
-format (`SPEC`: passage length, 20 s silent reading before reading aloud, the questions of each grade, the card
-turned over after the same question as in the real test, yes/no model answers). Each card is a list of steps:
+built into `public/iv/<key>.json` by `python3 babel-flight/iv/build.py`, which checks every card as the page runs
+it, with and without the entry (`SPEC`: passage length, 20 s silent reading before reading aloud, the questions of
+each grade, the card turned over after the same question as in the real test, yes/no model answers, pools).
+
+A grade = `entry` (knock, Hello, the 面接カード: "Can I have your card, please?", "Please have a seat.") + `open`
+(the examiner's name, the grade) + one of several `cards` + `exit` (the card back, "You may go now."); without
+the entry (switch on the intro screen) `close` is used and the greeting starts with "Hello.". `{ex}` is the
+examiner (name + voice, a different one each time, `IV_EX`). Like the real test you don't choose the card: the
+one not done for the longest time is used (`ivPickCard`), or a card picked on the intro screen; history keeps
+the card. The questions after the card is turned over (and the 自由会話 of 準1級・1級) are `pool` steps: drawn
+from `pools` each run, not one of the last few asked (`ivPoolPick`, `babelflight.ivpool`). Each card is a list of steps:
 `say` (examiner, browser voice), `card` / `hide`, `prep` (silent reading / preparation countdown), `read`,
 `ans`, `yn` (Yes/No, then "Why?" / "Why not?" / "Please tell me more."), `topics` + `tq` (1級). Answers are
 transcribed by the browser's speech recognition (en-US) where available; the result screen marks the words

@@ -1,19 +1,30 @@
 /* ================= 面接練習 (英検 二次試験, 3級〜1級) =================
-   The real interview flow for each grade: greeting, the card, 20 seconds of silent reading, reading aloud,
-   No.1〜 (pictures, 3-panel / 4-panel narration, opinions with Why? / Why not?), the card turned over at
-   the same point as in the real test, speech + Q&A for 1級. The examiner speaks through the browser's
-   voice; answers are written down by the browser's speech recognition where it can (nothing is sent to
-   this site) and checked by the learner against model answers. Cards: babel-flight/iv/cards.py →
-   public/iv/<key>.json, loaded when opened. Classes: like 検定コース (3級・準2級 プレエコ, the rest ビジネス). */
+   The real interview flow for each grade: entering the room and handing over the 面接カード, greeting, the card,
+   20 seconds of silent reading, reading aloud, No.1〜 (pictures, 3-panel / 4-panel narration, opinions with
+   Why? / Why not?), the card turned over at the same point as in the real test, speech + Q&A for 1級, leaving.
+   Each grade has several cards (one is picked like in the real test: the least recently used, or the one you
+   choose), and the later questions (the ones after the card is turned over) come from a pool, so the same card
+   asks different things. The examiner (name and voice) changes each time.
+   The examiner speaks through the browser's voice; answers are written down by the browser's speech recognition
+   where it can (nothing is sent to this site) and checked by the learner against model answers.
+   Data: babel-flight/iv/cards.py → public/iv/<key>.json, loaded when opened:
+     {name, lang, tier, minutes, entry, open, exit, close, cards:[{card, steps, items}], pools, items}
+   the steps of one run = entry (if practised) + open + the card's steps + exit / close; {ex} is the examiner's
+   name, {hello} is "Hello. " when the entry was skipped. Classes: like 検定コース (3級・準2級 プレエコ, the rest ビジネス). */
 var IV_GRADES=[['ek3','3級',1,5],['ekp2','準2級',1,6],['ekp2p','準2級プラス',2,7],['ek2','2級',2,7],['ekp1','準1級',2,8],['ek1','1級',2,10]];
 if(typeof CAB_FEAT==='object'){var ivAt=0;CAB_FEAT.forEach(function(f,i){if(f[0]==='検定コース')ivAt=i+1;});CAB_FEAT.splice(ivAt,0,['面接練習(英検)',['—','3級・準2級','すべての級','すべての級']]);}
-var IV_HIST='babelflight.ivhist',IV_SUBKEY='babelflight.ivsub';
-var IV={key:'',data:null,stage:'',err:'',i:0,tok:0,line:'',card:false,ans:{},yn:{},self:{},att:{},topic:-1,win:null,tm:0,sr:null,noMic:false,ask:false};
+var IV_HIST='babelflight.ivhist',IV_SUBKEY='babelflight.ivsub',IV_ENTKEY='babelflight.iventry',IV_POOLKEY='babelflight.ivpool';
+var IV_EX=[['Ms. Brown','f'],['Mr. Taylor','m'],['Ms. Clark','f'],['Mr. Wilson','m'],['Ms. Hill','f'],['Mr. Evans','m']];
+var IV={key:'',data:null,stage:'',err:'',i:0,tok:0,line:'',up:false,ans:{},yn:{},self:{},att:{},topic:-1,win:null,tm:0,sr:null,noMic:false,ask:false,
+  pick:-1,ci:0,c:null,steps:[],items:{},ex:IV_EX[0],turned:false,pardon:0,run:0};
 function ivGrade(k){return IV_GRADES.filter(function(g){return g[0]===k;})[0]||null;}
 function ivOn(){return save.lang==='en'&&UI==='ja'&&typeof cabinLv==='function'&&cabinLv()>=0;}  /* 英検 interviews: 日本語 only */
 function ivLocked(g){return cabinLv()<g[2];}
-function ivSub(){try{return localStorage.getItem(IV_SUBKEY)!=='0';}catch(e){return true;}}
+function ivFlag(k,dflt){try{var v=localStorage.getItem(k);return v===null?dflt:v!=='0';}catch(e){return dflt;}}
+function ivSub(){return ivFlag(IV_SUBKEY,true);}
+function ivEntryOn(){return ivFlag(IV_ENTKEY,true);}
 function ivHist(){try{var o=JSON.parse(localStorage.getItem(IV_HIST)||'{}');return o&&typeof o==='object'?o:{};}catch(e){return {};}}
+function ivCards(){return (IV.data&&IV.data.cards)||[];}
 
 /* ---- entry: the 検定 card and the 模試 result ---- */
 function ivEntryHTML(){
@@ -41,17 +52,65 @@ function ivOpen(k){
   var g=ivGrade(k);if(!g||!ivOn())return;
   if(ivLocked(g)){$('sheetHost').innerHTML=lockSheetHTML('面接練習 英検'+g[1],g[2]);return;}
   closeSheet();ivStop();
-  IV.key=k;IV.data=null;IV.err='';IV.stage='intro';
+  IV.key=k;IV.data=null;IV.err='';IV.stage='intro';IV.pick=-1;
   go('iv');
   fetch(bfSiteUrl('/iv/'+k+'.json'),{cache:'no-cache'}).then(function(r){if(!r.ok)throw new Error('http');return r.json();}).then(function(d){
     if(IV.key!==k)return;IV.data=d;if(view==='iv')render();
   }).catch(function(){if(IV.key!==k)return;IV.err='カードを読み込めませんでした。電波を確認して、もう一度開いてね。';if(view==='iv')render();});
 }
 
+/* ---- which card, which questions ---- */
+/* like the real test you don't choose: the card you haven't done for the longest time (new ones first) */
+function ivPickCard(){
+  var cs=ivCards(),h=ivHist()[IV.key]||[];
+  if(IV.pick>=0&&IV.pick<cs.length)return IV.pick;
+  var ago={};h.forEach(function(r,i){var c=r.c||0;if(!(c in ago))ago[c]=i;});
+  var best=[],bv=-1;cs.forEach(function(c,i){var v=i in ago?ago[i]:1e6;if(v>bv){bv=v;best=[i];}else if(v===bv)best.push(i);});
+  return best[Math.floor(Math.random()*best.length)]||0;
+}
+/* a question from a pool, not one of the last few asked */
+function ivPoolPick(name,n){
+  var rec={};try{rec=JSON.parse(localStorage.getItem(IV_POOLKEY)||'{}')||{};}catch(e){}
+  var used=rec[name]||[],ok=[];for(var i=0;i<n;i++)if(used.indexOf(i)<0)ok.push(i);
+  if(!ok.length)for(i=0;i<n;i++)ok.push(i);
+  var p=ok[Math.floor(Math.random()*ok.length)];
+  rec[name]=[p].concat(used.filter(function(x){return x!==p;})).slice(0,Math.max(1,Math.min(3,n-2)));
+  try{localStorage.setItem(IV_POOLKEY,JSON.stringify(rec));}catch(e){}
+  return p;
+}
+function ivPickEx(){
+  var l=(IV.data&&IV.data.exs)||IV_EX,prev=IV.ex&&IV.ex[0],o=l.filter(function(x){return x[0]!==prev;});
+  return (o.length?o:l)[Math.floor(Math.random()*(o.length||l.length))];
+}
+/* the steps of this run: entry + open + the card + exit, with the pool questions drawn */
+function ivBuild(){
+  var d=IV.data,c=IV.c,ent=ivEntryOn()&&!!d.entry,items={},steps=[],k;
+  var fill=function(t){return String(t).replace(/\{ex\}/g,IV.ex[0]).replace(/\{hello\}/g,ent?'':'Hello. ');};
+  [d.items||{},c.items||{}].forEach(function(o){for(k in o)items[k]=o[k];});
+  (ent?d.entry:[]).concat(d.open||[],c.steps,ent&&d.exit?d.exit:(d.close||[])).forEach(function(s){
+    if(s.k==='say'){steps.push({k:'say',t:fill(s.t),v:s.v});return;}
+    if(s.k==='pool'){
+      var pl=(d.pools||{})[s.pool]||[];if(!pl.length)return;
+      var e=pl[ivPoolPick(s.pool,pl.length)];
+      items[s.id]={no:s.no,pts:s.pts==null?5:s.pts,q:e.q,ja:e.ja,model:e.model,points:e.points};
+      steps.push({k:'say',t:(s.pre||'')+e.q});
+      if(e.yn)steps.push({k:'yn',id:s.id,sec:e.yn.sec||8,follow:{yes:e.yn.yes,no:e.yn.no},fsec:e.yn.fsec||s.sec});
+      else steps.push({k:'ans',id:s.id,sec:s.sec});
+      return;
+    }
+    steps.push(s);
+  });
+  IV.steps=steps;IV.items=items;
+}
+
 /* ---- the examiner's voice ---- */
 function ivVoice(){
-  var vs=(tts.voices||[]).filter(function(v){return /^en[-_](US|GB|AU|CA)/i.test(v.lang||'');});
-  return vs.filter(function(v){return /female|samantha|karen|moira|tessa|victoria|susan|zira|kate|serena|allison|ava|jenny|aria|libby|sonia|emma/i.test(v.name);})[0]||vs[0]||null;
+  var lang=(IV.data&&IV.data.lang)||'en-US',pre=lang.slice(0,2),male=IV.ex&&IV.ex[1]==='m';
+  var vs=(tts.voices||[]).filter(function(v){return String(v.lang||'').replace('_','-').toLowerCase().indexOf(pre)===0;});
+  if(pre==='en')vs=vs.filter(function(v){return /^en[-_](US|GB|AU|CA|IE|NZ)/i.test(v.lang||'');}).concat(vs.filter(function(v){return !/^en[-_](US|GB|AU|CA|IE|NZ)/i.test(v.lang||'');}));
+  var M=/\bmale\b|daniel|alex\b|fred|david|mark|guy|ryan|thomas|george|arthur|aaron|oliver|james|gordon|reed|eddy|rocko|lee\b/i,
+      F=/female|samantha|karen|moira|tessa|victoria|susan|zira|kate|serena|allison|ava|jenny|aria|libby|sonia|emma|martha|nicky/i;
+  return vs.filter(function(v){return male?M.test(v.name)&&!F.test(v.name):F.test(v.name);})[0]||vs[0]||null;
 }
 function ivSay(text,tok,done){
   if(tok!==IV.tok)return;
@@ -59,7 +118,7 @@ function ivSay(text,tok,done){
   if(!tts.ok){setTimeout(fin,Math.min(9000,700+text.split(' ').length*380));return;}
   try{speechSynthesis.cancel();}catch(e){}
   var u=new SpeechSynthesisUtterance(text),v=ivVoice(),fired=false,guard;
-  u.lang='en-US';if(v)u.voice=v;u.rate=0.92;
+  u.lang=(IV.data&&IV.data.lang)||'en-US';if(v)u.voice=v;u.rate=0.92;
   var once=function(){if(fired)return;fired=true;clearTimeout(guard);fin();};
   u.onend=once;u.onerror=once;
   guard=setTimeout(once,2500+text.split(' ').length*600);
@@ -68,7 +127,7 @@ function ivSay(text,tok,done){
 function ivHush(){IV.tok++;clearInterval(IV.tm);IV.tm=0;ivSrStop();try{speechSynthesis.cancel();}catch(e){}}
 function ivStop(){ivHush();IV.win=null;IV.ask=false;}
 
-/* ---- listening to the learner (browser speech recognition, en-US) ---- */
+/* ---- listening to the learner (browser speech recognition) ---- */
 function ivSrStart(){
   var C=typeof srCtor==='function'?srCtor():null;IV.win.fin='';IV.win.tmp='';
   if(!C||IV.noMic){IV.win.nosr=true;return;}
@@ -76,7 +135,7 @@ function ivSrStart(){
   function start(){
     if(IV.win!==w||w.closed)return;
     try{r=new C();}catch(e){w.nosr=true;ivWinPaint();return;}
-    IV.sr=r;r.lang='en-US';r.continuous=true;r.interimResults=true;
+    IV.sr=r;r.lang=(IV.data&&IV.data.lang)||'en-US';r.continuous=true;r.interimResults=true;
     r.onresult=function(ev){
       var tmp='';for(var i=ev.resultIndex;i<ev.results.length;i++){var x=ev.results[i];if(x.isFinal)w.fin+=(w.fin?' ':'')+x[0].transcript.trim();else tmp+=x[0].transcript;}
       w.tmp=tmp;ivWinPaint();
@@ -91,29 +150,31 @@ function ivSrStop(){var r=IV.sr;IV.sr=null;if(r){r.onend=null;try{r.stop();}catc
 
 /* ---- running the steps ---- */
 function ivStart(){
-  ivStop();IV.i=0;IV.ans={};IV.yn={};IV.self={};IV.att={};IV.topic=-1;IV.card=false;IV.turned=false;IV.line='';IV.pardon=0;IV.stage='run';
+  ivStop();
+  IV.ci=ivPickCard();IV.c=ivCards()[IV.ci];IV.ex=ivPickEx();ivBuild();
+  IV.i=0;IV.ans={};IV.yn={};IV.self={};IV.att={};IV.topic=-1;IV.up=false;IV.turned=false;IV.line='';IV.pardon=0;IV.stage='run';
   try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u);}catch(e){}
   render();window.scrollTo(0,0);ivNext(IV.tok);
 }
 function ivNext(tok){
   if(tok!==IV.tok||IV.stage!=='run')return;
-  var s=IV.data.steps[IV.i++];if(!s){ivEnd();return;}
+  var s=IV.steps[IV.i++];if(!s){ivEnd();return;}
   if(s.k==='say'){IV.line=s.t;IV.win=null;ivPaint();ivSay(s.t,tok,function(){ivNext(tok);});return;}
-  if(s.k==='card'){IV.card=true;ivPaint();ivNext(tok);return;}
-  if(s.k==='hide'){IV.card=false;IV.turned=true;ivPaint();ivNext(tok);return;}
+  if(s.k==='card'){IV.up=true;ivPaint();ivNext(tok);return;}
+  if(s.k==='hide'){IV.up=false;IV.turned=true;ivPaint();ivNext(tok);return;}
   if(s.k==='prep'){ivWindow({kind:'prep',sec:s.sec,label:s.label},tok);return;}
   if(s.k==='topics'){ivWindow({kind:'topics',sec:s.sec,label:'トピックを選んで準備'},tok);return;}
   if(s.k==='read'){ivWindow({kind:'read',id:'read',sec:s.sec,label:'音読'},tok);return;}
-  if(s.k==='ans'){ivWindow({kind:'ans',id:s.id,sec:s.sec,label:ivItem(s.id).no||'答え'},tok);return;}
+  if(s.k==='ans'){ivWindow({kind:'ans',id:s.id,sec:s.sec,label:ivItem(s.id).no||'答え',hint:s.hint},tok);return;}
   if(s.k==='yn'){ivWindow({kind:'yn',id:s.id,sec:s.sec,label:ivItem(s.id).no,step:s},tok);return;}
   if(s.k==='tq'){
-    var tp=IV.data.card.topics[Math.max(0,IV.topic)],q=tp.qs[s.n];IV.line=q;IV.win=null;ivPaint();
+    var tp=IV.c.card.topics[Math.max(0,IV.topic)],q=tp.qs[s.n];IV.line=q;IV.win=null;ivPaint();
     ivSay(q,tok,function(){ivWindow({kind:'ans',id:'tq'+s.n,sec:s.sec,label:'質疑応答'+(s.n+1)},tok);});return;
   }
   if(s.k==='end'){ivEnd();return;}
   ivNext(tok);
 }
-function ivItem(id){return (IV.data.items||{})[id]||{no:id==='name'?'名前':id==='how'?'あいさつ':''};}
+function ivItem(id){return IV.items[id]||{no:id==='name'?'名前':id==='how'?'あいさつ':''};}
 function ivWindow(w,tok){
   w.t0=Date.now();w.left=w.sec;w.closed=false;IV.win=w;
   if(w.kind!=='prep'&&w.kind!=='topics')ivSrStart();
@@ -147,7 +208,7 @@ function ivFollow(w,yn,tok){
   ivSay(q,tok,function(){ivWindow({kind:'yn',id:w.id,sec:w.step.fsec,label:w.label,step:w.step,follow:true},tok);});
 }
 function ivEnd(){
-  ivStop();IV.stage='result';IV.card=false;
+  ivStop();IV.stage='result';IV.up=false;
   render();window.scrollTo(0,0);
 }
 
@@ -156,11 +217,15 @@ function ivBarHTML(sub){
   return '<div class="fl-top"><button class="x" type="button" data-iv-close aria-label="閉じる">'+closeIcon()+'</button><div class="fl-id"><span class="lbl">二次試験(面接) ・ 練習</span><b>英検'+esc((ivGrade(IV.key)||[])[1]||'')+(sub?' <small class="dim">'+sub+'</small>':'')+'</b></div></div>';
 }
 function ivEmoji(e,x,y,s){return '<text x="'+x+'" y="'+y+'" font-size="'+s+'" text-anchor="middle" dominant-baseline="central">'+e+'</text>';}
+var IV_BG={airport:['#dff0ff','#c9d4e2'],park:['#dff6ff','#bfe5a6'],outdoor:['#e3f1ff','#c8e6b4'],room:['#fff6e8','#e7d2b8'],shop:['#fffbe6','#e5e1d3'],
+  kitchen:['#f5f8ff','#d9dde6'],office:['#eef3f8','#cfd8e3'],classroom:['#f4f7ff','#d9cbb2'],station:['#eef1f6','#c6cad2'],beach:['#dcf1ff','#f1e0ae'],
+  street:['#e7f0fa','#c9cdd3'],library:['#fbf5ea','#dcc9ad'],restaurant:['#fff2e8','#e2cbb5'],hospital:['#f2f8fb','#d5e1e6'],gym:['#f6f3ee','#d9c7a6'],
+  snow:['#e9f2fb','#f7fbff'],night:['#2c3a57','#3d4a5f'],cockpit:['#dbe9f8','#59636f'],sky:['#cfe6fb','#e6f2fd']};
 function ivSceneSVG(sc,label){
-  var BG={airport:['#dff0ff','#c9d4e2'],park:['#dff6ff','#bfe5a6'],outdoor:['#e3f1ff','#c8e6b4'],room:['#fff6e8','#e7d2b8'],shop:['#fffbe6','#e5e1d3'],kitchen:['#f5f8ff','#d9dde6'],office:['#eef3f8','#cfd8e3']}[sc.bg]||['#f2f5f9','#d7dde5'];
+  var BG=IV_BG[sc.bg]||['#f2f5f9','#d7dde5'];
   var h='<svg class="iv-pic" viewBox="0 0 300 180" role="img" aria-label="'+esc(label||'イラスト')+'"><rect width="300" height="180" fill="'+BG[0]+'"/><rect y="120" width="300" height="60" fill="'+BG[1]+'"/>';
   (sc.items||[]).forEach(function(it){h+=ivEmoji(it[0],it[1],it[2],it[3]);});
-  (sc.signs||[]).forEach(function(s){var w=s.t.length*7+16;h+='<rect x="'+(s.x-w/2)+'" y="'+(s.y-10)+'" width="'+w+'" height="20" rx="3" fill="#cf3342"/><text x="'+s.x+'" y="'+(s.y+1)+'" font-size="11" font-weight="700" fill="#fff" text-anchor="middle" dominant-baseline="central" font-family="system-ui,sans-serif">'+esc(s.t)+'</text>';});
+  (sc.signs||[]).forEach(function(s){var w=s.t.length*7+16;h+='<rect x="'+(s.x-w/2)+'" y="'+(s.y-10)+'" width="'+w+'" height="20" rx="3" fill="'+(s.c||'#cf3342')+'"/><text x="'+s.x+'" y="'+(s.y+1)+'" font-size="11" font-weight="700" fill="#fff" text-anchor="middle" dominant-baseline="central" font-family="system-ui,sans-serif">'+esc(s.t)+'</text>';});
   (sc.bubbles||[]).forEach(function(b){
     if(b.kind==='say'){
       var lines=ivWrap(b.t,Math.max(10,Math.floor(b.w/6.2))),bh=lines.length*13+12,x=b.x-b.w/2,y=b.y-bh/2;
@@ -174,7 +239,7 @@ function ivSceneSVG(sc,label){
 }
 function ivWrap(t,n){var out=[],cur='';t.split(' ').forEach(function(w){if((cur+' '+w).trim().length>n&&cur){out.push(cur);cur=w;}else cur=(cur+' '+w).trim();});if(cur)out.push(cur);return out;}
 function ivCardHTML(){
-  var c=IV.data.card,h='<section class="card iv-card" aria-label="問題カード">';
+  var c=IV.c.card,h='<section class="card iv-card" aria-label="問題カード">';
   if(c.passage)h+='<h3 class="iv-pt">'+esc(c.title)+'</h3><p class="iv-pass" lang="en">'+esc(c.passage)+'</p>';
   if(c.pic)h+=ivSceneSVG(c.pic,'イラスト');
   if(c.picA)h+='<div class="iv-ab"><div><span class="lbl">Picture A</span>'+ivSceneSVG(c.picA,'Picture A')+'</div><div><span class="lbl">Picture B</span>'+ivSceneSVG(c.picB,'Picture B')+'</div></div>';
@@ -189,33 +254,52 @@ function ivCardHTML(){
   }
   return h+'</section>';
 }
+function ivFlowList(){
+  var d=IV.data,c=d.cards[0],flow=[];
+  if(ivEntryOn()&&d.entry)flow.push('入室 → 面接カードを渡す → 着席');
+  flow.push('あいさつ・名前');
+  if(c.card.passage)flow.push('黙読 20秒 → 音読');
+  c.steps.forEach(function(s){
+    var id=s.id;if(!id||!/^(q\d|narr|speech)$/.test(id))return;
+    var it=(c.items||{})[id]||{no:s.no||id};
+    flow.push((s.no||it.no)+(id==='narr'||id==='q2'&&c.card.panels?'(準備のあと)':''));
+  });
+  if(c.steps.some(function(s){return s.k==='topics';}))flow.push('トピックを選んで1分準備');
+  if(c.steps.some(function(s){return s.k==='tq';}))flow.push('質疑応答');
+  if(ivEntryOn()&&d.exit)flow.push('カードを返して退室');
+  return flow;
+}
+function ivPickHTML(){
+  var cs=ivCards(),hist=ivHist()[IV.key]||[];if(cs.length<2)return '';
+  var last={};hist.forEach(function(r){var c=r.c||0;if(!(c in last))last[c]=r.pct;});
+  return '<div class="iv-pick" role="group" aria-label="カード"><span class="lbl">カード('+cs.length+'枚)</span><div class="iv-cs">'+
+    '<button type="button" data-iv-pick="-1" aria-pressed="'+(IV.pick<0)+'"><b>おまかせ</b><small>本番みたいに</small></button>'+
+    cs.map(function(c,i){return '<button type="button" data-iv-pick="'+i+'" aria-pressed="'+(IV.pick===i)+'"><b>カード'+(i+1)+'</b><small>'+(i in last?'前回 '+last[i]+'%':'まだ')+'</small></button>';}).join('')+
+    '</div></div>';
+}
 function ivIntroHTML(){
   var g=ivGrade(IV.key),h=ivBarHTML();
   if(IV.err)return h+'<p class="mx-note">'+esc(IV.err)+'</p><button type="button" class="ghost" data-iv-open="'+esc(IV.key)+'">もう一度読み込む</button>';
   if(!IV.data)return h+'<p class="dim" style="margin-top:20px">カードを読み込み中…</p>';
-  var d=IV.data,flow=[],has=function(k){return d.steps.some(function(s){return s.k===k;});};
-  flow.push('あいさつ・名前');
-  if(d.card.passage)flow.push('黙読 20秒 → 音読');
-  d.steps.forEach(function(s){if((s.k==='ans'||s.k==='yn')&&/^(q\d|narr|speech)$/.test(s.id)){var it=ivItem(s.id);flow.push(it.no+(s.id==='narr'||s.id==='q2'&&d.card.panels?'(準備のあと)':''));}});
-  if(has('topics'))flow.push('トピックを選んで1分準備');
-  if(has('tq'))flow.push('質疑応答');
   var sr=typeof srCtor==='function'&&srCtor();
-  h+='<section class="card iv-intro"><h2 class="jh">本番と同じ流れで練習</h2><ol class="iv-flow">'+flow.map(function(f){return '<li>'+esc(f)+'</li>';}).join('')+'</ol>'+
-    '<p class="dim hint">面接官の英語はこの端末の音声で読み上げます。音を出せる場所で、声に出して答えよう。約'+g[3]+'分。</p>'+
+  h+='<section class="card iv-intro"><h2 class="jh">本番と同じ流れで練習</h2><ol class="iv-flow">'+ivFlowList().map(function(f){return '<li>'+esc(f)+'</li>';}).join('')+'</ol>'+
+    '<p class="dim hint">面接官の英語はこの端末の音声で読み上げます。面接官は毎回変わります。音を出せる場所で、声に出して答えよう。約'+g[3]+'分。</p>'+
     (sr?'<p class="dim hint">🎙 答えはブラウザの音声認識で文字にして、あとでお手本と見比べられます(このサイトには送られません)。はじめにマイクの許可を求められます。</p>'
        :'<p class="dim hint">この端末では文字起こしができません。声に出して答えて、終わったら「答え終わった」を押してね。</p>')+
+    ivPickHTML()+
     '<label class="set-row iv-subt"><span>英文を表示する(本番は表示されません)</span><input type="checkbox" data-iv-sub'+(ivSub()?' checked':'')+'></label>'+
-    '<button type="button" class="go" data-iv-start>面接を始める<small>入室から退室まで</small></button></section>'+
-    '<p class="dim hint">カードの英文・イラストはBabel Flightのオリジナルです。採点は本番(英検CSEスコア)とは違う、自分でつける目安です。</p>';
+    (IV.data.entry?'<label class="set-row iv-subt"><span>入室・退室から練習する</span><input type="checkbox" data-iv-entry'+(ivEntryOn()?' checked':'')+'></label>':'')+
+    '<button type="button" class="go" data-iv-start>面接を始める<small>'+(ivEntryOn()&&IV.data.entry?'入室から退室まで':'あいさつから')+'</small></button></section>'+
+    '<p class="dim hint">カードの英文・イラストはBabel Flightのオリジナルです。'+esc(IV.data.varies||'')+'採点は本番(英検CSEスコア)とは違う、自分でつける目安です。</p>';
   var hist=ivHist()[IV.key]||[];
-  if(hist.length)h+='<section class="card"><h2 class="jh">これまでの練習</h2><ul class="mx-hist">'+hist.slice(0,5).map(function(r){return '<li><span>'+esc(fmtDate(r.t))+'</span><b class="mono">'+r.pct+'%</b></li>';}).join('')+'</ul></section>';
+  if(hist.length)h+='<section class="card"><h2 class="jh">これまでの練習</h2><ul class="mx-hist">'+hist.slice(0,5).map(function(r){return '<li><span>'+esc(fmtDate(r.t))+(ivCards().length>1?' ・ カード'+((r.c||0)+1):'')+'</span><b class="mono">'+r.pct+'%</b></li>';}).join('')+'</ul></section>';
   return h+'<div class="pad-b"></div>';
 }
 function ivRunHTML(){
-  var h=ivBarHTML(IV.card?'カードあり':'')+'<div class="iv-ex"><span class="iv-av" aria-hidden="true">🧑‍🏫</span><div class="iv-line" aria-live="polite">'+
+  var h=ivBarHTML(IV.up?'カードあり':'')+'<div class="iv-ex"><span class="iv-av" aria-hidden="true">'+(IV.ex[1]==='m'?'👨‍🏫':'👩‍🏫')+'</span><div class="iv-line" aria-live="polite">'+
     (ivSub()?'<span lang="en">'+esc(IV.line||'…')+'</span>':'<span class="dim">(面接官が話しています。英文は非表示)</span>')+'</div></div>';
   h+='<div id="ivWin">'+ivWinHTML()+'</div>';
-  if(IV.card)h+=ivCardHTML();
+  if(IV.up)h+=ivCardHTML();
   else if(IV.turned)h+='<p class="dim hint iv-down">カードは裏返して置いてあります。</p>';
   return h+'<button type="button" class="ghost iv-quit" data-iv-quit>中断する</button><div class="pad-b"></div>';
 }
@@ -229,9 +313,10 @@ function ivWinHTML(){
   var tr=(w.fin||'')+(w.tmp?' <i>'+esc(w.tmp)+'</i>':'');
   return '<div class="iv-win ans'+(w.kind==='read'?' read':'')+'"><div class="iv-mic"><span class="iv-dot" aria-hidden="true"></span><b>'+esc(w.label)+(w.follow?' (2つ目の質問)':'')+'</b><span class="mono">あと'+sec+'秒</span></div>'+
     '<div class="iv-bar"><i style="width:'+pct+'%"></i></div>'+
+    (w.hint?'<p class="iv-hint">'+esc(w.hint)+'</p>':'')+
     (w.nosr?'<p class="dim hint">声に出して答えよう(文字起こしなし)</p>':'<p class="iv-tr" lang="en">'+(tr?esc(w.fin||'')+(w.tmp?' <i>'+esc(w.tmp)+'</i>':''):'<span class="dim">'+(w.kind==='read'?'カードの英文を声に出して読もう':'英語で答えよう')+'</span>')+'</p>')+
-    '<button type="button" class="go" data-iv-done>'+(w.kind==='read'?'読み終わった':'答え終わった')+'</button>'+
-    (w.kind!=='read'&&IV.line?'<button type="button" class="ghost sm iv-pardon" data-iv-pardon>Pardon?<small>もう一度言ってもらう</small></button>':'')+'</div>';
+    '<button type="button" class="go" data-iv-done>'+(w.kind==='read'?'読み終わった':w.hint?'言えた':'答え終わった')+'</button>'+
+    (w.kind!=='read'&&IV.line&&!w.hint?'<button type="button" class="ghost sm iv-pardon" data-iv-pardon>Pardon?<small>もう一度言ってもらう</small></button>':'')+'</div>';
 }
 function ivWinPaint(){var b=$('ivWin');if(b)b.innerHTML=ivWinHTML();}
 function ivPaint(){if(view==='iv'&&IV.stage==='run'){var main=$('main');if(main)main.innerHTML='<div class="iv">'+ivRunHTML()+'</div>';}}
@@ -247,6 +332,7 @@ function ivReadMarks(passage,heard){
   return {words:P,hit:hit,pct:Math.round(hit.filter(Boolean).length/Math.max(1,n)*100)};
 }
 var IV_RATE=[['3','◎ できた',1],['2','◯ まあまあ',0.6],['1','△ もう少し',0.2]];
+var IV_DOOR=['enter','cardin','sit','cardback','bye'];   /* entering and leaving: not marked, part of the attitude */
 function ivRateHTML(id){
   return '<div class="iv-rate" role="group" aria-label="自己採点">'+IV_RATE.map(function(r){return '<button type="button" data-iv-rate="'+id+':'+r[0]+'" aria-pressed="'+(IV.self[id]===r[0])+'">'+r[1]+'</button>';}).join('')+'</div>';
 }
@@ -256,39 +342,42 @@ function ivModelHTML(m){
   return list.map(function(t,i){return '<div class="iv-model"><span class="lbl">お手本'+(list.length>1?' '+(i+1):'')+'</span><p lang="en">'+esc(t)+'</p><button type="button" class="mini" data-iv-say="'+esc(t.replace(/^(Yes|No)\. → /,'$1. '))+'" aria-label="お手本を聞く">'+speakerIcon()+'</button></div>';}).join('');
 }
 function ivScore(){
-  var d=IV.data,tot=0,got=0;
-  Object.keys(d.items).forEach(function(id){var it=d.items[id];if(!it.pts)return;if(id==='tq1')return;tot+=it.pts;var r=IV_RATE.filter(function(x){return x[0]===IV.self[id];})[0];got+=it.pts*(r?r[2]:0);});
+  var tot=0,got=0;
+  Object.keys(IV.items).forEach(function(id){var it=IV.items[id];if(!it.pts)return;if(id==='tq1')return;tot+=it.pts;var r=IV_RATE.filter(function(x){return x[0]===IV.self[id];})[0];got+=it.pts*(r?r[2]:0);});
   tot+=3;got+=['a','b','c'].filter(function(k){return IV.att[k];}).length;
   return Math.round(got/Math.max(1,tot)*100);
 }
 function ivResultHTML(){
-  var d=IV.data,h=ivBarHTML('結果');
+  var d=IV.data,c=IV.c,h=ivBarHTML('結果'+(ivCards().length>1?' ・ カード'+(IV.ci+1):''));
   h+='<section class="card iv-res"><h2 class="jh">おつかれさま!</h2><p class="dim" style="font-size:13.5px">自分の答え(文字起こし)とお手本を見比べて、1問ずつ採点しよう。採点すると下に目安が出ます。</p></section>';
-  if(d.card.passage){
-    var rm=ivReadMarks(d.card.passage,IV.ans.read);
+  if(c.card.passage){
+    var rm=ivReadMarks(c.card.passage,IV.ans.read);
     h+='<section class="card iv-q"><div class="card-h"><h2 class="jh">音読</h2>'+(IV.ans.read?'<span class="lbl">聞き取れた語 '+rm.pct+'%</span>':'')+'</div>'+
       '<p class="iv-pass marks" lang="en">'+rm.words.map(function(w,i){return '<span class="'+(IV.ans.read?(rm.hit[i]?'hit':'miss'):'')+'">'+esc(w)+'</span>';}).join(' ')+'</p>'+
       (IV.ans.read?'<p class="dim hint">緑=聞き取れた語、赤=聞き取れなかった語(発音や読み飛ばしのチェックに)</p>':'<p class="dim hint">文字起こしはありません。</p>')+
-      '<ul class="iv-pts">'+d.items.read.points.map(function(p){return '<li>'+esc(p)+'</li>';}).join('')+'</ul>'+ivRateHTML('read')+'</section>';
+      '<ul class="iv-pts">'+IV.items.read.points.map(function(p){return '<li>'+esc(p)+'</li>';}).join('')+'</ul>'+ivRateHTML('read')+'</section>';
   }
-  var order=[];d.steps.forEach(function(s){if((s.k==='ans'||s.k==='yn')&&d.items[s.id]&&order.indexOf(s.id)<0)order.push(s.id);if(s.k==='tq')order.push('tq'+s.n);});
-  if(d.items.gv)order.push('gv','pf');
+  var order=[];IV.steps.forEach(function(s){if((s.k==='ans'||s.k==='yn')&&IV.items[s.id]&&order.indexOf(s.id)<0&&IV_DOOR.indexOf(s.id)<0)order.push(s.id);if(s.k==='tq')order.push('tq'+s.n);});
+  if(IV.items.gv)order.push('gv','pf');
   order.forEach(function(id){
-    var it=d.items[id];if(!it)return;
-    var q=it.q;if(/^tq/.test(id)&&d.card.topics){var tp=d.card.topics[Math.max(0,IV.topic)];q=tp.qs[+id.slice(2)];}
+    var it=IV.items[id];if(!it)return;
+    var q=it.q;if(/^tq/.test(id)&&c.card.topics){var tp=c.card.topics[Math.max(0,IV.topic)];q=tp.qs[+id.slice(2)];}
     var said=IV.ans[id];
     h+='<section class="card iv-q"><div class="card-h"><h2 class="jh">'+esc(it.no)+'</h2>'+(IV.yn[id]?'<span class="lbl">'+IV.yn[id].toUpperCase()+'</span>':'')+'</div>'+
       (q&&!/^\(/.test(q)?'<p class="iv-qq" lang="en">'+esc(q)+'</p>':'')+(it.ja?'<p class="dim hint">'+esc(it.ja)+'</p>':'')+
       (id==='gv'||id==='pf'?'':'<div class="iv-said"><span class="lbl">あなたの答え</span><p lang="en">'+(said?esc(said):'<span class="dim">(文字起こしなし)</span>')+'</p></div>');
-    if(id==='speech'&&d.card.topics){var tp2=d.card.topics[Math.max(0,IV.topic)];h+='<div class="iv-model"><span class="lbl">選んだトピック</span><p lang="en">'+esc(tp2.t)+'</p></div><ul class="iv-pts">'+tp2.outline.map(function(p){return '<li>'+esc(p)+'</li>';}).join('')+'</ul>';}
+    if(id==='speech'&&c.card.topics){var tp2=c.card.topics[Math.max(0,IV.topic)];h+='<div class="iv-model"><span class="lbl">選んだトピック</span><p lang="en">'+esc(tp2.t)+'</p></div><ul class="iv-pts">'+tp2.outline.map(function(p){return '<li>'+esc(p)+'</li>';}).join('')+'</ul>';}
     var m=it.model;if(m&&!Array.isArray(m)&&IV.yn[id])m=[m[IV.yn[id]]].concat(Object.keys(m).filter(function(k){return k!==IV.yn[id];}).map(function(k){return m[k];}));
     h+=ivModelHTML(m)+(it.points&&it.points.length?'<ul class="iv-pts">'+it.points.map(function(p){return '<li>'+esc(p)+'</li>';}).join('')+'</ul>':'')+(it.pts?ivRateHTML(id):'')+'</section>';
   });
+  var door=IV_DOOR.filter(function(id){return IV.steps.some(function(s){return s.id===id;});});
   h+='<section class="card iv-q"><h2 class="jh">アティチュード(態度)</h2><p class="dim hint">本番では、入室から退室までの話し方も見られています。'+(IV.pardon?' 今回は Pardon? を'+IV.pardon+'回使いました(自然な聞き返しは減点されません)。':'')+'</p>'+
+    (door.length?'<ul class="iv-door">'+door.map(function(id){var it=IV.items[id]||{};return '<li><span class="lbl">'+esc(it.no||id)+'</span><span lang="en">'+(IV.ans[id]?esc(IV.ans[id]):'<span class="dim">—</span>')+'</span><small>お手本: <span lang="en">'+esc((it.model||[])[0]||'')+'</span></small></li>';}).join('')+'</ul>':'')+
     [['a','聞こえる大きさの声で、はっきり話せた'],['b','長い沈黙を作らず、何か答えようとした'],['c','分からないときは聞き返せた(Pardon? / Could you say that again?)']].map(function(x){
       return '<label class="iv-att"><input type="checkbox" data-iv-att="'+x[0]+'"'+(IV.att[x[0]]?' checked':'')+'><span>'+x[1]+'</span></label>';}).join('')+'</section>';
   h+='<section class="card iv-sum" id="ivSum">'+ivSumHTML()+'</section>'+
-    '<div class="row2" style="margin-top:12px"><button type="button" class="ghost" data-iv-again style="flex:1">もう一度</button><button type="button" class="go" data-iv-close style="flex:1;margin-top:0">終わる</button></div><div class="pad-b"></div>';
+    '<div class="row2" style="margin-top:12px"><button type="button" class="ghost" data-iv-again style="flex:1">同じカードで<small>質問は変わります</small></button><button type="button" class="ghost" data-iv-next style="flex:1;margin-top:0">別のカードで</button></div>'+
+    '<button type="button" class="go" data-iv-close>終わる</button><div class="pad-b"></div>';
   return h;
 }
 function ivSumHTML(){
@@ -297,8 +386,8 @@ function ivSumHTML(){
 }
 function ivKeepHist(){
   var o=ivHist(),l=o[IV.key]||[],p=ivScore();
-  if(l[0]&&l[0].run===IV.run){l[0].pct=p;}else l.unshift({t:Date.now(),pct:p,run:IV.run});
-  o[IV.key]=l.slice(0,10);try{localStorage.setItem(IV_HIST,JSON.stringify(o));}catch(e){}
+  if(l[0]&&l[0].run===IV.run){l[0].pct=p;}else l.unshift({t:Date.now(),pct:p,run:IV.run,c:IV.ci});
+  o[IV.key]=l.slice(0,12);try{localStorage.setItem(IV_HIST,JSON.stringify(o));}catch(e){}
 }
 function ivHTML(){
   if(IV.stage==='run'&&IV.data)return ivRunHTML();
@@ -333,6 +422,7 @@ document.addEventListener('click',function(e){
   if(view!=='iv')return;
   if(a('data-iv-close')){if(IV.stage==='result')ivKeepHist();ivStop();IV.stage='';IV.key='';go('home');return;}
   if(a('data-iv-start')){if(!IV.data)return;IV.run=Date.now();ivStart();return;}
+  if(a('data-iv-pick')){IV.pick=parseInt(g('data-iv-pick'),10);if(!(IV.pick>=0))IV.pick=-1;Array.prototype.forEach.call(document.querySelectorAll('[data-iv-pick]'),function(b){b.setAttribute('aria-pressed',String(b===t));});return;}
   if(a('data-iv-done')){ivWinDone(IV.tok);return;}
   if(a('data-iv-pardon')){
     var pw=IV.win;if(!pw||pw.closed||pw.kind==='read')return;
@@ -351,11 +441,13 @@ document.addEventListener('click',function(e){
   if(a('data-iv-quit-yes')){closeSheet();ivStop();IV.stage='intro';render();window.scrollTo(0,0);return;}
   if(a('data-iv-rate')){var p=g('data-iv-rate').split(':');IV.self[p[0]]=p[1];Array.prototype.forEach.call(t.parentNode.querySelectorAll('button'),function(b){b.setAttribute('aria-pressed',String(b===t));});var s=$('ivSum');if(s)s.innerHTML=ivSumHTML();ivKeepHist();return;}
   if(a('data-iv-say')){try{speechSynthesis.cancel();}catch(x){}var tok=++IV.tok;ivSay(g('data-iv-say'),tok,function(){});return;}
-  if(a('data-iv-again')){ivKeepHist();IV.run=Date.now();ivStart();return;}
+  if(a('data-iv-again')){ivKeepHist();IV.pick=IV.ci;IV.run=Date.now();ivStart();return;}
+  if(a('data-iv-next')){ivKeepHist();IV.pick=-1;IV.run=Date.now();ivStart();return;}
 });
 document.addEventListener('change',function(e){
   var el=e.target;if(!el||!el.hasAttribute)return;
   if(el.hasAttribute('data-iv-sub')){try{localStorage.setItem(IV_SUBKEY,el.checked?'1':'0');}catch(x){}return;}
+  if(el.hasAttribute('data-iv-entry')){try{localStorage.setItem(IV_ENTKEY,el.checked?'1':'0');}catch(x){}if(view==='iv'&&IV.stage==='intro')render();return;}
   if(el.hasAttribute('data-iv-att')){IV.att[el.getAttribute('data-iv-att')]=el.checked;var s=$('ivSum');if(s)s.innerHTML=ivSumHTML();if(Object.keys(IV.self).length)ivKeepHist();}
 });
 document.addEventListener('visibilitychange',function(){if(document.hidden&&view==='iv'&&IV.stage==='run'){ivStop();IV.stage='intro';render();}});
