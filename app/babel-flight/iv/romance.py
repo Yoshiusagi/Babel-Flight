@@ -156,7 +156,7 @@ DELE_A2_SETS = [
 DELE_A2 = dict(DELE_COMMON, **{
     'grade': 'DELE A2', 'tier': 1, 'minutes': 24, 'chooseNote': 'カードからテーマと写真を1つずつ選ぼう',
     'varies': '3つのセットから、テーマと写真を選べます。',
-    'sumNote': '本番は採点者2人がまとまり・流ちょうさ・正確さ・表現の幅を見ます(25点中15点で合格)。70%をこえたら手ごたえあり。',
+    'sumNote': '本番の会話テストは25点満点で、聞き取りと合わせて50点中30点以上が合格の条件です(採点者2人が、まとまり・流ちょうさ・正確さ・表現の幅などを見ます)。70%をこえたら手ごたえあり。',
     'flow': ['準備 12分 ・ Tarea 1 のテーマ(2つから1つ)と Tarea 2 の写真(2つから1つ)を選んでメモ', 'Tarea 1 ・ テーマについてモノローグ(2〜3分)', 'Tarea 2 ・ 写真の描写(2〜3分)', 'Tarea 3 ・ 写真の場面でロールプレイ(3〜4分)'],
     'open': [], 'close': [S("Muy bien, hemos terminado. Muchas gracias y hasta luego."), END_K],
     'cards': DELE_A2_SETS, 'pools': {},
@@ -308,7 +308,7 @@ DELE_B1_SETS = [
 DELE_B1 = dict(DELE_COMMON, **{
     'grade': 'DELE B1', 'tier': 2, 'minutes': 30,
     'varies': '3つのセットから、テーマと写真を選べます。',
-    'sumNote': '本番は採点者2人がまとまり・流ちょうさ・正確さ・表現の幅を見ます(25点中15点で合格)。70%をこえたら手ごたえあり。',
+    'sumNote': '本番の会話テストは25点満点で、聞き取りと合わせて50点中30点以上が合格の条件です(採点者2人が、まとまり・流ちょうさ・正確さ・表現の幅などを見ます)。70%をこえたら手ごたえあり。',
     'flow': ['準備 15分 ・ Tarea 1 のテーマを2つから1つ選んでメモ(読み上げはNG)', 'Tarea 1 ・ モノローグ(2〜3分)', 'Tarea 2 ・ 同じテーマについての会話(3〜4分)', 'Tarea 3 ・ 写真を2枚から1枚選んで描写(1〜2分)+ 質問', 'Tarea 4 ・ 写真の裏のロールカードを1分読んで、ロールプレイ(2〜3分)'],
     'open': [], 'close': [S("Muy bien, hemos terminado. Muchas gracias y hasta luego."), END_K],
     'cards': DELE_B1_SETS, 'pools': {},

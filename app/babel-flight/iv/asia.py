@@ -90,7 +90,7 @@ OPIC = {
     'markNote': '채점은 실제 등급과 다른, 스스로 매기는 기준입니다.',
     'voiceNote': '질문은 이 기기의 음성으로 읽어 줍니다. 실제 시험에서도 질문은 두 번까지 들을 수 있어요(Replay). ',
     'subNote': '질문 영어 표시(실제 시험에서는 표시되지 않아요)', 'hideNote': '(질문을 읽고 있어요. 영어는 표시하지 않음)', 'ansNote': '영어로 대답해 보세요',
-    'sumNote': '실제 시험은 전체 답변을 보고 NL~AL 등급을 매깁니다. 70%를 넘으면 IM2~IM3 정도의 느낌이에요.',
+    'sumNote': '실제 시험은 전체 답변을 보고 NL~AL 등급을 매깁니다. 70%를 넘으면 준비가 잘 되어 있는 편이에요.',
     'againNote': '같은 질문으로 한 번 더',
     'flow': ['자기소개', '설문 주제 콤보(묘사 → 루틴 → 경험)× 2', '롤플레이(질문하기 → 문제 해결 → 관련 경험)', '돌발 주제'],
     'open': [S("Hi, I'm Eva. I'll be asking you some questions today. Please answer as completely as you can.")],
