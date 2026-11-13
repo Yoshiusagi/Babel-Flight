@@ -104,6 +104,8 @@ function fxLand(goalJust,streakUp){
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
  {v:'2026.11.16',items:[
+  ['🎙','OPIc 스피킹 연습','시험 코스(영어)에서 OPIc을 실제 시험과 같은 흐름으로 연습할 수 있게 되었어요. 자기소개 → 설문 주제 콤보 → 롤플레이 → 돌발 주제. 답변은 모범 예시와 비교해서 스스로 채점해요(비즈니스부터).','exam',1,['ko']],
+  ['🎙','CET 口语考试练习','考试课程(英语)新增大学英语四、六级口语考试(CET-SET4・CET-SET6)练习,流程与正式考试相同:自我介绍、朗读、简短回答、个人陈述、两人互动(搭档由语音模拟)。','exam',1,['zh']],
   ['🎙','面接・スピーキングの練習が増えました','英語の検定コースに IELTS Speaking・TOEFL iBT Speaking(2026年からの新形式)・航空英語能力証明(パイロット)、スペイン語に DELE A2・B1、イタリア語に CILS A2・B1 の会話テストが加わりました。職業によって、OET(医療)・客室乗務員の英語面接・全国通訳案内士の口述試験(英語・韓国語・スペイン語・イタリア語)も練習できます。どれも本番と同じ流れです。','exam',1,['ja']]
  ]},
  {v:'2026.11.15',items:[

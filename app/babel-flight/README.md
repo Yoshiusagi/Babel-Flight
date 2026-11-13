@@ -295,6 +295,11 @@ profession that has the certificate (`job`, via `jobxList`, like ICAO for pilots
 (door steps, an announcement to read aloud, a passenger role-play) and 全国通訳案内士 口述 in English / Korean /
 Spanish / Italian (Japanese read aloud with `say {v:'ja-JP'}`, then a presentation on a chosen theme).
 
+Other display languages get their own country's test: OPIc in 한국어 and CET-SET4 / CET-SET6 in 简体中文
+(`iv/asia.py`, `IV_TESTS` entries with `ui`). Their JSON texts are written in that language; the page's own words
+around them are translated in `i18n/ko/iv.tsv` and `i18n/zh/iv.tsv` (kept free of mixed text nodes so the
+dictionary can find them). The CET pair discussion uses a simulated partner (`say {r:'pt'}`).
+
 ## 筆記体なぞり (cursive tracing)
 
 `parts/f24_cursive.js` + `f24_css.html`, letters in `parts/f24_cdata.js`. Entry: the 「筆記体なぞり」 card in 復習.

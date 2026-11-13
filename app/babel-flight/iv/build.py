@@ -104,9 +104,11 @@ from icao import ICAO
 from romance import ROMANCE
 from jobs import OET, CREW
 from guide import GUIDES
+from asia import ASIA
 INTL['icao'] = ICAO
 INTL.update(ROMANCE)
 INTL.update({'oet': OET, 'crew': CREW}, **GUIDES)
+INTL.update(ASIA)
 INTL_SPEC = {
   'ielts': {'parts': ['p1a', 'p1b', 'p1c', 'p2', 'p2r', 'p3a', 'p3b', 'p3c', 'p3d'], 'overall': 4},
   'toefl': {'reps': 7, 'interview': 4},
@@ -119,6 +121,7 @@ INTL_SPEC = {
   'crew': {'read': True},
 }
 for g in GUIDES: INTL_SPEC[g] = {'overall': 5, 'sets': {'themes': (3, ['t', 'model', 'qs', 'qsm'])}}
+INTL_SPEC.update({'opic': {'opic': 12}, 'cetset4': {'read': True, 'roles': 0}, 'cetset6': {}})
 def expand(t, steps):
     """the steps of one run, with the first entry of each pool (groups get their ids prefixed)"""
     out = []
@@ -191,6 +194,16 @@ for k, spec in INTL_SPEC.items():
             for n in range(len(rs)):
                 if len([i for i in c['items'] if i.startswith('r%d_' % (n + 1))]) < 5: bad(kk, 'role-play %d: 5 exchanges' % (n + 1))
                 if not any(s['k'] == 'prep' and s['sec'] == 180 for s in c['steps']): bad(kk, '3 minutes to prepare')
+        if spec.get('opic') and len([i for i in c['items'] if re.match(r'^q\d+$', i)]) != spec['opic']: bad(kk, 'OPIc: %d questions' % spec['opic'])
+        if t.get('ui') and t['ui'] != 'ja':   # what the learner reads is in that display language, not in Japanese
+            for it in c['items'].values():
+                for f in ('no', 'ja'):
+                    if re.search(r'[぀-ヿ]', it.get(f, '')): bad(kk, 'kana in %s: %s' % (f, it[f][:20]))
+                for x in it.get('points', []):
+                    if re.search(r'[぀-ヿ]', x): bad(kk, 'kana in points: ' + x[:20])
+            for f in ('flow', 'varies', 'origNote', 'markNote', 'voiceNote', 'subNote', 'hideNote', 'ansNote', 'sumNote', 'againNote'):
+                v = t.get(f, '')
+                if re.search(r'[぀-ヿ]', ' '.join(v) if isinstance(v, list) else v): bad(k, 'kana in ' + f)
         if spec.get('read'):
             if not c['card'].get('passage') or 'read' not in c['items'] or not any(s['k'] == 'read' for s in c['steps']): bad(kk, 'announcement to read aloud')
         if k == 'ielts':

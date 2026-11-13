@@ -26,7 +26,10 @@ var IV_TESTS=[
   {k:'cilsa2',name:'CILS A2 会話テスト',b:'CILS A2',tier:1,min:10,L:'it',g:'cils'},{k:'cilsb1',name:'CILS B1 会話テスト',b:'CILS B1',tier:2,min:12,L:'it',g:'cils'},
   {k:'oet',name:'OET Speaking',b:'OET',tier:2,min:20,L:'en',g:'job',job:'oet'},{k:'crew',name:'客室乗務員の英語面接',b:'客室乗務員',tier:2,min:12,L:'en',g:'job',job:'crew'},
   {k:'guideen',name:'全国通訳案内士 口述(英語)',b:'通訳案内士',tier:2,min:10,L:'en',g:'job',job:'guide-en'},{k:'guideko',name:'全国通訳案内士 口述(韓国語)',b:'通訳案内士',tier:2,min:10,L:'ko',g:'job',job:'guide-ko'},
-  {k:'guidees',name:'全国通訳案内士 口述(スペイン語)',b:'通訳案内士',tier:2,min:10,L:'es',g:'job',job:'guide-es'},{k:'guideit',name:'全国通訳案内士 口述(イタリア語)',b:'通訳案内士',tier:2,min:10,L:'it',g:'job',job:'guide-it'}];
+  {k:'guidees',name:'全国通訳案内士 口述(スペイン語)',b:'通訳案内士',tier:2,min:10,L:'es',g:'job',job:'guide-es'},{k:'guideit',name:'全国通訳案内士 口述(イタリア語)',b:'通訳案内士',tier:2,min:10,L:'it',g:'job',job:'guide-it'},
+  /* other display languages: their own country's test (the page's words come from the dictionaries) */
+  {k:'opic',name:'OPIc',b:'OPIc',tier:2,min:40,L:'en',g:'intl',ui:'ko'},
+  {k:'cetset4',name:'CET-SET4',b:'CET-SET4',tier:1,min:15,L:'en',g:'intl',ui:'zh'},{k:'cetset6',name:'CET-SET6',b:'CET-SET6',tier:2,min:15,L:'en',g:'intl',ui:'zh'}];
 var IV_GROUPS={eiken:['二次試験(面接)の練習','二次試験(面接) ・ 練習'],intl:['スピーキングテストの練習','スピーキング ・ 練習'],
   dele:['会話テスト(Expresión oral)の練習','会話テスト ・ 練習'],cils:['会話テスト(Produzione orale)の練習','会話テスト ・ 練習'],job:['仕事の面接の練習','仕事の面接 ・ 練習']};
 if(typeof CAB_FEAT==='object'){var ivAt=0;CAB_FEAT.forEach(function(f,i){if(f[0]==='検定コース')ivAt=i+1;});CAB_FEAT.splice(ivAt,0,['面接練習',['—','英検3級・準2級・DELE A2など','すべて','すべて']]);}
@@ -40,8 +43,8 @@ function ivChosen(set){var l=(IV.c&&IV.c.card[set||'topics'])||[];return l[Math.
 function ivSets(c){return c.sets||(c.topics?['topics']:[]);}
 function ivGrade(k){return IV_TESTS.filter(function(g){return g.k===k;})[0]||null;}
 /* job interviews (航空英語 …) only for the profession that has that certificate, like the 検定 list */
-function ivTests(L){return IV_TESTS.filter(function(g){return g.L===L&&(!g.job||typeof jobxList!=='function'||jobxList(L).indexOf(g.job)>=0);});}
-function ivOn(L){L=L||save.lang;return L===save.lang&&UI==='ja'&&typeof cabinLv==='function'&&cabinLv()>=0&&ivTests(L).length>0;}  /* 日本語 only */
+function ivTests(L){return IV_TESTS.filter(function(g){return g.L===L&&(g.ui||'ja')===UI&&(!g.job||typeof jobxList!=='function'||jobxList(L).indexOf(g.job)>=0);});}
+function ivOn(L){L=L||save.lang;return L===save.lang&&typeof cabinLv==='function'&&cabinLv()>=0&&ivTests(L).length>0;}   /* 日本語, and OPIc / CET in 한국어 / 简体中文 */
 function ivLocked(g){return cabinLv()<g.tier;}
 function ivUnit(){return (IV.data&&IV.data.unit)||'カード';}
 function ivFlag(k,dflt){try{var v=localStorage.getItem(k);return v===null?dflt:v!=='0';}catch(e){return dflt;}}
@@ -54,7 +57,7 @@ function ivCards(){return (IV.data&&IV.data.cards)||[];}
 function ivEntryHTML(L){
   if(!ivOn(L))return '';
   var lv=cabinLv(),hist=ivHist(),ts=ivTests(L),low=Math.min.apply(null,ts.map(function(g){return g.tier;})),gs=[];
-  if(lv<low)return '<p class="dim hint">🔒 '+(L==='en'?'面接(二次試験)の練習':'会話テスト(面接)の練習')+'は「'+CABINS[low][1]+'」から</p>';
+  if(lv<low)return '<p class="dim hint">🔒 '+(UI!=='ja'?'スピーキングテストの練習':L==='en'?'面接(二次試験)の練習':'会話テスト(面接)の練習')+'は「'+CABINS[low][1]+'」から</p>';
   ts.forEach(function(g){if(gs.indexOf(g.g)<0)gs.push(g.g);});
   return '<div class="iv-entry">'+gs.map(function(gr){
     return '<span class="lbl">'+IV_GROUPS[gr][0]+'</span><div class="iv-gs">'+ts.filter(function(g){return g.g===gr;}).map(function(g){
@@ -336,16 +339,16 @@ function ivIntroHTML(){
   if(!IV.data)return h+'<p class="dim" style="margin-top:20px">カードを読み込み中…</p>';
   var sr=typeof srCtor==='function'&&srCtor();
   h+='<section class="card iv-intro"><h2 class="jh">本番と同じ流れで練習</h2><ol class="iv-flow">'+ivFlowList().map(function(f){return '<li>'+esc(f)+'</li>';}).join('')+'</ol>'+
-    '<p class="dim hint">'+esc(IV.data.voiceNote||'面接官の英語はこの端末の音声で読み上げます。面接官は毎回変わります。')+'音を出せる場所で、声に出して答えよう。約'+g.min+'分。</p>'+
+    '<p class="dim hint">'+esc(IV.data.voiceNote||'面接官の英語はこの端末の音声で読み上げます。面接官は毎回変わります。')+'<span>音を出せる場所で、声に出して答えよう。約'+g.min+'分。</span></p>'+
     (sr?'<p class="dim hint">🎙 答えはブラウザの音声認識で文字にして、あとでお手本と見比べられます(このサイトには送られません)。はじめにマイクの許可を求められます。</p>'
        :'<p class="dim hint">この端末では文字起こしができません。声に出して答えて、終わったら「答え終わった」を押してね。</p>')+
     ivPickHTML()+
     '<label class="set-row iv-subt"><span>'+esc(IV.data.subNote||'英文を表示する(本番は表示されません)')+'</span><input type="checkbox" data-iv-sub'+(ivSub()?' checked':'')+'></label>'+
     (IV.data.entry?'<label class="set-row iv-subt"><span>入室・退室から練習する</span><input type="checkbox" data-iv-entry'+(ivEntryOn()?' checked':'')+'></label>':'')+
     '<button type="button" class="go" data-iv-start>面接を始める<small>'+(ivEntryOn()&&IV.data.entry?'入室から退室まで':'あいさつから')+'</small></button></section>'+
-    '<p class="dim hint">'+esc(IV.data.origNote||'カードの英文・イラストはBabel Flightのオリジナルです。')+esc(IV.data.varies||'')+esc(IV.data.markNote||'採点は本番(英検CSEスコア)とは違う、自分でつける目安です。')+'</p>';
+    '<p class="dim hint">'+esc(IV.data.origNote||'カードの英文・イラストはBabel Flightのオリジナルです。')+esc(IV.data.varies||'')+'<span>'+esc(IV.data.markNote||'採点は本番(英検CSEスコア)とは違う、自分でつける目安です。')+'</span></p>';
   var hist=ivHist()[IV.key]||[];
-  if(hist.length)h+='<section class="card"><h2 class="jh">これまでの練習</h2><ul class="mx-hist">'+hist.slice(0,5).map(function(r){return '<li><span>'+esc(fmtDate(r.t))+(ivCards().length>1?' ・ '+ivUnit()+((r.c||0)+1):'')+'</span><b class="mono">'+r.pct+'%</b></li>';}).join('')+'</ul></section>';
+  if(hist.length)h+='<section class="card"><h2 class="jh">これまでの練習</h2><ul class="mx-hist">'+hist.slice(0,5).map(function(r){return '<li><span>'+esc(fmtDate(r.t))+(ivCards().length>1?'<small> ・ '+ivUnit()+((r.c||0)+1)+'</small>':'')+'</span><b class="mono">'+r.pct+'%</b></li>';}).join('')+'</ul></section>';
   return h+'<div class="pad-b"></div>';
 }
 function ivRunHTML(){
