@@ -248,10 +248,11 @@ DELE / CILS (graduate school and research) in all four languages, 客室乗務�
 no language certificate (IT・美容師・スポーツ選手) get a practice group instead (`practice:true`: no 目標, marked
 「公式の資格ではありません」 on the 検定 card).
 
-## 面接練習 (英検 二次試験 3級〜1級)
+## 面接練習 (英検 二次試験 3級〜1級, IELTS・TOEFL, 航空英語能力証明, DELE・CILS, OET・客室乗務員・全国通訳案内士)
 
-`parts/f25_iv.js` + `f25_css.html`. Entry: the 検定 card (English) and the 模試 result (「続けて二次試験(面接)へ」).
-Classes like 検定コース: 3級・準2級 from プレミアムエコノミー, 準2級プラス〜1級 from ビジネス; not in the iPhone app.
+`parts/f25_iv.js` + `f25_css.html`. Entry: the 検定 card of the course language (`IV_TESTS`: key, name, class,
+minutes, language, group) and the 英検 模試 result (「続けて二次試験(面接)へ」). Classes like 検定コース: 英検3級・準2級
+from プレミアムエコノミー, the rest from ビジネス; not in the iPhone app. 日本語 display only for now.
 
 The cards are written in `iv/cards.py` (original passages, emoji pictures, examiner lines, model answers) and
 built into `public/iv/<key>.json` by `python3 babel-flight/iv/build.py`, which checks every card as the page runs
@@ -270,6 +271,29 @@ from `pools` each run, not one of the last few asked (`ivPoolPick`, `babelflight
 transcribed by the browser's speech recognition (en-US) where available; the result screen marks the words
 heard while reading aloud and the learner rates each answer against the model answers (an estimate, not
 the CSE score). History is kept on the device. AI marking can be added once the AI key is set.
+
+IELTS, TOEFL and 航空英語能力証明 are in `iv/intl.py` and `iv/icao.py` (built by the same `build.py`, which checks
+their own format: IELTS Part 1 groups + a cue card with 1 minute of notes + Part 3 (4 overall bands); TOEFL 2026
+Listen and Repeat (7 sentences, getting longer) + Take an Interview (4 × 45 s); ICAO 導入 → Single Picture →
+模擬ATC with an emergency (MAYDAY / PAN PAN) and a misunderstanding to clear up (Confirm / Say again), numbers
+in words → flight description → 4 sequence pictures → 終結, the six ICAO areas). What the engine adds for them:
+`card {show}` (one face of the card at a time: pic / info / panels / cue …), `prep {notes}` (a notes box that
+stays during the countdown, shown again while speaking and in the result), `rep` (listen and repeat: the
+sentence is spoken but not shown, marked like reading aloud), `ans {cue}` (a situation under the answer
+window) and `{tip}`, `say {r:'atc'}` (the controller), pool entries that are whole groups of questions
+(`{steps, items}`, ids prefixed by the pool step), items with `overall` (rated at the end), and per-test
+texts (`flow`, `unit`, `voiceNote`, `origNote`, `markNote`, `sumNote`, `pardon`, `noPardon`, `att:false`).
+
+DELE A2 / B1 and CILS A2 / B1 (`iv/romance.py`, Spanish / Italian voice and speech recognition) add choices on the
+card: `card.sets` names lists of options (`temas`, `fotos`, `argomenti`, `temi`, 1級 `topics`) chosen with
+`{k:'topics', set}` (or by tapping the card at any time); `{k:'tq', set, f, n, id}` speaks line n of field f of the
+chosen option (`qs` questions, `rp` role-play lines, with `qsm` / `rpm` models and `rpc` cues), and items with
+`set` show the chosen option and its `model`. `card.rolSet` + face `rol` shows the chosen photo's role card (DELE
+B1 tarea 4); `hide {keep}` keeps the notes. Job interviews (`iv/jobs.py`, `iv/guide.py`) are listed only for the
+profession that has the certificate (`job`, via `jobxList`, like ICAO for pilots): OET (two role-plays with
+`card.roles` faces `role0` / `role1`, the patient as `say {r:'pt'}` with `data.roles`), the cabin crew interview
+(door steps, an announcement to read aloud, a passenger role-play) and 全国通訳案内士 口述 in English / Korean /
+Spanish / Italian (Japanese read aloud with `say {v:'ja-JP'}`, then a presentation on a chosen theme).
 
 ## 筆記体なぞり (cursive tracing)
 

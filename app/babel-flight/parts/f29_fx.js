@@ -103,6 +103,9 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.16',items:[
+  ['🎙','面接・スピーキングの練習が増えました','英語の検定コースに IELTS Speaking・TOEFL iBT Speaking(2026年からの新形式)・航空英語能力証明(パイロット)、スペイン語に DELE A2・B1、イタリア語に CILS A2・B1 の会話テストが加わりました。職業によって、OET(医療)・客室乗務員の英語面接・全国通訳案内士の口述試験(英語・韓国語・スペイン語・イタリア語)も練習できます。どれも本番と同じ流れです。','exam',1,['ja']]
+ ]},
  {v:'2026.11.15',items:[
   ['🎤','面接練習がもっと本番に近く','英検の面接練習で、3級から1級まで、どの級もカードが5枚ずつになりました(新しく32枚)。どのカードが出るかは本番と同じでおまかせ(選ぶこともできます)。カードを裏返したあとの質問は毎回変わり、面接官も毎回変わります。入室して面接カードを渡すところから、退室まで練習できます。','exam',1,['ja']],
   ['💼','職業「ビジネス」の資格を訂正しました','ケンブリッジ英検ビジネス(BEC)は、2024年から中国以外では受けられなくなっていました。職業「ビジネス」の資格は TOEIC L&R にして、ビジネス英語の40フレーズは練習として残しています。','exam',1,['ja','ko']]

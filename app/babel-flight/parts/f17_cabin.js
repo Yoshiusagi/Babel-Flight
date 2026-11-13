@@ -18,7 +18,7 @@ var CAB_FEAT=[
 ];
 /* the other display languages: 英検 (with its 模試 and 面接練習) is 日本語 only, so their table leaves that row out,
    names the exams by level and has no 模試 (the rows added later by f19/f24/f25 are kept) */
-var CAB_JA_ONLY=['面接練習(英検)'];
+var CAB_JA_ONLY=['面接練習'];
 function cabFeat(){
   if(typeof UI==='undefined'||UI==='ja')return CAB_FEAT;
   return CAB_FEAT.filter(function(f){return CAB_JA_ONLY.indexOf(f[0])<0;}).map(function(f){

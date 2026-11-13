@@ -56,7 +56,7 @@
 .iv-panel{position:relative}
 .iv-cap{display:block;margin-top:8px;font:700 12px var(--f-mono);color:var(--ink2)}
 .iv-panel .iv-pic{margin-top:4px}
-.iv-topics{margin:6px 0 0;padding-left:1.4em;display:grid;gap:6px}
+.iv-topics{margin:6px 0 0;padding-left:0;list-style:none;display:grid;gap:6px}
 .iv-topics button{width:100%;text-align:left;padding:9px 11px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font-size:14px;line-height:1.45}
 .iv-topics button[aria-pressed="true"]{border-color:var(--good);box-shadow:0 0 0 2px color-mix(in srgb,var(--good) 35%,transparent)}
 .iv-down{text-align:center;margin-top:14px}
@@ -76,4 +76,23 @@
 .iv-sum{text-align:center}
 .iv-pct{display:block;font:700 40px/1.1 var(--f-disp);margin-top:4px}
 @media (min-width:560px){.iv-ab{grid-template-columns:1fr 1fr}.iv-panels.n3{grid-template-columns:repeat(3,1fr)}.iv-panels.n4{grid-template-columns:repeat(2,1fr)}}
+.iv-entry .lbl+.iv-gs+.lbl{display:block;margin-top:10px}
+.iv-cue{margin-top:2px;font-size:15.5px;line-height:1.6}
+.iv-cue p{margin:0}
+.iv-cue .iv-cue-t{font-weight:700;margin-bottom:6px}
+.iv-cue ul{margin:4px 0 6px;padding-left:1.3em}
+.iv-cue-s{margin:8px 0 0;padding:8px 10px;border-radius:10px;background:var(--surface2);font-size:14px;line-height:1.5}
+.iv-info{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:6px 0 0;font-size:14px;line-height:1.5}
+.iv-info dt{color:var(--ink2);font-weight:600}
+.iv-info dd{margin:0;font-family:var(--f-mono);font-size:13.5px}
+.iv-notes{width:100%;box-sizing:border-box;margin-top:8px;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:15px/1.5 var(--f-body,inherit);resize:vertical}
+.iv-notes-show{margin-top:10px;font-size:14px;line-height:1.55;white-space:pre-wrap}
+.iv-notes-show p{margin:2px 0 0;white-space:pre-wrap}
+.iv-ex.atc .iv-av{background:color-mix(in srgb,var(--good) 14%,var(--surface))}
+.iv-ex.atc .iv-line .lbl{display:block;margin-bottom:2px}
+@media (min-width:560px){.iv-panels.n6{grid-template-columns:repeat(3,1fr)}}
+.iv-topics button>span{display:block}
+.iv-topics button ul{margin:4px 0 0;padding-left:1.2em;font-size:13px;line-height:1.45;color:var(--ink2)}
+.iv-topics.pics{padding-left:0;list-style:none;grid-template-columns:1fr 1fr}
+.iv-topics.pics .iv-pic{margin:0 0 6px}
 </style>
