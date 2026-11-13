@@ -136,6 +136,85 @@ IELTS_P1 = [
         ('Would you rather travel in your own country or abroad?', '国内旅行と海外旅行、どちらがいいですか。', "Abroad, because I'd like to use English and experience a different culture.", P1_PTS),
     ]),
 ]
+# ---- IELTS Part 1: 4 more opening topics and 10 more topics (original) ----
+IELTS_P1A += [
+    GROUP('勉強 (2)', "Let's talk about your studies.", [
+        ('What are you studying at the moment?', '今、何を勉強していますか。', "I'm a junior high school student, so I study all the main subjects, but at the moment I'm focusing on English and maths for my entrance exams.", P1_PTS),
+        ('Which subject do you find the most difficult?', 'いちばん難しいと感じる科目は何ですか。', 'Probably Japanese classical literature. The old language is very different from modern Japanese.', P1_PTS),
+        ('Do you prefer studying alone or with friends?', '一人で勉強するのと友達とするのと、どちらが好きですか。', 'Mostly alone, because I can concentrate better. But before exams, I sometimes study with friends and test each other.', P1_PTS),
+        ('Is there anything you would like to learn in the future?', '将来学びたいことはありますか。', "I'd like to learn more about aircraft engineering, because I'm interested in how planes actually fly.", P1_PTS),
+    ]),
+    GROUP('地元 (2)', "Let's talk about the town you come from.", [
+        ('What is your town famous for?', 'あなたの町は何で有名ですか。', "It isn't very famous, but it's known for a large park with cherry trees, which is crowded in spring.", P1_PTS),
+        ('Do many tourists visit your town?', '観光客はたくさん来ますか。', 'Not many. Most visitors come only in spring to see the cherry blossoms.', P1_PTS),
+        ('What do people there usually do at weekends?', 'そこの人々は週末にふだん何をしますか。', 'Families often go to the shopping centre or have picnics by the river.', P1_PTS),
+        ('Would you like to live there in the future?', '将来もそこに住みたいですか。', "Maybe when I'm older, but first I'd like to live in a bigger city near an international airport.", P1_PTS),
+    ]),
+    GROUP('住まい (2)', "Let's talk about your home.", [
+        ('Who do you live with?', 'だれと住んでいますか。', 'I live with my parents and my younger brother.', P1_PTS),
+        ('How long have you lived there?', 'そこにどのくらい住んでいますか。', "We've lived there for about ten years, since I started primary school.", P1_PTS),
+        ('What can you see from your window?', '窓から何が見えますか。', 'I can see a park and, on clear days, planes coming in to land in the distance.', P1_PTS),
+        ('What do you like most about your home?', '家のいちばん好きなところは何ですか。', "I like the balcony, because it's a quiet place to read when the weather is nice.", P1_PTS),
+    ]),
+    GROUP('通学', "Let's talk about how you get to school.", [
+        ('How do you usually get to school?', 'ふだんどうやって学校に行きますか。', 'I usually go by bicycle. It takes about fifteen minutes.', P1_PTS),
+        ('Do you enjoy the journey?', '通学は楽しいですか。', 'Yes, I do, especially in spring and autumn. I ride along the river, so the view is nice.', P1_PTS),
+        ('What do you do when it rains?', '雨の日はどうしますか。', 'I take the bus instead. It takes longer because of the traffic, so I have to leave earlier.', P1_PTS),
+        ('Would you like to live closer to your school?', '学校の近くに住みたいですか。', "Not really. I like having a little time to wake up and think before classes start.", P1_PTS),
+    ]),
+]
+IELTS_P1 += [
+    GROUP('空港', "Let's talk about airports.", [
+        ('Do you often go to airports?', 'よく空港に行きますか。', "Quite often, actually. I like going to the observation deck to watch the planes, even when I'm not travelling.", P1_PTS),
+        ('What do you think makes a good airport?', 'よい空港とはどんな空港だと思いますか。', 'Clear signs, short queues at security and good transport to the city centre.', P1_PTS),
+        ('Would you like to work at an airport?', '空港で働いてみたいですか。', "Yes, I'd love to, but my dream is to work in the cockpit rather than in the terminal.", P1_PTS),
+    ]),
+    GROUP('友達', "Let's talk about friends.", [
+        ('How often do you see your friends?', 'どのくらい友達に会いますか。', 'Almost every day at school, and sometimes at weekends as well.', P1_PTS),
+        ('What do you usually do together?', 'ふだん一緒に何をしますか。', 'We usually play video games or go cycling together.', P1_PTS),
+        ('Is it easy for you to make new friends?', '新しい友達を作るのは簡単ですか。', "Not very. I'm a bit shy at first, but once I get to know people, I'm quite talkative.", P1_PTS),
+    ]),
+    GROUP('朝', "Let's talk about mornings.", [
+        ('Are you a morning person?', '朝型ですか。', "Not really. I find it hard to get up early, especially in winter.", P1_PTS),
+        ('What do you usually do in the morning?', '朝はふだん何をしますか。', 'I have a quick breakfast, check the weather and then cycle to school.', P1_PTS),
+        ('Would you like to change your morning routine?', '朝の過ごし方を変えたいですか。', "Yes. I'd like to get up a bit earlier so that I can go for a short run.", P1_PTS),
+    ]),
+    GROUP('映画', "Let's talk about films.", [
+        ('What kind of films do you like?', 'どんな映画が好きですか。', 'I like action films and documentaries, especially ones about science and aviation.', P1_PTS),
+        ('Do you prefer watching films at home or at the cinema?', '家と映画館、どちらで映画を見るのが好きですか。', 'At the cinema, because the screen and the sound are much more exciting.', P1_PTS),
+        ('Have you ever watched a film more than once?', '同じ映画を2回以上見たことはありますか。', "Yes, many times. There's a film about fighter pilots that I've watched at least five times.", P1_PTS),
+    ]),
+    GROUP('買い物', "Let's talk about shopping.", [
+        ('Do you enjoy shopping?', '買い物は好きですか。', "It depends. I enjoy shopping for gadgets, but I don't like shopping for clothes very much.", P1_PTS),
+        ('Do you prefer shopping online or in shops?', 'ネットと店、どちらで買うのが好きですか。', 'For gadgets I compare prices online, but I like to see clothes and shoes in shops first.', P1_PTS),
+        ('What was the last thing you bought?', '最後に買ったものは何ですか。', 'I bought a new pair of earphones last week. The old ones broke.', P1_PTS),
+    ]),
+    GROUP('料理', "Let's talk about cooking.", [
+        ('Can you cook?', '料理はできますか。', "Only simple things, like fried rice or omelettes.", P1_PTS),
+        ('Who does most of the cooking in your family?', '家ではだれがいちばん料理をしますか。', 'My mother does most of it, but my father cooks on Sundays.', P1_PTS),
+        ('Would you like to learn to cook better?', 'もっと料理が上手になりたいですか。', "Yes, definitely. If I live alone in the future, I'll need to cook healthy meals for myself.", P1_PTS),
+    ]),
+    GROUP('ゲーム', "Let's talk about games.", [
+        ('Do you play any games?', '何かゲームをしますか。', 'Yes, I play video games, mainly flight simulators and racing games.', P1_PTS),
+        ('Did you play different games when you were a child?', '子どものころは違うゲームをしていましたか。', 'Yes. I used to play card games and tag with my friends in the park.', P1_PTS),
+        ('Do you think games can be educational?', 'ゲームは勉強になると思いますか。', 'Some can. For example, flight simulators taught me a lot about how planes are controlled.', P1_PTS),
+    ]),
+    GROUP('季節', "Let's talk about seasons.", [
+        ('Which season do you like best?', 'どの季節がいちばん好きですか。', 'Autumn, because the weather is comfortable and the leaves change colour.', P1_PTS),
+        ('Is there a season you dislike?', '嫌いな季節はありますか。', 'The rainy season in June. It rains almost every day, and it is very humid.', P1_PTS),
+        ('Do you do different activities in different seasons?', '季節によって違うことをしますか。', 'Yes. I go cycling in spring and autumn, and in winter I prefer reading at home.', P1_PTS),
+    ]),
+    GROUP('公園', "Let's talk about parks.", [
+        ('Is there a park near your home?', '家の近くに公園はありますか。', 'Yes, there is a big park about five minutes away on foot.', P1_PTS),
+        ('What do people do there?', 'そこで人々は何をしていますか。', 'People walk their dogs, children play football, and older people do exercises in the morning.', P1_PTS),
+        ('Do you think cities need more parks?', '都市にはもっと公園が必要だと思いますか。', 'Yes, because parks give people a place to relax and get some fresh air.', P1_PTS),
+    ]),
+    GROUP('時間の使い方', "Let's talk about time.", [
+        ('Do you usually arrive on time?', 'ふだん時間どおりに着きますか。', "Yes. I don't like being late, so I usually arrive a few minutes early.", P1_PTS),
+        ('How do you plan your day?', '1日の予定をどう立てますか。', 'I write a short to-do list on my phone every morning.', P1_PTS),
+        ('Do you ever feel that you have too little time?', '時間が足りないと感じることはありますか。', 'Yes, especially before exams. That is when I try to cut down on games and social media.', P1_PTS),
+    ]),
+]
 P2_PTS = ['カードの4つの点をすべて入れる(順番どおりでなくてもOK)', '最後の and explain … をいちばん厚く', '過去の話は過去形で、話をつなぐ語(First / After that / What I remember most is …)']
 
 
@@ -239,6 +318,72 @@ IELTS_SETS.append(IELTS_SET(
      P3('Why do some people prefer the countryside to the city?', '都会より田舎を好む人がいるのはなぜですか。', 'Mainly for the peace and quiet. The air is cleaner, houses are cheaper, and people feel closer to nature.'),
      P3('How will climate change affect the way people spend time outdoors?', '気候変動は人々の屋外での過ごし方にどう影響しますか。', 'Summers are getting hotter, so people may avoid going out in the middle of the day. Outdoor sports and events might move to the early morning or evening.')]))
 
+# ---- IELTS Part 3: 4 more questions for every pool (original) ----
+_P3_MORE = {
+  'ielts_p3_1a': [
+    P3('Why do some people feel nervous about flying?', '飛行機に乗るのを不安に思う人がいるのはなぜですか。', "Mainly because they feel they have no control. Turbulence can also be frightening, even though it is rarely dangerous. Explaining how safe flying actually is can help."),
+    P3('How has the way people book travel changed?', '旅行の予約のしかたはどう変わりましたか。', 'Most people now book everything online, often on their phones. They can compare prices instantly and read reviews, so travel agents are used much less than before.'),
+    P3('Should governments spend more on high-speed railways?', '政府は高速鉄道にもっとお金を使うべきですか。', 'I think so, especially for journeys of a few hundred kilometres. Fast trains produce far less carbon than planes and connect city centres directly.'),
+    P3('What problems do commuters face in big cities?', '大都市の通勤者はどんな問題を抱えていますか。', 'Crowded trains and long journeys are the biggest problems. Many people spend two hours a day commuting, which leaves them tired and with little free time.'),
+  ],
+  'ielts_p3_1b': [
+    P3('Why do people like to visit famous landmarks?', 'なぜ人々は有名な名所を訪れたがるのですか。', 'Partly because they want to see with their own eyes something they have seen in pictures for years. Taking a photo there also gives people a sense of achievement.'),
+    P3('Should popular tourist sites limit the number of visitors?', '人気の観光地は訪問者の数を制限すべきですか。', 'In some cases, yes. If a place is too crowded, it can be damaged, and visitors cannot enjoy it either. A booking system is a fair way to manage numbers.'),
+    P3('How can tourists show respect for local cultures?', '観光客はどうやって地元の文化への敬意を示せますか。', 'By learning a few words of the local language and following local customs, for example dressing modestly at religious sites.'),
+    P3('Do you think travel helps people understand each other?', '旅行は人々の相互理解に役立つと思いますか。', 'Yes. Meeting people from other countries face to face breaks down stereotypes. You realise that people everywhere have similar hopes and worries.'),
+  ],
+  'ielts_p3_2a': [
+    P3('Is it more important to be good at many things or excellent at one thing?', '多くのことができるのと、一つのことに秀でるのと、どちらが大切ですか。', "It depends on the job, but I think it is best to have one main strength and some general skills. That way you are valuable but also flexible."),
+    P3('Why do some people learn faster than others?', 'なぜ学ぶのが速い人とそうでない人がいるのですか。', 'Motivation is a big factor. People who are really interested practise more. Good study habits and a supportive environment also make a difference.'),
+    P3('Should children be pushed to take many after-school lessons?', '子どもにたくさんの習い事をさせるべきですか。', 'Not too many. Children need free time to play and rest. One or two activities they really enjoy are better than five they are forced to do.'),
+    P3('How has the internet changed the way people learn skills?', 'インターネットは技能の学び方をどう変えましたか。', 'It has made learning much more accessible. You can watch a video tutorial on almost anything for free, although it is harder to get feedback than with a real teacher.'),
+  ],
+  'ielts_p3_2b': [
+    P3('Which jobs are likely to disappear in the future?', '将来なくなりそうな仕事は何ですか。', 'Jobs that involve repeating the same task, such as some factory or data entry work, may be done by machines. However, new jobs will also appear.'),
+    P3('Is a university degree still necessary to get a good job?', '良い仕事に就くのに大学の学位は今でも必要ですか。', 'For some careers, like medicine or engineering, definitely. In other fields, practical skills and experience are becoming just as important as a degree.'),
+    P3('Should older workers be encouraged to keep working?', '高齢の労働者に働き続けるよう勧めるべきですか。', 'If they want to and are healthy, yes. They have a lot of experience to share, and many people enjoy feeling useful.'),
+    P3('What makes a job satisfying?', '仕事の満足感は何から生まれますか。', 'Feeling that your work matters is the most important thing. Good colleagues and the chance to keep learning also make a big difference.'),
+  ],
+  'ielts_p3_3a': [
+    P3('Can a person be a role model without being famous?', '有名でなくてもロールモデルになれますか。', 'Of course. Teachers, coaches and older brothers or sisters influence young people every day, often more than celebrities.'),
+    P3('What qualities make someone a good leader?', '良いリーダーにはどんな資質がありますか。', 'A good leader listens to others, makes decisions calmly and takes responsibility when things go wrong.'),
+    P3('Do people change their opinions because of others?', '人は他人の影響で意見を変えますか。', 'Yes, quite often, especially when they respect the other person. Social media also makes people more likely to follow the majority.'),
+    P3('Is it good for young people to copy their heroes?', '若者がヒーローのまねをするのはよいことですか。', 'It can be, if they copy good habits like hard work. But they should also think for themselves and not copy everything blindly.'),
+  ],
+  'ielts_p3_3b': [
+    P3('How do friendships change as people get older?', '年齢とともに友情はどう変わりますか。', 'People usually have fewer friends but closer ones. They also have less free time because of work and family, so they see their friends less often.'),
+    P3('Is it possible to be friends with someone you have never met in person?', '会ったことのない人と友達になれますか。', 'I think so. Many people make real friends through online games or study groups. Meeting in person later can make the friendship even stronger.'),
+    P3('Should parents choose their children\'s friends?', '親は子どもの友達を選ぶべきですか。', 'Not really. Parents can give advice, but children need to learn to judge people for themselves.'),
+    P3('Why do some people prefer to spend time alone?', '一人で過ごすのを好む人がいるのはなぜですか。', 'Some people recharge their energy by being alone. It gives them time to think, read or work on their hobbies without distractions.'),
+  ],
+  'ielts_p3_4a': [
+    P3('Is technology making people less patient?', '技術のせいで人々は我慢強くなくなっていますか。', 'Probably. We are used to getting information and products instantly, so waiting even a few minutes can feel frustrating.'),
+    P3('Should there be age limits for using social media?', 'SNSの利用に年齢制限を設けるべきですか。', 'Yes, I think so. Young children are not ready to deal with online pressure or strangers, so a minimum age protects them.'),
+    P3('What are the benefits of online banking and shopping?', 'ネットバンキングやネット通販の利点は何ですか。', 'They save a lot of time, and you can do them at any time of day. They are especially helpful for people who live far from shops.'),
+    P3('Do you think people will still use cash in the future?', '将来も人々は現金を使うと思いますか。', 'Less and less, but I do not think it will disappear completely. Some people prefer cash, and it is useful when there is a power cut.'),
+  ],
+  'ielts_p3_4b': [
+    P3('Should mobile phones be banned in schools?', '学校でスマホを禁止すべきですか。', 'Not completely. They can be useful for research, but there should be clear rules, such as keeping them in bags during lessons.'),
+    P3('What skills do teachers need in the digital age?', 'デジタル時代の教師にはどんな能力が必要ですか。', 'They need to use technology confidently, but more importantly, they need to teach students how to judge whether information online is reliable.'),
+    P3('Is it better to read books on paper or on a screen?', '紙の本と画面、どちらで読むほうがよいですか。', 'For studying, I think paper is better, because it is easier to concentrate and take notes. Screens are convenient for carrying many books when travelling.'),
+    P3('How can schools make sure all students have access to technology?', '学校はどうやって全生徒が技術を使えるようにできますか。', 'Schools can lend tablets to students who do not have one and provide free internet access in libraries.'),
+  ],
+  'ielts_p3_5a': [
+    P3('Should cars be banned from city centres?', '都市の中心部から車を締め出すべきですか。', 'In some areas, yes. Car-free streets are safer and quieter, and they are good for shops because people walk more slowly and look around.'),
+    P3('What kinds of outdoor activities are popular in your country?', 'あなたの国ではどんな屋外活動が人気ですか。', 'Hiking and camping are very popular, and in spring many people have picnics under the cherry trees.'),
+    P3('Do people need to live near nature to be happy?', '人は自然の近くに住まないと幸せになれませんか。', 'Not necessarily, but even a small park or some trees can make a big difference to how people feel.'),
+    P3('How has city life changed in recent years?', '近年、都市の生活はどう変わりましたか。', 'Cities have become more crowded and expensive, but there are also more cafés, cycle lanes and green spaces than before.'),
+  ],
+  'ielts_p3_5b': [
+    P3('Should people be fined for dropping litter?', 'ごみのポイ捨てに罰金を科すべきですか。', 'Yes. Fines send a clear message, and the money can be used to clean public places.'),
+    P3('What can schools do to teach children about nature?', '学校は自然について子どもに何を教えられますか。', 'Taking classes outside is the best way. Children who grow vegetables or study insects in real life care more about nature.'),
+    P3('Are national parks important? Why?', '国立公園は大切ですか。なぜですか。', 'Yes. They protect wildlife and landscapes for future generations, and they give people a place to enjoy nature.'),
+    P3('Will people live differently in the future because of environmental problems?', '環境問題のために、人々の暮らしは将来変わるでしょうか。', 'I think so. People may eat less meat, travel less by plane and use more renewable energy at home.'),
+  ],
+}
+for _s in IELTS_SETS:
+    for _k in _s['pools']:
+        _s['pools'][_k] += _P3_MORE[_k]
 IELTS = {
     'grade': 'IELTS', 'tier': 2, 'minutes': 14, 'lang': 'en-GB', 'unit': 'セット', 'att': False,
     'varies': 'Part 1 の話題と Part 3 の質問は毎回変わります。',
@@ -310,6 +455,51 @@ TOEFL_LR = [
         "You should register for your classes by the end of this week.",
         "If you have questions about your visa, please visit the international office.",
         "Students who would like a conversation partner can sign up at the welcome desk before they leave today.",
+    ]),
+    LR("You are moving into a student dormitory. The dormitory manager is explaining the rules.", [
+        "Welcome to the dormitory.",
+        "The kitchen closes at eleven.",
+        "Please sort your trash into three bins.",
+        "Guests must leave the building by ten at night.",
+        "The laundry room is in the basement next to the stairs.",
+        "If something in your room is broken, fill out a repair form online.",
+        "Residents who plan to stay during the winter break should tell the office by the first of December.",
+    ]),
+    LR("You are taking a tour of the university sports center. A staff member is guiding you.", [
+        "This is the main gym.",
+        "Lockers are free for students.",
+        "Please bring your own towel.",
+        "The swimming pool is closed on Mondays.",
+        "You need to show your student card at the entrance.",
+        "Fitness classes are held every evening from six to nine o'clock.",
+        "Students who want to use the climbing wall must take a short safety course first.",
+    ]),
+    LR("You are joining a field trip to a national park. The tour leader is giving instructions.", [
+        "Good morning, everyone.",
+        "The bus leaves at nine.",
+        "Please stay on the marked trails.",
+        "Do not feed any of the animals in the park.",
+        "We will stop for lunch at a picnic area near the lake.",
+        "If you feel sick or tired at any time, let one of the leaders know.",
+        "Anyone who wants to take photos from the viewpoint should be careful near the edge of the cliff.",
+    ]),
+    LR("You have started volunteering at a city animal shelter. A staff member is explaining your tasks.", [
+        "Thank you for coming.",
+        "Please wash your hands first.",
+        "The dogs are walked twice a day.",
+        "Each cage has a card with the animal's name.",
+        "Some of the cats are shy, so move slowly around them.",
+        "If an animal looks sick or hurt, tell a staff member right away.",
+        "Volunteers who would like to help at the adoption event next weekend can write their names on the list.",
+    ]),
+    LR("You are at the first meeting of a university photography club. The president is speaking.", [
+        "Welcome to the club.",
+        "We meet every Thursday.",
+        "You don't need an expensive camera.",
+        "Most members just use their smartphones.",
+        "Each month, we choose a theme for a photo contest.",
+        "The best photos will be shown in the library during the school festival.",
+        "Anyone who would like to borrow one of the club's cameras should talk to me after the meeting.",
     ]),
 ]
 INT_PTS = ['最初の1文で答えをはっきり', '理由 + 具体例(体験)で45秒を使い切る', '最後にひとことまとめる']

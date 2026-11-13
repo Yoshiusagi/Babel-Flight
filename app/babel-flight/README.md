@@ -271,7 +271,7 @@ it, with and without the entry (`SPEC`: passage length, 20 s silent reading befo
 each grade, the card turned over after the same question as in the real test, yes/no model answers, pools).
 
 A grade = `entry` (knock, Hello, the 面接カード: "Can I have your card, please?", "Please have a seat.") + `open`
-(the examiner's name, the grade) + one of five `cards` (every grade; 1級: five cards of five topics) + `exit` (the card back, "You may go now."); without
+(the examiner's name, the grade) + one of ten `cards` (every grade; 1級: ten cards of five topics; pools of 12〜24 questions) + `exit` (the card back, "You may go now."); without
 the entry (switch on the intro screen) `close` is used and the greeting starts with "Hello.". `{ex}` is the
 examiner (name + voice, a different one each time, `IV_EX`). Like the real test you don't choose the card: the
 one not done for the longest time is used (`ivPickCard`), or a card picked on the intro screen; history keeps

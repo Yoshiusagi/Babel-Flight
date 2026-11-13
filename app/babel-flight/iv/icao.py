@@ -171,6 +171,41 @@ ICAO_SETS = [
     'Who do you think should be responsible when ground equipment damages an aircraft?',
     ("I think the company that operates the vehicle is responsible, but the airport should also have clear rules and training, so that this kind of accident doesn't happen again.", '地上の車両が機体を傷つけたとき、責任はだれにあると思いますか。')),
 ]
+# ---- set 5 (original): "unable", an emergency descent, a heading to check; a lost suitcase ----
+ICAO_SETS += [
+  ICAO_SET(
+    scene('airport', [['🌙', 262, 28, 28], ['✈️', 150, 88, 86], ['🧑‍✈️', 62, 132, 40], ['🔦', 86, 122, 18], ['🚚', 248, 140, 44]]),
+    'この写真について: パイロットが毎回飛行前に機体を点検するのはなぜだと思いますか。',
+    "In this picture, I can see an airliner at the gate in the evening. On the left, a pilot is walking around the aircraft with a flashlight. I think he is doing the pre-flight inspection. On the right, a catering truck is delivering food and drinks to the plane. It looks like the plane will depart soon.",
+    'Why do you think pilots check the aircraft before every flight?',
+    "They need to make sure there is no damage or leak before the flight. Even a small problem, such as a damaged tyre, can become dangerous during takeoff or landing.",
+    [['Call sign', 'Skyline 630'], ['Aircraft', 'Airbus A321'], ['Route', 'Sapporo/New Chitose (RJCC) → Tokyo/Haneda (RJTT)'], ['Persons on board', '190'], ['Fuel endurance', '2 hours 50 minutes'], ['Cruising level', 'FL370']],
+    [(None, 'a1', '新千歳を離陸した。札幌管制(Sapporo Control)に最初の呼びかけ: いま flight level 280 を通過、flight level 370 へ上昇中',
+      'Sapporo Control, Skyline six three zero, passing flight level two eight zero, climbing to flight level three seven zero.', ['相手 → 自分の便名 → 高度', '上昇中は passing … climbing to …']),
+     ("Skyline six three zero, Sapporo Control, radar contact. Climb and maintain flight level three nine zero.", 'a2', '機体が重く、今は flight level 390 まで上がれない。できないことと理由を伝え、370 を希望しよう',
+      'Unable flight level three nine zero due to aircraft weight. Request flight level three seven zero, Skyline six three zero.', ['できないときは Unable …', '理由(due to …)+ 代わりの希望(Request …)']),
+     ("Skyline six three zero, roger. Maintain flight level three seven zero.", 'a3', None,
+      'Maintain flight level three seven zero, Skyline six three zero.', None),
+     (None, 'a4', '巡航中、客室の気圧が下がる警報(与圧の異常)。酸素マスクをつけ、10,000フィートへ緊急降下を始めた(緊急度は MAYDAY)',
+      'MAYDAY, MAYDAY, MAYDAY. Sapporo Control, Skyline six three zero. We have a pressurization problem. We are making an emergency descent to one zero thousand feet.',
+      ['MAYDAY を3回', '状況 → 今していること(emergency descent)', '高度は one zero thousand feet']),
+     ("Skyline six three zero, roger MAYDAY. Descend and maintain one zero thousand feet. Squawk seven seven zero zero. Say intentions.", 'a5', 'すべて復唱し、仙台へのダイバート(目的地変更)を希望。けが人がいないことも伝えよう',
+      'Descend and maintain one zero thousand feet, squawk seven seven zero zero. We request diversion to Sendai. There are no injuries on board, Skyline six three zero.',
+      ['指示を順に復唱 → 希望(intentions)', 'squawk seven seven zero zero=緊急を示す番号']),
+     ("Skyline six three zero, cleared direct Sendai. Turn left heading zero one zero.", 'a6', '仙台は南にある。北向き(010)の指示は逆方向かも? 従う前に確認しよう',
+      'Confirm left heading zero one zero? Sendai is to the south, Skyline six three zero.', ['おかしいと思ったら Confirm …', '理由も短く']),
+     ("Skyline six three zero, correction. Turn right heading one eight zero, direct Sendai when able. Contact Sendai Approach on one two zero decimal five.", 'a7', None,
+      'Right heading one eight zero, direct Sendai when able, contact Sendai Approach on one two zero decimal five, Skyline six three zero.', ['訂正(correction)後の指示を正確に', '周波数は decimal で']),
+    ],
+    "After we departed from New Chitose, I called Sapporo Control. The controller told us to climb to flight level three nine zero, but the aircraft was too heavy, so I said we were unable and asked to stay at flight level three seven zero. During the cruise, we had a pressurization problem, so I declared a MAYDAY and started an emergency descent to ten thousand feet. I asked to divert to Sendai and reported that no one was injured. Then the controller gave us a heading to the north, which was the wrong direction, so I checked it. The controller corrected it to heading one eight zero, and we were handed over to Sendai Approach.",
+    [scene('airport', [['🧳', 110, 150, 26], ['🧳', 166, 150, 26], ['🧍', 56, 128, 40], ['👩', 236, 124, 46]], signs=[{'x': 150, 'y': 60, 't': 'BAGGAGE CLAIM'}], cap='At baggage claim'),
+     scene('airport', [['🕐', 254, 36, 28], ['👩', 150, 124, 48]], bubbles=[think_b(86, 56, '🧳❓', 54)], cap='An hour later'),
+     scene('office', [['👩', 76, 124, 46], ['📋', 116, 134, 20], ['👨‍💼', 196, 124, 46], ['💻', 230, 140, 24]], cap='At the lost baggage office'),
+     scene('street', [['🏨', 252, 74, 56], ['🚐', 176, 140, 44], ['🧳', 116, 150, 26], ['👩', 70, 124, 44]], bubbles=[think_b(70, 56, '😊', 44)], cap='The next day')],
+    "A woman arrived at the airport and waited for her suitcase at baggage claim. Other passengers picked up their bags, but her suitcase didn't come out. An hour later, she was still waiting, and she looked very worried. She went to the lost baggage office, and a staff member checked on his computer and wrote down where she was staying. The next day, a driver brought her suitcase to her hotel, and she was very relieved.",
+    'What should airlines do to prevent baggage from being lost?',
+    ("Airlines can attach tags with electronic chips to bags so that they can track them. They should also give ground staff enough time to transfer bags between connecting flights.", '航空会社は荷物の紛失を防ぐために何をすべきですか。')),
+]
 ICAO_WU = [
     Q('What do you do?', 'お仕事は何ですか。', ["I'm a first officer at a domestic airline. I fly the Boeing seven-three-seven."], ['パイロットになったつもりで']),
     Q('How long have you been flying?', 'どのくらい飛んでいますか。', ["I've been flying for about five years, and I've been with my current airline for two years."], ['現在完了で']),
@@ -184,6 +219,20 @@ ICAO_WD = [
     Q('What do you do on your days off?', '休みの日は何をしますか。', ['I usually go cycling or spend time with my family.'], ['ふだんのことは現在形']),
     Q('Do you have any plans for your next holiday?', '次の休暇の予定はありますか。', ["Yes, I'm going to visit my grandparents in Hokkaido."], ['予定は be going to']),
     Q('How do you keep your English skills up?', '英語力をどうやって保っていますか。', ['I listen to aviation podcasts and practise radio phraseology with my colleagues.'], ['具体的に']),
+]
+ICAO_WU += [
+    Q('What do you like most about your job?', '仕事のいちばん好きなところは何ですか。', ['I love the view from the cockpit, especially when the sun rises above the clouds.'], ['具体的な場面を']),
+    Q('Where did you do your flight training?', 'どこで飛行訓練を受けましたか。', ['I trained at the Civil Aviation College in Japan. The first part of the training was in Miyazaki.'], ['過去形で']),
+    Q('How do you stay healthy with an irregular schedule?', '不規則な勤務でどうやって健康を保っていますか。', ['I try to sleep well before early flights, and I use the hotel gym when I have a long layover.'], ['習慣は現在形で']),
+    Q('What is the most challenging part of your job?', '仕事でいちばん大変なことは何ですか。', ['Flying in bad weather is the most challenging part. I have to make quick decisions while keeping everyone safe.'], ['理由も']),
+    Q('How do you usually get to the airport?', 'ふだんどうやって空港へ行きますか。', ["I usually take the train, but for very early flights I drive because the trains aren't running yet."], ['ふだんのことは現在形']),
+]
+ICAO_WD += [
+    Q('What are you going to do this weekend?', '今週末は何をする予定ですか。', ["I'm going to go hiking with my friends if the weather is good."], ['予定は be going to']),
+    Q('Which city do you enjoy visiting the most?', 'いちばん訪れるのが楽しい都市はどこですか。', ['I like Sapporo, because the food is great, especially the seafood.'], ['理由も']),
+    Q('Do you have a hobby outside aviation?', '航空以外の趣味はありますか。', ['Yes, I enjoy photography. I often take pictures of landscapes when I travel.'], ['Yes / No + 1〜2文']),
+    Q('How did you find the test today?', '今日のテストはどうでしたか。', ['It was challenging, but I think the radio exchange went well.'], ['感想を過去形で']),
+    Q('What advice would you give to someone who wants to become a pilot?', 'パイロットになりたい人にどんなアドバイスをしますか。', ['Study English and science hard, and take care of your health. The training takes a long time, so never give up.'], ['命令文や should を使って']),
 ]
 ICAO_ITEMS = {
     'pron': {'no': '発音', 'pts': 6, 'overall': True, 'q': '(全体)', 'ja': 'Pronunciation', 'points': ['理解をさまたげない発音・強勢・リズム']},
