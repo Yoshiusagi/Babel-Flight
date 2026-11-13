@@ -59,7 +59,7 @@ var WEAK=[['pron','🗣','発音','音声の問題が多めになり、答えた
 var WEAK_KINDS={pron:['listen','listenjp'],listen:['listenjp','listen'],speak:['j2t','build'],vocab:['j2t','listenjp'],grammar:['build','cloze']};
 function examOK(){return typeof examModeOn==='function'&&examModeOn();}
 /* 検定モード with lessons open (the exam lessons start at プレミアムエコノミー): only then a reason starts there */
-function examUsable(){return examOK()&&typeof cabinLv==='function'&&cabinLv()>=1;}
+function examUsable(){return examOK()&&typeof cabinLv==='function'&&(cabinLv()>=1||(typeof grantBanks==='function'&&grantBanks(save.lang).length>0));}
 function whyList(){
   return WHY.filter(function(w){
     return w[0]!=='exam'||examOK();

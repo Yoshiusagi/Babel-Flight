@@ -1,7 +1,9 @@
 // What each account is allowed to use beyond the free app.
 //
 // Plans in bf_entitlements: "all" (the test account: every feature, no status locks, no daily AI
-// limits) and "family" (every class feature, First-class AI limits). Future paid plans
+// limits), "family" (every class feature, First-class AI limits) and "friend-eiken" (a friend of the
+// owner: only the 英検3級・準2級 lessons, mock tests and interview practice; the rest stays free).
+// Plans that open single 検定 levels list them in PLAN_GRANTS; the page gets them as `grants`. Future paid plans
 // (エコノミー / ビジネス / ファースト) should be written to the same table, and every paid feature
 // checked with `fullAccess()` on the server / `entitled()` in the page, so the test account keeps
 // getting everything.
@@ -32,11 +34,25 @@ const FAMILY_EMAIL_HASHES: readonly string[] = [
   "da9591957bf899abe62d880c2d86fa1739233e9029071eab23870a51c716ec27",
 ];
 
-/** until: when the hidden reward's ファースト ends (ms; 0 = none, see reward.server.ts). */
-export type Entitlements = { plan: string; all: boolean; family: boolean; until: number };
+/**
+ * sha256(SALT + lower-case email) of friends of the owner who get single 検定 levels (plan
+ * "friend-eiken"). Only these levels open; AI limits and everything else stay those of a free account.
+ */
+const FRIEND_EMAIL_HASHES: readonly string[] = [
+  "3c701339c602753b5a09bc9302030379573f9a2866891433d757058fa4dd7916",
+];
+
+/** The 検定 levels (bank keys of the page) each partial plan opens. */
+const PLAN_GRANTS: Readonly<Record<string, readonly string[]>> = {
+  "friend-eiken": ["ek3", "ekp2"],
+};
+
+/** until: when the hidden reward's ファースト ends (ms; 0 = none, see reward.server.ts).
+ *  grants: single 検定 levels open to this account (bank keys), see PLAN_GRANTS. */
+export type Entitlements = { plan: string; all: boolean; family: boolean; until: number; grants: string[] };
 export type AiTier = "all" | "family" | "free";
 
-const FREE: Entitlements = { plan: "", all: false, family: false, until: 0 };
+const FREE: Entitlements = { plan: "", all: false, family: false, until: 0, grants: [] };
 
 /** Called when someone signs in: records the "all" plan for the test account. */
 export async function grantOnSignIn(db: D1Database, claims: FirebaseClaims): Promise<void> {
@@ -50,6 +66,17 @@ export async function grantOnSignIn(db: D1Database, claims: FirebaseClaims): Pro
       .prepare(
         "INSERT INTO bf_entitlements (uid, plan, source, granted_at) VALUES (?, 'family', 'family', ?) " +
           "ON CONFLICT(uid) DO UPDATE SET plan = 'family', source = 'family' WHERE bf_entitlements.plan <> 'all'",
+      )
+      .bind(claims.uid, Date.now())
+      .run();
+    return;
+  }
+  if (FRIEND_EMAIL_HASHES.includes(hash)) {
+    // only for an account without a plan of its own (never lowers "all", "family" or a paid plan)
+    await db
+      .prepare(
+        "INSERT INTO bf_entitlements (uid, plan, source, granted_at) VALUES (?, 'friend-eiken', 'friend', ?) " +
+          "ON CONFLICT(uid) DO UPDATE SET plan = 'friend-eiken', source = 'friend' WHERE bf_entitlements.plan IN ('', 'friend-eiken')",
       )
       .bind(claims.uid, Date.now())
       .run();
@@ -79,7 +106,7 @@ export async function entitlementsOf(db: D1Database, uid: string): Promise<Entit
   const row = await db.prepare("SELECT plan FROM bf_entitlements WHERE uid = ?").bind(uid).first<Row>();
   const until = await rewardUntil(db, uid);
   if (!row || typeof row.plan !== "string") return { ...FREE, until };
-  return { plan: row.plan, all: row.plan === "all", family: row.plan === "family", until };
+  return { plan: row.plan, all: row.plan === "all", family: row.plan === "family", until, grants: [...(PLAN_GRANTS[row.plan] ?? [])] };
 }
 
 /** How much AI the account gets per day: unlimited (test account), First-class (family, or the

@@ -970,6 +970,7 @@ body:has(#sheetHost .sheet) #hf-watermark{bottom:calc(12px + env(safe-area-inset
 .xg-chip{display:flex;flex-direction:column;align-items:center;min-width:64px;padding:8px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink)}
 .xg-chip b{font-size:14.5px}
 .xg-chip small{margin-top:2px;font-size:10.5px;color:var(--ink2)}
+.xg-gift{margin:10px 0 0;padding:8px 10px;border-radius:10px;background:var(--surface2);font-size:13px;line-height:1.5;color:var(--ink2)}
 .xg-chip[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--signal)}
 .xg-chip.locked{opacity:.75}
 .xg-chip.none{opacity:.45}
@@ -6050,11 +6051,17 @@ var LOUNGE_N=10,LOUNGE_BONUS=30;
    Set from the server after sign-in (f13_account.js). Any future paid feature should check entitled().
 
    until: when the hidden reward's ファースト ends (ms, from the server; f17_cabin.js). */
-var ENT={all:false,plan:'',until:0};
+var ENT={all:false,plan:'',until:0,grants:[]};
 function entitled(){return !!(ENT&&ENT.all);}
+/* grants: single 検定 levels opened for this account by the server (bank keys, e.g. a friend's 英検3級・準2級):
+   their lessons, mock tests and interview practice, while the rest stays エコノミー */
+function entGrant(k){return !!(ENT&&ENT.grants&&k&&ENT.grants.indexOf(k)>=0);}
+function entGrants(){return (ENT&&ENT.grants)||[];}
 function entSet(e){
-  var all=!!(e&&e.all),until=e&&typeof e.until==='number'?e.until:0,now=Date.now(),changed=all!==ENT.all||(until>now)!==(ENT.until>now);
-  ENT={all:all,plan:(e&&typeof e.plan==='string')?e.plan:'',until:until};
+  var all=!!(e&&e.all),until=e&&typeof e.until==='number'?e.until:0,now=Date.now();
+  var grants=(e&&Array.isArray(e.grants)?e.grants:[]).filter(function(k){return typeof k==='string'&&/^[a-z0-9-]{1,20}$/.test(k);}).slice(0,20);
+  var changed=all!==ENT.all||(until>now)!==(ENT.until>now)||grants.join()!==(ENT.grants||[]).join();
+  ENT={all:all,plan:(e&&typeof e.plan==='string')?e.plan:'',until:until,grants:grants};
   if(changed){if(typeof applyAccent==='function')applyAccent();if(typeof render==='function'&&view!=='flight'&&view!=='atc'&&view!=='scene')render();}
 }
 /* the highest status ever reached (perks you keep) and the status held now (perks while it lasts) */
@@ -9162,7 +9169,9 @@ function examTarget(L){return xgFind(L,xgLoad()[L]);}
 function bankUnits(b){return b.ids.filter(function(u){return !!UNITS[b.L][u];});}
 function bankItems(b){var out=[];bankUnits(b).forEach(function(u){UNITS[b.L][u].items.forEach(function(x,i){out.push({uid:u,i:i});});});return out;}
 function bankFull(b){return bankItems(b).length>=XBANK_FULL;}
-function bankLocked(b){var lv=cabinLv();return lv>=0&&b.tier>lv;}
+function bankLocked(b){var lv=cabinLv();return lv>=0&&b.tier>lv&&!entGrant(b.key);}
+/* levels of this language opened one by one for the account (a friend's 英検3級・準2級), for a class that has none */
+function grantBanks(L){var lv=cabinLv();return lv<0?[]:entGrants().filter(function(k){return XBANK[k]&&XBANK[k].L===L&&XBANK[k].tier>lv;});}
 /* 合格圏メーター: an estimate from how firmly each phrase of the bank is remembered.
    A phrase counts 1/3 once learned, 2/3 after one more right answer on a later day, and fully after a third. */
 function bankMeter(b){
@@ -9185,7 +9194,7 @@ function examSections(L){
   return (EXAMS[L]||[]).map(function(g){return {key:'x-'+g.key,title:g.title,sub:g.sub,ids:g.ids.filter(function(u){return !!UNITS[L][u];})};});
 }
 function examIsUnit(uid){return /^x-/.test(uid)&&!!UM[uid];}
-function examLocked(uid){var lv=cabinLv();return lv>=0&&examIsUnit(uid)&&examTier(uid)>lv;}
+function examLocked(uid){var lv=cabinLv();return lv>=0&&examIsUnit(uid)&&examTier(uid)>lv&&!entGrant(XBANK_OF[uid]);}
 function examLockText(L,uid){
   if(save.mode!=='exam'||!examModeOn()||!examLocked(uid))return '';
   return '🔒 '+CABINS[examTier(uid)][4];
@@ -9252,16 +9261,17 @@ function examHomeHTML(L){
   if(!examModeOn())return '';
   if(save.mode==='study')return studyMoreHTML(L);
   if(save.mode!=='exam')return '';
-  var lv=cabinLv(),t=examTarget(L),h='<section class="card exam-card"><span class="lbl">EXAM COURSE ・ '+CABINS[lv][2]+'</span>';
+  var lv=cabinLv(),t=examTarget(L),gb=grantBanks(L),h='<section class="card exam-card"><span class="lbl">EXAM COURSE ・ '+CABINS[lv][2]+'</span>';
   if(t){
     h+='<div class="xg-head"><h2 class="jh">'+esc(t.name)+'</h2><button class="xg-chg" type="button" data-xgoal>目標を変える</button></div>'+trainBlockHTML(t.bank);
   }else{
     h+='<h2 class="jh">検定コース</h2><p class="dim" style="font-size:13.5px;margin-top:4px">目標の級やスコアを選ぶと、その問題集が地図に並びます。'+(lv<1?'':'今は検定ごとの最初のレッスンを一覧で表示中。')+'</p>'+
-       (lv<1?'<button class="ghost" type="button" data-xgoal>どんな目標があるか見る<small>'+esc(XHINT[L]||XHINT.en)+'</small></button>'
+       (lv<1&&!gb.length?'<button class="ghost" type="button" data-xgoal>どんな目標があるか見る<small>'+esc(XHINT[L]||XHINT.en)+'</small></button>'
             :'<button class="go sm" type="button" data-xgoal>目標を選ぶ<small>'+esc(XHINT[L]||XHINT.en)+'</small></button>');
-    if(lv<1)h+='<p class="dim hint">🔒 検定コースは「プレミアムエコノミー」から</p>';
+    if(lv<1&&!gb.length)h+='<p class="dim hint">🔒 検定コースは「プレミアムエコノミー」から</p>';
   }
-  h+=(lv>=3?'<button class="ghost" type="button" data-mock-open>本番形式の模試に挑戦<small>時間制限つき ・ 合格ラインの目安つき</small></button>'
+  if(gb.length)h+='<p class="xg-gift">🎁 <span>'+esc(gb.map(function(k){return XBANK[k].name;}).join('・'))+'</span> <span>は特別に使えます(レッスン・模試・面接練習)</span></p>';
+  h+=(lv>=3||gb.length?'<button class="ghost" type="button" data-mock-open>本番形式の模試に挑戦<small>時間制限つき ・ 合格ラインの目安つき</small></button>'
           :'<p class="dim hint">🔒 本番形式の模試(時間制限つき)はファーストから</p>')+
     xTmHTML(L)+'</section>';
   return h;
@@ -9342,8 +9352,10 @@ function mockBanks(L){
   var out=[];(XGOALS[L]||[]).forEach(function(k){k.goals.forEach(function(g){if(g[1]&&XBANK[g[1]]&&out.indexOf(g[1])<0)out.push(g[1]);});});
   return out;
 }
+/* 模試: ファースト, or the levels opened for this account */
+function mockOK(key){return cabinLv()>=3||entGrant(key);}
 function mockSheet(){
-  var L=save.lang,ks=mockBanks(L),t=examTarget(L);
+  var L=save.lang,ks=mockBanks(L).filter(mockOK),t=examTarget(L);
   if(t){var i=ks.indexOf(t.bank.key);if(i>0){ks.splice(i,1);ks.unshift(t.bank.key);}}
   $('sheetHost').innerHTML='<div class="sheet plain" role="dialog" aria-label="模試"><div class="sheet-in"><h3>模試を選ぼう</h3>'+
     '<p class="dim" style="font-size:13.5px">選んだレベルの問題集と、前後のレベルから出題。1問20秒の時間制限つきです。復習の記録には入りません。</p><div class="opt-list">'+
@@ -9358,7 +9370,7 @@ function mockItems(L,key){
 }
 function fmtSec(s){s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+pad2(s%60);}
 function startMock(key){
-  var L=save.lang;if(cabinLv()<3||!XBANK[key]||XBANK[key].L!==L)return;
+  var L=save.lang;if(!mockOK(key)||!XBANK[key]||XBANK[key].L!==L)return;
   closeSheet();
   var items=shuffle(mockItems(L,key));
   startFlight({mode:'mock',lang:L,uid:null,items:items});
@@ -9644,7 +9656,7 @@ document.addEventListener('click',function(e){
   var a=function(n){return t.hasAttribute(n);},g=function(n){return t.getAttribute(n);};
   if(a('data-cabin-set')){var v=parseInt(g('data-cabin-set'),10);if(!(v>=0&&v<=3)||!cabinTester())return;lsSet(CAB_KEY,String(v));lsSet(CAB_DKEY,String(v));applyCabin();render();return;}
   if(a('data-cabin-design')){var dv=parseInt(g('data-cabin-design'),10);if(!(dv>=0&&dv<=cabinLv()))return;lsSet(CAB_DKEY,String(dv));applyCabin();render();return;}
-  if(a('data-mock-open')){if(cabinLv()>=3)mockSheet();return;}
+  if(a('data-mock-open')){if(cabinLv()>=3||grantBanks(save.lang).length)mockSheet();return;}
   if(a('data-xgoal')){xgoalSheet();return;}
   if(a('data-xgoal-set')){xgoalSet(g('data-xgoal-set'));return;}
   if(a('data-xtrain')){startXtrain(g('data-xtrain'));return;}
@@ -10470,7 +10482,9 @@ var MX_DIR={
 var MX_WRITE={email:1,opinion:1,summary:1};
 var MX_NUM=['One','Two','Three','Four'];
 var MX_AXES=['内容','構成','語彙','文法'];
-function mxOn(){return save.lang==='en'&&cabinLv()>=3;}
+function mxOn(){return save.lang==='en'&&(cabinLv()>=3||MX_GRADES.some(function(g){return mxOK(g[0]);}));}
+/* a grade: ファースト, or a level opened for this account (a friend's 英検3級・準2級) */
+function mxOK(k){var lv=cabinLv();return lv>=3||(lv>=0&&entGrant(k));}
 function mxGradeName(k){var g=MX_GRADES.filter(function(x){return x[0]===k;})[0];return g?'英検'+g[1]:'';}
 function mxPass(k){return (k==='ekp1'||k==='ek1')?70:60;}
 function mxWords(s){var m=String(s||'').match(/[A-Za-z0-9]+(?:['’\-][A-Za-z0-9]+)*/g);return m?m.length:0;}
@@ -10497,7 +10511,7 @@ function mxIndex(d){
 
 /* ---- loading and the run kept in this browser ---- */
 function mxOpen(k){
-  if(!mxOn())return;
+  if(!mxOn()||!mxOK(k))return;
   closeSheet();mxStop();
   MX.key=k;MX.data=null;MX.err='';MX.stage='intro';MX.loading=true;
   go('mx');
@@ -10857,7 +10871,7 @@ function mxHTML(){
     if(!mxOn())return;
     var host=document.querySelector('#sheetHost .sheet-in h3');if(!host)return;
     var hist=mxLoadJSON(MX_HISTKEY,{}),run=mxRun();
-    host.insertAdjacentHTML('afterend','<div class="mx-entry"><span class="lbl">本番形式(英検)</span><div class="mx-gs">'+MX_GRADES.map(function(g){
+    host.insertAdjacentHTML('afterend','<div class="mx-entry"><span class="lbl">本番形式(英検)</span><div class="mx-gs">'+MX_GRADES.filter(function(g){return mxOK(g[0]);}).map(function(g){
       var last=(hist[g[0]]||[])[0],sub=run&&run.key===g[0]?'続きあり':last&&last.R?'筆記 '+mxPct(last.R)+'%':last&&last.L?'リスニング '+mxPct(last.L)+'%':'';
       return '<button type="button" class="mx-gb" data-mx-open="'+g[0]+'"><b>'+g[1]+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</button>';}).join('')+'</div>'+
       '<p class="dim hint">本番と同じ順番・問題数・時間で解く模試。下はフレーズの問題集から出るミニ模試です。</p></div>');
@@ -11412,7 +11426,7 @@ function ivGrade(k){return IV_TESTS.filter(function(g){return g.k===k;})[0]||nul
 /* job interviews (航空英語 …) only for the profession that has that certificate, like the 検定 list */
 function ivTests(L){return IV_TESTS.filter(function(g){return g.L===L&&(g.ui||'ja')===UI&&(!g.job||typeof jobxList!=='function'||jobxList(L).indexOf(g.job)>=0);});}
 function ivOn(L){L=L||save.lang;return L===save.lang&&typeof cabinLv==='function'&&cabinLv()>=0&&ivTests(L).length>0;}   /* 日本語, and OPIc / CET in 한국어 / 简体中文 */
-function ivLocked(g){return cabinLv()<g.tier;}
+function ivLocked(g){return cabinLv()<g.tier&&!entGrant(g.k);}   /* entGrant: a friend's 英検3級・準2級 */
 function ivUnit(){return (IV.data&&IV.data.unit)||'カード';}
 function ivFlag(k,dflt){try{var v=localStorage.getItem(k);return v===null?dflt:v!=='0';}catch(e){return dflt;}}
 function ivSub(){return ivFlag(IV_SUBKEY,true);}
@@ -11424,7 +11438,7 @@ function ivCards(){return (IV.data&&IV.data.cards)||[];}
 function ivEntryHTML(L){
   if(!ivOn(L))return '';
   var lv=cabinLv(),hist=ivHist(),ts=ivTests(L),low=Math.min.apply(null,ts.map(function(g){return g.tier;})),gs=[];
-  if(lv<low)return '<p class="dim hint">🔒 '+(UI!=='ja'?'スピーキングテストの練習':L==='en'?'面接(二次試験)の練習':'会話テスト(面接)の練習')+'は「'+CABINS[low][1]+'」から</p>';
+  if(lv<low&&!ts.some(function(g){return entGrant(g.k);}))return '<p class="dim hint">🔒 '+(UI!=='ja'?'スピーキングテストの練習':L==='en'?'面接(二次試験)の練習':'会話テスト(面接)の練習')+'は「'+CABINS[low][1]+'」から</p>';
   ts.forEach(function(g){if(gs.indexOf(g.g)<0)gs.push(g.g);});
   return '<div class="iv-entry">'+gs.map(function(gr){
     return '<span class="lbl">'+IV_GROUPS[gr][0]+'</span><div class="iv-gs">'+ts.filter(function(g){return g.g===gr;}).map(function(g){
@@ -13586,7 +13600,7 @@ var WEAK=[['pron','🗣','発音','音声の問題が多めになり、答えた
 var WEAK_KINDS={pron:['listen','listenjp'],listen:['listenjp','listen'],speak:['j2t','build'],vocab:['j2t','listenjp'],grammar:['build','cloze']};
 function examOK(){return typeof examModeOn==='function'&&examModeOn();}
 /* 検定モード with lessons open (the exam lessons start at プレミアムエコノミー): only then a reason starts there */
-function examUsable(){return examOK()&&typeof cabinLv==='function'&&cabinLv()>=1;}
+function examUsable(){return examOK()&&typeof cabinLv==='function'&&(cabinLv()>=1||(typeof grantBanks==='function'&&grantBanks(save.lang).length>0));}
 function whyList(){
   return WHY.filter(function(w){
     return w[0]!=='exam'||examOK();

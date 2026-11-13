@@ -15,11 +15,17 @@ var LOUNGE_N=10,LOUNGE_BONUS=30;
    Set from the server after sign-in (f13_account.js). Any future paid feature should check entitled().
 
    until: when the hidden reward's ファースト ends (ms, from the server; f17_cabin.js). */
-var ENT={all:false,plan:'',until:0};
+var ENT={all:false,plan:'',until:0,grants:[]};
 function entitled(){return !!(ENT&&ENT.all);}
+/* grants: single 検定 levels opened for this account by the server (bank keys, e.g. a friend's 英検3級・準2級):
+   their lessons, mock tests and interview practice, while the rest stays エコノミー */
+function entGrant(k){return !!(ENT&&ENT.grants&&k&&ENT.grants.indexOf(k)>=0);}
+function entGrants(){return (ENT&&ENT.grants)||[];}
 function entSet(e){
-  var all=!!(e&&e.all),until=e&&typeof e.until==='number'?e.until:0,now=Date.now(),changed=all!==ENT.all||(until>now)!==(ENT.until>now);
-  ENT={all:all,plan:(e&&typeof e.plan==='string')?e.plan:'',until:until};
+  var all=!!(e&&e.all),until=e&&typeof e.until==='number'?e.until:0,now=Date.now();
+  var grants=(e&&Array.isArray(e.grants)?e.grants:[]).filter(function(k){return typeof k==='string'&&/^[a-z0-9-]{1,20}$/.test(k);}).slice(0,20);
+  var changed=all!==ENT.all||(until>now)!==(ENT.until>now)||grants.join()!==(ENT.grants||[]).join();
+  ENT={all:all,plan:(e&&typeof e.plan==='string')?e.plan:'',until:until,grants:grants};
   if(changed){if(typeof applyAccent==='function')applyAccent();if(typeof render==='function'&&view!=='flight'&&view!=='atc'&&view!=='scene')render();}
 }
 /* the highest status ever reached (perks you keep) and the status held now (perks while it lasts) */

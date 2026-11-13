@@ -124,7 +124,9 @@ function examTarget(L){return xgFind(L,xgLoad()[L]);}
 function bankUnits(b){return b.ids.filter(function(u){return !!UNITS[b.L][u];});}
 function bankItems(b){var out=[];bankUnits(b).forEach(function(u){UNITS[b.L][u].items.forEach(function(x,i){out.push({uid:u,i:i});});});return out;}
 function bankFull(b){return bankItems(b).length>=XBANK_FULL;}
-function bankLocked(b){var lv=cabinLv();return lv>=0&&b.tier>lv;}
+function bankLocked(b){var lv=cabinLv();return lv>=0&&b.tier>lv&&!entGrant(b.key);}
+/* levels of this language opened one by one for the account (a friend's 英検3級・準2級), for a class that has none */
+function grantBanks(L){var lv=cabinLv();return lv<0?[]:entGrants().filter(function(k){return XBANK[k]&&XBANK[k].L===L&&XBANK[k].tier>lv;});}
 /* 合格圏メーター: an estimate from how firmly each phrase of the bank is remembered.
    A phrase counts 1/3 once learned, 2/3 after one more right answer on a later day, and fully after a third. */
 function bankMeter(b){
@@ -147,7 +149,7 @@ function examSections(L){
   return (EXAMS[L]||[]).map(function(g){return {key:'x-'+g.key,title:g.title,sub:g.sub,ids:g.ids.filter(function(u){return !!UNITS[L][u];})};});
 }
 function examIsUnit(uid){return /^x-/.test(uid)&&!!UM[uid];}
-function examLocked(uid){var lv=cabinLv();return lv>=0&&examIsUnit(uid)&&examTier(uid)>lv;}
+function examLocked(uid){var lv=cabinLv();return lv>=0&&examIsUnit(uid)&&examTier(uid)>lv&&!entGrant(XBANK_OF[uid]);}
 function examLockText(L,uid){
   if(save.mode!=='exam'||!examModeOn()||!examLocked(uid))return '';
   return '🔒 '+CABINS[examTier(uid)][4];
@@ -214,16 +216,17 @@ function examHomeHTML(L){
   if(!examModeOn())return '';
   if(save.mode==='study')return studyMoreHTML(L);
   if(save.mode!=='exam')return '';
-  var lv=cabinLv(),t=examTarget(L),h='<section class="card exam-card"><span class="lbl">EXAM COURSE ・ '+CABINS[lv][2]+'</span>';
+  var lv=cabinLv(),t=examTarget(L),gb=grantBanks(L),h='<section class="card exam-card"><span class="lbl">EXAM COURSE ・ '+CABINS[lv][2]+'</span>';
   if(t){
     h+='<div class="xg-head"><h2 class="jh">'+esc(t.name)+'</h2><button class="xg-chg" type="button" data-xgoal>目標を変える</button></div>'+trainBlockHTML(t.bank);
   }else{
     h+='<h2 class="jh">検定コース</h2><p class="dim" style="font-size:13.5px;margin-top:4px">目標の級やスコアを選ぶと、その問題集が地図に並びます。'+(lv<1?'':'今は検定ごとの最初のレッスンを一覧で表示中。')+'</p>'+
-       (lv<1?'<button class="ghost" type="button" data-xgoal>どんな目標があるか見る<small>'+esc(XHINT[L]||XHINT.en)+'</small></button>'
+       (lv<1&&!gb.length?'<button class="ghost" type="button" data-xgoal>どんな目標があるか見る<small>'+esc(XHINT[L]||XHINT.en)+'</small></button>'
             :'<button class="go sm" type="button" data-xgoal>目標を選ぶ<small>'+esc(XHINT[L]||XHINT.en)+'</small></button>');
-    if(lv<1)h+='<p class="dim hint">🔒 検定コースは「プレミアムエコノミー」から</p>';
+    if(lv<1&&!gb.length)h+='<p class="dim hint">🔒 検定コースは「プレミアムエコノミー」から</p>';
   }
-  h+=(lv>=3?'<button class="ghost" type="button" data-mock-open>本番形式の模試に挑戦<small>時間制限つき ・ 合格ラインの目安つき</small></button>'
+  if(gb.length)h+='<p class="xg-gift">🎁 <span>'+esc(gb.map(function(k){return XBANK[k].name;}).join('・'))+'</span> <span>は特別に使えます(レッスン・模試・面接練習)</span></p>';
+  h+=(lv>=3||gb.length?'<button class="ghost" type="button" data-mock-open>本番形式の模試に挑戦<small>時間制限つき ・ 合格ラインの目安つき</small></button>'
           :'<p class="dim hint">🔒 本番形式の模試(時間制限つき)はファーストから</p>')+
     xTmHTML(L)+'</section>';
   return h;
@@ -304,8 +307,10 @@ function mockBanks(L){
   var out=[];(XGOALS[L]||[]).forEach(function(k){k.goals.forEach(function(g){if(g[1]&&XBANK[g[1]]&&out.indexOf(g[1])<0)out.push(g[1]);});});
   return out;
 }
+/* 模試: ファースト, or the levels opened for this account */
+function mockOK(key){return cabinLv()>=3||entGrant(key);}
 function mockSheet(){
-  var L=save.lang,ks=mockBanks(L),t=examTarget(L);
+  var L=save.lang,ks=mockBanks(L).filter(mockOK),t=examTarget(L);
   if(t){var i=ks.indexOf(t.bank.key);if(i>0){ks.splice(i,1);ks.unshift(t.bank.key);}}
   $('sheetHost').innerHTML='<div class="sheet plain" role="dialog" aria-label="模試"><div class="sheet-in"><h3>模試を選ぼう</h3>'+
     '<p class="dim" style="font-size:13.5px">選んだレベルの問題集と、前後のレベルから出題。1問20秒の時間制限つきです。復習の記録には入りません。</p><div class="opt-list">'+
@@ -320,7 +325,7 @@ function mockItems(L,key){
 }
 function fmtSec(s){s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+pad2(s%60);}
 function startMock(key){
-  var L=save.lang;if(cabinLv()<3||!XBANK[key]||XBANK[key].L!==L)return;
+  var L=save.lang;if(!mockOK(key)||!XBANK[key]||XBANK[key].L!==L)return;
   closeSheet();
   var items=shuffle(mockItems(L,key));
   startFlight({mode:'mock',lang:L,uid:null,items:items});
@@ -606,7 +611,7 @@ document.addEventListener('click',function(e){
   var a=function(n){return t.hasAttribute(n);},g=function(n){return t.getAttribute(n);};
   if(a('data-cabin-set')){var v=parseInt(g('data-cabin-set'),10);if(!(v>=0&&v<=3)||!cabinTester())return;lsSet(CAB_KEY,String(v));lsSet(CAB_DKEY,String(v));applyCabin();render();return;}
   if(a('data-cabin-design')){var dv=parseInt(g('data-cabin-design'),10);if(!(dv>=0&&dv<=cabinLv()))return;lsSet(CAB_DKEY,String(dv));applyCabin();render();return;}
-  if(a('data-mock-open')){if(cabinLv()>=3)mockSheet();return;}
+  if(a('data-mock-open')){if(cabinLv()>=3||grantBanks(save.lang).length)mockSheet();return;}
   if(a('data-xgoal')){xgoalSheet();return;}
   if(a('data-xgoal-set')){xgoalSet(g('data-xgoal-set'));return;}
   if(a('data-xtrain')){startXtrain(g('data-xtrain'));return;}

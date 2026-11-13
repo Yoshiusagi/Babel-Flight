@@ -45,7 +45,7 @@ function ivGrade(k){return IV_TESTS.filter(function(g){return g.k===k;})[0]||nul
 /* job interviews (航空英語 …) only for the profession that has that certificate, like the 検定 list */
 function ivTests(L){return IV_TESTS.filter(function(g){return g.L===L&&(g.ui||'ja')===UI&&(!g.job||typeof jobxList!=='function'||jobxList(L).indexOf(g.job)>=0);});}
 function ivOn(L){L=L||save.lang;return L===save.lang&&typeof cabinLv==='function'&&cabinLv()>=0&&ivTests(L).length>0;}   /* 日本語, and OPIc / CET in 한국어 / 简体中文 */
-function ivLocked(g){return cabinLv()<g.tier;}
+function ivLocked(g){return cabinLv()<g.tier&&!entGrant(g.k);}   /* entGrant: a friend's 英検3級・準2級 */
 function ivUnit(){return (IV.data&&IV.data.unit)||'カード';}
 function ivFlag(k,dflt){try{var v=localStorage.getItem(k);return v===null?dflt:v!=='0';}catch(e){return dflt;}}
 function ivSub(){return ivFlag(IV_SUBKEY,true);}
@@ -57,7 +57,7 @@ function ivCards(){return (IV.data&&IV.data.cards)||[];}
 function ivEntryHTML(L){
   if(!ivOn(L))return '';
   var lv=cabinLv(),hist=ivHist(),ts=ivTests(L),low=Math.min.apply(null,ts.map(function(g){return g.tier;})),gs=[];
-  if(lv<low)return '<p class="dim hint">🔒 '+(UI!=='ja'?'スピーキングテストの練習':L==='en'?'面接(二次試験)の練習':'会話テスト(面接)の練習')+'は「'+CABINS[low][1]+'」から</p>';
+  if(lv<low&&!ts.some(function(g){return entGrant(g.k);}))return '<p class="dim hint">🔒 '+(UI!=='ja'?'スピーキングテストの練習':L==='en'?'面接(二次試験)の練習':'会話テスト(面接)の練習')+'は「'+CABINS[low][1]+'」から</p>';
   ts.forEach(function(g){if(gs.indexOf(g.g)<0)gs.push(g.g);});
   return '<div class="iv-entry">'+gs.map(function(gr){
     return '<span class="lbl">'+IV_GROUPS[gr][0]+'</span><div class="iv-gs">'+ts.filter(function(g){return g.g===gr;}).map(function(g){

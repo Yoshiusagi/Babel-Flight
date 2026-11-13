@@ -216,6 +216,14 @@ and the AI routes skip the daily limits (`left` is reported as 999). Miles and s
 **Any future paid feature must check `entitled()` in the page and `fullAccess()` on the server**, so the test
 account keeps getting everything automatically.
 
+Single 検定 levels can be opened for one account without a class: plan `friend-eiken` (a friend of the owner,
+also matched by a salted SHA-256 of the email, never stored in plain text since the repository is public) gets
+`grants: ["ek3", "ekp2"]` from `PLAN_GRANTS`. The page (`entGrant()` / `grantBanks()`) then opens those levels'
+lessons (`bankLocked` / `examLocked`), the 目標 sheet, the mini 模試 and the full 模試 (`mockOK` / `mxOK`, only
+those grades listed) and the interview practice (`ivLocked`), with a 🎁 note on the 検定 card; the class stays
+エコノミー, the AI stays free, and the iPhone app shows none of it. The grant never lowers an account that already
+has `all`, `family` or another plan. To stop it, remove the hash and the account's `bf_entitlements` row.
+
 ## Classes (搭乗クラス)
 
 `parts/f17_cabin.js` + `f17_css.html` (検定 data in `f17_exam.js`). `cabinLv()`: -1 in the iPhone app (no classes

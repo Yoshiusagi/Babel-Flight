@@ -24,7 +24,9 @@ var MX_DIR={
 var MX_WRITE={email:1,opinion:1,summary:1};
 var MX_NUM=['One','Two','Three','Four'];
 var MX_AXES=['内容','構成','語彙','文法'];
-function mxOn(){return save.lang==='en'&&cabinLv()>=3;}
+function mxOn(){return save.lang==='en'&&(cabinLv()>=3||MX_GRADES.some(function(g){return mxOK(g[0]);}));}
+/* a grade: ファースト, or a level opened for this account (a friend's 英検3級・準2級) */
+function mxOK(k){var lv=cabinLv();return lv>=3||(lv>=0&&entGrant(k));}
 function mxGradeName(k){var g=MX_GRADES.filter(function(x){return x[0]===k;})[0];return g?'英検'+g[1]:'';}
 function mxPass(k){return (k==='ekp1'||k==='ek1')?70:60;}
 function mxWords(s){var m=String(s||'').match(/[A-Za-z0-9]+(?:['’\-][A-Za-z0-9]+)*/g);return m?m.length:0;}
@@ -51,7 +53,7 @@ function mxIndex(d){
 
 /* ---- loading and the run kept in this browser ---- */
 function mxOpen(k){
-  if(!mxOn())return;
+  if(!mxOn()||!mxOK(k))return;
   closeSheet();mxStop();
   MX.key=k;MX.data=null;MX.err='';MX.stage='intro';MX.loading=true;
   go('mx');
@@ -411,7 +413,7 @@ function mxHTML(){
     if(!mxOn())return;
     var host=document.querySelector('#sheetHost .sheet-in h3');if(!host)return;
     var hist=mxLoadJSON(MX_HISTKEY,{}),run=mxRun();
-    host.insertAdjacentHTML('afterend','<div class="mx-entry"><span class="lbl">本番形式(英検)</span><div class="mx-gs">'+MX_GRADES.map(function(g){
+    host.insertAdjacentHTML('afterend','<div class="mx-entry"><span class="lbl">本番形式(英検)</span><div class="mx-gs">'+MX_GRADES.filter(function(g){return mxOK(g[0]);}).map(function(g){
       var last=(hist[g[0]]||[])[0],sub=run&&run.key===g[0]?'続きあり':last&&last.R?'筆記 '+mxPct(last.R)+'%':last&&last.L?'リスニング '+mxPct(last.L)+'%':'';
       return '<button type="button" class="mx-gb" data-mx-open="'+g[0]+'"><b>'+g[1]+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</button>';}).join('')+'</div>'+
       '<p class="dim hint">本番と同じ順番・問題数・時間で解く模試。下はフレーズの問題集から出るミニ模試です。</p></div>');
