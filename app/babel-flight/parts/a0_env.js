@@ -4,8 +4,12 @@
    another address: API calls go to BF_API and sign in with a bearer token instead of a cookie. */
 var BF_SITE='https://babel-flight.higgsfield.app';
 /* the website's own addresses: accounts, usage counting, install and share links run only there.
-   The Higgsfield address now; the owner's Cloudflare account (*.workers.dev, then the own domain) after the move. */
-var BF_HOSTS=/(^|\.)higgsfield\.(app|ai)$|\.workers\.dev$/;
+   The Higgsfield address, the owner's Cloudflare account (*.workers.dev) and the own domain babelflight.com
+   (the same Cloudflare Worker and database as workers.dev). */
+var BF_HOSTS=/(^|\.)higgsfield\.(app|ai)$|\.workers\.dev$|^(www\.)?babelflight\.com$/;
+/* one address for the own domain: www.babelflight.com opens babelflight.com (the progress on this device is kept
+   per address, so two addresses would split it) */
+try{if(location.hostname==='www.babelflight.com'&&!window.claude)location.replace('https://babelflight.com'+location.pathname+location.search+location.hash);}catch(e){}
 /* set at the move to the new address (e.g. 'https://babel-flight.app'): the old Higgsfield address then only
    shows a note with a link there (f22_move.js) */
 var BF_MOVED_TO='';

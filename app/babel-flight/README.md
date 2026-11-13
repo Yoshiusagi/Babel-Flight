@@ -142,6 +142,9 @@ that had no translation is counted there.
   DELE/CILS, so the dictionaries reuse them (`i18n/<ui>/xstarter.tsv`; JLPT notes in `ja.tsv`).
 - Chinese and Japanese exam phrases carry the word split (5th column of `XU`) for 並べ替え; the Arabic readings for
   the other display languages are in `ROM_AR` (`f27_rom.js`).
+- Every 英検 level (5級〜1級) has 15 steps (120 phrases): ステップ6〜15 (`x-ek3f` … `x-ek3o`) are grammar, vocabulary,
+  idiom, writing/summary, reading-flow and speaking themes, original sentences. `XBANK_FULL` (40) is only the minimum for the meter, which is always
+  worked out over the whole bank, so it goes down when a bank grows (the remembered phrases stay).
 - Each level is 5 steps of 8 phrases, like 英検 (`x-hsk2`, `x-hsk2b` … `x-hsk2e`; `xSteps` collects them into the
   bank; DELE・CILS・TOPIK in `f17_exam.js` list their steps in `XBANK`; TOEIC・IELTS・TOEFL・ICAO・英検準1級/1級 and
   TOEIC Speaking・OPIc・CET too, with their own meanings, translated in `i18n/<ui>/xen.tsv`), so a goal has the 40 phrases (`XBANK_FULL`) the 合格圏メーター needs. Steps 2–5 have themes (初級: 買い物・食事 /

@@ -1788,8 +1788,12 @@ html.ui-busy .uipick{opacity:.55;pointer-events:none}
    another address: API calls go to BF_API and sign in with a bearer token instead of a cookie. */
 var BF_SITE='https://babel-flight.higgsfield.app';
 /* the website's own addresses: accounts, usage counting, install and share links run only there.
-   The Higgsfield address now; the owner's Cloudflare account (*.workers.dev, then the own domain) after the move. */
-var BF_HOSTS=/(^|\.)higgsfield\.(app|ai)$|\.workers\.dev$/;
+   The Higgsfield address, the owner's Cloudflare account (*.workers.dev) and the own domain babelflight.com
+   (the same Cloudflare Worker and database as workers.dev). */
+var BF_HOSTS=/(^|\.)higgsfield\.(app|ai)$|\.workers\.dev$|^(www\.)?babelflight\.com$/;
+/* one address for the own domain: www.babelflight.com opens babelflight.com (the progress on this device is kept
+   per address, so two addresses would split it) */
+try{if(location.hostname==='www.babelflight.com'&&!window.claude)location.replace('https://babelflight.com'+location.pathname+location.search+location.hash);}catch(e){}
 /* set at the move to the new address (e.g. 'https://babel-flight.app'): the old Higgsfield address then only
    shows a note with a link there (f22_move.js) */
 var BF_MOVED_TO='';
@@ -7191,7 +7195,7 @@ XU('x-ek2','英検2級 ステップ1','EIKEN 2 STEP 1','en',[
  ["Volunteering gives young people valuable experience.","","ボランティアは若者に貴重な経験を与えます。",""],
  ["This policy may have a negative impact on small businesses.","","この政策は小さな会社に悪い影響を与えるかもしれません。",""],
  ["For these two reasons, I agree with the idea.","","これら2つの理由から、私はその考えに賛成です。","英作文のまとめで使える表現。"]]);
-/* ---- 英検5級〜2級: ステップ2〜5 (each level has 40 phrases in all) ---- */
+/* ---- 英検5級〜2級: ステップ2〜5 (every 英検 level goes on with ステップ6〜15 below its ステップ5) ---- */
 XU('x-ek5b','英検5級 ステップ2','EIKEN 5 STEP 2','en',[
  ["I get up at seven every morning.","","私は毎朝7時に起きます。","時刻の前は at。"],
  ["She doesn't eat breakfast.","","彼女は朝ごはんを食べません。","主語が3人称単数の否定文は doesn't+動詞の原形。"],
@@ -7228,6 +7232,97 @@ XU('x-ek5e','英検5級 ステップ5','EIKEN 5 STEP 5','en',[
  ["That's a good idea.","","それはいい考えですね。",""],
  ["I'm sorry I'm late.","","遅れてごめんなさい。",""],
  ["How about you?","","あなたはどうですか。","相手に同じ質問を返すときに使います。"]]);
+/* ---- 英検5級: ステップ6〜15 (each 8 original phrases, 120 in all with ステップ1〜5) ---- */
+XU('x-ek5f','英検5級 ステップ6','EIKEN 5 STEP 6','en',[
+ ["I'm from Osaka.","","私は大阪の出身です。","be from 〜=〜の出身です。"],
+ ["Where are you from?","","あなたはどこの出身ですか。","答えは I'm from 〜. で言います。"],
+ ["Are you a new student?","","あなたは新しい生徒ですか。","Yes, I am. / No, I'm not. で答えます。"],
+ ["He is my best friend.","","彼は私のいちばんの友だちです。","best friend=親友。"],
+ ["We are in the same class.","","私たちは同じクラスです。","主語が we なので are を使います。"],
+ ["Is this your umbrella? Yes, it is.","","これはあなたのかさですか。はい、そうです。","this で聞かれたら、答えでは it を使います。"],
+ ["They aren't at home now.","","彼らは今、家にいません。","aren't=are not。"],
+ ["My name is Kenta. Please call me Ken.","","ぼくの名前はケンタです。ケンと呼んでください。","call 人 〜=人を〜と呼ぶ。"]]);
+XU('x-ek5g','英検5級 ステップ7','EIKEN 5 STEP 7','en',[
+ ["My father drives to work.","","父は車で仕事に行きます。","主語が he・she や1人の人のときは、動詞に s をつけます。"],
+ ["Does your brother play baseball? Yes, he does.","","お兄さんは野球をしますか。はい、します。","Does で聞かれたら does で答えます。"],
+ ["She watches TV after dinner.","","彼女は夕食のあとテレビを見ます。","watch は es をつけて watches。"],
+ ["Ken studies English every day.","","ケンは毎日英語を勉強します。","study は y を i にかえて studies。"],
+ ["My mother doesn't drink coffee.","","母はコーヒーを飲みません。","doesn't のあとの動詞は s をつけない形(drink)。"],
+ ["Do you have any brothers or sisters?","","きょうだいはいますか。","any=(質問の文で)いくつか・だれか。"],
+ ["I usually walk to school.","","私はふだん歩いて学校へ行きます。","usually=ふだんは。動詞の前に置きます。"],
+ ["What do you do on Sundays?","","日曜日には何をしますか。","on Sundays=(毎週)日曜日に。"]]);
+XU('x-ek5h','英検5級 ステップ8','EIKEN 5 STEP 8','en',[
+ ["When is your birthday?","","あなたの誕生日はいつですか。","when=いつ。"],
+ ["Which bag is yours?","","どのかばんがあなたのものですか。","which=どちらの・どの。yours=あなたのもの。"],
+ ["Why do you like summer? Because I can swim in the sea.","","なぜ夏が好きなのですか。海で泳げるからです。","Why で聞かれたら Because 〜 で理由を答えます。"],
+ ["How many students are in your class?","","あなたのクラスには何人の生徒がいますか。","How many のあとは複数の形(students)。"],
+ ["How is the weather in Sapporo? It's snowy.","","札幌の天気はどうですか。雪です。","How is the weather?=天気はどうですか。"],
+ ["Who makes breakfast in your family?","","あなたの家ではだれが朝ごはんを作りますか。","who が主語のときは、動詞に s をつけます(makes)。"],
+ ["How long is the movie?","","その映画はどのくらいの長さですか。","How long=どのくらい長い。"],
+ ["What time does the shop open?","","その店は何時に開きますか。","What time=何時。"]]);
+XU('x-ek5i','英検5級 ステップ9','EIKEN 5 STEP 9','en',[
+ ["Can you help me? Sure.","","手伝ってくれる?いいよ。","Can you 〜?=〜してくれますか。"],
+ ["I can't ride a unicycle.","","私は一輪車に乗れません。","can't=can not(〜できない)。"],
+ ["Don't eat in the library.","","図書館で食べてはいけません。","Don't+動詞=〜してはいけない。"],
+ ["Be quiet, please.","","静かにしてください。","be 動詞の命令文は Be で始めます。"],
+ ["Let's go to the zoo this Saturday. Yes, let's.","","今週の土曜日に動物園に行こう。うん、行こう。","Let's 〜.=〜しよう。答えは Yes, let's. など。"],
+ ["Can I have some water?","","お水をもらえますか。","Can I have 〜?=〜をもらえますか。"],
+ ["Look at that bird!","","あの鳥を見て!","look at=〜を見る。"],
+ ["Come here, Taro.","","タロウ、こっちに来て。","名前で呼びかけるときは、コンマで区切ります。"]]);
+XU('x-ek5j','英検5級 ステップ10','EIKEN 5 STEP 10','en',[
+ ["What are you doing now? I'm making a cake.","","今何をしているの?ケーキを作っているよ。","make は e をとって making。"],
+ ["My brother is swimming in the pool.","","弟はプールで泳いでいます。","swim は m を重ねて swimming。"],
+ ["Is it raining outside? No, it isn't.","","外は雨が降っていますか。いいえ、降っていません。","天気の文の主語は it。"],
+ ["They are playing basketball in the gym.","","彼らは体育館でバスケットボールをしています。","gym=体育館。"],
+ ["Look! The baby is sleeping.","","見て!赤ちゃんがねむっているよ。","Look! のあとは「今」していること=進行形がよく来ます。"],
+ ["We aren't watching TV now.","","私たちは今テレビを見ていません。","進行形の否定は be 動詞に not。"],
+ ["Who is singing in the music room?","","音楽室でだれが歌っていますか。","who が主語なので is を使います。"],
+ ["She is talking on the phone.","","彼女は電話で話しています。","on the phone=電話で。"]]);
+XU('x-ek5k','英検5級 ステップ11','EIKEN 5 STEP 11','en',[
+ ["My piano lesson is at four on Tuesday.","","ピアノのレッスンは火曜日の4時です。","時刻の前は at、曜日の前は on。"],
+ ["In Japan, school starts in April.","","日本では学校は4月に始まります。","月の前は in。"],
+ ["I go to bed at ten.","","私は10時に寝ます。","go to bed=寝る。"],
+ ["We don't have school on Saturdays.","","土曜日は学校がありません。","on Saturdays=(毎週)土曜日に。"],
+ ["What's the date today? It's May tenth.","","今日は何月何日ですか。5月10日です。","日付は date、曜日は day でたずねます。"],
+ ["My favorite season is spring.","","私のいちばん好きな季節は春です。","season=季節。"],
+ ["See you on Friday.","","金曜日に会おうね。","別れるときのあいさつ。"],
+ ["It's hot in August.","","8月は暑いです。","暑さ・寒さの文の主語は it。"]]);
+XU('x-ek5l','英検5級 ステップ12','EIKEN 5 STEP 12','en',[
+ ["This is my aunt. She lives in Okinawa.","","こちらは私のおばです。沖縄に住んでいます。","人を紹介するときは This is 〜. と言います。"],
+ ["My uncle is a cook at a hotel.","","おじはホテルの料理人です。","cook=料理人(動詞なら「料理する」)。"],
+ ["These are my new shoes.","","これは私の新しいくつです。","these=これら。複数なので are を使います。"],
+ ["Whose cap is that? It's Tom's.","","あれはだれのぼうしですか。トムのものです。","Tom's=トムのもの。"],
+ ["I have two cats and a dog.","","私はねこを2ひきと犬を1ぴき飼っています。","2つ以上は cats のように s をつけます。"],
+ ["My sister has long hair.","","姉は髪が長いです。","has は have の s がつく形。"],
+ ["Our teacher is from Canada.","","私たちの先生はカナダの出身です。",""],
+ ["Those boys are my classmates.","","あの男の子たちは私のクラスメートです。","those=あれら(遠くの複数のもの・人)。"]]);
+XU('x-ek5m','英検5級 ステップ13','EIKEN 5 STEP 13','en',[
+ ["What do you want for lunch?","","お昼ごはんに何が食べたい?","for lunch=お昼ごはんに。"],
+ ["Two hamburgers, please.","","ハンバーガーを2つください。","注文は 物+please で言えます。"],
+ ["Do you want some cookies? Yes, please.","","クッキーはいかが?はい、お願いします。","すすめられたら Yes, please. / No, thank you. で答えます。"],
+ ["I don't like tomatoes.","","私はトマトが好きではありません。","好ききらいを言うときは tomatoes のように複数の形にします。"],
+ ["My mother makes curry and rice on Sundays.","","母は日曜日にカレーライスを作ります。","curry and rice=カレーライス。"],
+ ["How much are these apples? They're 200 yen.","","このりんごはいくらですか。200円です。","these apples は複数なので are を使います。"],
+ ["This soup is very good.","","このスープはとてもおいしいです。","食べ物の good=おいしい。"],
+ ["I'm hungry. Me, too.","","おなかがすいた。ぼくも。","Me, too.=私も。"]]);
+XU('x-ek5n','英検5級 ステップ14','EIKEN 5 STEP 14','en',[
+ ["I'm in the art club.","","私は美術部に入っています。","be in the 〜 club=〜部に入っている。"],
+ ["We have P.E. today.","","今日は体育があります。","P.E.=体育。"],
+ ["Mr. Sato teaches math.","","佐藤先生は数学を教えています。","男性の先生は Mr.、女性の先生は Ms. をつけます。"],
+ ["Science is difficult but interesting.","","理科は難しいけれどおもしろいです。","but=しかし・けれど。"],
+ ["Open your textbooks to page ten.","","教科書の10ページを開いてください。","授業でよく聞く言い方。"],
+ ["How do you say “neko” in English?","","「ねこ」は英語で何と言いますか。","英語の言い方がわからないときに使えます。"],
+ ["Can I go to the bathroom?","","トイレに行ってもいいですか。","家や学校のトイレは bathroom とよく言います。"],
+ ["Let's study together in the library.","","図書館でいっしょに勉強しよう。","together=いっしょに。"]]);
+XU('x-ek5o','英検5級 ステップ15','EIKEN 5 STEP 15','en',[
+ ["Good morning, Ms. Green.","","おはようございます、グリーン先生。","朝のあいさつ。"],
+ ["How are you? I'm fine, thank you.","","元気ですか。元気です、ありがとう。",""],
+ ["You're welcome.","","どういたしまして。","Thank you. への返事。"],
+ ["Good luck!","","がんばってね!","試合やテストの前にかけることば。"],
+ ["Sorry, I don't know.","","ごめんなさい、わかりません。",""],
+ ["Happy birthday! This is for you.","","誕生日おめでとう!これはあなたにです。","プレゼントをわたすときは This is for you. と言います。"],
+ ["Let me see.","","ええと。","考えるときのつなぎことば。"],
+ ["Just a minute, please.","","少し待ってください。","minute=分。「ちょっと」の意味でも使います。"]]);
 XU('x-ek4b','英検4級 ステップ2','EIKEN 4 STEP 2','en',[
  ["I visited my grandmother last Sunday.","","先週の日曜日、祖母に会いに行きました。","規則動詞の過去形は -ed をつけます。"],
  ["Did you see the movie?","","あなたはその映画を見ましたか。","過去の疑問文は Did+主語+動詞の原形。"],
@@ -7264,6 +7359,97 @@ XU('x-ek4e','英検4級 ステップ5','EIKEN 4 STEP 5','en',[
  ["Would you like some more cake?","","ケーキをもう少しいかがですか。","Would you like 〜?=〜はいかがですか(ていねいなすすめ)。"],
  ["What's wrong?","","どうしたの?","相手の様子が気になるときに。"],
  ["I'm glad to hear that.","","それを聞いてうれしいです。","気持ち+to+動詞=〜して(うれしい など)。"]]);
+/* ---- 英検4級: ステップ6〜15 (each 8 original phrases, 120 in all with ステップ1〜5) ---- */
+XU('x-ek4f','英検4級 ステップ6','EIKEN 4 STEP 6','en',[
+ ["I studied for the test last night.","","昨夜はテスト勉強をしました。","study の過去形は studied(y を i にかえて ed)。"],
+ ["We had a good time at the party.","","パーティーではとても楽しく過ごしました。","have a good time=楽しく過ごす。have の過去形は had。"],
+ ["She didn't come to school yesterday.","","彼女は昨日学校に来ませんでした。","didn't のあとは動詞の元の形(come)。"],
+ ["Where did you go last weekend?","","先週末はどこに行きましたか。","過去の質問は Did / did を使います。"],
+ ["I saw a famous singer at the airport.","","空港で有名な歌手を見かけました。","see の過去形は saw。"],
+ ["He wrote a letter to his grandmother.","","彼はおばあさんに手紙を書きました。","write の過去形は wrote。"],
+ ["How did you get there? By train.","","そこへはどうやって行ったの?電車で。","How=どうやって。答えは By+乗り物。"],
+ ["I left my umbrella on the bus.","","バスにかさを置き忘れました。","leave(置いていく)の過去形は left。"]]);
+XU('x-ek4g','英検4級 ステップ7','EIKEN 4 STEP 7','en',[
+ ["What were you doing at nine last night?","","昨夜9時に何をしていましたか。","過去進行形=was / were+〜ing(〜していた)。"],
+ ["I was taking a bath then.","","そのときはおふろに入っていました。","then=そのとき。take a bath=おふろに入る。"],
+ ["It was very hot yesterday.","","昨日はとても暑かったです。","is の過去形は was。"],
+ ["The students were cleaning the classroom.","","生徒たちは教室をそうじしていました。","主語が複数なら were。"],
+ ["Were you at home last Sunday? No, I wasn't.","","この前の日曜日は家にいましたか。いいえ、いませんでした。","wasn't=was not。"],
+ ["When I got up, it was snowing.","","起きたとき、雪が降っていました。","when=〜したとき。"],
+ ["My mother was busy this morning.","","母は今朝いそがしかったです。","this morning は今日の朝のこと。過去形で使えます。"],
+ ["There was a big festival in our town.","","私たちの町で大きなお祭りがありました。","There was 〜=〜があった。"]]);
+XU('x-ek4h','英検4級 ステップ8','EIKEN 4 STEP 8','en',[
+ ["I'm going to stay with my uncle in Kobe.","","神戸のおじの家に泊まる予定です。","be going to=〜するつもり(もう決めている予定)。stay with 人=人の家に泊まる。"],
+ ["It's going to rain this afternoon.","","今日の午後は雨が降りそうです。","空を見て「降りそう」と言うときにも be going to を使います。"],
+ ["Will it be cold tomorrow? Yes, it will.","","明日は寒くなりますか。はい、なります。","will のあとは動詞の元の形(be)。"],
+ ["I won't be late again.","","もう遅れません。","won't=will not。"],
+ ["What are you going to buy at the mall?","","ショッピングモールで何を買うつもりですか。",""],
+ ["My sister is going to get married next year.","","姉は来年結婚する予定です。","get married=結婚する。"],
+ ["I think it'll be a nice day.","","いい天気になると思います。","it'll=it will。"],
+ ["We'll have a test next Monday.","","来週の月曜日にテストがあります。","next Monday=次の月曜日(前に on はつけません)。"]]);
+XU('x-ek4i','英検4級 ステップ9','EIKEN 4 STEP 9','en',[
+ ["There are thirty students in my class.","","私のクラスには30人の生徒がいます。","複数なら There are。"],
+ ["Is there a convenience store near your house?","","家の近くにコンビニはありますか。","答えは Yes, there is. / No, there isn't.。"],
+ ["Your bag is under the desk.","","あなたのかばんは机の下にあります。","under=〜の下に。"],
+ ["The cat is sleeping between the two chairs.","","ねこが2つのいすの間でねています。","between=(2つの)間に。"],
+ ["There aren't any eggs in the fridge.","","冷蔵庫に卵が1つもありません。","not any=1つもない。fridge=冷蔵庫。"],
+ ["The bank is next to the post office.","","銀行は郵便局のとなりにあります。","next to=〜のとなりに。"],
+ ["My house is near the river.","","私の家は川の近くにあります。","near=〜の近くに。"],
+ ["We waited for her in front of the station.","","私たちは駅の前で彼女を待ちました。","wait for 人=人を待つ。"]]);
+XU('x-ek4j','英検4級 ステップ10','EIKEN 4 STEP 10','en',[
+ ["I want to visit Hokkaido someday.","","いつか北海道に行ってみたいです。","want to 〜=〜したい。"],
+ ["My dream is to be a pilot.","","私の夢はパイロットになることです。","to 〜=〜すること。is のあとに来て夢の中身を言います。"],
+ ["I need something to drink.","","何か飲み物がほしいです。","something to drink=飲むための何か(飲み物)。"],
+ ["I'm interested in making robots.","","私はロボット作りに興味があります。","be interested in=〜に興味がある。in のあとは〜ing。"],
+ ["She likes to read books in bed.","","彼女はベッドで本を読むのが好きです。","like to 〜=〜するのが好き。"],
+ ["It started to snow in the evening.","","夕方に雪が降り始めました。","start to 〜=〜し始める(start 〜ing でもOK)。"],
+ ["Playing the guitar is fun.","","ギターをひくのは楽しいです。","〜ing(〜すること)が文の主語になっています。"],
+ ["I called Mike to ask about the homework.","","宿題のことを聞くためにマイクに電話しました。","to 〜=〜するために(目的)。"]]);
+XU('x-ek4k','英検4級 ステップ11','EIKEN 4 STEP 11','en',[
+ ["My bike is newer than yours.","","私の自転車はあなたのより新しいです。","比較級+than=〜より…。"],
+ ["Who is the youngest in your family?","","あなたの家族でいちばん若いのはだれですか。","the+〜est=いちばん〜。"],
+ ["Baseball is more exciting than golf for me.","","私にとって、野球はゴルフよりわくわくします。","長い語は more で比較級。for me=私にとって。"],
+ ["Soccer is the most popular sport in our school.","","サッカーは私たちの学校でいちばん人気のスポーツです。","長い語の最上級は the most。"],
+ ["Please show me your notebook.","","あなたのノートを見せてください。","show 人 物=人に物を見せる。"],
+ ["Can you tell me the way to the museum?","","博物館への道を教えてもらえますか。","tell 人 the way to 〜=人に〜への道を教える。"],
+ ["My friend sent me a birthday card.","","友だちが誕生日カードを送ってくれました。","send の過去形は sent。"],
+ ["I'll give you this pen.","","このペンをあなたにあげます。","give 人 物=人に物をあげる。"]]);
+XU('x-ek4l','英検4級 ステップ12','EIKEN 4 STEP 12','en',[
+ ["I like dogs, but my brother likes cats.","","私は犬が好きですが、弟はねこが好きです。","but=しかし。"],
+ ["If you're tired, you can go home.","","疲れているなら、家に帰っていいですよ。","if=もし〜なら。"],
+ ["Do you want tea or coffee?","","紅茶とコーヒー、どちらがいいですか。","or=または。"],
+ ["I must go now.","","もう行かなくちゃ。","must=〜しなければならない。"],
+ ["We have to wear uniforms at school.","","学校では制服を着なければなりません。","have to=〜しなければならない(must とほぼ同じ)。"],
+ ["You should take an umbrella.","","かさを持っていったほうがいいですよ。","should=〜したほうがいい。"],
+ ["Could you open the door for me?","","ドアを開けてもらえますか。","Could you 〜?=〜していただけますか(ていねいなお願い)。"],
+ ["May I come in?","","入ってもいいですか。","May I 〜?=〜してもいいですか。"]]);
+XU('x-ek4m','英検4級 ステップ13','EIKEN 4 STEP 13','en',[
+ ["We stayed at a hotel near the beach.","","私たちは海の近くのホテルに泊まりました。","stay at 場所=〜に泊まる。"],
+ ["I took a lot of pictures in Kyoto.","","京都でたくさん写真をとりました。","take pictures=写真をとる。take の過去形は took。"],
+ ["My family went camping in the mountains.","","家族で山へキャンプに行きました。","go camping=キャンプに行く。"],
+ ["The flight to Hawaii was seven hours long.","","ハワイへの飛行機は7時間でした。","flight=飛行機の便。"],
+ ["I bought some souvenirs for my friends.","","友だちにおみやげを買いました。","souvenir=おみやげ。buy の過去形は bought。"],
+ ["It was my first time riding a horse.","","馬に乗ったのは初めてでした。","my first time 〜ing=初めて〜すること。"],
+ ["We visited many old temples.","","私たちはたくさんの古いお寺を訪れました。","visit=訪れる。"],
+ ["I'm looking forward to the trip.","","旅行を楽しみにしています。","look forward to=〜を楽しみに待つ。"]]);
+XU('x-ek4n','英検4級 ステップ14','EIKEN 4 STEP 14','en',[
+ ["Thanks for your letter.","","お手紙ありがとう。","Thanks for 〜=〜をありがとう(Thank you for より気軽)。"],
+ ["How are you doing?","","元気にしていますか。","メールの書き出しでよく使います。"],
+ ["I'm writing to tell you about my new school.","","新しい学校のことを伝えたくて書いています。","メールの目的を言う書き方。"],
+ ["Please write back soon.","","すぐにお返事ください。","write back=返事を書く。"],
+ ["Tickets are 500 yen for children.","","チケットは子ども500円です。","お知らせ(掲示)の問題でよく出る形。"],
+ ["Please come to the gym by 9:00 a.m.","","午前9時までに体育館に来てください。","by=〜までに(しめきり)。"],
+ ["Don't forget to bring a towel.","","タオルを持ってくるのを忘れないでね。","forget to 〜=〜するのを忘れる。"],
+ ["Say hello to your family.","","ご家族によろしく。","say hello to 人=人によろしく伝える。"]]);
+XU('x-ek4o','英検4級 ステップ15','EIKEN 4 STEP 15','en',[
+ ["Sounds good to me.","","いいね。","さそいや意見に賛成するときの返事。"],
+ ["Sorry, I can't. I have a piano lesson.","","ごめん、行けないんだ。ピアノのレッスンがあるの。","断るときは理由もそえると感じがいいです。"],
+ ["No problem.","","問題ないよ(いいよ)。","お礼やおわびへの返事にも使えます。"],
+ ["Really? I didn't know that.","","本当?知らなかった。",""],
+ ["Hurry up! We're late.","","急いで!遅れてるよ。","hurry up=急ぐ。"],
+ ["What's the matter?","","どうしたの?","相手の様子が変なときにたずねることば。"],
+ ["I have a headache.","","頭が痛いです。","headache=頭痛。stomachache(腹痛)も覚えよう。"],
+ ["Take care.","","気をつけてね(お大事に)。","別れるときや、体調の悪い人へのことば。"]]);
 XU('x-ek3b','英検3級 ステップ2','EIKEN 3 STEP 2','en',[
  ["I have just finished my homework.","","ちょうど宿題を終えたところです。","現在完了(完了)。just=ちょうど。"],
  ["Have you had lunch yet?","","もうお昼ごはんを食べましたか。","疑問文の yet=もう。"],
@@ -7300,6 +7486,97 @@ XU('x-ek3e','英検3級 ステップ5','EIKEN 3 STEP 5','en',[
  ["That sounds like fun.","","それは楽しそうですね。","sound like 〜=〜のように聞こえる。"],
  ["I'm afraid I can't come.","","残念ですが行けません。","I'm afraid 〜=残念ながら〜(ていねいに断る)。"],
  ["Have a nice weekend!","","よい週末を!",""]]);
+/* ---- 英検3級: ステップ6〜15 (each 8 original phrases, 120 in all with ステップ1〜5) ---- */
+XU('x-ek3f','英検3級 ステップ6','EIKEN 3 STEP 6','en',[
+ ["She went to Canada to study English.","","彼女は英語を勉強するためにカナダへ行きました。","to+動詞=〜するために(目的)。"],
+ ["I was very sad to say goodbye to my friends.","","友だちにさよならを言うのはとても悲しかったです。","気持ち+to 〜=〜して(うれしい・悲しいなど)。気持ちの原因を表します。"],
+ ["She got up early to catch the first train.","","彼女は始発電車に乗るために早起きしました。","catch=(電車などに)間に合って乗る。"],
+ ["We were surprised to see so many people.","","とてもたくさんの人を見て、私たちはおどろきました。","be surprised to 〜=〜しておどろく。"],
+ ["He saved money to buy a new bike.","","彼は新しい自転車を買うためにお金をためました。","save money=お金をためる。"],
+ ["I'm happy to help you.","","あなたの手伝いができてうれしいです。",""],
+ ["Why did you go to the store? To buy some milk.","","なぜ店に行ったのですか。牛乳を買うためです。","Why の質問には To 〜 だけで目的を答えられます。"],
+ ["I have something to tell you.","","あなたに話したいことがあります。","something to 〜=〜するための何か。to 〜 が後ろから名詞を説明しています。"]]);
+XU('x-ek3g','英検3級 ステップ7','EIKEN 3 STEP 7','en',[
+ ["We enjoyed playing volleyball at the beach.","","私たちは浜辺でバレーボールをして楽しみました。","enjoy のあとは〜ing。to 〜 は使えません。"],
+ ["It stopped raining in the afternoon.","","午後には雨がやみました。","stop 〜ing=〜するのをやめる。天気の文の主語は It。"],
+ ["Have you finished writing the report?","","レポートは書き終わりましたか。","finish 〜ing=〜し終える。"],
+ ["I decided to join the tennis club.","","テニス部に入ることにしました。","decide to 〜=〜することに決める。これから先のことなので to 〜。"],
+ ["My sister hopes to study abroad someday.","","姉はいつか留学したいと思っています。","hope to 〜=〜したいと望む。study abroad=留学する。"],
+ ["I'm good at drawing pictures.","","私は絵をかくのが得意です。","at のような前置詞のあとは〜ing(動名詞)。"],
+ ["Remember to bring your lunch tomorrow.","","明日はお弁当を忘れずに持ってきてね。","remember to 〜=忘れずに〜する(これからすること)。"],
+ ["I like listening to music before going to bed.","","寝る前に音楽を聞くのが好きです。","before のあとも〜ing。like は to 〜 でも〜ing でもOK。"]]);
+XU('x-ek3h','英検3級 ステップ8','EIKEN 3 STEP 8','en',[
+ ["My bag is as big as yours.","","私のかばんはあなたのと同じくらいの大きさです。","as 〜 as …=…と同じくらい〜。yours=あなたのもの。"],
+ ["Tokyo Skytree is the tallest tower in Japan.","","東京スカイツリーは日本でいちばん高いタワーです。","最上級は the+〜est。範囲が場所なら in。"],
+ ["He is one of the most famous singers in Japan.","","彼は日本で最も有名な歌手の一人です。","one of the+最上級+複数形=最も〜な…の一人。"],
+ ["Which is more popular in your class, soccer or baseball?","","あなたのクラスでは、サッカーと野球のどちらが人気ですか。","Which is 比較級, A or B?=AとBではどちらがより〜ですか。"],
+ ["Ken runs faster than any other student in his class.","","ケンはクラスのほかのどの生徒よりも速く走ります。","比較級+than any other+単数形=実質的に「いちばん」。"],
+ ["This question is not as easy as it looks.","","この問題は見た目ほど簡単ではありません。","not as 〜 as …=…ほど〜ではない。"],
+ ["Mt. Fuji is the highest mountain in Japan.","","富士山は日本でいちばん高い山です。","山の高さは high を使います(建物は tall も使う)。"],
+ ["Please speak more slowly.","","もっとゆっくり話してください。","slowly のような長い副詞も more で比較級にします。"]]);
+XU('x-ek3i','英検3級 ステップ9','EIKEN 3 STEP 9','en',[
+ ["When I got home, my sister was cooking dinner.","","私が家に帰ったとき、姉は夕食を作っていました。","when=〜するとき。後半は過去進行形(〜していた)。"],
+ ["If it is sunny tomorrow, let's go cycling.","","明日晴れたら、サイクリングに行こう。","if の中では、未来のことも現在形(is)で言います。"],
+ ["I stayed home because I had a fever.","","熱があったので家にいました。","because=〜なので(理由)。"],
+ ["I was tired, so I went to bed early.","","疲れていたので早く寝ました。","so=だから(結果)。because とは原因と結果の順番が逆です。"],
+ ["I'm sure that you will pass the test.","","きっとあなたはテストに合格すると思います。","I'm sure that 〜=きっと〜だと思う。that は省略もできます。"],
+ ["Though it was cold, we played outside.","","寒かったけれど、私たちは外で遊びました。","though=〜だけれども。"],
+ ["Wash your hands before you eat.","","食べる前に手を洗いなさい。","before は後ろに主語+動詞を続けることもできます。"],
+ ["I'll call you after I finish my homework.","","宿題が終わったら電話します。","after の中も、未来のことを現在形(finish)で言います。"]]);
+XU('x-ek3j','英検3級 ステップ10','EIKEN 3 STEP 10','en',[
+ ["You must not take pictures in this museum.","","この美術館では写真をとってはいけません。","must not=〜してはいけない(禁止)。"],
+ ["You don't have to come early tomorrow.","","明日は早く来なくてもいいですよ。","don't have to=〜しなくてよい。must not(禁止)とは意味がちがいます。"],
+ ["You should see a doctor.","","医者にみてもらったほうがいいですよ。","should=〜したほうがいい(アドバイス)。"],
+ ["May I ask you a question?","","質問してもいいですか。","May I 〜?=〜してもいいですか(Can I 〜? よりていねい)。"],
+ ["It may rain this evening.","","今晩は雨が降るかもしれません。","may=〜かもしれない(推量)。"],
+ ["Will you pass me the salt, please?","","塩を取ってくれますか。","Will you 〜?=〜してくれますか(依頼)。"],
+ ["Shall I help you with your bags?","","荷物を運ぶのを手伝いましょうか。","Shall I 〜?=(私が)〜しましょうか。help 人 with 物=人の物の手伝いをする。"],
+ ["We had to wait for an hour.","","私たちは1時間待たなければなりませんでした。","must には過去形がないので had to を使います。"]]);
+XU('x-ek3k','英検3級 ステップ11','EIKEN 3 STEP 11','en',[
+ ["May I help you?","","いらっしゃいませ(何かお探しですか)。","店員が最初にかける決まり文句。"],
+ ["I'm just looking, thank you.","","見ているだけです、ありがとう。","May I help you? への答え。"],
+ ["Can I try this on?","","これを試着してもいいですか。","try on=試着する。it や this のような代名詞は try と on の間に入ります。"],
+ ["Do you have this in a smaller size?","","これのもっと小さいサイズはありますか。",""],
+ ["Can I pay by credit card?","","クレジットカードで払えますか。","pay by card / pay in cash=カードで/現金で払う。"],
+ ["I'll take it.","","これにします(買います)。","買うと決めたときの決まり文句。"],
+ ["What would you like to drink?","","お飲み物は何になさいますか。","would like=want のていねいな形。"],
+ ["For here or to go?","","こちらでめしあがりますか、お持ち帰りですか。","ファストフード店の定番の質問(アメリカ英語)。"]]);
+XU('x-ek3l','英検3級 ステップ12','EIKEN 3 STEP 12','en',[
+ ["Excuse me, is there a post office near here?","","すみません、この近くに郵便局はありますか。","道をたずねるときは Excuse me から始めます。"],
+ ["Go straight and turn left at the second corner.","","まっすぐ行って、2つ目の角を左に曲がってください。","turn left / right=左/右に曲がる。"],
+ ["You'll see it on your right.","","右手に見えますよ。","on your right=あなたの右側に。"],
+ ["It takes about ten minutes on foot.","","歩いて10分くらいかかります。","on foot=歩いて。by car / by bus と比べて覚えよう。"],
+ ["Hello, this is Yuki. Is Emma at home?","","もしもし、ユキです。エマさんはいますか。","電話では I'm ではなく this is で名のります。"],
+ ["Hold on, please.","","(電話を切らずに)少々お待ちください。",""],
+ ["He's out right now. Can I take a message?","","彼は今出かけています。伝言をうかがいましょうか。","take a message=伝言を受ける。残す側は leave a message。"],
+ ["I think you have the wrong number.","","番号をおまちがえだと思います。",""]]);
+XU('x-ek3m','英検3級 ステップ13','EIKEN 3 STEP 13','en',[
+ ["Our school trip is next month.","","修学旅行は来月です。","school trip=修学旅行や遠足。"],
+ ["I belong to the brass band.","","私は吹奏楽部に入っています。","belong to=〜に所属している。状態を表すので進行形にはしません。"],
+ ["The school festival will be held in October.","","文化祭は10月に開かれます。","be held=開かれる(hold の受け身)。"],
+ ["We practice hard every day after school.","","私たちは毎日放課後に一生懸命練習しています。","after school=放課後。"],
+ ["I'm going to take part in the speech contest.","","スピーチコンテストに参加するつもりです。","take part in=〜に参加する。"],
+ ["My homeroom teacher is kind to everyone.","","担任の先生はみんなにやさしいです。","homeroom teacher=担任の先生。kind to 人=人にやさしい。"],
+ ["I did volunteer work at a nursing home.","","老人ホームでボランティア活動をしました。","nursing home=老人ホーム。"],
+ ["The entrance ceremony starts at nine.","","入学式は9時に始まります。","entrance=入学・入り口。ceremony=式。"]]);
+XU('x-ek3n','英検3級 ステップ14','EIKEN 3 STEP 14','en',[
+ ["I think it is better to live in the city.","","都会に住むほうがいいと思います。","英作文はまず I think 〜 で自分の意見をはっきり書きます。"],
+ ["I like summer better than winter.","","冬より夏のほうが好きです。","2つを比べる質問には like A better than B で答えます。"],
+ ["First, there are many shops and restaurants.","","第一に、店やレストランがたくさんあります。","First, Second で理由を2つ並べると読みやすくなります。"],
+ ["Second, it is easy to go to other places by train.","","第二に、電車でほかの場所へ行きやすいです。",""],
+ ["Also, I can enjoy swimming in the sea.","","また、海で泳ぐのを楽しめます。","Also=また(理由をつけ加える)。"],
+ ["For these reasons, I want to live in the city.","","これらの理由から、私は都会に住みたいです。","最後に意見をもう一度書いてしめくくります。"],
+ ["I went there with my family by car.","","家族と車でそこへ行きました。","Eメール問題では、相手の質問(だれと・どうやって)に1文ずつ答えます。"],
+ ["I hope to hear from you soon.","","またお便りを待っています。","hear from 人=人から連絡がある。メールの結びの定番。"]]);
+XU('x-ek3o','英検3級 ステップ15','EIKEN 3 STEP 15','en',[
+ ["At first, I couldn't swim at all.","","最初は、全然泳げませんでした。","at first=最初は(あとで変化が起きる合図)。not 〜 at all=全然〜ない。"],
+ ["A few days later, I got a letter from her.","","数日後、彼女から手紙が届きました。","a few=少しの(数えられる名詞に)。"],
+ ["In the end, our team won the game.","","最後には、私たちのチームが試合に勝ちました。","in the end=結局、最後には。"],
+ ["By the way, do you have any plans for tomorrow?","","ところで、明日は何か予定がありますか。","by the way=ところで(話題を変える合図)。"],
+ ["One day, a strange man came to the village.","","ある日、ふしぎな男がその村にやってきました。","物語の書き出しの定番。"],
+ ["Since then, she has practiced the piano every day.","","それ以来、彼女は毎日ピアノを練習しています。","since then=それ以来。現在完了と一緒に使います。"],
+ ["Because of the snow, the train was late.","","雪のせいで電車が遅れました。","because of+名詞。because の後ろは主語+動詞なのでちがいに注意。"],
+ ["Finally, she found her lost key under the sofa.","","ついに、彼女はなくしたかぎをソファの下で見つけました。","finally=ついに。lost=なくした(過去分詞が名詞を説明)。"]]);
 XU('x-ekp2b','英検準2級 ステップ2','EIKEN PRE-2 STEP 2','en',[
  ["I've been learning the guitar for two years.","","ギターを習い始めて2年になります。","現在完了進行形(have been 〜ing)=ずっと〜している。"],
  ["I wish I could speak English fluently.","","英語をすらすら話せたらいいのに。","I wish+過去形=今の現実とちがう願い。"],
@@ -7336,7 +7613,98 @@ XU('x-ekp2e','英検準2級 ステップ5','EIKEN PRE-2 STEP 5','en',[
  ["It depends on the weather.","","天気しだいです。","depend on 〜=〜しだいだ。"],
  ["Let me know if you have any questions.","","何か質問があれば知らせてね。","let me know=知らせて。"],
  ["I'm planning to join the drama club.","","演劇部に入ろうと思っています。","plan to 〜=〜するつもりだ。"]]);
-/* ---- 英検準2級プラス (between 準2級 and 2級): 5 steps, 40 phrases ---- */
+/* ---- 英検準2級: ステップ6〜15 (each 8 original phrases, 120 in all with ステップ1〜5) ---- */
+XU('x-ekp2f','英検準2級 ステップ6','EIKEN PRE-2 STEP 6','en',[
+ ["What I want now is a new laptop.","","今ほしいのは新しいノートパソコンです。","what=〜すること・もの。What I want が文の主語になっています。"],
+ ["I have a friend whose father is a pilot.","","お父さんがパイロットの友だちがいます。","whose+名詞=その人の〜。持ち主を表す関係代名詞。"],
+ ["That's the reason why I was late.","","それが私が遅れた理由です。","the reason why 〜=〜する理由。"],
+ ["I still remember the day when we first met.","","初めて会った日を今でも覚えています。","the day when 〜=〜した日。時を表す関係副詞。"],
+ ["This is not what I ordered.","","これは私が注文したものではありません。","レストランで料理がちがうときの定番。"],
+ ["The man who I talked to at the station was very kind.","","駅で話しかけた男性はとても親切でした。","who(m) I talked to が The man を説明。to を忘れないこと。"],
+ ["Kyoto, which has many old temples, attracts a lot of tourists.","","京都は古い寺がたくさんあり、多くの観光客をひきつけています。","コンマ+which=補足説明(非制限用法)。attract=ひきつける。"],
+ ["You can do whatever you like.","","好きなことを何でもしていいですよ。","whatever=〜するものは何でも。"]]);
+XU('x-ekp2g','英検準2級 ステップ7','EIKEN PRE-2 STEP 7','en',[
+ ["If I were you, I would apologize to her.","","私があなたなら、彼女にあやまるよ。","仮定法過去は主語が I でも were を使うのが基本。アドバイスの定番。"],
+ ["If I had a car, I could drive to the beach.","","車があれば、海まで運転して行けるのに。","現在の事実と反対のことは過去形で言います(仮定法過去)。"],
+ ["I wish I had a little more time.","","もう少し時間があればいいのに。","I wish+過去形=(今)〜ならいいのに。"],
+ ["He talks as if he knew everything.","","彼は何でも知っているかのように話します。","as if+過去形=まるで〜かのように。"],
+ ["If I had studied harder, I would have passed the exam.","","もっと一生懸命勉強していたら、試験に合格していただろう。","過去の事実と反対=if+had+過去分詞, would have+過去分詞(仮定法過去完了)。"],
+ ["What would you do if you won the lottery?","","宝くじが当たったらどうしますか。","ありえないことを想像する質問。面接の雑談にも出てきます。"],
+ ["I would be happy if you could join us.","","参加していただけたらうれしいです。","仮定法を使うと、ていねいなお願いになります。"],
+ ["If only I could fly like a bird!","","鳥のように飛べたらなあ。","If only 〜!=〜でありさえすればなあ(I wish より強い気持ち)。"]]);
+XU('x-ekp2h','英検準2級 ステップ8','EIKEN PRE-2 STEP 8','en',[
+ ["My sister let me use her camera.","","姉がカメラを使わせてくれました。","let+人+動詞の原形=(望みどおり)〜させてあげる。"],
+ ["The teacher made us rewrite the essay.","","先生は私たちに作文を書き直させました。","make+人+動詞の原形=(むりやり)〜させる。"],
+ ["I had my hair cut yesterday.","","昨日髪を切ってもらいました。","have+物+過去分詞=物を〜してもらう。自分で切ったのではありません。"],
+ ["I'll have the shop deliver the sofa.","","お店にソファを配達してもらいます。","have+人+動詞の原形=人に〜してもらう(仕事として頼む)。"],
+ ["I saw a cat crossing the street.","","ねこが道をわたっているのが見えました。","see+物+〜ing=〜しているところを見る。"],
+ ["I heard someone call my name.","","だれかが私の名前を呼ぶのが聞こえました。","hear+人+動詞の原形=〜するのが聞こえる(最初から最後まで)。"],
+ ["I need to get my bike repaired.","","自転車を修理してもらう必要があります。","get+物+過去分詞=have とほぼ同じ意味で、会話でよく使います。"],
+ ["Could you help me move this desk?","","この机を動かすのを手伝ってもらえますか。","help+人+動詞の原形=人が〜するのを手伝う。"]]);
+XU('x-ekp2i','英検準2級 ステップ9','EIKEN PRE-2 STEP 9','en',[
+ ["When we arrived, the bus had already left.","","私たちが着いたとき、バスはもう出発していました。","過去のある時点より前のこと=had+過去分詞(過去完了)。"],
+ ["The elevator is being repaired now.","","エレベーターは今修理中です。","is being+過去分詞=〜されているところ(進行形の受け身)。"],
+ ["Next year, I will have lived here for ten years.","","来年で、ここに住んで10年になります。","will have+過去分詞=(未来のある時点までに)〜したことになる。"],
+ ["The new library has just been completed.","","新しい図書館がちょうど完成したところです。","has been+過去分詞=現在完了の受け身。"],
+ ["This bridge is said to be the oldest in Japan.","","この橋は日本で最も古いと言われています。","be said to 〜=〜だと言われている。説明文によく出ます。"],
+ ["I had never seen snow until I moved to Hokkaido.","","北海道に引っ越すまで雪を見たことがありませんでした。","過去完了の経験用法。until=〜するまで。"],
+ ["The meeting will be held online.","","会議はオンラインで開かれます。","will be+過去分詞=未来の受け身。"],
+ ["My bag was stolen while I was sleeping on the train.","","電車で寝ている間にかばんをぬすまれました。","be stolen=ぬすまれる。英語では「物」が主語になります。"]]);
+XU('x-ekp2j','英検準2級 ステップ10','EIKEN PRE-2 STEP 10','en',[
+ ["Could you look after my dog while I'm away?","","留守の間、犬の世話をしてもらえますか。","look after=〜の世話をする(take care of とほぼ同じ)。"],
+ ["We had to put off the game because of the rain.","","雨のせいで試合を延期しなければなりませんでした。","put off=延期する(postpone と同じ意味)。"],
+ ["She came up with a great idea.","","彼女はすばらしいアイデアを思いつきました。","come up with=〜を思いつく。"],
+ ["Don't give up until the end.","","最後まであきらめないで。","give up=あきらめる。"],
+ ["We ran out of milk, so I went to the store.","","牛乳を切らしたので、店に行きました。","run out of=〜を使い果たす・切らす。"],
+ ["I get along well with my classmates.","","クラスメートと仲よくやっています。","get along with=〜と仲よくやる。"],
+ ["Make sure you lock the door.","","必ずドアのかぎをかけてね。","make sure (that) 〜=必ず〜するようにする・確かめる。"],
+ ["Please fill out this form.","","この用紙に記入してください。","fill out=(用紙に)記入する。空港や病院でよく使います。"]]);
+XU('x-ekp2k','英検準2級 ステップ11','EIKEN PRE-2 STEP 11','en',[
+ ["He practiced every day in order to win the contest.","","彼はコンテストで優勝するために毎日練習しました。","in order to 〜=〜するために(to 〜 よりかたく、目的をはっきり示す)。"],
+ ["Please call me as soon as you arrive.","","着いたらすぐに電話してください。","as soon as=〜するとすぐに。中は未来でも現在形。"],
+ ["Let's walk instead of taking a taxi.","","タクシーに乗るかわりに歩こう。","instead of 〜ing=〜するかわりに。"],
+ ["By the time we got there, the store was closed.","","私たちが着いたころには、店は閉まっていました。","by the time=〜するまでに(は)。"],
+ ["You can stay here as long as you like.","","好きなだけここにいていいですよ。","as long as=〜する限り・〜するあいだは。"],
+ ["According to the weather report, it will snow tomorrow.","","天気予報によると、明日は雪が降るそうです。","according to=〜によると(情報のもと)。"],
+ ["Thanks to your help, I finished the work on time.","","あなたが手伝ってくれたおかげで、時間どおりに仕事が終わりました。","thanks to=〜のおかげで。on time=時間どおりに。"],
+ ["Even if it rains, the event will take place.","","たとえ雨が降っても、イベントは行われます。","even if=たとえ〜でも(まだ起きていないこと)。実際に起きたことには even though を使います。take place=行われる。"]]);
+XU('x-ekp2l','英検準2級 ステップ12','EIKEN PRE-2 STEP 12','en',[
+ ["The number of elderly people is increasing in Japan.","","日本では高齢者の数が増えています。","the number of 〜=〜の数(単数あつかいなので is)。"],
+ ["Many people bring their own bags when they go shopping.","","買い物に行くとき、自分のバッグを持っていく人が多いです。","bring one's own 〜=自分の〜を持っていく。環境の話題で使えます。"],
+ ["Smartphones make it easy to keep in touch with friends.","","スマートフォンのおかげで、友だちと連絡を取り合いやすくなっています。","keep in touch with=〜と連絡を取り合う。make it easy to 〜=〜しやすくする。"],
+ ["Many young people are moving from rural areas to big cities.","","多くの若者が地方から大都市へ移り住んでいます。","rural areas=地方・田舎。社会問題の英作文でよく使います。"],
+ ["Some tourist spots are too crowded with visitors.","","観光客で混雑しすぎている観光地もあります。","be crowded with=〜で混雑している。観光公害の話題で使えます。"],
+ ["It is important to eat a balanced diet.","","栄養のバランスがよい食事をとることが大切です。","balanced diet=バランスのよい食事。It is important to 〜 は英作文で便利な形。"],
+ ["Many families are putting solar panels on their roofs.","","屋根に太陽光パネルをつける家庭が増えています。","solar panel=太陽光パネル。進行形で「増えている」という変化を表せます。"],
+ ["Reading books helps children learn new words.","","本を読むことは、子どもが新しい言葉を覚える助けになります。","help+人+動詞の原形=人が〜するのを助ける。Reading books(〜すること)が主語。"]]);
+XU('x-ekp2m','英検準2級 ステップ13','EIKEN PRE-2 STEP 13','en',[
+ ["Would you mind closing the door?","","ドアを閉めていただけますか。","Would you mind 〜ing?=〜していただけませんか(ていねいな依頼)。"],
+ ["Not at all.","","いいですよ(全然かまいません)。","mind=いやがる、なので OK のときは No や Not at all で答えます。"],
+ ["I'd rather stay home today.","","今日はどちらかというと家にいたいです。","would rather 〜=むしろ〜したい。"],
+ ["It's up to you.","","あなたしだいです(あなたが決めて)。","be up to 人=人しだい。"],
+ ["I'm not sure, but I think it's on Friday.","","はっきりわかりませんが、金曜日だと思います。","自信がないときは I'm not sure, but 〜 とクッションを入れます。"],
+ ["Can I get back to you later?","","あとで折り返し連絡してもいいですか。","get back to 人=人に(あとで)返事をする。"],
+ ["You look pale. Are you all right?","","顔色が悪いよ。大丈夫?","look+形容詞=〜に見える。pale=青白い。"],
+ ["That's too bad. I hope you feel better soon.","","それは大変ですね。早くよくなるといいですね。","体調が悪い人へのことば。"]]);
+XU('x-ekp2n','英検準2級 ステップ14','EIKEN PRE-2 STEP 14','en',[
+ ["In my opinion, students should join club activities.","","私の意見では、生徒は部活動に参加するべきです。","In my opinion,=I think より少しかたい意見の出し方。"],
+ ["This is because they can learn many things from it.","","なぜなら、そこから多くのことを学べるからです。","This is because 〜 で前の文の理由を説明します。"],
+ ["In addition, it is a good chance to meet new people.","","さらに、新しい人と出会うよい機会になります。","In addition=さらに。2つ目の理由の書き出し。"],
+ ["It is true that it takes time, but it is worth it.","","たしかに時間はかかりますが、それだけの価値があります。","It is true that 〜, but …=反対意見を認めてから自分の意見に戻す形。"],
+ ["Therefore, I think schools should introduce this system.","","したがって、学校はこの制度を導入するべきだと思います。","Therefore=したがって。introduce=導入する。結論の書き出し。"],
+ ["Many people agree that reading is important.","","多くの人が、読書は大切だということに賛成しています。","agree that 〜=〜ということに賛成する。"],
+ ["As a result, they can save time and money.","","その結果、時間とお金を節約できます。","As a result=その結果。"],
+ ["Some people may say that it is too expensive.","","高すぎると言う人もいるかもしれません。","反対の立場を一度示すと、説得力のある文章になります。"]]);
+XU('x-ekp2o','英検準2級 ステップ15','EIKEN PRE-2 STEP 15','en',[
+ ["Although the test was difficult, most students passed it.","","テストは難しかったけれど、ほとんどの生徒が合格しました。","although=〜だけれども(though よりかたい)。"],
+ ["In fact, more than half of the students walk to school.","","実際、生徒の半分以上が歩いて通学しています。","in fact=実際は(前の内容を強めたり、データを示したりする)。"],
+ ["Unless you hurry, you'll miss the bus.","","急がないとバスに乗り遅れますよ。","unless=〜しない限り(if 〜 not とほぼ同じ)。"],
+ ["While some people like cities, others prefer the countryside.","","都会が好きな人もいれば、田舎のほうが好きな人もいます。","while=〜する一方で(対比)。some 〜, others …=〜な人もいれば…な人もいる。"],
+ ["She enjoys sports such as soccer and basketball.","","彼女はサッカーやバスケットボールなどのスポーツを楽しみます。","such as=たとえば〜のような(例をあげる)。"],
+ ["The survey shows that about 60 percent of students have a smartphone.","","その調査では、生徒の約60%がスマートフォンを持っていることがわかっています。","survey=調査。長文で数字やデータを示す言い方。"],
+ ["Instead, he decided to study abroad.","","そのかわりに、彼は留学することにしました。","文頭の Instead=そのかわりに(前とちがう行動の合図)。"],
+ ["Because of this, the town became famous all over the world.","","このため、その町は世界中で有名になりました。","Because of this=このため(前の内容が原因)。"]]);
+/* ---- 英検準2級プラス (between 準2級 and 2級): ステップ1〜5 ---- */
 XU('x-ekp2p','英検準2級プラス ステップ1','EIKEN PRE-2 PLUS STEP 1','en',[
  ["Our school started a program to reduce food waste.","","私たちの学校は食品ロスを減らす取り組みを始めました。","program=取り組み・計画。"],
  ["I used to be shy, but now I enjoy speaking in front of people.","","以前は内気でしたが、今は人前で話すのが好きです。","used to=以前は〜だった。"],
@@ -7382,6 +7750,97 @@ XU('x-ekp2pe','英検準2級プラス ステップ5','EIKEN PRE-2 PLUS STEP 5','
  ["According to the survey, most students sleep less than seven hours.","","調査によると、ほとんどの生徒の睡眠時間は7時間未満です。","According to 〜=〜によると。less than=〜未満。"],
  ["Thanks to the internet, we can learn almost anything.","","インターネットのおかげで、私たちはほとんど何でも学べます。","thanks to 〜=〜のおかげで。"],
  ["Even though it was raining, the festival was held.","","雨が降っていたにもかかわらず、お祭りは開かれました。","even though=〜にもかかわらず。"]]);
+/* ---- 英検準2級プラス: ステップ6〜15 (each 8 original phrases, 120 in all with ステップ1〜5) ---- */
+XU('x-ekp2pf','英検準2級プラス ステップ6','EIKEN PRE-2 PLUS STEP 6','en',[
+ ["The boy standing by the gate is my cousin.","","門のそばに立っている男の子は私のいとこです。","〜ing が後ろから名詞を説明(〜している…)。"],
+ ["This is a bridge built more than a hundred years ago.","","これは100年以上前に建てられた橋です。","過去分詞が後ろから名詞を説明(〜された…)。"],
+ ["Walking along the beach, I found a beautiful shell.","","浜辺を歩いていると、きれいな貝を見つけました。","分詞構文=When I was walking 〜 を短くした形。"],
+ ["Seen from the sky, the island looks like a heart.","","空から見ると、その島はハートの形に見えます。","受け身の分詞構文(過去分詞で始まる)。"],
+ ["Feeling nervous, he took a deep breath.","","緊張していたので、彼は深呼吸をしました。","分詞構文は理由(〜なので)も表せます。take a deep breath=深呼吸する。"],
+ ["The news was surprising to everyone.","","その知らせはみんなにとっておどろくべきものでした。","人をおどろかせる物=surprising、おどろいた人=surprised。"],
+ ["I was excited to hear the result.","","結果を聞いてわくわくしました。","感情の形容詞は、人が主語なら -ed の形。"],
+ ["There is a lot of work left to do.","","やるべき仕事がたくさん残っています。","left=残された(leave の過去分詞)。"]]);
+XU('x-ekp2pg','英検準2級プラス ステップ7','EIKEN PRE-2 PLUS STEP 7','en',[
+ ["This is the town where my grandfather grew up.","","ここは祖父が育った町です。","where=場所を説明する関係副詞。"],
+ ["The hotel at which we stayed had a great view.","","私たちが泊まったホテルはながめがすばらしかったです。","前置詞+which=かたい書き方。which we stayed at と同じ意味。"],
+ ["She is the only student that solved the problem.","","その問題を解いたのは彼女だけです。","the only 〜 のあとは that がよく使われます。"],
+ ["I lost the watch, which made me very sad.","","時計をなくして、とても悲しくなりました。","コンマ+which が前の文全体を受けることもあります。"],
+ ["Everything that he said turned out to be true.","","彼が言ったことはすべて本当だとわかりました。","turn out to be=〜だとわかる。"],
+ ["The day will come when everyone can travel to space.","","だれもが宇宙旅行できる日が来るでしょう。","when 〜 が離れた the day を説明しています。"],
+ ["That is how I learned to speak English.","","そうやって私は英語を話せるようになりました。","how=〜する方法・やり方(the way と同じ)。"],
+ ["People who exercise regularly tend to sleep better.","","定期的に運動する人は、よくねむれる傾向があります。","tend to 〜=〜する傾向がある。"]]);
+XU('x-ekp2ph','英検準2級プラス ステップ8','EIKEN PRE-2 PLUS STEP 8','en',[
+ ["It was in Kyoto that I first met her.","","私が彼女に初めて会ったのは京都でした。","It is 〜 that …=…なのは〜だ(強調)。"],
+ ["The museum is popular not only with children but also with adults.","","その博物館は子どもだけでなく大人にも人気です。","not only A but also B=AだけでなくBも。A と B は同じ形(with 〜)にそろえます。"],
+ ["Both my parents and my sister love cooking.","","両親も姉も料理が大好きです。","both A and B=AもBも(複数あつかい)。"],
+ ["Either you or he has to clean the room.","","あなたか彼のどちらかが部屋をそうじしなければなりません。","either A or B は、動詞を B に合わせます。"],
+ ["Neither of the answers was correct.","","どちらの答えも正しくありませんでした。","neither=どちらも〜ない。"],
+ ["I didn't go out at all last weekend.","","先週末は全く外出しませんでした。","not 〜 at all=全く〜ない。"],
+ ["It was so cold that the lake froze.","","とても寒かったので、湖がこおりました。","so 〜 that …=とても〜なので…。"],
+ ["The box was too heavy for me to carry.","","その箱は重すぎて私には運べませんでした。","too 〜 for 人 to …=〜すぎて人には…できない。"]]);
+XU('x-ekp2pi','英検準2級プラス ステップ9','EIKEN PRE-2 PLUS STEP 9','en',[
+ ["My doctor advised me to get more sleep.","","医者は私にもっと睡眠をとるように助言しました。","advise 人 to 〜=人に〜するよう助言する。"],
+ ["The heavy rain prevented us from going out.","","大雨のせいで私たちは外出できませんでした。","prevent 人 from 〜ing=人が〜するのをさまたげる。"],
+ ["This song reminds me of my school days.","","この歌を聞くと学生時代を思い出します。","remind 人 of 〜=人に〜を思い出させる。"],
+ ["The app allows users to share photos easily.","","そのアプリでは、ユーザーが写真を簡単に共有できます。","allow 人 to 〜=人が〜できるようにする。"],
+ ["The teacher encouraged us to try new things.","","先生は私たちに新しいことに挑戦するようはげましてくれました。","encourage 人 to 〜=人に〜するようはげます。"],
+ ["Could you explain the rules to me?","","ルールを私に説明してもらえますか。","explain 物 to 人。explain me 〜 とは言いません。"],
+ ["I'm getting used to living alone.","","一人暮らしに慣れてきました。","get used to 〜ing=〜することに慣れる(変化)。be used to は「慣れている」状態。"],
+ ["She spent the whole day cleaning her room.","","彼女は一日中部屋のそうじをして過ごしました。","spend 時間 〜ing=〜して時間を過ごす。"]]);
+XU('x-ekp2pj','英検準2級プラス ステップ10','EIKEN PRE-2 PLUS STEP 10','en',[
+ ["The concert was called off because of the storm.","","あらしのためコンサートは中止になりました。","call off=中止する(cancel と同じ)。"],
+ ["Could you drop me off at the next corner?","","次の角で降ろしてもらえますか。","drop 人 off=人を車から降ろす。pick up(車でむかえに行く)の反対。"],
+ ["Please hand in your report by Friday.","","金曜日までにレポートを提出してください。","hand in=提出する。"],
+ ["We have to deal with this problem right away.","","すぐにこの問題に対処しなければなりません。","deal with=〜に対処する・あつかう。"],
+ ["He finally caught up with the other runners.","","彼はついにほかのランナーに追いつきました。","catch up with=〜に追いつく。"],
+ ["I'm looking for a part-time job that suits me.","","自分に合うアルバイトを探しています。","suit=〜に合う。"],
+ ["She takes after her mother.","","彼女はお母さんに似ています。","take after=(親など)に似ている。"],
+ ["Don't hesitate to ask for help.","","遠慮しないで助けを求めてください。","hesitate to 〜=〜するのをためらう。ask for=求める。"]]);
+XU('x-ekp2pk','英検準2級プラス ステップ11','EIKEN PRE-2 PLUS STEP 11','en',[
+ ["Every family should keep an emergency kit at home.","","どの家庭も家に防災セットを置いておくべきです。","emergency kit=非常用持ち出し袋。"],
+ ["The town holds an evacuation drill every September.","","町では毎年9月に避難訓練を行っています。","evacuation drill=避難訓練。"],
+ ["Many shopping streets in small towns are losing customers.","","小さな町の商店街の多くは客が減っています。","lose customers=客を失う。"],
+ ["Some young people are moving back to their hometowns.","","地元にもどる若者もいます。","move back to=〜にもどって住む。"],
+ ["Local festivals help keep traditions alive.","","地域のお祭りは伝統を守る助けになります。","keep 〜 alive=〜を絶やさない。"],
+ ["Volunteers helped clean up the town after the flood.","","洪水のあと、ボランティアが町の片づけを手伝いました。","clean up=きれいに片づける。flood=洪水。"],
+ ["More signs are written in several languages for tourists.","","観光客のために、いくつかの言語で書かれた案内板が増えています。","written in 〜=〜語で書かれた。"],
+ ["Public transportation is limited in rural areas.","","地方では公共交通機関が限られています。","limited=限られた・少ない。"]]);
+XU('x-ekp2pl','英検準2級プラス ステップ12','EIKEN PRE-2 PLUS STEP 12','en',[
+ ["Skipping breakfast can make it hard to concentrate.","","朝食をぬくと集中しにくくなることがあります。","skip=ぬかす。concentrate=集中する。"],
+ ["Many people check their health using smartwatches.","","スマートウォッチで健康をチェックする人がたくさんいます。","using 〜=〜を使って(分詞)。"],
+ ["Getting enough sleep is just as important as eating well.","","十分な睡眠は、よい食事と同じくらい大切です。","just as 〜 as=ちょうど同じくらい〜。"],
+ ["Sports can teach children the value of teamwork.","","スポーツは子どもにチームワークの大切さを教えてくれます。","teach 人 物=人に物を教える。value=価値。"],
+ ["The number of vegetarian restaurants is growing.","","ベジタリアン向けのレストランが増えています。","the number of 〜 is growing=〜の数が増えている。"],
+ ["Some schools serve lunches made with local vegetables.","","地元の野菜で作った給食を出す学校もあります。","made with 〜=〜で作られた。"],
+ ["Watching sports on TV is not the same as playing them.","","テレビでスポーツを見るのは、自分でするのとはちがいます。","the same as=〜と同じ。"],
+ ["Too much sugar is bad for your teeth.","","砂糖のとりすぎは歯に悪いです。","be bad for=〜に悪い。"]]);
+XU('x-ekp2pm','英検準2級プラス ステップ13','EIKEN PRE-2 PLUS STEP 13','en',[
+ ["There are two reasons why I think so.","","そう考える理由は2つあります。","理由の数を先に書くと、読む人に伝わりやすくなります。"],
+ ["First of all, it saves a lot of time.","","まず第一に、多くの時間を節約できます。","First of all=まず第一に。"],
+ ["Another reason is that it is good for the environment.","","もう一つの理由は、環境によいということです。","2つ目の理由の定番の書き出し。"],
+ ["For example, people can walk instead of driving.","","たとえば、車に乗るかわりに歩くことができます。","For example で具体例を入れると説得力が上がります。"],
+ ["On the other hand, some people may find it difficult.","","一方で、それを難しいと感じる人もいるかもしれません。","On the other hand=一方で。"],
+ ["Because of these two points, I think the idea is useful.","","この2点から、その考えは役に立つと思います。","Because of these two points=この2点から(結論の前に使えます)。"],
+ ["I'm happy to answer your questions.","","喜んでご質問にお答えします。","Eメールの返信で使える前向きな一文。"],
+ ["I hope this information is helpful.","","この情報がお役に立てばうれしいです。","メールの結び近くでよく使います。"]]);
+XU('x-ekp2pn','英検準2級プラス ステップ14','EIKEN PRE-2 PLUS STEP 14','en',[
+ ["The purpose of this article is to explain how bees make honey.","","この記事の目的は、ハチがはちみつを作る仕組みを説明することです。","purpose=目的。最初の段落で目的が示されることが多いです。"],
+ ["The writer suggests that schools should start later.","","筆者は学校の始業を遅らせるべきだと提案しています。","筆者の主張は suggest / argue / believe などで示されます。"],
+ ["This is one of the reasons why the plan failed.","","これがその計画が失敗した理由の一つです。","one of the reasons why 〜=〜の理由の一つ。"],
+ ["At the same time, the price of food went up.","","同時に、食べ物の値段が上がりました。","at the same time=同時に・それと同時に。"],
+ ["However, not everyone was happy with the change.","","しかし、みんながその変化に満足したわけではありません。","not everyone=全員が〜というわけではない(部分否定)。"],
+ ["On the contrary, sales went down.","","それどころか、売り上げは下がりました。","on the contrary=それどころか(予想と反対)。"],
+ ["For this reason, the company changed its plan.","","この理由で、その会社は計画を変更しました。","for this reason=このため。"],
+ ["In the end, the town decided to build a new park.","","最終的に、町は新しい公園をつくることに決めました。","物語や説明文の結末を示す語。"]]);
+XU('x-ekp2po','英検準2級プラス ステップ15','EIKEN PRE-2 PLUS STEP 15','en',[
+ ["I'm afraid that's not possible.","","残念ながら、それはできません。","I'm afraid=残念ながら(ていねいに断る)。"],
+ ["Do you happen to have a pen I could borrow?","","もしかして、借りられるペンを持ってない?","happen to 〜=たまたま〜する。たずね方がやわらかくなります。"],
+ ["I didn't mean to hurt your feelings.","","あなたの気持ちを傷つけるつもりはありませんでした。","mean to 〜=〜するつもりである。"],
+ ["Let's take turns using the computer.","","交代でパソコンを使おう。","take turns 〜ing=交代で〜する。"],
+ ["Can you give me a hand with this box?","","この箱を運ぶのを手伝ってくれる?","give 人 a hand=人を手伝う。"],
+ ["I'll think about it and let you know.","","考えてから知らせるね。","すぐに決められないときの返事。"],
+ ["Why don't you ask the teacher?","","先生に聞いてみたら?","Why don't you 〜?=〜したらどう?(提案)。"],
+ ["That's a relief.","","それはよかった(ほっとした)。","relief=安心。"]]);
 XU('x-ek2b','英検2級 ステップ2','EIKEN 2 STEP 2','en',[
  ["Artificial intelligence is changing the way we work.","","人工知能は私たちの働き方を変えつつあります。","the way we work=私たちの働き方。"],
  ["Many companies have introduced flexible working hours.","","多くの会社がフレックスタイム制を導入しています。","introduce=導入する。"],
@@ -7418,6 +7877,97 @@ XU('x-ek2e','英検2級 ステップ5','EIKEN 2 STEP 5','en',[
  ["Could you let me know the details?","","詳しいことを教えていただけますか。",""],
  ["I'm afraid I have to cancel my reservation.","","申し訳ありませんが、予約を取り消さなければなりません。",""],
  ["Unless we act now, the situation will get worse.","","今行動しなければ、状況は悪化するでしょう。","unless=〜しない限り。"]]);
+/* ---- 英検2級: ステップ6〜15 (each 8 original phrases, 120 in all with ステップ1〜5) ---- */
+XU('x-ek2f','英検2級 ステップ6','EIKEN 2 STEP 6','en',[
+ ["Without your advice, I would have made a big mistake.","","あなたの助言がなければ、大きな失敗をしていたでしょう。","without 〜=〜がなければ(if 節のかわり)。"],
+ ["If it were not for the internet, our lives would be very different.","","インターネットがなければ、私たちの生活はずいぶんちがうでしょう。","If it were not for 〜=(今)〜がなければ。"],
+ ["I wish I had listened to my parents.","","両親の言うことを聞いていればよかった。","I wish+had+過去分詞=(過去に)〜していればよかった。"],
+ ["It's time we started thinking about our future.","","そろそろ将来について考え始める時期です。","It's time+過去形=もう〜してもいいころだ。"],
+ ["If I had taken that flight, I would be in Paris now.","","あの便に乗っていたら、今ごろパリにいるだろう。","過去の仮定(had taken)と今の結果(would be)の組み合わせ。"],
+ ["Should you have any questions, please contact us.","","ご質問がありましたら、ご連絡ください。","Should you 〜=If you should 〜 の倒置。ビジネスメールの定番。"],
+ ["He acted as though nothing had happened.","","彼は何事もなかったかのようにふるまいました。","as though+had+過去分詞=まるで(以前に)〜したかのように。"],
+ ["Suppose you could live anywhere, where would you live?","","どこにでも住めるとしたら、どこに住みますか。","Suppose 〜=もし〜としたら。面接の質問にも出る形。"]]);
+XU('x-ek2g','英検2級 ステップ7','EIKEN 2 STEP 7','en',[
+ ["Generally speaking, Japanese trains are very punctual.","","一般的に言って、日本の電車はとても時間に正確です。","generally speaking=一般的に言えば。punctual=時間に正確な。"],
+ ["Judging from his accent, he must be from Australia.","","なまりから判断すると、彼はオーストラリア出身にちがいありません。","judging from 〜=〜から判断すると。"],
+ ["Having lived in Canada, she speaks English fluently.","","カナダに住んでいたので、彼女は英語を流ちょうに話します。","Having+過去分詞=(前に)〜したので。"],
+ ["Compared with last year, sales have improved.","","昨年と比べると、売り上げは改善しています。","compared with 〜=〜と比べると。"],
+ ["The weather permitting, we will go hiking tomorrow.","","天気がよければ、明日ハイキングに行きます。","主語が別の分詞構文(独立分詞構文)。weather permitting は定番。"],
+ ["Not knowing what to say, I just smiled.","","何と言えばいいかわからず、ただほほえみました。","分詞構文の否定は not を前に置きます。"],
+ ["She sat on the bench with her eyes closed.","","彼女は目を閉じてベンチにすわっていました。","with+名詞+分詞=〜を…した状態で。"],
+ ["Considering his age, he did a great job.","","年齢を考えれば、彼はすばらしい仕事をしました。","considering 〜=〜を考えれば。"]]);
+XU('x-ek2h','英検2級 ステップ8','EIKEN 2 STEP 8','en',[
+ ["He is what is called a walking dictionary.","","彼はいわゆる生き字引です。","what is called=いわゆる。"],
+ ["Whoever comes first will get a free ticket.","","最初に来た人はだれでも無料チケットをもらえます。","whoever=〜する人はだれでも。"],
+ ["The way in which people shop has changed.","","人々の買い物のしかたは変わりました。","the way in which=〜する方法(かたい書き方)。"],
+ ["Whether we win or lose doesn't matter.","","勝つか負けるかは重要ではありません。","Whether 〜 or …=〜か…か(名詞節)。matter=重要である。"],
+ ["The fact that she won surprised everyone.","","彼女が勝ったという事実はみんなをおどろかせました。","the fact that 〜=〜という事実(同格の that)。"],
+ ["It is said that the castle was built in the 16th century.","","その城は16世紀に建てられたと言われています。","It is said that 〜=〜だと言われている。"],
+ ["I have no idea what he is talking about.","","彼が何の話をしているのか全くわかりません。","have no idea=全くわからない。"],
+ ["Whatever happens, I will support you.","","何が起きても、私はあなたを支えます。","whatever=何が〜しても。"]]);
+XU('x-ek2i','英検2級 ステップ9','EIKEN 2 STEP 9','en',[
+ ["She is no longer a beginner.","","彼女はもはや初心者ではありません。","no longer=もはや〜ない。"],
+ ["The older we get, the wiser we become.","","年をとるほど、人はかしこくなります。","the+比較級 〜, the+比較級 …=〜すればするほど…。"],
+ ["Please reply as soon as possible.","","できるだけ早く返信してください。","as 〜 as possible=できるだけ〜。"],
+ ["He is not so much a teacher as a friend to us.","","彼は私たちにとって、先生というより友だちです。","not so much A as B=AというよりむしろB。"],
+ ["Nothing is more important than health.","","健康より大切なものはありません。","Nothing is 比較級 than 〜=〜ほど…なものはない(実質的な最上級)。"],
+ ["This year's sales were twice as high as last year's.","","今年の売り上げは昨年の2倍でした。","twice as 〜 as=〜の2倍。"],
+ ["I would rather walk than take a crowded bus.","","混んだバスに乗るより歩くほうがいいです。","would rather A than B=BよりむしろAしたい。"],
+ ["The new model is far better than the old one.","","新しいモデルは古いものよりはるかによいです。","far / much+比較級=はるかに〜(very は使えません)。"]]);
+XU('x-ek2j','英検2級 ステップ10','EIKEN 2 STEP 10','en',[
+ ["The new manager will take over the project next month.","","来月から新しいマネージャーがそのプロジェクトを引きつぎます。","take over=引きつぐ。"],
+ ["The scientists carried out an experiment.","","科学者たちは実験を行いました。","carry out=実行する。"],
+ ["I worked overtime to make up for the lost time.","","失った時間を取りもどすために残業しました。","make up for=〜をうめ合わせる。"],
+ ["The police are looking into the accident.","","警察がその事故を調べています。","look into=調査する。police は複数あつかい。"],
+ ["We need to figure out a better solution.","","もっとよい解決策を見つけ出す必要があります。","figure out=(考えて)見つけ出す・理解する。"],
+ ["Prices have gone up sharply this year.","","今年は物価が急に上がっています。","go up=上がる。sharply=急に。"],
+ ["She turned down the job offer.","","彼女はその仕事の申し出を断りました。","turn down=断る。"],
+ ["The plan fell through at the last minute.","","その計画は土壇場でだめになりました。","fall through=(計画が)だめになる。at the last minute=ぎりぎりで。"]]);
+XU('x-ek2k','英検2級 ステップ11','EIKEN 2 STEP 11','en',[
+ ["In spite of the rain, many people came to the event.","","雨にもかかわらず、多くの人がイベントに来ました。","in spite of+名詞=〜にもかかわらず(despite と同じ)。"],
+ ["I'm writing on behalf of my class.","","クラスを代表して書いています。","on behalf of=〜を代表して。"],
+ ["In terms of price, this phone is the best choice.","","値段の点では、このスマホがいちばんよい選択です。","in terms of=〜の点で。"],
+ ["Anyone can join, regardless of age.","","年齢に関係なくだれでも参加できます。","regardless of=〜に関係なく。"],
+ ["As for me, I prefer staying at home.","","私としては、家にいるほうがいいです。","as for=〜について言えば。"],
+ ["Due to heavy snow, the flight was canceled.","","大雪のため、その便は欠航になりました。","due to=〜のために(原因)。"],
+ ["In addition to English, she speaks Chinese.","","英語に加えて、彼女は中国語も話します。","in addition to=〜に加えて。"],
+ ["The shop is open every day except for Monday.","","その店は月曜日をのぞいて毎日開いています。","except for=〜をのぞいて。"]]);
+XU('x-ek2l','英検2級 ステップ12','EIKEN 2 STEP 12','en',[
+ ["Hospitals in some areas are short of doctors.","","医者が不足している地域の病院もあります。","be short of=〜が不足している。"],
+ ["Online medical checkups are becoming more common.","","オンライン診療がより一般的になっています。","checkup=健康診断・診察。"],
+ ["Caring for elderly parents can be a heavy burden.","","高齢の親の介護は大きな負担になることがあります。","care for=〜の世話をする。burden=負担。"],
+ ["Some people think homework should be banned in elementary schools.","","小学校では宿題を禁止すべきだと考える人もいます。","ban=禁止する。英作文でよく出るテーマ。"],
+ ["Students today need skills to use technology wisely.","","今の学生には、技術をかしこく使う力が必要です。","skills to 〜=〜する技能。"],
+ ["Learning a foreign language opens up many opportunities.","","外国語を学ぶと、多くの機会が開けます。","open up=(可能性などを)広げる。"],
+ ["Many children feel pressure to get good grades.","","よい成績をとらなければというプレッシャーを感じる子どもが多くいます。","pressure to 〜=〜しなければという重圧。"],
+ ["Mental health is just as important as physical health.","","心の健康は体の健康と同じくらい大切です。","mental=精神の、physical=身体の。"]]);
+XU('x-ek2m','英検2級 ステップ13','EIKEN 2 STEP 13','en',[
+ ["Self-driving cars may reduce traffic accidents.","","自動運転車は交通事故を減らすかもしれません。","self-driving=自動運転の。"],
+ ["Drones are being used to deliver packages.","","荷物を届けるのにドローンが使われています。","進行形の受け身(are being used)。"],
+ ["Scientists are developing new ways to store energy.","","科学者たちはエネルギーをためる新しい方法を開発しています。","store=たくわえる。"],
+ ["Space travel may become possible for ordinary people.","","宇宙旅行が一般の人にも可能になるかもしれません。","ordinary=ふつうの。"],
+ ["Wind power does not produce carbon dioxide.","","風力発電は二酸化炭素を出しません。","carbon dioxide=二酸化炭素。"],
+ ["Some jobs may be replaced by robots in the future.","","将来、ロボットに取ってかわられる仕事もあるかもしれません。","be replaced by=〜に取ってかわられる。"],
+ ["Smartphones have changed the way we get news.","","スマートフォンはニュースの得方を変えました。","the way we 〜=私たちが〜する方法。"],
+ ["It is important to protect our personal information online.","","ネット上で個人情報を守ることが大切です。","personal information=個人情報。"]]);
+XU('x-ek2n','英検2級 ステップ14','EIKEN 2 STEP 14','en',[
+ ["The passage explains why some cities are losing population.","","この文章は、なぜ人口が減っている都市があるのかを説明しています。","要約の書き出しで、テーマをひとことで示します。"],
+ ["Some people think that the plan is helpful.","","その計画は役に立つと考える人もいます。","要約では Some people / Others で立場を整理します。"],
+ ["Others, however, are worried about the cost.","","しかし、費用を心配する人もいます。","however は文の中に入れることもできます。"],
+ ["In short, the new system has both merits and demerits.","","要するに、新しい制度には長所と短所の両方があります。","in short=要するに。"],
+ ["The writer points out that cooperation is necessary.","","筆者は協力が必要だと指摘しています。","point out=指摘する。"],
+ ["While online shopping is convenient, it can lead to waste.","","ネットショッピングは便利な一方、むだにつながることもあります。","While 〜=〜な一方で(対比を1文にまとめる)。"],
+ ["As a result, more people are choosing to rent instead of buying.","","その結果、買わずに借りることを選ぶ人が増えています。","原因→結果のつながりを1文で示す。"],
+ ["Use your own words instead of copying sentences from the passage.","","本文の文をそのまま写さず、自分の言葉で書きましょう。","要約では言いかえ(パラフレーズ)が大切です。"]]);
+XU('x-ek2o','英検2級 ステップ15','EIKEN 2 STEP 15','en',[
+ ["I was wondering if you could help me.","","手伝っていただけないかと思いまして。","I was wondering if 〜=とてもていねいなお願い。"],
+ ["Would it be possible to change my reservation?","","予約を変更することはできますか。","Would it be possible to 〜?=〜することは可能ですか。"],
+ ["That makes sense.","","なるほど、それなら納得です。","make sense=筋が通る。"],
+ ["I couldn't agree more.","","大賛成です。","これ以上賛成できない=完全に賛成。"],
+ ["It's not a big deal.","","大したことじゃないよ。","big deal=大ごと。"],
+ ["I'll keep you posted.","","進みぐあいをそのつどお知らせします。","keep 人 posted=人に最新の情報を伝え続ける。"],
+ ["Something came up, so I can't make it tonight.","","急用ができて、今夜は行けなくなりました。","something came up=急用ができた。make it=間に合う・都合がつく。"],
+ ["Let me check my schedule first.","","まず予定を確認させてください。","let me 〜=〜させてください。"]]);
 XU('x-ekp1','英検準1級 ステップ1','EIKEN PRE-1 STEP 1','en',[
  ["The government should invest more in renewable energy.","","政府は再生可能エネルギーにもっと投資すべきです。",""],
  ["Automation could lead to a decline in certain jobs.","","自動化によって、一部の仕事が減るかもしれません。","lead to 〜=〜につながる。"],
@@ -7463,6 +8013,97 @@ XU('x-ekp1e','英検準1級 ステップ5','EIKEN PRE-1 STEP 5','en',[
  ["There are pros and cons to this idea.","","この考えには良い面と悪い面があります。","pros and cons=良い面と悪い面。"],
  ["From my perspective, the benefits are greater.","","私の立場から見ると、利点のほうが大きいです。","From my perspective=私の視点から言うと。"],
  ["That is why I support this policy.","","だから私はこの政策を支持します。","面接で意見をしめくくる型。"]]);
+/* ---- 英検準1級: ステップ6〜15 (each 8 original phrases, 120 in all with ステップ1〜5) ---- */
+XU('x-ekp1f','英検準1級 ステップ6','EIKEN PRE-1 STEP 6','en',[
+ ["The scandal undermined public confidence in the company.","","そのスキャンダルは会社への世間の信頼を損ないました。","undermine=(信頼・効果などを)徐々に損なう。"],
+ ["Regular feedback can enhance students' motivation.","","定期的なフィードバックは生徒のやる気を高めることができます。","enhance=(質・価値を)高める。"],
+ ["The program aims to foster a sense of community.","","そのプログラムは地域の一体感を育てることを目指しています。","foster=育成する・促進する。"],
+ ["A lack of funding hindered the research.","","資金不足が研究のさまたげになりました。","hinder=妨げる(prevent より「遅らせる」感じ)。"],
+ ["The city plans to implement the new policy next spring.","","市は来春、新しい政策を実施する予定です。","implement=(計画・政策を)実行する。"],
+ ["More money should be allocated to education.","","教育にもっとお金を配分すべきです。","allocate=割り当てる・配分する。"],
+ ["All factories must comply with the safety rules.","","すべての工場は安全規則に従わなければなりません。","comply with=(規則に)従う。"],
+ ["His health deteriorated rapidly after the accident.","","事故のあと、彼の健康は急速に悪化しました。","deteriorate=悪化する(自動詞)。"]]);
+XU('x-ekp1g','英検準1級 ステップ7','EIKEN PRE-1 STEP 7','en',[
+ ["The plan is not financially feasible.","","その計画は資金面で実現可能ではありません。","feasible=実現可能な。"],
+ ["Some degree of change is inevitable.","","ある程度の変化は避けられません。","inevitable=避けられない。"],
+ ["The project requires a substantial investment.","","その事業には多額の投資が必要です。","substantial=かなりの・相当な。"],
+ ["Elderly people are especially vulnerable to heatstroke.","","高齢者は特に熱中症にかかりやすいです。","vulnerable to=〜に弱い・影響を受けやすい。"],
+ ["Smartphone addiction is becoming increasingly prevalent.","","スマートフォン依存はますます広まっています。","prevalent=広く行きわたった。"],
+ ["The report provides a comprehensive overview of the problem.","","その報告書は問題を包括的に概観しています。","comprehensive=包括的な。overview=概観。"],
+ ["The decision to close the hospital was highly controversial.","","病院を閉鎖するという決定は大きな物議をかもしました。","controversial=論争を呼ぶ。"],
+ ["There is growing evidence that the drug is effective.","","その薬が効果的だという証拠が増えています。","evidence は数えられない名詞(an は不要)。"]]);
+XU('x-ekp1h','英検準1級 ステップ8','EIKEN PRE-1 STEP 8','en',[
+ ["The company will phase out plastic straws by next year.","","その会社は来年までにプラスチックストローを段階的に廃止します。","phase out=段階的に廃止する。"],
+ ["The police are cracking down on illegal parking.","","警察は違法駐車を厳しく取り締まっています。","crack down on=〜を厳しく取り締まる。"],
+ ["The movie did not live up to my expectations.","","その映画は期待ほどではありませんでした。","live up to=(期待に)こたえる。"],
+ ["The results fell short of the target.","","結果は目標に届きませんでした。","fall short of=〜に達しない。"],
+ ["Young people account for 30 percent of the users.","","若者が利用者の30%を占めています。","account for=(割合を)占める/説明する。"],
+ ["We cannot rule out the possibility of an earthquake.","","地震の可能性を否定することはできません。","rule out=除外する・否定する。"],
+ ["The new technology brought about major changes in society.","","その新技術は社会に大きな変化をもたらしました。","bring about=もたらす・引き起こす。"],
+ ["The team came up against many difficulties.","","チームは多くの困難に直面しました。","come up against=(困難に)ぶつかる。"]]);
+XU('x-ekp1i','英検準1級 ステップ9','EIKEN PRE-1 STEP 9','en',[
+ ["Voter turnout among young people remains low.","","若者の投票率は低いままです。","voter turnout=投票率。"],
+ ["The two countries signed a trade agreement.","","両国は貿易協定に署名しました。","trade agreement=貿易協定。"],
+ ["Developed countries should provide more aid to poorer nations.","","先進国は貧しい国々へもっと援助をするべきです。","developed countries=先進国。aid=援助。"],
+ ["The government is under pressure to cut taxes.","","政府は減税をせまられています。","be under pressure to 〜=〜するよう圧力を受けている。"],
+ ["Many refugees have fled the conflict.","","多くの難民が紛争から逃れました。","refugee=難民。flee(逃げる)の過去分詞は fled。"],
+ ["Lowering the voting age could increase political interest.","","選挙権年齢を下げると、政治への関心が高まるかもしれません。","voting age=選挙権年齢。"],
+ ["The summit focused on climate change and security.","","首脳会議は気候変動と安全保障に焦点を当てました。","summit=首脳会議。"],
+ ["Citizens have the right to express their opinions freely.","","市民には自由に意見を表明する権利があります。","the right to 〜=〜する権利。"]]);
+XU('x-ekp1j','英検準1級 ステップ10','EIKEN PRE-1 STEP 10','en',[
+ ["Labor shortages are forcing companies to raise wages.","","人手不足により、企業は賃金を上げざるを得なくなっています。","labor shortage=人手不足。force 〜 to …=〜に…を強いる。"],
+ ["More companies are hiring foreign workers.","","外国人労働者を雇う企業が増えています。","hire=雇う。"],
+ ["The yen has weakened against the dollar.","","ドルに対して円安が進んでいます。","weaken against=〜に対して弱くなる。"],
+ ["Consumers are cutting back on spending.","","消費者は支出を減らしています。","cut back on=〜を減らす。"],
+ ["Side jobs are becoming more popular among office workers.","","会社員の間で副業が人気になっています。","side job=副業。"],
+ ["The startup attracted investors from around the world.","","そのスタートアップ企業は世界中から投資家を集めました。","attract=引きつける。"],
+ ["Rising housing costs are a major concern in big cities.","","大都市では住宅費の上昇が大きな問題です。","concern=懸念。"],
+ ["Job security is no longer guaranteed.","","雇用の安定はもはや保証されていません。","job security=雇用の安定。guarantee=保証する。"]]);
+XU('x-ekp1k','英検準1級 ステップ11','EIKEN PRE-1 STEP 11','en',[
+ ["Vaccines have saved millions of lives.","","ワクチンは何百万人もの命を救ってきました。","millions of=何百万もの。"],
+ ["Antibiotics are losing their effectiveness against some bacteria.","","一部の細菌に対して抗生物質の効果が弱まっています。","antibiotic=抗生物質。"],
+ ["Researchers conducted a large-scale study on sleep.","","研究者たちは睡眠に関する大規模な研究を行いました。","conduct a study=研究を行う。"],
+ ["AI can help doctors detect diseases at an early stage.","","AIは医師が病気を早期に発見する助けになります。","detect=発見する・検出する。"],
+ ["The results of the experiment were inconclusive.","","実験の結果は決定的なものではありませんでした。","inconclusive=結論が出ない。"],
+ ["Genetic factors play a role in many diseases.","","多くの病気には遺伝的要因が関わっています。","play a role in=〜に役割を果たす・関わる。"],
+ ["The new treatment has few side effects.","","その新しい治療法には副作用がほとんどありません。","side effect=副作用。few=ほとんどない。"],
+ ["Scientists are still debating the cause of the phenomenon.","","科学者たちはその現象の原因をまだ議論しています。","phenomenon=現象(複数形は phenomena)。"]]);
+XU('x-ekp1l','英検準1級 ステップ12','EIKEN PRE-1 STEP 12','en',[
+ ["I firmly believe that the government should take action.","","私は政府が行動を起こすべきだと強く信じています。","立場を最初にはっきり示します。"],
+ ["The first reason is related to cost.","","1つ目の理由はコストに関係しています。","理由の観点(コスト・安全・健康など)を先に示す型。"],
+ ["From an economic perspective, the plan makes sense.","","経済的な観点から見ると、その計画は理にかなっています。","from a(n) 〜 perspective=〜の観点から。"],
+ ["This would allow people to make better use of their time.","","これにより、人々は時間をより有効に使えるようになるでしょう。","make better use of=〜をもっと有効に使う。"],
+ ["A good example of this is the system used in Finland.","","その良い例がフィンランドで使われている制度です。","具体例で主張を支えます(国名などの事実はまちがえないように)。"],
+ ["Furthermore, it would help reduce inequality.","","さらに、不平等を減らす助けになるでしょう。","Furthermore=さらに(In addition よりかたい)。"],
+ ["Although some people oppose the idea, its benefits are clear.","","反対する人もいますが、その利点は明らかです。","反論を認めつつ自分の主張にもどる形。"],
+ ["For the reasons stated above, I support the proposal.","","以上の理由から、私はその提案を支持します。","stated above=上で述べた。結論の定番。"]]);
+XU('x-ekp1m','英検準1級 ステップ13','EIKEN PRE-1 STEP 13','en',[
+ ["The passage discusses the advantages and disadvantages of remote learning.","","この文章は遠隔学習の長所と短所を論じています。","要約の1文目でテーマを示します。"],
+ ["Supporters argue that it gives students more flexibility.","","支持する人たちは、それにより生徒の自由度が高まると主張しています。","Supporters / Critics で立場を整理します。"],
+ ["Critics, on the other hand, point out that it can lead to isolation.","","一方で批判する人たちは、孤立につながりうると指摘しています。","isolation=孤立。"],
+ ["The author concludes that a balanced approach is needed.","","筆者はバランスのとれた方法が必要だと結論づけています。","conclude that 〜=〜と結論づける。"],
+ ["Overall, the change has had mixed results.","","全体として、その変化の結果は良し悪し両方でした。","mixed results=良い面と悪い面が混ざった結果。"],
+ ["The main factor behind this trend is the falling birth rate.","","この傾向の主な要因は出生率の低下です。","factor behind 〜=〜の背後にある要因。"],
+ ["In contrast, rural areas face a different problem.","","対照的に、地方は別の問題に直面しています。","in contrast=対照的に。"],
+ ["Avoid including your own opinion in a summary.","","要約には自分の意見を入れないようにしましょう。","要約は本文の内容だけを短く言いかえるのが基本。"]]);
+XU('x-ekp1n','英検準1級 ステップ14','EIKEN PRE-1 STEP 14','en',[
+ ["Whereas cities have many jobs, rural areas offer a slower pace of life.","","都市には仕事が多い一方、地方にはゆったりした暮らしがあります。","whereas=〜である一方(対比)。"],
+ ["The plan was expensive; nonetheless, it was approved.","","その計画は費用がかかりましたが、それでも承認されました。","nonetheless=それにもかかわらず。"],
+ ["Consequently, many small shops were forced to close.","","その結果、多くの小さな店が閉店に追いこまれました。","consequently=その結果(as a result よりかたい)。"],
+ ["By contrast, the younger generation prefers renting.","","それに対して、若い世代は借りることを好みます。","by contrast=それに対して。"],
+ ["The theory was eventually proved wrong.","","その理論は最終的にまちがっていると証明されました。","eventually=最終的に・結局。"],
+ ["Moreover, the new system is easier to use.","","そのうえ、新しいシステムのほうが使いやすいです。","moreover=そのうえ。"],
+ ["The data suggest that the trend will continue.","","データはその傾向が続くことを示唆しています。","data は複数あつかいされることもあります(suggest)。suggest=示唆する。"],
+ ["This is not to say that technology is harmful.","","これは技術が有害だと言っているわけではありません。","This is not to say that 〜=〜と言っているわけではない(誤解を防ぐ)。"]]);
+XU('x-ekp1o','英検準1級 ステップ15','EIKEN PRE-1 STEP 15','en',[
+ ["That's a difficult question, but I'll do my best to answer.","","難しい質問ですが、できる限りお答えします。","すぐ答えられないときも、だまらずにつなぐ一言。"],
+ ["I would say that the benefits outweigh the costs.","","利点が費用を上回ると言えると思います。","I would say=〜だと思います(断定をやわらげる)。outweigh=上回る。"],
+ ["I think it varies from person to person.","","人によってちがうと思います。","vary from person to person=人によって異なる。このあとに具体例を続けると説得力が出ます。"],
+ ["To be more specific, I mean public schools.","","もう少し具体的に言うと、公立学校のことです。","to be more specific=より具体的に言うと。"],
+ ["I hadn't thought about it that way.","","そういうふうには考えていませんでした。","相手の意見を受け止める表現。"],
+ ["Could you rephrase the question, please?","","質問を言いかえていただけますか。","rephrase=言いかえる。"],
+ ["In my experience, small classes work better.","","私の経験では、少人数クラスのほうがうまくいきます。","in my experience=私の経験では。"],
+ ["Having said that, there are some exceptions.","","とはいえ、いくつか例外もあります。","having said that=とはいえ(前の発言に条件をつける)。"]]);
 XU('x-ek1','英検1級 ステップ1','EIKEN 1 STEP 1','en',[
  ["The proposal was met with fierce opposition.","","その提案は激しい反対にあいました。","be met with 〜=〜という反応を受ける。"],
  ["Economic disparity has become increasingly pronounced.","","経済格差はますます顕著になっています。","pronounced は形容詞で「顕著な」。"],
@@ -7508,6 +8149,97 @@ XU('x-ek1e','英検1級 ステップ5','EIKEN 1 STEP 5','en',[
  ["I would like to argue that this policy is counterproductive.","","この政策は逆効果だと主張したいと思います。","counterproductive=逆効果の。"],
  ["Admittedly, there are some valid counterarguments.","","確かに、もっともな反論もいくつかあります。","Admittedly=確かに(相手の意見を一度認める)。"],
  ["Taking all this into account, the benefits clearly outweigh the risks.","","これらすべてを考え合わせると、利点はリスクを明らかに上回ります。","take 〜 into account=〜を考慮に入れる。"]]);
+/* ---- 英検1級: ステップ6〜15 (each 8 original phrases, 120 in all with ステップ1〜5) ---- */
+XU('x-ek1f','英検1級 ステップ6','EIKEN 1 STEP 6','en',[
+ ["The new evidence vindicated the scientist's theory.","","新しい証拠がその科学者の理論の正しさを証明しました。","vindicate=(正しさ・潔白を)証明する。"],
+ ["The government sought to placate angry farmers.","","政府は怒った農家をなだめようとしました。","placate=なだめる。sought は seek の過去形。"],
+ ["The company was accused of trying to circumvent the regulations.","","その会社は規制をくぐり抜けようとしたと非難されました。","circumvent=(規則などを)回避する。"],
+ ["Years of conflict have decimated the region's economy.","","長年の紛争がその地域の経済を壊滅させました。","decimate=大きく減らす・壊滅させる。"],
+ ["The minister tried to downplay the seriousness of the crisis.","","大臣は危機の深刻さを軽く見せようとしました。","downplay=軽く扱う・過小に見せる。"],
+ ["Rising prices have exacerbated poverty in urban areas.","","物価の上昇が都市部の貧困を悪化させています。","exacerbate=(悪い状態を)さらに悪化させる。"],
+ ["The leaders reiterated their commitment to peace.","","指導者たちは平和への決意をあらためて表明しました。","reiterate=くり返し述べる。"],
+ ["The museum aims to perpetuate traditional crafts.","","その博物館は伝統工芸を後世に残すことを目指しています。","perpetuate=永続させる(悪い慣習にも使います)。"]]);
+XU('x-ek1g','英検1級 ステップ7','EIKEN 1 STEP 7','en',[
+ ["The negotiations reached an impasse.","","交渉は行きづまりました。","impasse=行きづまり。"],
+ ["His remarks were seen as condescending.","","彼の発言は見下していると受け取られました。","condescending=見下すような。"],
+ ["The region has a precarious water supply.","","その地域の水の供給は不安定です。","precarious=不安定な・危うい。"],
+ ["Her argument was both cogent and concise.","","彼女の主張は説得力があり、簡潔でした。","cogent=説得力のある。concise=簡潔な。"],
+ ["The problem is ubiquitous in modern cities.","","その問題は現代の都市のいたるところに見られます。","ubiquitous=いたるところにある。"],
+ ["The policy had a detrimental effect on small farms.","","その政策は小規模農家に有害な影響を与えました。","detrimental=有害な(harmful よりかたい)。"],
+ ["There is a dearth of reliable data on the issue.","","その問題については信頼できるデータが不足しています。","a dearth of=〜の不足。"],
+ ["The novel offers a poignant portrait of wartime life.","","その小説は戦時中の生活を胸を打つように描いています。","poignant=心を打つ・痛ましい。"]]);
+XU('x-ek1h','英検1級 ステップ8','EIKEN 1 STEP 8','en',[
+ ["The scandal threatens to derail the peace talks.","","そのスキャンダルは和平交渉を頓挫させるおそれがあります。","derail=(計画を)脱線させる・頓挫させる。threaten to 〜=〜するおそれがある。"],
+ ["The rumor turned out to be unfounded.","","そのうわさは根拠がないとわかりました。","unfounded=根拠のない。"],
+ ["The government is trying to stave off a recession.","","政府は景気後退を食い止めようとしています。","stave off=(危険などを)食い止める。"],
+ ["Critics were quick to seize on the minister's mistake.","","批判する人たちはすぐに大臣の失敗に飛びつきました。","seize on=(機会・弱点に)飛びつく。"],
+ ["The issue was swept under the carpet for years.","","その問題は何年も隠されてきました。","sweep 〜 under the carpet=(都合の悪いことを)隠す。"],
+ ["The negotiations are still up in the air.","","交渉はまだどうなるかわかりません。","up in the air=未決定で。"],
+ ["The company had to write off its losses.","","その会社は損失を帳消しにしなければなりませんでした。","write off=(損失として)処理する・帳消しにする。"],
+ ["The new rules have been watered down.","","新しい規則は骨抜きにされました。","water down=(内容を)弱める・骨抜きにする。"]]);
+XU('x-ek1i','英検1級 ステップ9','EIKEN 1 STEP 9','en',[
+ ["The court ruled that the law was unconstitutional.","","裁判所はその法律が違憲であると判断しました。","rule that 〜=〜と判決を下す。unconstitutional=違憲の。"],
+ ["Facial recognition raises serious privacy concerns.","","顔認証は深刻なプライバシーの懸念を生みます。","raise concerns=懸念を生む。"],
+ ["Who should be held liable when a self-driving car crashes?","","自動運転車が事故を起こしたとき、だれが責任を負うべきでしょうか。","be held liable=法的責任を問われる。"],
+ ["The death penalty remains a deeply divisive issue.","","死刑は今も深く意見が分かれる問題です。","divisive=意見を分裂させる。"],
+ ["Companies have an ethical obligation to protect user data.","","企業には利用者のデータを守る倫理的な義務があります。","obligation=義務。"],
+ ["Freedom of speech is not absolute.","","表現の自由は無制限ではありません。","absolute=絶対的な・無制限の。"],
+ ["The bill was passed by a narrow margin.","","その法案は僅差で可決されました。","bill=法案。by a narrow margin=僅差で。"],
+ ["Whistleblowers need stronger legal protection.","","内部告発者にはより強い法的保護が必要です。","whistleblower=内部告発者。"]]);
+XU('x-ek1j','英検1級 ステップ10','EIKEN 1 STEP 10','en',[
+ ["Water scarcity could trigger conflicts between nations.","","水不足は国家間の紛争の引き金になりかねません。","scarcity=不足。trigger=引き起こす。"],
+ ["Coral reefs are highly sensitive to rising ocean temperatures.","","サンゴ礁は海水温の上昇にとても敏感です。","coral reef=サンゴ礁。"],
+ ["The transition to renewable energy must be accelerated.","","再生可能エネルギーへの移行を加速させなければなりません。","transition to=〜への移行。"],
+ ["Microplastics have been found even in the deep sea.","","マイクロプラスチックは深海でも見つかっています。","現在完了の受け身(have been found)。"],
+ ["Overconsumption is depleting the planet's resources.","","過剰な消費が地球の資源を枯渇させています。","deplete=使い果たす。"],
+ ["Carbon pricing gives companies an incentive to cut emissions.","","炭素の価格づけは、企業に排出削減の動機を与えます。","incentive=動機・誘因。emissions=排出量。"],
+ ["Urban sprawl threatens natural habitats.","","都市の無秩序な拡大は自然の生息地をおびやかしています。","urban sprawl=都市のスプロール現象。habitat=生息地。"],
+ ["Sustainable fishing practices are essential for future generations.","","持続可能な漁業のやり方は将来の世代にとって欠かせません。","practice=(習慣的な)やり方。"]]);
+XU('x-ek1k','英検1級 ステップ11','EIKEN 1 STEP 11','en',[
+ ["The pandemic exposed weaknesses in healthcare systems.","","パンデミックは医療制度の弱点を浮き彫りにしました。","expose=さらけ出す。"],
+ ["Life expectancy has risen steadily over the past century.","","平均寿命は過去100年で着実に延びてきました。","life expectancy=平均寿命。"],
+ ["The drug is still in the early stages of clinical trials.","","その薬はまだ臨床試験の初期段階にあります。","clinical trial=臨床試験。"],
+ ["Organ donation remains rare in some countries.","","臓器提供がいまだにまれな国もあります。","organ donation=臓器提供。"],
+ ["Misuse of antibiotics contributes to drug-resistant bacteria.","","抗生物質の誤用が薬剤耐性菌の一因になっています。","contribute to=〜の一因となる。drug-resistant=薬剤耐性の。"],
+ ["Preventive care can reduce long-term medical costs.","","予防医療は長期的な医療費を減らすことができます。","preventive=予防の。"],
+ ["The ethics of human cloning are hotly debated.","","ヒトのクローンの倫理は激しく議論されています。","ethics(倫理)は複数あつかいになることが多いです。"],
+ ["Mental illness still carries a social stigma.","","心の病には今も社会的な偏見がつきまといます。","stigma=汚名・偏見。"]]);
+XU('x-ek1l','英検1級 ステップ12','EIKEN 1 STEP 12','en',[
+ ["The two nations restored diplomatic relations.","","両国は国交を回復しました。","diplomatic relations=外交関係・国交。"],
+ ["Economic sanctions have had limited impact.","","経済制裁の効果は限定的でした。","sanction=制裁。"],
+ ["Cyberattacks pose a growing threat to national security.","","サイバー攻撃は国家の安全保障への脅威を増しています。","pose a threat to=〜に脅威を与える。"],
+ ["The alliance was formed to deter aggression.","","その同盟は侵略を抑止するために結成されました。","deter=思いとどまらせる・抑止する。aggression=侵略。"],
+ ["Humanitarian aid failed to reach the affected areas.","","人道支援は被災地に届きませんでした。","humanitarian=人道的な。affected areas=被災地。"],
+ ["The treaty prohibits the testing of nuclear weapons.","","その条約は核兵器の実験を禁止しています。","prohibit=禁止する。"],
+ ["Soft power plays an increasingly important role in diplomacy.","","外交ではソフトパワーがますます重要な役割を果たしています。","soft power=文化などによる影響力。diplomacy=外交。"],
+ ["Tensions in the region have eased somewhat.","","その地域の緊張はいくらか緩和しました。","ease=やわらぐ。somewhat=いくらか。"]]);
+XU('x-ek1m','英検1級 ステップ13','EIKEN 1 STEP 13','en',[
+ ["This essay will argue that the policy should be abolished.","","本論では、その政策は廃止されるべきだと論じます。","冒頭で立場と構成を示す型。"],
+ ["First and foremost, the policy has failed to achieve its goals.","","何よりもまず、その政策は目標を達成できていません。","first and foremost=何よりもまず。"],
+ ["This is evidenced by the steady rise in unemployment.","","このことは失業率の着実な上昇によって裏づけられています。","be evidenced by=〜によって裏づけられる。"],
+ ["Proponents of the policy contend that it creates jobs.","","その政策の支持者は、それが雇用を生むと主張しています。","proponent=支持者。contend=主張する。"],
+ ["However, this argument does not hold up to scrutiny.","","しかし、この主張は精査に耐えません。","hold up to scrutiny=厳しい検討に耐える。"],
+ ["A more effective alternative would be to invest in training.","","より効果的な代替案は、職業訓練に投資することでしょう。","alternative=代替案。"],
+ ["In light of these points, the policy cannot be justified.","","これらの点をふまえると、その政策は正当化できません。","in light of=〜をふまえて。justify=正当化する。"],
+ ["In conclusion, the drawbacks far outweigh the benefits.","","結論として、欠点が利点をはるかに上回ります。","far outweigh=はるかに上回る。"]]);
+XU('x-ek1n','英検1級 ステップ14','EIKEN 1 STEP 14','en',[
+ ["The passage examines the causes of declining trust in the media.","","この文章はメディアへの信頼が低下している原因を検討しています。","examine=検討する。要約の1文目でテーマを示します。"],
+ ["According to the author, the rise of social media is partly to blame.","","筆者によれば、ソーシャルメディアの台頭にも責任の一端があります。","be to blame=責任がある。partly=部分的に。"],
+ ["The author also acknowledges some positive effects.","","筆者はいくつかの良い効果も認めています。","acknowledge=(事実として)認める。"],
+ ["Nevertheless, the overall tone of the passage is critical.","","それでもなお、文章全体の論調は批判的です。","nevertheless=それでもなお。"],
+ ["The passage ends by calling for stricter regulation.","","文章は規制の強化を求めて締めくくられています。","call for=要求する。"],
+ ["Two contrasting views are presented.","","対照的な2つの見方が示されています。","contrasting=対照的な。"],
+ ["Specific numbers can usually be left out of a summary.","","要約では、具体的な数字はふつう省いてかまいません。","leave out=省く。細部より論の流れを優先します。"],
+ ["Combine similar points into a single sentence.","","似た論点は1つの文にまとめましょう。","要約では情報を整理して短くまとめます。"]]);
+XU('x-ek1o','英検1級 ステップ15','EIKEN 1 STEP 15','en',[
+ ["The topic I have chosen is whether nuclear power should be expanded.","","私が選んだトピックは、原子力発電を拡大すべきかどうかです。","スピーチの冒頭でトピックを読み上げる形。"],
+ ["I will support my position with three key points.","","3つの要点で自分の立場を裏づけます。","最初に論点の数を示すと聞きやすくなります。"],
+ ["Let me illustrate this with an example.","","例を挙げて説明させてください。","illustrate=(例などで)説明する。"],
+ ["To sum up, I am convinced that the risks are too great.","","まとめると、私はリスクが大きすぎると確信しています。","to sum up=まとめると。be convinced that=〜と確信している。"],
+ ["That's an interesting point, but I respectfully disagree.","","興味深いご指摘ですが、失礼ながら私は反対です。","反対意見もていねいに伝える表現。"],
+ ["I admit that my argument has some limitations.","","私の主張にいくつか限界があることは認めます。","limitation=限界。"],
+ ["Allow me to clarify what I meant.","","私が言いたかったことをはっきりさせてください。","clarify=明確にする。"],
+ ["It's a complex issue with no easy answers.","","簡単な答えのない複雑な問題です。","すぐに結論が出ない問題を認めたうえで意見を述べる。"]]);
 /* ---- English: TOEIC / IELTS / TOEFL / aviation ---- */
 XU('x-toeic','TOEIC L&R ステップ1','TOEIC STEP 1','en',[
  ["The meeting has been postponed until Thursday.","","会議は木曜日まで延期されました。",""],
@@ -8090,14 +8822,14 @@ var EXAMS={
    A bank with fewer than XBANK_FULL phrases is still 準備中: it can be studied, but has no 合格圏メーター yet. */
 var XBANK_FULL=40;
 var XBANK={
- ek5:{L:'en',name:'英検5級',tier:1,ids:['x-ek5','x-ek5b','x-ek5c','x-ek5d','x-ek5e']},
- ek4:{L:'en',name:'英検4級',tier:1,ids:['x-ek4','x-ek4b','x-ek4c','x-ek4d','x-ek4e']},
- ek3:{L:'en',name:'英検3級',tier:1,ids:['x-ek3','x-ek3b','x-ek3c','x-ek3d','x-ek3e']},
- ekp2:{L:'en',name:'英検準2級',tier:1,ids:['x-ekp2','x-ekp2b','x-ekp2c','x-ekp2d','x-ekp2e']},
- ekp2p:{L:'en',name:'英検準2級プラス',tier:2,ids:['x-ekp2p','x-ekp2pb','x-ekp2pc','x-ekp2pd','x-ekp2pe']},
- ek2:{L:'en',name:'英検2級',tier:2,ids:['x-ek2','x-ek2b','x-ek2c','x-ek2d','x-ek2e']},
- ekp1:{L:'en',name:'英検準1級',tier:2,ids:['x-ekp1','x-ekp1b','x-ekp1c','x-ekp1d','x-ekp1e']},
- ek1:{L:'en',name:'英検1級',tier:2,ids:['x-ek1','x-ek1b','x-ek1c','x-ek1d','x-ek1e']},
+ ek5:{L:'en',name:'英検5級',tier:1,ids:['x-ek5','x-ek5b','x-ek5c','x-ek5d','x-ek5e','x-ek5f','x-ek5g','x-ek5h','x-ek5i','x-ek5j','x-ek5k','x-ek5l','x-ek5m','x-ek5n','x-ek5o']},
+ ek4:{L:'en',name:'英検4級',tier:1,ids:['x-ek4','x-ek4b','x-ek4c','x-ek4d','x-ek4e','x-ek4f','x-ek4g','x-ek4h','x-ek4i','x-ek4j','x-ek4k','x-ek4l','x-ek4m','x-ek4n','x-ek4o']},
+ ek3:{L:'en',name:'英検3級',tier:1,ids:['x-ek3','x-ek3b','x-ek3c','x-ek3d','x-ek3e','x-ek3f','x-ek3g','x-ek3h','x-ek3i','x-ek3j','x-ek3k','x-ek3l','x-ek3m','x-ek3n','x-ek3o']},
+ ekp2:{L:'en',name:'英検準2級',tier:1,ids:['x-ekp2','x-ekp2b','x-ekp2c','x-ekp2d','x-ekp2e','x-ekp2f','x-ekp2g','x-ekp2h','x-ekp2i','x-ekp2j','x-ekp2k','x-ekp2l','x-ekp2m','x-ekp2n','x-ekp2o']},
+ ekp2p:{L:'en',name:'英検準2級プラス',tier:2,ids:['x-ekp2p','x-ekp2pb','x-ekp2pc','x-ekp2pd','x-ekp2pe','x-ekp2pf','x-ekp2pg','x-ekp2ph','x-ekp2pi','x-ekp2pj','x-ekp2pk','x-ekp2pl','x-ekp2pm','x-ekp2pn','x-ekp2po']},
+ ek2:{L:'en',name:'英検2級',tier:2,ids:['x-ek2','x-ek2b','x-ek2c','x-ek2d','x-ek2e','x-ek2f','x-ek2g','x-ek2h','x-ek2i','x-ek2j','x-ek2k','x-ek2l','x-ek2m','x-ek2n','x-ek2o']},
+ ekp1:{L:'en',name:'英検準1級',tier:2,ids:['x-ekp1','x-ekp1b','x-ekp1c','x-ekp1d','x-ekp1e','x-ekp1f','x-ekp1g','x-ekp1h','x-ekp1i','x-ekp1j','x-ekp1k','x-ekp1l','x-ekp1m','x-ekp1n','x-ekp1o']},
+ ek1:{L:'en',name:'英検1級',tier:2,ids:['x-ek1','x-ek1b','x-ek1c','x-ek1d','x-ek1e','x-ek1f','x-ek1g','x-ek1h','x-ek1i','x-ek1j','x-ek1k','x-ek1l','x-ek1m','x-ek1n','x-ek1o']},
  toeic:{L:'en',name:'TOEIC L&R',tier:2,ids:['x-toeic','x-toeicb','x-toeicc','x-toeicd','x-toeice']},
  ielts:{L:'en',name:'IELTS',tier:2,ids:['x-ielts','x-ieltsb','x-ieltsc','x-ieltsd','x-ieltse']},
  toefl:{L:'en',name:'TOEFL iBT',tier:2,ids:['x-toefl','x-toeflb','x-toeflc','x-toefld','x-toefle']},
@@ -13797,6 +14529,9 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.17',items:[
+  ['🏅','英検のフレーズが3倍に','英検の5級から1級まで、すべての級にステップ6〜15が加わりました(各級+80フレーズで、どの級も120フレーズに。全部で640フレーズの追加です)。疑問詞・過去形・比較・不定詞・仮定法・分詞構文・熟語・英作文と要約の型・長文の論理・面接の受け答えなど、本番に出る形をオリジナルの例文で練習できます。合格圏メーターはフレーズ全体から計算し直すので、数字が一度下がることがありますが、覚えた記録はそのまま残っています。','exam',1,['ja']]
+ ]},
  {v:'2026.11.16',items:[
   ['🎙','OPIc 스피킹 연습','시험 코스(영어)에서 OPIc을 실제 시험과 같은 흐름으로 연습할 수 있게 되었어요. 자기소개 → 설문 주제 콤보 → 롤플레이 → 돌발 주제. 답변은 모범 예시와 비교해서 스스로 채점해요(비즈니스부터).','exam',1,['ko']],
   ['🎙','CET 口语考试练习','考试课程(英语)新增大学英语四、六级口语考试(CET-SET4・CET-SET6)练习,流程与正式考试相同:自我介绍、朗读、简短回答、个人陈述、两人互动(搭档由语音模拟)。','exam',1,['zh']],

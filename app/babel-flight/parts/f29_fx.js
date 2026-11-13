@@ -103,6 +103,9 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.17',items:[
+  ['🏅','英検のフレーズが3倍に','英検の5級から1級まで、すべての級にステップ6〜15が加わりました(各級+80フレーズで、どの級も120フレーズに。全部で640フレーズの追加です)。疑問詞・過去形・比較・不定詞・仮定法・分詞構文・熟語・英作文と要約の型・長文の論理・面接の受け答えなど、本番に出る形をオリジナルの例文で練習できます。合格圏メーターはフレーズ全体から計算し直すので、数字が一度下がることがありますが、覚えた記録はそのまま残っています。','exam',1,['ja']]
+ ]},
  {v:'2026.11.16',items:[
   ['🎙','OPIc 스피킹 연습','시험 코스(영어)에서 OPIc을 실제 시험과 같은 흐름으로 연습할 수 있게 되었어요. 자기소개 → 설문 주제 콤보 → 롤플레이 → 돌발 주제. 답변은 모범 예시와 비교해서 스스로 채점해요(비즈니스부터).','exam',1,['ko']],
   ['🎙','CET 口语考试练习','考试课程(英语)新增大学英语四、六级口语考试(CET-SET4・CET-SET6)练习,流程与正式考试相同:自我介绍、朗读、简短回答、个人陈述、两人互动(搭档由语音模拟)。','exam',1,['zh']],
