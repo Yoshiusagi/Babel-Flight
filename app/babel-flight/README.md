@@ -343,7 +343,11 @@ question counts and timing: 筆記 (reading, then writing, one timer) → listen
 once or twice like the real test, with the real answer time. Original questions only.
 
 The tests are written in `mock/<key>.py` (helpers in `mock/mxh.py`) and built into `public/mx/<key>.json`,
-which the page loads only when a test is opened:
+which the page loads only when a test is opened. A grade can have several tests (第1回 `ek3.py` → `ek3.json`,
+第2回 `ek3_2.py` → `ek3-2.json`, …): `MX_VERS` in `f23_mx.js` says how many, the intro screen has a 第n回 switch, a
+grade opens on the test with a run kept, else the first not taken, else the one taken longest ago (`mxPickVer`), and
+the history is kept per test (`mxTid`: the grade key for 第1回, as before). `build.py` checks `MX_VERS` against the
+files and stops when two tests of a grade share a question:
 
     python3 babel-flight/mock/build.py
 

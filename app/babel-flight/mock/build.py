@@ -114,16 +114,21 @@ def check_lines(key, where, item):
             err(key, where, f'bad line {ln!r}')
 
 
-def build(key):
+def src_name(key, v):
+    """第1回 = <key>.py → <key>.json, 第2回 = <key>_2.py → <key>-2.json, …"""
+    return (key + '.py', key + '.json') if v == 1 else ('%s_%d.py' % (key, v), '%s-%d.json' % (key, v))
+
+
+def build(key, v=1):
     spec = SPEC[key]
-    path = os.path.join(HERE, key + '.py')
+    path = os.path.join(HERE, src_name(key, v)[0])
     if not os.path.exists(path):
         return None
-    sp = importlib.util.spec_from_file_location('mx_' + key, path)
+    sp = importlib.util.spec_from_file_location('mx_%s_%d' % (key, v), path)
     mod = importlib.util.module_from_spec(sp)
     sp.loader.exec_module(mod)
     t = mod.TEST
-    out = {'key': key, 'name': spec['name'], 'sections': []}
+    out = {'key': key, 'v': v, 'name': spec['name'], 'sections': []}
     # 筆記 (reading, then writing from 3級)
     rtime, rparts = spec['R']
     src = t['R']
@@ -216,12 +221,31 @@ def build(key):
 def main():
     os.makedirs(OUT, exist_ok=True)
     index = []
+    # the page's MX_VERS (parts/f23_mx.js) must match the tests written here
+    js = open(os.path.join(HERE, '..', 'parts', 'f23_mx.js'), encoding='utf-8').read()
+    vers = dict(re.findall(r"(\w+):(\d+)", re.search(r"var MX_VERS=\{([^}]*)\}", js).group(1)))
+    seen_items = {}
     for key in ORDER:
-        t = build(key)
+      v = 0
+      while True:
+        v += 1
+        t = build(key, v)
         if t is None:
-            continue
+            if int(vers.get(key, 0)) != v - 1:
+                err(key, 'MX_VERS', 'f23_mx.js says %s, there are %d tests' % (vers.get(key), v - 1))
+            break
+        tag = key if v == 1 else '%s-%d' % (key, v)
+        # the same question in two tests of a grade
+        for sec in t['sections']:
+            for p in sec['parts']:
+                for q in p.get('items', []):
+                    for qq in (q.get('qs') or [q]):
+                        k2 = (key, str(qq.get('q', '')) + '|' + '|'.join(map(str, qq.get('o', []))))
+                        if qq.get('q') and k2 in seen_items and seen_items[k2] != tag:
+                            err(tag, 'dup', 'same question as %s: %s' % (seen_items[k2], str(qq.get('q'))[:50]))
+                        seen_items.setdefault(k2, tag)
         data = json.dumps(t, ensure_ascii=False, separators=(',', ':'))
-        with open(os.path.join(OUT, key + '.json'), 'w', encoding='utf-8') as f:
+        with open(os.path.join(OUT, src_name(key, v)[1]), 'w', encoding='utf-8') as f:
             f.write(data)
         # answer positions, to catch a test where the answer is mostly in one place
         pos = [0, 0, 0, 0]
@@ -234,8 +258,8 @@ def main():
                 for b in p.get('blocks', []):
                     for qq in b['qs']:
                         pos[qq['a']] += 1
-        index.append(key)
-        print(f'{key}: R {t["nq"]["R"]} W {t["nq"]["W"]} L {t["nq"]["L"]}  answers by position {pos}  {len(data) // 1024} KB')
+        index.append(tag)
+        print(f'{tag}: R {t["nq"]["R"]} W {t["nq"]["W"]} L {t["nq"]["L"]}  answers by position {pos}  {len(data) // 1024} KB')
     if errors:
         print('\n'.join(errors))
         sys.exit(1)

@@ -103,6 +103,9 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.19',items:[
+  ['📝','英検3級・準2級の模試が3回分に','英検3級と英検準2級の本番形式の模試が、第1回〜第3回の3回分になりました(すべてオリジナル問題)。模試の画面の上で回を選べます。開くと、まだ解いていない回から始まります。ほかの級も順番に増やしていきます。','exam',1,['ja']]
+ ]},
  {v:'2026.11.18',items:[
   ['🎤','面接・スピーキングの練習が大幅に増えました','英検の面接は3級から1級まで、どの級もカードが10枚に(新しく30枚・1級は新しいトピック25個)。IELTS・TOEFL・航空英語能力証明・DELE・CILS・OET・客室乗務員・全国通訳案内士も、それぞれ5セットになりました。カードを裏返したあとの質問や Part 1・Part 3 の質問も約2倍になったので、同じ質問に当たりにくくなっています。','exam',1,['ja']],
   ['🎙','OPIc 연습이 5세트로','OPIc 스피킹 연습이 5세트로 늘었어요. 새로운 설문 주제(국내 여행·카페·요리·공연·조깅·집), 롤플레이, 돌발 주제가 추가되었어요.','exam',1,['ko']],

@@ -1455,6 +1455,12 @@ html.app :where(button:not(:disabled):active){transform:scale(.97);filter:bright
 .mx-gb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:52px;padding:6px 4px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
 .mx-gb b{font-size:13.5px;line-height:1.25;text-align:center}
 .mx-gb small{font-size:10.5px;color:var(--ink2)}
+/* 第1回 / 第2回 / 第3回 */
+.mx-vers{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:6px;margin:12px 0 10px}
+.mx-vb{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:48px;padding:6px 4px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+.mx-vb b{font-size:14px}
+.mx-vb small{font-size:11px;color:var(--ink2)}
+.mx-vb[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink);background:var(--surface2)}
 </style>
 <style>
 /* 筆記体なぞり */
@@ -11196,7 +11202,21 @@ setTimeout(function(){if(moveOldSite())moveNoteShow();else moveIncoming();},0);
    for now (AI marking comes with the interview practice). Progress survives a reload. */
 var MX_GRADES=[['ek5','5級'],['ek4','4級'],['ek3','3級'],['ekp2','準2級'],['ekp2p','準2級プラス'],['ek2','2級'],['ekp1','準1級'],['ek1','1級']];
 var MX_RUNKEY='babelflight.mxrun',MX_HISTKEY='babelflight.mxhist';
-var MX={key:'',data:null,loading:false,err:'',stage:'',mode:'full',sec:'R',page:0,ans:{},wr:{},self:{},left:0,tm:0,lp:0,lq:null,tok:0,paused:false,phase:'',cd:0,done:{}};
+/* how many full mock tests each grade has (第1回 = public/mx/<key>.json, 第2回 = <key>-2.json, …); mock/build.py checks it */
+var MX_VERS={ek5:1,ek4:1,ek3:3,ekp2:3,ekp2p:1,ek2:1,ekp1:1,ek1:1};
+/* a test's id in the history: the grade key for 第1回 (as before), <key>-<n> for the others */
+function mxTid(k,v){return v>1?k+'-'+v:k;}
+function mxNVers(k){return MX_VERS[k]||1;}
+/* the newest result of a grade, over all its tests */
+function mxLast(k,h){var best=null;for(var v=1;v<=mxNVers(k);v++){var r=(h[mxTid(k,v)]||[])[0];if(r&&(!best||r.d>best.d))best=r;}return best;}
+/* which test to open: the one with a run kept, else the first not taken yet, else the one taken longest ago */
+function mxPickVer(k){
+  var run=mxRun();if(run&&run.key===k)return run.v||1;
+  var h=mxLoadJSON(MX_HISTKEY,{}),pick=1,old=Infinity;
+  for(var v=1;v<=mxNVers(k);v++){var r=(h[mxTid(k,v)]||[])[0];if(!r)return v;if(r.d<old){old=r.d;pick=v;}}
+  return pick;
+}
+var MX={key:'',v:1,data:null,loading:false,err:'',stage:'',mode:'full',sec:'R',page:0,ans:{},wr:{},self:{},left:0,tm:0,lp:0,lq:null,tok:0,paused:false,phase:'',cd:0,done:{}};
 var MX_DIR={
   gap:'(　)に入れるのに最も適切なものを1, 2, 3, 4の中から一つ選びなさい。',
   dgap:'会話について、(　)に入れるのに最も適切なものを1, 2, 3, 4の中から一つ選びなさい。',
@@ -11242,20 +11262,21 @@ function mxIndex(d){
 }
 
 /* ---- loading and the run kept in this browser ---- */
-function mxOpen(k){
+function mxOpen(k,v){
   if(!mxOn()||!mxOK(k))return;
   closeSheet();mxStop();
-  MX.key=k;MX.data=null;MX.err='';MX.stage='intro';MX.loading=true;
+  v=Math.max(1,Math.min(mxNVers(k),+v||mxPickVer(k)));
+  MX.key=k;MX.v=v;MX.data=null;MX.err='';MX.stage='intro';MX.loading=true;
   go('mx');
-  fetch(bfSiteUrl('/mx/'+k+'.json'),{cache:'no-cache'}).then(function(r){if(!r.ok)throw new Error('http');return r.json();}).then(function(d){
-    if(MX.key!==k)return;
+  fetch(bfSiteUrl('/mx/'+mxTid(k,v)+'.json'),{cache:'no-cache'}).then(function(r){if(!r.ok)throw new Error('http');return r.json();}).then(function(d){
+    if(MX.key!==k||MX.v!==v)return;
     MX.data=d;MX.ix=mxIndex(d);MX.loading=false;if(view==='mx')render();
-  }).catch(function(){if(MX.key!==k)return;MX.loading=false;MX.err='問題を読み込めませんでした。電波を確認して、もう一度開いてね。';if(view==='mx')render();});
+  }).catch(function(){if(MX.key!==k||MX.v!==v)return;MX.loading=false;MX.err='問題を読み込めませんでした。電波を確認して、もう一度開いてね。';if(view==='mx')render();});
 }
 function mxRun(){var r=mxLoadJSON(MX_RUNKEY,null);return r&&r.key?r:null;}
 function mxKeep(){
   if(!MX.data||MX.stage==='intro'||MX.stage==='result')return;
-  mxSaveJSON(MX_RUNKEY,{key:MX.key,mode:MX.mode,stage:MX.stage==='listen'?'lintro':MX.stage,sec:MX.sec,page:MX.page,ans:MX.ans,wr:MX.wr,left:Math.max(0,Math.round(MX.left)),lp:MX.lp,t:Date.now()});
+  mxSaveJSON(MX_RUNKEY,{key:MX.key,v:MX.v,mode:MX.mode,stage:MX.stage==='listen'?'lintro':MX.stage,sec:MX.sec,page:MX.page,ans:MX.ans,wr:MX.wr,left:Math.max(0,Math.round(MX.left)),lp:MX.lp,t:Date.now()});
 }
 function mxForget(){try{localStorage.removeItem(MX_RUNKEY);}catch(e){}}
 function mxStart(mode,resume){
@@ -11494,10 +11515,10 @@ function mxScore(){
 }
 function mxFinish(){
   mxForget();
-  var s=mxScore(),h=mxLoadJSON(MX_HISTKEY,{}),list=Array.isArray(h[MX.key])?h[MX.key]:[];
+  var s=mxScore(),h=mxLoadJSON(MX_HISTKEY,{}),tid=mxTid(MX.key,MX.v),list=Array.isArray(h[tid])?h[tid]:[];
   var rec={d:Date.now(),m:MX.mode};
   if(MX.mode!=='L')rec.R=s.R;if(MX.mode!=='R')rec.L=s.L;
-  list.unshift(rec);h[MX.key]=list.slice(0,5);mxSaveJSON(MX_HISTKEY,h);
+  list.unshift(rec);h[tid]=list.slice(0,5);mxSaveJSON(MX_HISTKEY,h);
   MX.result=s;
 }
 function mxPct(a){return a[1]?Math.round(a[0]/a[1]*100):0;}
@@ -11559,18 +11580,25 @@ function mxReviewHTML(){
 
 /* ---- the grade page ---- */
 function mxIntroHTML(){
-  var h='<div class="mx-bar"><button type="button" class="mx-x" data-mx-close aria-label="閉じる">✕</button><div class="mx-bt"><b>'+esc(mxGradeName(MX.key))+'</b><span>本番形式の模試</span></div><div class="mx-clock"></div></div>';
+  var h='<div class="mx-bar"><button type="button" class="mx-x" data-mx-close aria-label="閉じる">✕</button><div class="mx-bt"><b>'+esc(mxGradeName(MX.key))+(mxNVers(MX.key)>1?' 第'+MX.v+'回':'')+'</b><span>本番形式の模試</span></div><div class="mx-clock"></div></div>';
   if(MX.loading)return h+'<p class="dim" style="margin-top:20px">問題を読み込み中…</p>';
-  if(MX.err)return h+'<p class="mx-note">'+esc(MX.err)+'</p><button type="button" class="ghost" data-mx-open="'+esc(MX.key)+'">もう一度読み込む</button>';
-  var d=MX.data,R=d.sections[0],L=d.sections[1],run=mxRun(),hist=(mxLoadJSON(MX_HISTKEY,{})[MX.key]||[]);
+  if(MX.err)return h+'<p class="mx-note">'+esc(MX.err)+'</p><button type="button" class="ghost" data-mx-open="'+esc(MX.key)+'" data-mx-v="'+MX.v+'">もう一度読み込む</button>';
+  var d=MX.data,R=d.sections[0],L=d.sections[1],run=mxRun(),H=mxLoadJSON(MX_HISTKEY,{}),hist=(H[mxTid(MX.key,MX.v)]||[]);
+  if(run&&!(run.key===MX.key&&(run.v||1)===MX.v))run=null;
   var nR=d.nq.R,nW=d.nq.W,nL=d.nq.L,lmin=MX.key==='ek5'?20:MX.key==='ek4'?30:MX.key==='ekp1'?30:MX.key==='ek1'?35:25;
+  if(mxNVers(MX.key)>1){
+    h+='<div class="mx-vers" role="group" aria-label="模試の回">';
+    for(var v=1;v<=mxNVers(MX.key);v++){var lr=(H[mxTid(MX.key,v)]||[])[0];
+      h+='<button type="button" class="mx-vb" data-mx-ver="'+v+'" aria-pressed="'+(v===MX.v)+'"><b>第'+v+'回</b><small>'+(lr?(lr.R?'筆記 '+mxPct(lr.R)+'%':'リスニング '+mxPct(lr.L)+'%'):'まだ')+'</small></button>';}
+    h+='</div>';
+  }
   h+='<section class="card mx-intro"><h2 class="jh">本番と同じ順番・問題数</h2><ol class="mx-flow">'+
     '<li><b>'+esc(R.title)+'</b><span>'+nR+'問'+(nW?' + 英作文'+nW+'問':'')+' ・ '+(R.time/60)+'分</span></li>'+
     '<li><b>リスニング</b><span>'+nL+'問 ・ 約'+lmin+'分</span></li>'+
     (['ek5','ek4'].indexOf(MX.key)<0?'<li><b>二次試験(面接)</b><span>結果のあとで、本番と同じ流れの面接へ</span></li>':'')+'</ol>'+
     '<p class="dim hint">問題はすべてBabel Flightのオリジナルです(本番の形式・難しさをまねています)。</p>';
-  if(run&&run.key===MX.key)h+='<button type="button" class="go" data-mx-resume>続きから('+(run.stage==='test'?'筆記 残り'+fmtSec(run.left):'リスニング No.'+((run.lp||0)+1))+')</button>';
-  h+='<button type="button" class="'+(run&&run.key===MX.key?'ghost':'go')+'" data-mx-start="full">フル模試を始める<small>筆記 → リスニング</small></button>'+
+  if(run)h+='<button type="button" class="go" data-mx-resume>続きから('+(run.stage==='test'?'筆記 残り'+fmtSec(run.left):'リスニング No.'+((run.lp||0)+1))+')</button>';
+  h+='<button type="button" class="'+(run?'ghost':'go')+'" data-mx-start="full">フル模試を始める<small>筆記 → リスニング</small></button>'+
     '<div class="mx-two"><button type="button" class="ghost" data-mx-start="R">'+esc(R.title)+'だけ</button><button type="button" class="ghost" data-mx-start="L">リスニングだけ</button></div></section>';
   if(hist.length)h+='<section class="card"><h2 class="jh">これまでの結果</h2><ul class="mx-hist">'+hist.map(function(r){
     return '<li><span>'+fmtDate(r.d)+'</span>'+(r.R?'<span>筆記 '+r.R[0]+'/'+r.R[1]+'</span>':'')+(r.L?'<span>リスニング '+r.L[0]+'/'+r.L[1]+'</span>':'')+'</li>';}).join('')+'</ul></section>';
@@ -11604,7 +11632,7 @@ function mxHTML(){
     var host=document.querySelector('#sheetHost .sheet-in h3');if(!host)return;
     var hist=mxLoadJSON(MX_HISTKEY,{}),run=mxRun();
     host.insertAdjacentHTML('afterend','<div class="mx-entry"><span class="lbl">本番形式(英検)</span><div class="mx-gs">'+MX_GRADES.filter(function(g){return mxOK(g[0]);}).map(function(g){
-      var last=(hist[g[0]]||[])[0],sub=run&&run.key===g[0]?'続きあり':last&&last.R?'筆記 '+mxPct(last.R)+'%':last&&last.L?'リスニング '+mxPct(last.L)+'%':'';
+      var last=mxLast(g[0],hist),sub=run&&run.key===g[0]?'続きあり':last&&last.R?'筆記 '+mxPct(last.R)+'%':last&&last.L?'リスニング '+mxPct(last.L)+'%':'';
       return '<button type="button" class="mx-gb" data-mx-open="'+g[0]+'"><b>'+g[1]+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</button>';}).join('')+'</div>'+
       '<p class="dim hint">本番と同じ順番・問題数・時間で解く模試。下はフレーズの問題集から出るミニ模試です。</p></div>');
   };
@@ -11618,11 +11646,12 @@ function mxConfirm(title,body,yes,no){
 document.addEventListener('click',function(e){
   var t=e.target&&e.target.closest&&e.target.closest('button');if(!t)return;
   var a=function(n){return t.hasAttribute(n);},g=function(n){return t.getAttribute(n);};
-  if(a('data-mx-open')){mxOpen(g('data-mx-open'));return;}
+  if(a('data-mx-open')){mxOpen(g('data-mx-open'),g('data-mx-v'));return;}
+  if(a('data-mx-ver')){if(+g('data-mx-ver')!==MX.v)mxOpen(MX.key,g('data-mx-ver'));return;}
   if(view!=='mx'||!MX.data&&!a('data-mx-close'))return;
   if(a('data-mx-close')){mxStop();MX.stage='';MX.key='';go('home');return;}
   if(a('data-mx-start')){mxStart(g('data-mx-start'));return;}
-  if(a('data-mx-resume')){var run=mxRun();if(run&&run.key===MX.key)mxStart(run.mode,run);return;}
+  if(a('data-mx-resume')){var run=mxRun();if(run&&run.key===MX.key&&(run.v||1)===MX.v)mxStart(run.mode,run);return;}
   if(a('data-mx-a')){
     var id=g('data-mx-a'),i=parseInt(g('data-mx-i'),10);MX.ans[id]=i;
     var box=t.parentNode;Array.prototype.forEach.call(box.querySelectorAll('[data-mx-a]'),function(b){b.setAttribute('aria-pressed',String(b===t));});
@@ -14529,6 +14558,9 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.19',items:[
+  ['📝','英検3級・準2級の模試が3回分に','英検3級と英検準2級の本番形式の模試が、第1回〜第3回の3回分になりました(すべてオリジナル問題)。模試の画面の上で回を選べます。開くと、まだ解いていない回から始まります。ほかの級も順番に増やしていきます。','exam',1,['ja']]
+ ]},
  {v:'2026.11.18',items:[
   ['🎤','面接・スピーキングの練習が大幅に増えました','英検の面接は3級から1級まで、どの級もカードが10枚に(新しく30枚・1級は新しいトピック25個)。IELTS・TOEFL・航空英語能力証明・DELE・CILS・OET・客室乗務員・全国通訳案内士も、それぞれ5セットになりました。カードを裏返したあとの質問や Part 1・Part 3 の質問も約2倍になったので、同じ質問に当たりにくくなっています。','exam',1,['ja']],
   ['🎙','OPIc 연습이 5세트로','OPIc 스피킹 연습이 5세트로 늘었어요. 새로운 설문 주제(국내 여행·카페·요리·공연·조깅·집), 롤플레이, 돌발 주제가 추가되었어요.','exam',1,['ko']],
