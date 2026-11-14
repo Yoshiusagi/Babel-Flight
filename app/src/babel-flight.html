@@ -11203,7 +11203,7 @@ setTimeout(function(){if(moveOldSite())moveNoteShow();else moveIncoming();},0);
 var MX_GRADES=[['ek5','5級'],['ek4','4級'],['ek3','3級'],['ekp2','準2級'],['ekp2p','準2級プラス'],['ek2','2級'],['ekp1','準1級'],['ek1','1級']];
 var MX_RUNKEY='babelflight.mxrun',MX_HISTKEY='babelflight.mxhist';
 /* how many full mock tests each grade has (第1回 = public/mx/<key>.json, 第2回 = <key>-2.json, …); mock/build.py checks it */
-var MX_VERS={ek5:3,ek4:1,ek3:3,ekp2:3,ekp2p:1,ek2:1,ekp1:1,ek1:1};
+var MX_VERS={ek5:3,ek4:3,ek3:3,ekp2:3,ekp2p:1,ek2:1,ekp1:1,ek1:1};
 /* a test's id in the history: the grade key for 第1回 (as before), <key>-<n> for the others */
 function mxTid(k,v){return v>1?k+'-'+v:k;}
 function mxNVers(k){return MX_VERS[k]||1;}
