@@ -89,6 +89,8 @@ jobs:
         if: steps.req.outputs.mode == 'run'
         run: |
           set -euo pipefail
+          NEW_SITE="$(printf '%s' "$NEW_SITE" | sed 's:/*$::')"   # "https://x.com/" -> "https://x.com"
+          echo "New site: $NEW_SITE"
           MK="$(openssl rand -hex 32)"
           echo "::add-mask::$MK"
           cleanup() { bunx "$WRANGLER" secret delete MOVE_KEY --name "$WORKER" >/dev/null 2>&1 && echo "Temporary key removed." || echo "::warning::Could not remove the temporary MOVE_KEY; it is random and unused, but delete it in the Worker's settings."; }
