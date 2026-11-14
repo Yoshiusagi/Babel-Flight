@@ -1143,6 +1143,97 @@ XU('x-toeice','TOEIC L&R ステップ5','TOEIC STEP 5','en',[
  ["The renovation work will be completed next month.","","改装工事は来月終わる予定です。",""],
  ["Please fill out this form and hand it to the receptionist.","","この用紙に記入して、受付に渡してください。","fill out=(用紙に)記入する。"],
  ["Free parking is available for all visitors.","","来場者はどなたでも無料で駐車できます。","available=利用できる。"]]);
+/* ---- TOEIC L&R: ステップ6〜15 (each 8 original phrases, 120 in all with ステップ1〜5) ---- */
+XU('x-toeicf','TOEIC L&R ステップ6','TOEIC STEP 6','en',[
+ ["Let's reschedule the meeting for next Tuesday afternoon.","","会議を来週火曜日の午後に変更しましょう。","reschedule=予定を変更する。"],
+ ["I'm afraid I have a scheduling conflict at that time.","","あいにくその時間は別の予定と重なっています。","scheduling conflict=予定の重なり。"],
+ ["The conference room on the fifth floor has been reserved.","","5階の会議室が予約されています。",""],
+ ["Could you take notes during the meeting?","","会議中にメモを取っていただけますか。","take notes=メモを取る。"],
+ ["Shall we go over the main points from last week first?","","まず先週の要点を確認しましょうか。","go over=見直す・確認する。"],
+ ["The minutes will be sent to everyone by email.","","議事録は全員にメールで送られます。","minutes=議事録(この意味では複数形)。"],
+ ["Ms. Lopez will be joining us by video call.","","ロペスさんはビデオ通話で参加します。",""],
+ ["We ran out of time, so we'll continue tomorrow.","","時間がなくなったので、明日続けます。","run out of 〜=〜を使い果たす。"]]);
+XU('x-toeicg','TOEIC L&R ステップ7','TOEIC STEP 7','en',[
+ ["The new software will be installed on all computers this weekend.","","新しいソフトウェアが今週末、全パソコンに入れられます。","be installed=インストールされる。"],
+ ["Please restart your computer to complete the update.","","更新を完了するには、パソコンを再起動してください。",""],
+ ["The network will be down for maintenance tonight.","","今夜は保守のためネットワークが使えません。","down=(機械やシステムが)止まっている。"],
+ ["I can't log in to my account.","","自分のアカウントにログインできません。",""],
+ ["Contact the IT department if the problem continues.","","問題が続く場合は IT 部に連絡してください。",""],
+ ["The photocopier is running low on paper.","","コピー機の紙が少なくなっています。","run low on 〜=〜が残り少なくなる。"],
+ ["Remember to back up your files regularly.","","ファイルを定期的にバックアップするのを忘れないでください。","back up=バックアップを取る。"],
+ ["The password must be at least eight characters long.","","パスワードは8文字以上でなければなりません。",""]]);
+XU('x-toeich','TOEIC L&R ステップ8','TOEIC STEP 8','en',[
+ ["We are currently seeking an experienced sales manager.","","現在、経験のある営業部長を募集しています。","seek=探し求める(求人の決まった言い方)。"],
+ ["Applicants should send a résumé and a cover letter.","","応募者は履歴書と添え状を送ってください。","cover letter=応募書類に添える手紙。"],
+ ["The deadline for applications is March 31.","","応募の締め切りは3月31日です。",""],
+ ["Candidates will be contacted for an interview.","","候補者には面接の連絡があります。",""],
+ ["She was promoted to department manager last year.","","彼女は昨年、部長に昇進しました。","be promoted to 〜=〜に昇進する。"],
+ ["New employees must complete a two-week orientation.","","新入社員は2週間のオリエンテーションを終えなければなりません。",""],
+ ["He is responsible for training new staff.","","彼は新しい職員の研修を担当しています。","be responsible for 〜=〜を担当している。"],
+ ["The company offers competitive salaries and benefits.","","その会社は他社に負けない給与と福利厚生を提供しています。","benefits=福利厚生。competitive=競争力のある。"]]);
+XU('x-toeici','TOEIC L&R ステップ9','TOEIC STEP 9','en',[
+ ["I need to book a flight to Singapore for the trade show.","","展示会のためにシンガポール行きの便を予約する必要があります。","trade show=見本市・展示会。"],
+ ["My flight has been delayed by two hours.","","私の便は2時間遅れています。",""],
+ ["Please keep your receipts for reimbursement.","","払い戻しのために領収書を保管しておいてください。","reimbursement=(立て替えた経費の)払い戻し。"],
+ ["The hotel is within walking distance of the convention center.","","ホテルは会議場から歩いて行ける距離にあります。",""],
+ ["I'd like to check in, please. I have a reservation under the name Sato.","","チェックインをお願いします。佐藤の名前で予約しています。","under the name 〜=〜の名前で。"],
+ ["Is breakfast included in the room rate?","","朝食は宿泊料金に含まれていますか。",""],
+ ["A shuttle bus runs between the airport and the hotel every 20 minutes.","","空港とホテルの間に20分ごとにシャトルバスが出ています。",""],
+ ["The business trip has been extended by two days.","","出張は2日延長されました。",""]]);
+XU('x-toeicj','TOEIC L&R ステップ10','TOEIC STEP 10','en',[
+ ["Would you like to pay by cash or credit card?","","お支払いは現金ですか、クレジットカードですか。",""],
+ ["This model comes with a two-year warranty.","","この機種には2年間の保証がついています。","warranty=(製品の)保証。"],
+ ["I'm sorry, but that item has been discontinued.","","申し訳ありませんが、その商品は製造中止になりました。","discontinue=(製造・販売を)やめる。"],
+ ["We can deliver it to your home free of charge.","","ご自宅まで無料でお届けできます。","free of charge=無料で。"],
+ ["Could I exchange this for a larger size?","","これをもっと大きいサイズと交換できますか。",""],
+ ["The customer service desk is located near the main entrance.","","お客様サービス窓口は正面入口の近くにあります。","be located=位置している。"],
+ ["Members receive a ten percent discount on all purchases.","","会員はすべての買い物が10%引きになります。",""],
+ ["Your order has been shipped and should arrive within three days.","","ご注文の品は発送済みで、3日以内に届く予定です。",""]]);
+XU('x-toeick','TOEIC L&R ステップ11','TOEIC STEP 11','en',[
+ ["The budget for next year has been approved.","","来年の予算が承認されました。",""],
+ ["We need to reduce our operating costs.","","運営費を減らす必要があります。","operating costs=運営費。"],
+ ["The invoice must be paid within thirty days.","","請求書は30日以内に支払わなければなりません。",""],
+ ["Profits were lower than expected this year.","","今年の利益は予想より低くなりました。",""],
+ ["The accounting department is reviewing the figures.","","経理部が数字を確認しています。","figures=数字・数値。"],
+ ["Please attach the receipt to your expense report.","","経費報告書に領収書を添付してください。","expense report=経費報告書。"],
+ ["The company plans to expand into overseas markets.","","会社は海外市場への進出を計画しています。","expand into 〜=〜に事業を広げる。"],
+ ["Our quarterly sales report is due on Friday.","","四半期の売上報告書は金曜日が期限です。","due=期限が来る。"]]);
+XU('x-toeicl','TOEIC L&R ステップ12','TOEIC STEP 12','en',[
+ ["The factory produces over 5,000 units a day.","","工場は1日に5,000個以上を生産しています。","unit=(製品の)個・台。"],
+ ["All workers must wear safety helmets in this area.","","この区域では全作業員が安全ヘルメットを着用しなければなりません。",""],
+ ["The shipment was delayed due to bad weather.","","悪天候のため出荷が遅れました。","due to 〜=〜のために(原因)。"],
+ ["We will need to order more raw materials.","","原材料をもっと注文する必要があるでしょう。","raw materials=原材料。"],
+ ["The products are inspected before they leave the factory.","","製品は工場を出る前に検査されます。","inspect=検査する。"],
+ ["The warehouse is running out of storage space.","","倉庫の保管場所がなくなりかけています。",""],
+ ["Please confirm the delivery date with the supplier.","","納品日を仕入れ先に確認してください。","supplier=仕入れ先・供給業者。"],
+ ["The assembly line will be shut down for repairs.","","組み立てラインは修理のため停止されます。","assembly line=組み立てライン。"]]);
+XU('x-toeicm','TOEIC L&R ステップ13','TOEIC STEP 13','en',[
+ ["Our new advertising campaign starts next month.","","新しい広告キャンペーンは来月始まります。",""],
+ ["We conducted a survey to find out what customers want.","","お客様が何を求めているかを知るために調査を行いました。","conduct a survey=調査を行う。"],
+ ["The product launch was a great success.","","製品の発売は大成功でした。","launch=(新製品の)発売。"],
+ ["Sales have increased since we lowered the price.","","値下げしてから売上が伸びています。",""],
+ ["Our target customers are people in their twenties.","","私たちの対象顧客は20代の人々です。","in one's twenties=20代で。"],
+ ["We should promote the product on social media.","","その製品をSNSで宣伝するべきです。","promote=宣伝する。"],
+ ["Our main competitor has just released a similar product.","","最大の競合会社が似た製品を発売したばかりです。","competitor=競合相手。"],
+ ["Free samples will be handed out at the event.","","イベントで無料サンプルが配られます。","hand out=配る。"]]);
+XU('x-toeicn','TOEIC L&R ステップ14','TOEIC STEP 14','en',[
+ ["I'd like to reserve a table for six at seven o'clock.","","7時に6人分の席を予約したいのですが。",""],
+ ["The restaurant can accommodate up to 80 guests.","","そのレストランは最大80人まで収容できます。","accommodate=収容できる。"],
+ ["The annual company banquet will be held at the Grand Hotel.","","毎年恒例の会社の祝賀会はグランドホテルで開かれます。","banquet=祝賀会・宴会。"],
+ ["Please let us know if you have any dietary restrictions.","","食事の制限があればお知らせください。","dietary restrictions=食事の制限(アレルギーなど)。"],
+ ["Tickets for the charity concert are now on sale.","","チャリティーコンサートのチケットが発売中です。",""],
+ ["The keynote speech will begin at 9 a.m.","","基調講演は午前9時に始まります。","keynote speech=基調講演。"],
+ ["Registration is required to attend the workshop.","","ワークショップに参加するには登録が必要です。",""],
+ ["Refreshments will be served after the presentation.","","発表のあと、軽食が出されます。","refreshments=軽い飲食物。"]]);
+XU('x-toeico','TOEIC L&R ステップ15','TOEIC STEP 15','en',[
+ ["The elevator in Building B is out of service until Friday.","","B棟のエレベーターは金曜日まで使えません。","out of service=運転休止中。"],
+ ["The parking lot will be repaved next week.","","駐車場は来週、舗装し直されます。",""],
+ ["Tenants are asked to keep the hallways clear.","","入居者は廊下に物を置かないようお願いします。","tenant=(建物の)入居者。"],
+ ["Rent is due on the first day of each month.","","家賃は毎月1日が支払い期限です。",""],
+ ["A plumber will come to fix the leak this afternoon.","","今日の午後、配管工が水漏れを直しに来ます。","plumber=配管工。leak=漏れ。"],
+ ["Please note that the water will be turned off from 10 a.m. to noon.","","午前10時から正午まで断水しますのでご注意ください。","Please note that 〜=〜にご注意ください(お知らせの決まり文句)。"],
+ ["The lobby is being painted, so please use the side entrance.","","ロビーは塗装中なので、横の入口をお使いください。",""],
+ ["Thank you for your cooperation.","","ご協力ありがとうございます。","お知らせの最後の決まり文句。"]]);
 XU('x-ielts','IELTS ステップ1','IELTS STEP 1','en',[
  ["The graph shows the number of international students from 2010 to 2020.","","このグラフは2010年から2020年までの留学生の数を示しています。","ライティング Task 1 の書き出しの型。"],
  ["There was a gradual increase over the period.","","その期間を通して、ゆるやかな増加がありました。",""],
@@ -1188,6 +1279,97 @@ XU('x-ieltse','IELTS ステップ5','IELTS STEP 5','en',[
  ["In the long run, it will benefit the whole community.","","長い目で見れば、地域全体のためになるでしょう。","In the long run=長い目で見れば。"],
  ["I'm not entirely sure, but I think it will become more common.","","はっきりとはわかりませんが、もっと一般的になると思います。",""],
  ["To put it another way, we need to change our habits.","","言い換えると、私たちは習慣を変える必要があります。","To put it another way=言い換えると。"]]);
+/* ---- IELTS: ステップ6〜15 (each 8 original phrases, 120 in all with ステップ1〜5) ---- */
+XU('x-ieltsf','IELTS ステップ6','IELTS STEP 6','en',[
+ ["The pie chart illustrates how households spent their income in 2020.","","この円グラフは、2020年に世帯が収入をどう使ったかを表しています。","Task 1 の書き出し。illustrate=示す・表す。"],
+ ["Housing accounted for the largest proportion of spending.","","住居費が支出の最も大きな割合を占めていました。","account for 〜=(割合)を占める。"],
+ ["Spending on entertainment was roughly half that on food.","","娯楽費は食費のおよそ半分でした。","roughly=およそ。"],
+ ["The figure peaked at 45 percent in 2015.","","その数値は2015年に45%で最高に達しました。","peak=最高点に達する。"],
+ ["It then declined sharply to just 10 percent.","","その後、わずか10%まで急激に下がりました。","decline sharply=急減する。"],
+ ["In contrast, the number of cyclists remained stable.","","対照的に、自転車利用者の数は安定していました。","remain stable=横ばいのまま。"],
+ ["The two lines crossed in the middle of the period.","","2本の線は期間の中ごろで交わりました。",""],
+ ["Overall, there was a clear shift from print to digital media.","","全体として、紙からデジタルの媒体へはっきりと移り変わりました。","Overall で始まる概要文は Task 1 の得点のかぎ。"]]);
+XU('x-ieltsg','IELTS ステップ7','IELTS STEP 7','en',[
+ ["The diagram shows how recycled glass is processed.","","この図は再生ガラスがどのように処理されるかを示しています。","プロセス図の書き出し。"],
+ ["At the first stage, the bottles are collected and sorted by colour.","","最初の段階で、びんは集められて色ごとに分けられます。","IELTS はイギリス英語のつづり(colour)も使えます。"],
+ ["Next, they are crushed into small pieces.","","次に、細かく砕かれます。","プロセスは受け身(are crushed)で書くのが基本。"],
+ ["The mixture is then heated to a very high temperature.","","その混合物はその後、とても高い温度まで熱せられます。",""],
+ ["Once it has cooled, the glass is shaped into new products.","","冷えたら、ガラスは新しい製品の形にされます。","Once 〜=いったん〜したら。"],
+ ["Finally, the finished products are delivered to shops.","","最後に、完成品が店に届けられます。",""],
+ ["The process consists of six main stages.","","この工程は6つの主な段階から成ります。","consist of 〜=〜から成る。"],
+ ["The map shows how the town centre changed between 1990 and today.","","この地図は、1990年から今日までに町の中心部がどう変わったかを示しています。","地図問題の書き出し。"]]);
+XU('x-ieltsh','IELTS ステップ8','IELTS STEP 8','en',[
+ ["Some people believe that university education should be free.","","大学教育は無料であるべきだと考える人もいます。","Task 2 の書き出し(意見の紹介)。"],
+ ["This essay will discuss both views before giving my opinion.","","このエッセイでは、両方の見方を論じたうえで私の意見を述べます。","Discuss both views 型の導入文。"],
+ ["On the one hand, free tuition would give everyone an equal chance.","","一方では、授業料が無料なら全員に平等な機会が与えられます。","On the one hand 〜. On the other hand 〜."],
+ ["On the other hand, it would place a heavy burden on taxpayers.","","他方では、納税者に重い負担がかかります。","burden=負担。"],
+ ["A good example of this is the healthcare system in Scandinavia.","","その良い例が、北欧の医療制度です。","具体例を示す型。"],
+ ["As a result, more young people would be able to afford higher education.","","その結果、より多くの若者が高等教育を受けられるでしょう。","afford=(費用を)出す余裕がある。"],
+ ["It could be argued that individuals should pay for their own education.","","個人が自分の教育費を払うべきだという主張もありえます。","反対意見を客観的に紹介する型。"],
+ ["In conclusion, I believe the benefits outweigh the drawbacks.","","結論として、利点が欠点を上回ると私は考えます。","outweigh=〜より重い・上回る。"]]);
+XU('x-ieltsi','IELTS ステップ9','IELTS STEP 9','en',[
+ ["Governments should invest more in public transport.","","政府は公共交通機関にもっと投資するべきです。",""],
+ ["This would not only reduce traffic but also cut air pollution.","","これは交通量を減らすだけでなく、大気汚染も減らすでしょう。","not only A but also B。"],
+ ["There are several reasons why this trend has emerged.","","この傾向が現れたのには、いくつかの理由があります。","Causes 型の問題で使う。emerge=現れる。"],
+ ["One possible solution would be to introduce stricter laws.","","考えられる解決策の一つは、より厳しい法律を導入することでしょう。","Solutions 型の問題で使う。"],
+ ["Without such measures, the problem is likely to get worse.","","そのような対策がなければ、問題は悪化する可能性が高いです。","measures=対策。"],
+ ["This is particularly true in developing countries.","","これは発展途上国で特に当てはまります。",""],
+ ["Admittedly, this approach has some disadvantages.","","確かに、このやり方にはいくつかの欠点があります。","Admittedly=確かに(譲歩)。"],
+ ["Nevertheless, the advantages are far greater.","","それでも、利点のほうがはるかに大きいです。",""]]);
+XU('x-ieltsj','IELTS ステップ10','IELTS STEP 10','en',[
+ ["I'm currently studying at a high school in Tokyo.","","今は東京の高校で勉強しています。","Speaking Part 1 の自己紹介。"],
+ ["I live in a quiet residential area on the outskirts of the city.","","私は市のはずれの静かな住宅地に住んでいます。","outskirts=郊外・はずれ。"],
+ ["What I like most about my hometown is the friendly atmosphere.","","地元でいちばん好きなのは、親しみやすい雰囲気です。","What I like most is 〜 の型で答えを長くする。"],
+ ["To be honest, I'm not really a morning person.","","正直に言うと、朝はあまり得意ではありません。","morning person=朝型の人。"],
+ ["I tend to listen to music when I'm studying.","","勉強中は音楽を聞くことが多いです。","tend to 〜=〜しがちだ。"],
+ ["It depends on my mood, but I usually prefer staying in.","","気分によりますが、たいていは家にいるほうが好きです。","It depends on 〜 で始めるのは自然な答え方。"],
+ ["I used to play the piano when I was younger.","","小さいころはピアノを弾いていました。","used to 〜=以前は〜していた。"],
+ ["I'd love to visit Iceland one day to see the northern lights.","","いつかオーロラを見にアイスランドに行ってみたいです。","northern lights=オーロラ。"]]);
+XU('x-ieltsk','IELTS ステップ11','IELTS STEP 11','en',[
+ ["I'd like to talk about a trip I took with my family last summer.","","去年の夏に家族と行った旅行について話したいと思います。","Speaking Part 2 の話し始め。"],
+ ["It all started when my father suggested going camping.","","すべては父がキャンプに行こうと言い出したことから始まりました。",""],
+ ["What made it so memorable was the view from the mountain top.","","それがとても思い出深いのは、山頂からのながめのおかげです。","What made it 〜 was … の型。"],
+ ["I'll never forget the moment when the sun rose over the clouds.","","雲の上に太陽がのぼった瞬間を決して忘れないでしょう。",""],
+ ["Looking back, it taught me to appreciate nature.","","ふり返ると、それは自然のありがたさを教えてくれました。","Looking back=ふり返ると。"],
+ ["The person I admire most is my grandmother.","","私がいちばん尊敬しているのは祖母です。",""],
+ ["She always puts other people's needs before her own.","","彼女はいつも自分より他人のことを優先します。",""],
+ ["That's pretty much everything I wanted to say about it.","","それについて言いたかったことは、だいたいこれで全部です。","Part 2 を自然に終える一言。"]]);
+XU('x-ieltsl','IELTS ステップ12','IELTS STEP 12','en',[
+ ["That's an interesting question. I've never really thought about it.","","おもしろい質問ですね。あまり考えたことがありませんでした。","Part 3 で考える時間をかせぐ表現。"],
+ ["I'd say that technology has changed the way people communicate.","","技術は人々のコミュニケーションの仕方を変えたと言えるでしょう。","I'd say that 〜=〜と言えると思う。"],
+ ["Compared to the past, young people today have far more choices.","","昔と比べて、今の若者にははるかに多くの選択肢があります。",""],
+ ["One reason might be that people are busier than ever.","","一つの理由は、人々がかつてないほど忙しいことかもしれません。",""],
+ ["I suppose it varies from person to person.","","人によって違うのではないかと思います。","vary from person to person=人それぞれだ。"],
+ ["In the long run, I think this will benefit society.","","長い目で見れば、これは社会のためになると思います。","in the long run=長い目で見れば。"],
+ ["There's a lot to be said for living in the countryside.","","田舎暮らしには利点がたくさんあります。","There's a lot to be said for 〜=〜には大いに利点がある。"],
+ ["Having said that, cities offer better job opportunities.","","とはいえ、都市のほうが仕事の機会は多いです。","Having said that=そうは言っても。"]]);
+XU('x-ieltsm','IELTS ステップ13','IELTS STEP 13','en',[
+ ["Could you spell your surname for me, please?","","名字のつづりを教えていただけますか。","Listening Section 1 の定番。surname=名字。"],
+ ["The tour departs from the main gate at half past nine.","","ツアーは9時半に正門から出発します。","half past nine=9時半。"],
+ ["The library is open until eight on weekdays.","","図書館は平日は8時まで開いています。",""],
+ ["You'll need to bring some form of identification.","","何らかの身分証明書を持ってくる必要があります。","identification=身分証明書。"],
+ ["The deposit is non-refundable.","","手付金は返金されません。","non-refundable=返金不可の。"],
+ ["Turn left at the roundabout and the car park is on your right.","","ロータリーを左に曲がると、駐車場は右側にあります。","roundabout・car park はイギリス英語。"],
+ ["The lecture will focus on the causes of coastal erosion.","","講義は海岸侵食の原因に焦点を当てます。","Section 4 は講義形式。"],
+ ["The researchers were surprised by the results of the experiment.","","研究者たちは実験の結果に驚きました。",""]]);
+XU('x-ieltsn','IELTS ステップ14','IELTS STEP 14','en',[
+ ["The writer suggests that bees are under threat.","","筆者は、ハチが危機にさらされていると示唆しています。","Reading: suggest=(遠回しに)示唆する。"],
+ ["The passage does not give any information about this.","","本文にはこれについての情報がありません。","NOT GIVEN の判断の考え方。"],
+ ["This statement contradicts what the author says.","","この文は筆者の言っていることと矛盾します。","FALSE の判断。contradict=矛盾する。"],
+ ["The second paragraph describes the history of the canal.","","第2段落は運河の歴史を説明しています。","見出し(headings)問題のための要約。"],
+ ["According to the text, the population has doubled since 1950.","","本文によると、人口は1950年から2倍になりました。","according to 〜=〜によると。"],
+ ["The scientists disagree about the cause of the decline.","","科学者たちは減少の原因について意見が分かれています。",""],
+ ["The word \"it\" in line 12 refers to the new policy.","","12行目の it は新しい政策を指しています。","refer to 〜=〜を指す。"],
+ ["Skim the passage first to get the general idea.","","まず本文をざっと読んで大まかな内容をつかみましょう。","skim=ざっと読む。scan=特定の情報を探して読む。"]]);
+XU('x-ieltso','IELTS ステップ15','IELTS STEP 15','en',[
+ ["A growing number of people are working from home.","","在宅で働く人が増えています。","a growing number of 〜=増えている〜。"],
+ ["This trend is likely to continue in the coming years.","","この傾向は今後数年続く可能性が高いです。",""],
+ ["It is widely accepted that exercise improves mental health.","","運動が心の健康を良くすることは広く認められています。",""],
+ ["There is no doubt that climate change is a serious issue.","","気候変動が深刻な問題であることは疑いありません。",""],
+ ["Many experts argue that the risks have been exaggerated.","","多くの専門家は、危険が誇張されてきたと主張しています。","exaggerate=誇張する。"],
+ ["This raises the question of who should be responsible.","","このことは、だれが責任を負うべきかという問題を提起します。","raise the question of 〜=〜という問題を提起する。"],
+ ["Steps must be taken to protect endangered species.","","絶滅危惧種を守るための手段を講じなければなりません。","take steps=手段を講じる。"],
+ ["To sum up, both individuals and governments have a role to play.","","まとめると、個人も政府も果たすべき役割があります。",""]]);
 XU('x-toefl','TOEFL iBT ステップ1','TOEFL STEP 1','en',[
  ["The professor will hold office hours on Wednesday.","","教授は水曜日に相談の時間を設けます。","office hours=教授が学生の相談を受ける時間。"],
  ["Photosynthesis converts sunlight into chemical energy.","","光合成は太陽の光を化学エネルギーに変えます。",""],
@@ -1233,6 +1415,97 @@ XU('x-toefle','TOEFL iBT ステップ5','TOEFL STEP 5','en',[
  ["This contradicts the point made in the passage.","","これは文章の主張と食い違っています。","contradict=〜と矛盾する、反論する。"],
  ["For these reasons, I believe it is a good idea.","","これらの理由から、それは良い考えだと思います。",""],
  ["Personally, I would choose to live in a big city.","","個人的には、大都市に住むほうを選びます。",""]]);
+/* ---- TOEFL iBT: ステップ6〜15 (each 8 original phrases, 120 in all with ステップ1〜5) ---- */
+XU('x-toeflf','TOEFL iBT ステップ6','TOEFL STEP 6','en',[
+ ["The professor is mainly discussing how glaciers shape the landscape.","","教授は主に、氷河がどのように地形を作るかを論じています。","Listening の主題(main idea)をまとめる型。"],
+ ["The lecture is about the migration patterns of monarch butterflies.","","講義はオオカバマダラ(チョウ)の渡りの型についてです。","migration=(動物の)移動・渡り。"],
+ ["The professor mentions the pyramids to illustrate a point.","","教授は論点を説明するためにピラミッドにふれています。","Why does the professor mention 〜? の答え方。"],
+ ["What does the professor imply about the theory?","","教授はその理論について何をほのめかしていますか。","imply=ほのめかす。設問の定番。"],
+ ["The student goes to the office to ask about a scholarship.","","学生は奨学金について聞くために事務室に行きます。","会話問題の目的をまとめる型。"],
+ ["According to the professor, the experiment had a major flaw.","","教授によると、その実験には大きな欠陥がありました。","flaw=欠陥。"],
+ ["The professor's attitude toward the idea is skeptical.","","その考えに対する教授の態度は懐疑的です。","attitude 問題でよく出る形容詞。"],
+ ["Listen again to part of the lecture.","","講義の一部をもう一度聞きなさい。","再生問題の指示文。"]]);
+XU('x-toeflg','TOEFL iBT ステップ7','TOEFL STEP 7','en',[
+ ["The word \"abundant\" in the passage is closest in meaning to \"plentiful.\"","","本文の abundant は plentiful にいちばん意味が近いです。","語彙問題の型。"],
+ ["The author mentions coral reefs in order to provide an example.","","筆者は例を挙げるためにサンゴ礁にふれています。","in order to 〜=〜するために。"],
+ ["Which of the following can be inferred from paragraph 3?","","第3段落から推測できるのは次のどれですか。","inference(推測)問題の定番。"],
+ ["The highlighted sentence best expresses the essential information.","","強調された文は、重要な情報を最もよく表しています。","言い換え問題。"],
+ ["According to paragraph 2, early farmers relied on seasonal floods.","","第2段落によると、初期の農民は季節ごとの洪水に頼っていました。","rely on 〜=〜に頼る。"],
+ ["Look at the four squares that indicate where the sentence could be added.","","文を加えられる場所を示す4つの四角を見なさい。","文挿入問題の指示文。"],
+ ["An introductory sentence for a brief summary of the passage is provided below.","","本文の短い要約のための導入文が下にあります。","要約問題の指示文。"],
+ ["The passage mainly discusses the decline of ancient trade routes.","","本文は主に古代の交易路の衰退を論じています。",""]]);
+XU('x-toeflh','TOEFL iBT ステップ8','TOEFL STEP 8','en',[
+ ["The reading passage claims that the plan would save money.","","読み物は、その計画でお金が節約できると主張しています。","Integrated Writing: 読み物の主張を紹介。"],
+ ["However, the lecturer casts doubt on this claim.","","しかし、講義の話し手はこの主張に疑問を投げかけています。","cast doubt on 〜=〜に疑問を投げかける。"],
+ ["The lecturer argues that the costs have been underestimated.","","話し手は、費用が少なく見積もられていると主張しています。","underestimate=過小評価する。"],
+ ["This contradicts the reading's point about public support.","","これは、世論の支持についての読み物の論点と食い違います。",""],
+ ["She explains that the evidence is not reliable.","","彼女は、その証拠は信頼できないと説明しています。","reliable=信頼できる。"],
+ ["Furthermore, the lecturer points out a problem the author ignores.","","さらに、話し手は筆者が無視している問題を指摘しています。","point out=指摘する。"],
+ ["In short, the lecturer refutes all three points made in the reading.","","要するに、話し手は読み物の3つの論点すべてに反論しています。","refute=反論する・論破する。"],
+ ["The example of the old bridge supports her argument.","","古い橋の例は彼女の主張を裏づけています。",""]]);
+XU('x-toefli','TOEFL iBT ステップ9','TOEFL STEP 9','en',[
+ ["I see where Professor Kim is coming from, but I have a different view.","","キム教授の考えの出どころはわかりますが、私は違う見方をしています。","Academic Discussion で他の意見にふれる型。"],
+ ["Building on Maria's point, I'd like to add another reason.","","マリアの意見にもとづいて、もう一つ理由を加えたいと思います。","Building on 〜=〜をふまえて。"],
+ ["While Ken makes a fair point, he overlooks the cost.","","ケンの指摘はもっともですが、費用を見落としています。","overlook=見落とす。"],
+ ["In my view, schools should teach financial skills.","","私の考えでは、学校はお金の管理の技能を教えるべきです。",""],
+ ["For instance, many young people struggle to manage their money.","","たとえば、多くの若者はお金の管理に苦労しています。","struggle to 〜=〜するのに苦労する。"],
+ ["This would help students make better decisions in the future.","","これは学生が将来より良い判断をする助けになるでしょう。",""],
+ ["That is why I believe this policy should be adopted.","","だからこそ、この方針を採用するべきだと考えます。","adopt=採用する。"],
+ ["I'm convinced that the benefits would be long-lasting.","","その効果は長く続くと確信しています。","long-lasting=長続きする。"]]);
+XU('x-toeflj','TOEFL iBT ステップ10','TOEFL STEP 10','en',[
+ ["The university is planning to close the library on weekends.","","大学は週末に図書館を閉める予定です。","Speaking Task 2 の告知文の要約。"],
+ ["The man is opposed to the plan for two reasons.","","男性は2つの理由でその計画に反対しています。","be opposed to 〜=〜に反対している。"],
+ ["First, he says that many students study there on Saturdays.","","まず、彼は多くの学生が土曜日にそこで勉強すると言っています。",""],
+ ["Second, he thinks the savings would be very small.","","次に、彼は節約になる額がとても少ないと考えています。",""],
+ ["The woman's problem is that she has two exams on the same day.","","女性の問題は、同じ日に試験が2つあることです。","会話型タスクで問題点をまとめる型。"],
+ ["The man suggests that she talk to her professor.","","男性は、彼女が教授と話すことを提案しています。","suggest that S + 動詞の原形(仮定法現在)。"],
+ ["If I were her, I would choose the second option.","","私が彼女なら、2つ目の案を選ぶでしょう。","If I were 〜, I would …。"],
+ ["The professor uses two examples to explain the concept.","","教授はその概念を説明するために2つの例を使っています。","講義要約タスクの書き出し。"]]);
+XU('x-toeflk','TOEFL iBT ステップ11','TOEFL STEP 11','en',[
+ ["Plants absorb carbon dioxide and release oxygen.","","植物は二酸化炭素を吸収し、酸素を放出します。","absorb=吸収する。release=放出する。"],
+ ["The species adapted to the harsh desert environment.","","その種は厳しい砂漠の環境に適応しました。","adapt to 〜=〜に適応する。"],
+ ["Predators play an important role in balancing the ecosystem.","","捕食者は生態系のバランスを保つのに重要な役割を果たします。","predator=捕食者。ecosystem=生態系。"],
+ ["The theory was later supported by fossil evidence.","","その理論は後に化石の証拠によって裏づけられました。",""],
+ ["Volcanic eruptions can affect the global climate for years.","","火山の噴火は何年にもわたって世界の気候に影響することがあります。",""],
+ ["The cells divide rapidly during the early stages of growth.","","成長の初期段階で、細胞は急速に分裂します。","divide=分裂する。"],
+ ["The temperature of the ocean varies with depth.","","海の温度は深さによって変わります。","vary with 〜=〜によって変わる。"],
+ ["Scientists are still debating the cause of the extinction.","","科学者たちは絶滅の原因についてまだ議論しています。","extinction=絶滅。"]]);
+XU('x-toefll','TOEFL iBT ステップ12','TOEFL STEP 12','en',[
+ ["The Industrial Revolution transformed the way goods were produced.","","産業革命は製品の作り方を一変させました。","transform=一変させる。"],
+ ["Trade between the two regions flourished in the 15th century.","","2つの地域の交易は15世紀に栄えました。","flourish=栄える。"],
+ ["Many historians attribute the empire's collapse to economic problems.","","多くの歴史家は、帝国の崩壊を経済問題のせいだと考えています。","attribute A to B=AをBのせいにする。"],
+ ["The invention of printing made books far more affordable.","","印刷の発明で本ははるかに手ごろな値段になりました。","affordable=手ごろな。"],
+ ["Early settlers depended on the river for transportation.","","初期の入植者は交通手段を川に頼っていました。","settler=入植者。"],
+ ["The architecture reflects the influence of Greek culture.","","その建築はギリシャ文化の影響を反映しています。",""],
+ ["Artists of the period rejected traditional styles.","","その時代の芸術家たちは伝統的な様式を拒みました。",""],
+ ["The economy gradually shifted from farming to manufacturing.","","経済は少しずつ農業から製造業へと移りました。",""]]);
+XU('x-toeflm','TOEFL iBT ステップ13','TOEFL STEP 13','en',[
+ ["Excuse me, Professor. Do you have a minute to talk about my paper?","","すみません、先生。私のレポートについて少しお話しできますか。","Office hours での話し始め。"],
+ ["I was wondering if I could get an extension on the assignment.","","課題の提出期限を延ばしていただけないかと思いまして。","I was wondering if 〜=〜していただけないかと思って(ていねいな依頼)。"],
+ ["I'm having trouble narrowing down my research topic.","","研究テーマをしぼりこむのに苦労しています。","narrow down=しぼりこむ。"],
+ ["You might want to look at some recent journal articles.","","最近の学術論文をいくつか見てみるといいかもしれません。","You might want to 〜=〜するといいでしょう(やわらかい助言)。"],
+ ["The registration deadline for next semester is approaching.","","来学期の履修登録の締め切りが近づいています。","semester=学期。"],
+ ["I need to drop a course because of a scheduling conflict.","","時間割が重なるので、科目を一つ取り消す必要があります。","drop a course=履修をやめる。"],
+ ["The dormitory will be closed during winter break.","","冬休みの間、寮は閉鎖されます。","dormitory=寮。"],
+ ["You can find the form on the student services website.","","その用紙は学生サービスのウェブサイトにあります。",""]]);
+XU('x-toefln','TOEFL iBT ステップ14','TOEFL STEP 14','en',[
+ ["Listen to the sentence and repeat it exactly as you hear it.","","文を聞いて、聞こえたとおりにくり返しなさい。","Listen and Repeat の指示文。"],
+ ["Welcome to the campus tour. Please stay with the group.","","キャンパスツアーへようこそ。グループから離れないでください。","短い文から長い文へ進むので、区切りを意識してくり返す。"],
+ ["The science building is next to the main library.","","理科棟は中央図書館のとなりにあります。",""],
+ ["Students can borrow up to ten books at a time.","","学生は一度に10冊まで本を借りられます。","up to 〜=最大〜まで。"],
+ ["The cafeteria serves breakfast from seven to ten.","","学食は7時から10時まで朝食を出しています。",""],
+ ["If you have any questions, ask a member of staff.","","質問があれば、職員に聞いてください。",""],
+ ["Tell me about a skill you would like to learn and why.","","身につけたい技能とその理由について話してください。","Take an Interview の質問の型。"],
+ ["What do you think is the most important quality of a good teacher?","","良い先生にとって最も大切な資質は何だと思いますか。","quality=資質・特質。"]]);
+XU('x-toeflo','TOEFL iBT ステップ15','TOEFL STEP 15','en',[
+ ["Dear Professor Lee, I am writing to ask about the field trip.","","リー先生、校外学習についてお聞きしたくご連絡しています。","Write an Email の書き出し。"],
+ ["I would appreciate it if you could send me the details.","","詳細を送っていただけるとありがたいです。","I would appreciate it if you could 〜=〜していただけるとありがたい。"],
+ ["Unfortunately, I will not be able to attend the meeting on Monday.","","残念ながら、月曜日の会議には出席できません。",""],
+ ["Would it be possible to meet later in the week?","","週の後半にお会いすることはできますか。",""],
+ ["I have attached a copy of my schedule for your reference.","","ご参考までに私の予定表を添付しました。","for your reference=ご参考までに。"],
+ ["Thank you in advance for your help.","","よろしくお願いいたします。","メールの最後の決まり文句(前もってお礼を言う)。"],
+ ["Please let me know if there is anything else I should prepare.","","ほかに準備しておくべきことがあれば教えてください。",""],
+ ["I look forward to hearing from you.","","お返事をお待ちしております。","look forward to 〜ing。"]]);
 XU('x-icao','ICAO航空英語 ステップ1','ICAO ENGLISH 1','en',[
  ["We have a sick passenger on board.","","体調の悪い乗客がいます。","決まった交信用語で言えないときは、このようなふつうの英語(plain English)で伝えます。"],
  ["Say again.","","もう一度言ってください。","無線では Pardon? ではなく Say again を使います。"],
@@ -1687,9 +1960,9 @@ var XBANK={
  ek2:{L:'en',name:'英検2級',tier:2,ids:['x-ek2','x-ek2b','x-ek2c','x-ek2d','x-ek2e','x-ek2f','x-ek2g','x-ek2h','x-ek2i','x-ek2j','x-ek2k','x-ek2l','x-ek2m','x-ek2n','x-ek2o']},
  ekp1:{L:'en',name:'英検準1級',tier:2,ids:['x-ekp1','x-ekp1b','x-ekp1c','x-ekp1d','x-ekp1e','x-ekp1f','x-ekp1g','x-ekp1h','x-ekp1i','x-ekp1j','x-ekp1k','x-ekp1l','x-ekp1m','x-ekp1n','x-ekp1o']},
  ek1:{L:'en',name:'英検1級',tier:2,ids:['x-ek1','x-ek1b','x-ek1c','x-ek1d','x-ek1e','x-ek1f','x-ek1g','x-ek1h','x-ek1i','x-ek1j','x-ek1k','x-ek1l','x-ek1m','x-ek1n','x-ek1o']},
- toeic:{L:'en',name:'TOEIC L&R',tier:2,ids:['x-toeic','x-toeicb','x-toeicc','x-toeicd','x-toeice']},
- ielts:{L:'en',name:'IELTS',tier:2,ids:['x-ielts','x-ieltsb','x-ieltsc','x-ieltsd','x-ieltse']},
- toefl:{L:'en',name:'TOEFL iBT',tier:2,ids:['x-toefl','x-toeflb','x-toeflc','x-toefld','x-toefle']},
+ toeic:{L:'en',name:'TOEIC L&R',tier:2,ids:['x-toeic','x-toeicb','x-toeicc','x-toeicd','x-toeice','x-toeicf','x-toeicg','x-toeich','x-toeici','x-toeicj','x-toeick','x-toeicl','x-toeicm','x-toeicn','x-toeico']},
+ ielts:{L:'en',name:'IELTS',tier:2,ids:['x-ielts','x-ieltsb','x-ieltsc','x-ieltsd','x-ieltse','x-ieltsf','x-ieltsg','x-ieltsh','x-ieltsi','x-ieltsj','x-ieltsk','x-ieltsl','x-ieltsm','x-ieltsn','x-ieltso']},
+ toefl:{L:'en',name:'TOEFL iBT',tier:2,ids:['x-toefl','x-toeflb','x-toeflc','x-toefld','x-toefle','x-toeflf','x-toeflg','x-toeflh','x-toefli','x-toeflj','x-toeflk','x-toefll','x-toeflm','x-toefln','x-toeflo']},
  icao:{L:'en',name:'航空英語(ICAO)',tier:2,ids:['x-icao']},
  topik1:{L:'ko',name:'TOPIK Ⅰ',tier:1,ids:['x-topik1','x-topik1b','x-topik1c','x-topik1d','x-topik1e']},
  topik2:{L:'ko',name:'TOPIK Ⅱ',tier:2,ids:['x-topik2','x-topik2b','x-topik2c','x-topik2d','x-topik2e']},
