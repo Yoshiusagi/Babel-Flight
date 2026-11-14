@@ -49,6 +49,7 @@ jobs:
           [ -s voices-v1.0.bin ] || curl -fsSLO "$base/voices-v1.0.bin"
           ls -la
           pip install -q kokoro-onnx soundfile faster-whisper
+          command -v ffmpeg >/dev/null || { sudo apt-get update -q && sudo apt-get install -y -q ffmpeg >/dev/null; }
           ffmpeg -version | head -1
 
       - name: Recordings already made
