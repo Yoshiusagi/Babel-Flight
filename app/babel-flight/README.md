@@ -227,6 +227,13 @@ Only for ファースト (`cabinLv()` 3; `fcOn()`), never in the iPhone app.
   AI limits on the server, only while the sharer still flies ファースト. No sharing on, one family per account, an
   account with its own ファースト can't join, at most 4 joins per sharer in 30 days. Members see only each other's
   name and icon. Deleting an account removes its family and its seat.
+- **オフライン完全版** (`parts/f36_offline.js` + `f36_css.html`, `public/sw.js`): 記録 → オフライン完全版 downloads the
+  基本データ (the page, mock tests `/mx`, interview cards `/iv`, display dictionaries `/i18n`, `/voice/index.json`;
+  about 5MB) and, per learning language, the recorded voices (`/voice/<set>/*.mp3`: English a*/b* sets, Spanish e*,
+  Italian i*; English is about 100MB, so it warns to use Wi-Fi) into caches `bf-off-base` / `bf-off-voice-<L>`
+  (6 at a time, one retry each, can be stopped, `navigator.storage.persist`). The service worker keeps `bf-off-*`,
+  serves the JSON network first with the downloaded copy offline (and refreshes a downloaded copy), and recordings
+  cache first. State in `babelflight.offline`; 「保存したデータを消す」 deletes the caches.
 - **先行公開**: `FIRST_EARLY` + `earlyOpen(id)` for features ファースト gets before everyone (empty for now).
 - Schema: `migrations/0014_first_ai.sql` (columns `coach`, `diary` of `bf_ai_usage`). `GET /api/ai/first` tells how
   many are left today.
