@@ -103,6 +103,9 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.20',items:[
+  ['📝','英検の模試が全部の級で3回分に','英検5級・4級・準2級プラス・2級・準1級・1級の本番形式の模試にも第2回・第3回を追加し、5級から1級まで全部の級が第1回〜第3回の3回分になりました(すべてオリジナル問題)。長文やリスニングには、飛行機や空港の話題も入っています。模試の画面の上で回を選べます。','exam',1,['ja']]
+ ]},
  {v:'2026.11.19',items:[
   ['📝','英検3級・準2級の模試が3回分に','英検3級と英検準2級の本番形式の模試が、第1回〜第3回の3回分になりました(すべてオリジナル問題)。模試の画面の上で回を選べます。開くと、まだ解いていない回から始まります。ほかの級も順番に増やしていきます。','exam',1,['ja']]
  ]},
