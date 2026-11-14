@@ -94,7 +94,7 @@ function mxStart(mode,resume){
   if(MX.stage==='test')mxClock();
   render();window.scrollTo(0,0);mxKeep();
 }
-function mxStop(){clearInterval(MX.tm);MX.tm=0;mxHush();}
+function mxStop(){clearInterval(MX.tm);MX.tm=0;mxHush();mxLoud(false);}
 function mxClock(){
   clearInterval(MX.tm);
   var last=Date.now();
@@ -189,14 +189,39 @@ function mxVoices(){
   if(!MXV.m)MXV.m=voicesFor('en-US').filter(function(v){return v!==MXV.w;})[0]||MXV.w;
 }
 function mxRate(){var k=MX.key;return k==='ek5'||k==='ek4'?0.82:k==='ek3'?0.86:k==='ekp2'||k==='ekp2p'?0.9:0.95;}
-function mxHush(){MX.tok++;clearInterval(MX.cd);MX.cd=0;try{speechSynthesis.cancel();}catch(e){}}
+function mxHush(){MX.tok++;clearInterval(MX.cd);MX.cd=0;recStop();try{speechSynthesis.cancel();}catch(e){}}
+/* recorded voices (recGet in e4_core.js): each speaker has a natural voice, recorded at each grade's speed
+   (babel-flight/voice/lines.py MX_WHO, MX_SPEED); a line without a recording is read by the device as before */
+var MX_RECW={M:'am_michael',W:'af_heart',B:'am_puck',G:'af_bella',N:'am_fenrir'};
+function mxRecSet(who){return (MX_RECW[who]||MX_RECW.N)+'-'+Math.round(mxRate()*100);}
+/* fetch this question's lines and the next one's ahead */
+function mxRecAhead(){
+  [MX.ix.lq[MX.lp],MX.ix.lq[MX.lp+1]].forEach(function(x){
+    if(!x)return;
+    mxLSteps(x).forEach(function(s){if(s.say)recFetch(mxRecSet(s.who),s.say);});
+    if((x.it.qs||[]).length>1&&x.q.q)recFetch(mxRecSet('N'),'Question number '+(x.qi+1)+'. '+x.q.q);
+  });
+}
+/* the listening plays even with the iPhone's silent switch on (Safari 17+), like the real test's speakers */
+function mxLoud(on){try{var a=navigator.audioSession;if(a){if(on)a.type='playback';else if(a.type==='playback')a.type='auto';}}catch(e){}}
 function mxSay(text,who,tok,done){
   if(tok!==MX.tok)return;
-  if(!tts.ok){setTimeout(function(){if(tok===MX.tok)done();},Math.min(9000,600+mxWords(text)*380));return;}
-  var v=(who==='M'||who==='B')?MXV.m:MXV.w,fired=false;
+  var fired=false,guard=0;
   var fin=function(){if(fired)return;fired=true;clearTimeout(guard);if(tok===MX.tok)setTimeout(function(){if(tok===MX.tok)done();},350);};
-  var guard=setTimeout(fin,2500+mxWords(text)*650/mxRate());
-  try{ttsQueue(text,function(u){u.lang=v&&v.lang?v.lang:'en-US';if(v)u.voice=v;u.rate=mxRate();u.pitch=who==='B'||who==='G'?1.15:who==='M'&&MXV.m===MXV.w?0.85:1;},fin);}catch(e){fin();}
+  var device=function(){
+    if(!tts.ok){fired=true;setTimeout(function(){if(tok===MX.tok)done();},Math.min(9000,600+mxWords(text)*380));return;}
+    var v=(who==='M'||who==='B')?MXV.m:MXV.w;
+    guard=setTimeout(fin,2500+mxWords(text)*650/mxRate());
+    try{ttsQueue(text,function(u){u.lang=v&&v.lang?v.lang:'en-US';if(v)u.voice=v;u.rate=mxRate();u.pitch=who==='B'||who==='G'?1.15:who==='M'&&MXV.m===MXV.w?0.85:1;},fin);}catch(e){fin();}
+  };
+  var gone=false,wait=setTimeout(function(){if(gone)return;gone=true;if(tok===MX.tok)device();},2500);   /* slow network: the device reads it */
+  recGet(mxRecSet(who),text).then(function(bufs){
+    if(gone||tok!==MX.tok)return;gone=true;clearTimeout(wait);
+    if(!bufs){device();return;}
+    try{speechSynthesis.cancel();}catch(e){}
+    guard=setTimeout(fin,3000+recLen(bufs)*1000);
+    recPlay(bufs,function(){return tok===MX.tok;},fin);
+  });
 }
 function mxSeq(steps,tok,done){
   var i=0;
@@ -229,6 +254,7 @@ function mxListen(){
   var x=mxLItem();if(!x){mxEndL();return;}
   mxHush();var tok=MX.tok;MX.paused=false;MX.answerLeft=0;
   if(!MXV.m&&!MXV.w)mxVoices();
+  mxRecAhead();
   MX.phase=x.p.type==='real'?'読む時間':'';
   render();
   var pre=x.p.type==='real'&&x.qi===0?10000:x.first?2500:900;
@@ -262,7 +288,7 @@ function mxAnswerWindow(tok){
   setTimeout(function(){if(tok===MX.tok)mxNextL();},sec*1000+300);
 }
 function mxNextL(){mxHush();MX.lp++;mxKeep();if(MX.lp>=MX.ix.lq.length)mxEndL();else mxListen();}
-function mxEndL(){mxHush();MX.done.L=true;MX.stage='result';mxFinish();render();window.scrollTo(0,0);}
+function mxEndL(){mxHush();mxLoud(false);MX.done.L=true;MX.stage='result';mxFinish();render();window.scrollTo(0,0);}
 function mxLRefresh(){
   var el=$('mxPhase');if(el)el.innerHTML=mxPhaseHTML();
 }
@@ -467,9 +493,9 @@ document.addEventListener('click',function(e){
     mxConfirm('筆記を終えますか?',(left?'まだ<b>'+left+'問</b>答えていません。':'すべて答えました。')+(MX.mode==='full'?'終えるとリスニングに進み、筆記には戻れません。':''),['data-mx-endr-yes','終える'],'見直す');return;
   }
   if(a('data-mx-endr-yes')){MX.timeUp=false;mxEndR();return;}
-  if(a('data-mx-lstart')){mxVoices();MX.stage='listen';try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u);}catch(x){}mxListen();return;}
+  if(a('data-mx-lstart')){mxVoices();recWake();mxLoud(true);MX.stage='listen';try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u);}catch(x){}mxListen();return;}
   if(a('data-mx-pause')){
-    if(MX.paused){MX.paused=false;mxListen();}
+    if(MX.paused){MX.paused=false;recWake();mxListen();}
     else{mxHush();MX.paused=true;render();}
     return;
   }
@@ -485,7 +511,7 @@ document.addEventListener('click',function(e){
   if(a('data-mx-rf')){MX.rf=g('data-mx-rf');Array.prototype.forEach.call(t.parentNode.querySelectorAll('button'),function(b){b.setAttribute('aria-pressed',String(b===t));});var rv=$('mxReview');if(rv)rv.innerHTML=mxReviewHTML();return;}
   if(a('data-mx-replay')){
     var x=MX.ix.lq.filter(function(q){return q.id===g('data-mx-replay');})[0];if(!x)return;
-    mxHush();if(!MXV.m&&!MXV.w)mxVoices();var tok=MX.tok;
+    mxHush();recWake();if(!MXV.m&&!MXV.w)mxVoices();var tok=MX.tok;
     mxSeq(mxLSteps({it:x.it,p:{type:x.p.type,play:1,read:x.p.read},qi:0,q:x.q}).filter(function(s){return !s.phase;}),tok,function(){});
     return;
   }

@@ -142,58 +142,17 @@ function ivBuild(){
 function ivLang(v){return v||(IV.data&&IV.data.lang)||'en-US';}
 function ivLA(){return ivLang().slice(0,2);}   /* lang attribute of the test language */
 function ivVoice(lang){return voicePick(ivLang(lang),IV.ex&&IV.ex[1]==='m'?'m':'f');}
-/* ---- recorded examiner voices ----
-   Natural voices recorded ahead of time for every examiner sentence (babel-flight/voice, .github/workflows/voices.yml),
-   served from /voice/. A line plays from the recordings only when every sentence of it has one in the examiner's
-   voice; otherwise (and for other languages) the device's voice reads it, as before. */
+/* ---- recorded examiner voices (recGet in e4_core.js) ----
+   Every examiner sentence is recorded in the examiner's voice; other languages (and lines without a recording) are
+   read by the device's voice, as before. */
 var IV_RECV={'en-US':{f:'af_heart',m:'am_michael'},'en-GB':{f:'bf_emma',m:'bm_george'},'es-ES':{f:'ef_dora',m:'em_alex'},'it-IT':{f:'if_sara',m:'im_nicola'}};
-var IVR={load:null,idx:null,src:null,cache:{}};
-function ivRecIdx(){
-  if(IVR.load)return IVR.load;
-  var can=typeof fetch==='function'&&!!(window.crypto&&crypto.subtle)&&typeof TextEncoder==='function'&&typeof Set==='function'&&(bfOnSite()||BF_APP);
-  IVR.load=(can?fetch(bfSiteUrl('/voice/index.json')).then(function(r){return r.ok?r.json():null;}):Promise.resolve(null))
-    .then(function(j){var o={};if(j&&j.voices)for(var v in j.voices)o[v]=new Set(j.voices[v]);IVR.idx=o;return o;})
-    .catch(function(){IVR.idx={};return IVR.idx;});
-  return IVR.load;
-}
 function ivRecVoice(lang){var m=IV_RECV[ivLang(lang)];return m&&IV.ex?m[IV.ex[1]==='m'?'m':'f']:'';}
-function ivRecKey(voice,s){
-  return crypto.subtle.digest('SHA-1',new TextEncoder().encode(voice+'|'+s)).then(function(b){var a=new Uint8Array(b),h='';for(var i=0;i<8;i++)h+=('0'+a[i].toString(16)).slice(-2);return h;});
-}
-/* the decoded sentences of a line, or null when any of them has no recording */
-function ivRecGet(voice,text){
-  return ivRecIdx().then(function(idx){
-    var set=idx&&idx[voice],ctx=set&&audio();if(!set||!ctx)return null;
-    return Promise.all(ttsChunks(text).map(function(p){return ivRecKey(voice,p);})).then(function(keys){
-      if(!keys.every(function(k){return set.has(k);}))return null;
-      return Promise.all(keys.map(function(k){
-        var u=bfSiteUrl('/voice/'+voice+'/'+k+'.mp3');
-        if(!IVR.cache[u])IVR.cache[u]=fetch(u).then(function(r){if(!r.ok)throw new Error('http');return r.arrayBuffer();})
-          .then(function(ab){return new Promise(function(res,rej){ctx.decodeAudioData(ab,res,rej);});})
-          .catch(function(e){delete IVR.cache[u];throw e;});
-        return IVR.cache[u];
-      }));
-    });
-  }).catch(function(){return null;});
-}
-function ivRecPlay(bufs,tok,done){
-  var ctx=audio(),i=0;
-  (function next(){
-    if(tok!==IV.tok)return;
-    if(i>=bufs.length){done();return;}
-    var s=ctx.createBufferSource();s.buffer=bufs[i++];s.connect(ctx.destination);IVR.src=s;
-    s.onended=function(){if(IVR.src===s)IVR.src=null;if(tok===IV.tok)setTimeout(next,i<bufs.length?220:0);};
-    try{s.start();}catch(e){done();}
-  })();
-}
-function ivRecStop(){var s=IVR.src;IVR.src=null;if(s){s.onended=null;try{s.stop();}catch(e){}}}
 /* on the tap that starts the interview: wake the audio (iPhone / iPad) and fetch this run's lines ahead */
 function ivRecStart(){
-  IVR.cache={};
-  var ctx=audio();
-  if(ctx){try{var b=ctx.createBuffer(1,1,22050),s=ctx.createBufferSource();s.buffer=b;s.connect(ctx.destination);s.start(0);}catch(e){}}
+  if(typeof mxLoud==='function')mxLoud(false);   /* a mock test's listening may have left it on */
+  recWake();
   var vo=ivRecVoice();if(!vo)return;
-  IV.steps.forEach(function(s){if((s.k==='say'||s.k==='rep')&&s.t&&!s.v)ivRecGet(vo,s.t);});
+  IV.steps.forEach(function(s){if((s.k==='say'||s.k==='rep')&&s.t&&!s.v)recFetch(vo,s.t);});
 }
 function ivSay(text,tok,done,lang){
   if(tok!==IV.tok)return;
@@ -210,36 +169,75 @@ function ivSay(text,tok,done,lang){
   var vo=ivRecVoice(lang);
   if(!vo){device();return;}
   var gone=false,wait=setTimeout(function(){if(gone)return;gone=true;if(tok===IV.tok)device();},2500);   /* slow network: the device reads it */
-  ivRecGet(vo,text).then(function(bufs){
+  recGet(vo,text).then(function(bufs){
     if(gone||tok!==IV.tok)return;gone=true;clearTimeout(wait);
     if(!bufs){device();return;}
     try{speechSynthesis.cancel();}catch(e){}
-    ivRecPlay(bufs,tok,once);
+    clearTimeout(guard);guard=setTimeout(function(){once();},4000+recLen(bufs)*1000);
+    recPlay(bufs,function(){return tok===IV.tok;},once);
   });
 }
-function ivHush(){IV.tok++;clearInterval(IV.tm);IV.tm=0;ivSrStop();ivRecStop();try{speechSynthesis.cancel();}catch(e){}}
+function ivHush(){IV.tok++;clearInterval(IV.tm);IV.tm=0;ivSrStop();ivSrOff();recStop();try{speechSynthesis.cancel();}catch(e){}}
 function ivStop(){ivHush();IV.win=null;IV.ask=false;}
 
-/* ---- listening to the learner (browser speech recognition) ---- */
-function ivSrStart(){
-  var C=typeof srCtor==='function'?srCtor():null;IV.win.fin='';IV.win.tmp='';
-  if(!C||IV.noMic){IV.win.nosr=true;return;}
-  var w=IV.win,r;
-  function start(){
-    if(IV.win!==w||w.closed)return;
-    try{r=new C();}catch(e){w.nosr=true;ivWinPaint();return;}
-    IV.sr=r;r.lang=(IV.data&&IV.data.lang)||'en-US';r.continuous=true;r.interimResults=true;
-    r.onresult=function(ev){
-      var tmp='';for(var i=ev.resultIndex;i<ev.results.length;i++){var x=ev.results[i];if(x.isFinal)w.fin+=(w.fin?' ':'')+x[0].transcript.trim();else tmp+=x[0].transcript;}
-      w.tmp=tmp;ivWinPaint();
-    };
-    r.onerror=function(ev){var c=ev&&ev.error;if(c==='not-allowed'||c==='service-not-allowed'){IV.noMic=true;w.nosr=true;ivWinPaint();}};
-    r.onend=function(){if(w.tmp){w.fin+=(w.fin?' ':'')+w.tmp.trim();w.tmp='';}if(IV.win===w&&!w.closed&&!IV.noMic)setTimeout(start,250);};
-    try{r.start();}catch(e){}
-  }
-  start();
+/* ---- listening to the learner (browser speech recognition) ----
+   One listening session for the whole interview. Turning the microphone on and off plays a sound on iPhone and
+   iPad, and doing it around every answer covered the examiner's voice. So the microphone stays on: only what is
+   said while an answer window is open counts, and what it hears while the examiner speaks is thrown away. When the
+   browser ends the session by itself, it is restarted only while the learner is answering (never over the examiner). */
+var IVS={r:null,n:0,tail:'',tailFin:true};
+function ivSrSession(){
+  if(IVS.r||IV.noMic)return IVS.r;
+  var C=typeof srCtor==='function'?srCtor():null,r;if(!C)return null;
+  try{r=new C();}catch(e){return null;}
+  IVS.r=r;IVS.n=0;IVS.tail='';IVS.tailFin=true;
+  r.lang=(IV.data&&IV.data.lang)||'en-US';r.continuous=true;r.interimResults=true;
+  r.onresult=function(ev){
+    if(IVS.r!==r)return;
+    var rs=ev.results,n=rs.length,last=n?rs[n-1]:null;
+    IVS.n=n;IVS.tail=last?last[0].transcript:'';IVS.tailFin=!last||!!last.isFinal;
+    var w=IV.win;if(!w||w.closed||!w.listen||w.sess!==r)return;
+    var fin='',tmp='';
+    for(var i=w.base;i<n;i++){
+      var x=rs[i],t=x[0].transcript;
+      /* a sentence that was still going when the window opened: drop the examiner's part of it */
+      if(i===w.base&&w.skip&&t.indexOf(w.skip)===0)t=t.slice(w.skip.length);
+      if(x.isFinal){t=t.trim();if(t)fin+=(fin?' ':'')+t;}else tmp+=t;
+    }
+    w.fin=(w.fin0?w.fin0+(fin?' ':''):'')+fin;w.tmp=tmp;ivWinPaint();
+  };
+  r.onerror=function(ev){var c=ev&&ev.error;if(c==='not-allowed'||c==='service-not-allowed'){IV.noMic=true;var w=IV.win;if(w){w.nosr=true;ivWinPaint();}}};
+  r.onend=function(){
+    if(IVS.r!==r)return;
+    IVS.r=null;
+    var w=IV.win;
+    if(w&&!w.closed&&w.listen&&w.sess===r){
+      w.fin0=((w.fin||'')+' '+(w.tmp||'')).replace(/\s+/g,' ').trim();w.fin=w.fin0;w.tmp='';
+      setTimeout(function(){if(IV.win===w&&!w.closed&&w.listen&&!IV.noMic)ivSrListen(w);},300);
+    }
+  };
+  try{r.start();}catch(e){IVS.r=null;return null;}
+  return r;
 }
-function ivSrStop(){var r=IV.sr;IV.sr=null;if(r){r.onend=null;try{r.stop();}catch(e){}}}
+/* an answer window opens: listen from here on (the session keeps running) */
+function ivSrListen(w){
+  var fresh=!IVS.r,r=ivSrSession();
+  if(!r){w.nosr=true;return;}
+  w.sess=r;w.listen=true;
+  if(fresh){w.base=0;w.skip='';}
+  else if(IVS.tailFin){w.base=IVS.n;w.skip='';}
+  else{w.base=Math.max(0,IVS.n-1);w.skip=IVS.tail;}
+}
+function ivSrStart(){
+  var w=IV.win;w.fin='';w.tmp='';w.fin0='';
+  var C=typeof srCtor==='function'?srCtor():null;
+  if(!C||IV.noMic){w.nosr=true;return;}
+  ivSrListen(w);
+}
+/* the answer window closes: stop counting what is heard, but keep the microphone on */
+function ivSrStop(){var w=IV.win;if(w)w.listen=false;}
+/* the interview ends or is left: the microphone really goes off */
+function ivSrOff(){var r=IVS.r;IVS.r=null;if(r){r.onend=null;r.onresult=null;try{r.abort();}catch(e){try{r.stop();}catch(x){}}}}
 
 /* ---- running the steps ---- */
 function ivStart(){
@@ -576,7 +574,7 @@ document.addEventListener('click',function(e){
   }
   if(a('data-iv-quit-yes')){closeSheet();ivStop();IV.stage='intro';render();window.scrollTo(0,0);return;}
   if(a('data-iv-rate')){var p=g('data-iv-rate').split(':');IV.self[p[0]]=p[1];Array.prototype.forEach.call(t.parentNode.querySelectorAll('button'),function(b){b.setAttribute('aria-pressed',String(b===t));});var s=$('ivSum');if(s)s.innerHTML=ivSumHTML();ivKeepHist();return;}
-  if(a('data-iv-say')){try{speechSynthesis.cancel();}catch(x){}ivRecStop();var tok=++IV.tok;ivSay(g('data-iv-say'),tok,function(){});return;}
+  if(a('data-iv-say')){try{speechSynthesis.cancel();}catch(x){}recStop();var tok=++IV.tok;ivSay(g('data-iv-say'),tok,function(){});return;}
   if(a('data-iv-again')){ivKeepHist();IV.pick=IV.ci;IV.run=Date.now();ivStart();return;}
   if(a('data-iv-next')){ivKeepHist();IV.pick=-1;IV.run=Date.now();ivStart();return;}
 });

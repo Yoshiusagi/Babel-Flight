@@ -1,9 +1,11 @@
-"""Every sentence an interview examiner can say (public/iv/*.json), for the recorded voices.
+"""Every sentence the recorded voices say: the interview examiners (public/iv/*.json) and the listening part of the
+mock tests (public/mx/*.json).
 
 The page reads a line sentence by sentence (ttsChunks in parts/e4_core.js); when every sentence of a line has a
 recording for the examiner's voice, it plays the recordings, otherwise it uses the device's voice for the whole
 line. So this file mirrors two things from the page and must be kept in step with them:
-  - how a line is built (ivBuild / ivFollow / the tq step in parts/f25_iv.js), and
+  - how a line is built (ivBuild / ivFollow / the tq step in parts/f25_iv.js; mxLSteps / mxListen in
+    parts/f23_mx.js), and
   - how a line is cut into sentences (ttsChunks in parts/e4_core.js).
 """
 import glob
@@ -15,6 +17,7 @@ import re
 HERE = os.path.dirname(os.path.abspath(__file__))
 APP = os.path.join(HERE, '..', '..')
 IV_DIR = os.path.join(APP, 'public', 'iv')
+MX_DIR = os.path.join(APP, 'public', 'mx')
 
 # the recorded voices: test language -> examiner's sex -> voice (Kokoro v1.0). Languages left out (ko-KR, and the
 # Japanese role lines) keep the device's voice.
@@ -24,6 +27,43 @@ VOICES = {
     'es-ES': {'f': 'ef_dora', 'm': 'em_alex'},
     'it-IT': {'f': 'if_sara', 'm': 'im_nicola'},
 }
+
+
+# the mock tests' listening (parts/f23_mx.js): speaker -> voice, and each grade's speed (mxRate). A recording
+# set is named "<voice>-<speed x 100>", e.g. af_heart-82, so one voice can be recorded at several speeds.
+MX_WHO = {'M': 'am_michael', 'W': 'af_heart', 'B': 'am_puck', 'G': 'af_bella', 'N': 'am_fenrir'}
+MX_SPEED = {'ek5': 82, 'ek4': 82, 'ek3': 86, 'ekp2': 90, 'ekp2p': 90}   # the rest: 95
+MX_NUM = ['One', 'Two', 'Three', 'Four']
+
+
+def mx_tag(key, who):
+    return MX_WHO.get(who, MX_WHO['N']) + '-' + str(MX_SPEED.get(key, 95))
+
+
+def speed_of(tag):
+    """the speaking speed of a recording set: 0.93 for the examiners, the number after "-" for the mocks"""
+    return int(tag.rsplit('-', 1)[1]) / 100 if '-' in tag else 0.93
+
+
+def mx_lines(d):
+    """(speaker, line) pairs the listening part of one mock test says (mxLSteps, mxListen, the replay button)."""
+    out = set()
+    for p in d['sections'][1]['parts']:
+        typ = p.get('type')
+        for it in p['items']:
+            qs = it.get('qs') or [it]
+            if typ != 'picsent':
+                for who, t in it.get('lines') or []:
+                    out.add((who, t))
+            for qi, q in enumerate(qs):
+                if typ == 'picsent' or p.get('read'):
+                    for j, o in enumerate(q.get('o') or []):
+                        out.add(('N', MX_NUM[j] + '. ' + o))
+                elif q.get('q') and typ not in ('real', 'interview'):
+                    out.add(('N', 'Question. ' + q['q']))
+                    if len(qs) > 1:
+                        out.add(('N', 'Question number ' + str(qi + 1) + '. ' + q['q']))
+    return out
 
 
 def iv_ex_default():
@@ -126,7 +166,7 @@ def lines_of(d):
 
 
 def wanted():
-    """{voice: set(sentence)} for every test with a recorded voice."""
+    """{recording set: set(sentence)}: every interview with a recorded voice, and every mock test's listening."""
     need = {}
     for f in sorted(glob.glob(os.path.join(IV_DIR, '*.json'))):
         d = json.load(open(f, encoding='utf-8'))
@@ -136,7 +176,16 @@ def wanted():
         for sex, line in lines_of(d):
             for sx in ([sex] if sex else ['f', 'm']):
                 need.setdefault(vs[sx], set()).update(chunks(line))
+    for f in sorted(glob.glob(os.path.join(MX_DIR, '*.json'))):
+        k = os.path.basename(f)[:-5].split('-')[0]
+        for who, line in mx_lines(json.load(open(f, encoding='utf-8'))):
+            need.setdefault(mx_tag(k, who), set()).update(chunks(line))
     return need
+
+
+def sets_of(voice, need=None):
+    """the recording sets one voice records: its own name (examiners) and <voice>-<speed> (mocks)"""
+    return sorted(t for t in (need or wanted()) if t == voice or t.startswith(voice + '-'))
 
 
 if __name__ == '__main__':

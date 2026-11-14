@@ -1,10 +1,12 @@
-"""Records the examiners' sentences with natural voices (Kokoro v1.0, Apache-2.0), for .github/workflows/voices.yml.
+"""Records the examiners' and the mock listening's sentences with natural voices (Kokoro v1.0, Apache-2.0), for
+.github/workflows/voices.yml.
 
   python3 make.py --voice af_heart --have have --out out --model ~/kokoro   # one voice: reuse what exists, record the rest
   python3 make.py --index arts                                             # write arts/index.json for the page
 
-Files: <voice>/<key>.mp3, key = lines.key(voice, sentence). The page loads index.json, and plays a line from the
-recordings only when every sentence of it is there (f25_iv.js).
+A voice records one or more sets (lines.sets_of): "af_heart" for the examiners, "af_heart-82" etc. for the mocks at
+each grade's speed. Files: <set>/<key>.mp3, key = lines.key(set, sentence). The page loads index.json, and plays a
+line from the recordings only when every sentence of it is there (recGet in parts/e4_core.js).
 """
 import argparse
 import json
@@ -20,7 +22,6 @@ import lines  # noqa: E402
 
 # espeak language for each voice (Kokoro's first letter: a = American, b = British, e = Spanish, i = Italian)
 LANG = {'a': 'en-us', 'b': 'en-gb', 'e': 'es', 'i': 'it'}
-SPEED = 0.93   # a little slower than normal: examiners speak clearly
 
 
 def encode(samples, rate, path):
@@ -36,25 +37,29 @@ def encode(samples, rate, path):
 
 
 def make(voice, have, out, model):
-    want = sorted(lines.wanted().get(voice, set()))
-    os.makedirs(os.path.join(out, voice), exist_ok=True)
+    need = lines.wanted()
     todo = []
-    for s in want:
-        k = lines.key(voice, s)
-        src = os.path.join(have, voice, k + '.mp3')
-        if os.path.exists(src):
-            shutil.copyfile(src, os.path.join(out, voice, k + '.mp3'))
-        else:
-            todo.append((k, s))
-    print(f'{voice}: {len(want)} sentences, {len(want) - len(todo)} already recorded, {len(todo)} to record', flush=True)
+    for tag in lines.sets_of(voice, need):
+        want = sorted(need[tag])
+        os.makedirs(os.path.join(out, tag), exist_ok=True)
+        n = len(todo)
+        for s in want:
+            k = lines.key(tag, s)
+            src = os.path.join(have, tag, k + '.mp3')
+            if os.path.exists(src):
+                shutil.copyfile(src, os.path.join(out, tag, k + '.mp3'))
+            else:
+                todo.append((tag, k, s))
+        print(f'{tag}: {len(want)} sentences, {len(want) - (len(todo) - n)} already recorded, {len(todo) - n} to record',
+              flush=True)
     if not todo:
         return
     from kokoro_onnx import Kokoro
     kk = Kokoro(os.path.join(model, 'kokoro-v1.0.onnx'), os.path.join(model, 'voices-v1.0.bin'))
     t0 = time.time()
-    for i, (k, s) in enumerate(todo):
-        samples, rate = kk.create(s, voice=voice, speed=SPEED, lang=LANG[voice[0]])
-        encode(samples, rate, os.path.join(out, voice, k + '.mp3'))
+    for i, (tag, k, s) in enumerate(todo):
+        samples, rate = kk.create(s, voice=voice, speed=lines.speed_of(tag), lang=LANG[voice[0]])
+        encode(samples, rate, os.path.join(out, tag, k + '.mp3'))
         if i % 100 == 99:
             print(f'  {i + 1}/{len(todo)}  {time.time() - t0:.0f}s', flush=True)
     print(f'{voice}: done in {time.time() - t0:.0f}s', flush=True)

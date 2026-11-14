@@ -333,6 +333,73 @@ function ttsQueue(text,setup,done){
     speechSynthesis.speak(u);
   });
 }
+/* ---- recorded voices ----
+   Natural voices recorded ahead of time (babel-flight/voice, .github/workflows/voices.yml) for the interview examiners
+   and the mock tests' listening, served from /voice/<set>/<key>.mp3 (a set: a voice, or a voice at one speed such as
+   af_heart-82). A line plays from the recordings only when every sentence of it (ttsChunks) has one in that set;
+   otherwise the device's voice reads it, as before. Files are kept compressed and decoded just before they play. */
+var REC={load:null,idx:null,src:null,files:null};
+function recIdx(){
+  if(REC.load)return REC.load;
+  var can=typeof fetch==='function'&&!!(window.crypto&&crypto.subtle)&&typeof TextEncoder==='function'&&typeof Set==='function'&&typeof Map==='function'&&(bfOnSite()||BF_APP);
+  REC.load=(can?fetch(bfSiteUrl('/voice/index.json')).then(function(r){return r.ok?r.json():null;}):Promise.resolve(null))
+    .then(function(j){var o={};if(j&&j.voices)for(var v in j.voices)o[v]=new Set(j.voices[v]);REC.idx=o;return o;})
+    .catch(function(){REC.idx={};return REC.idx;});
+  return REC.load;
+}
+function recKey(set,s){
+  return crypto.subtle.digest('SHA-1',new TextEncoder().encode(set+'|'+s)).then(function(b){var a=new Uint8Array(b),h='';for(var i=0;i<8;i++)h+=('0'+a[i].toString(16)).slice(-2);return h;});
+}
+function recFile(u){
+  if(!REC.files)REC.files=new Map();
+  var p=REC.files.get(u);
+  if(!p){
+    p=fetch(u).then(function(r){if(!r.ok)throw new Error('http');return r.arrayBuffer();});
+    p.catch(function(){REC.files.delete(u);});
+    REC.files.set(u,p);
+    if(REC.files.size>600)REC.files.delete(REC.files.keys().next().value);   /* about 20 KB each */
+  }
+  return p;
+}
+/* the files of a line's sentences, or null when any of them has no recording */
+function recUrls(set,text){
+  return recIdx().then(function(idx){
+    var have=idx&&idx[set];if(!have)return null;
+    return Promise.all(ttsChunks(text).map(function(p){return recKey(set,p);})).then(function(keys){
+      return keys.every(function(k){return have.has(k);})?keys.map(function(k){return bfSiteUrl('/voice/'+set+'/'+k+'.mp3');}):null;
+    });
+  }).catch(function(){return null;});
+}
+/* fetch a line ahead, so it is ready when its turn comes */
+function recFetch(set,text){recUrls(set,text).then(function(us){if(us)us.forEach(function(u){recFile(u).catch(function(){});});});}
+/* the decoded sentences of a line, or null */
+function recGet(set,text){
+  return recUrls(set,text).then(function(us){
+    var ctx=us&&audio();if(!ctx)return null;
+    return Promise.all(us.map(function(u){return recFile(u).then(function(ab){return new Promise(function(res,rej){
+      var r=ctx.decodeAudioData(ab.slice(0),res,rej);if(r&&r.then)r.catch(rej);
+    });});}));
+  }).catch(function(){return null;});
+}
+/* plays the sentences one after another while alive() says so; done() after the last */
+function recPlay(bufs,alive,done){
+  var ctx=audio(),i=0;
+  (function next(){
+    if(!alive())return;
+    if(i>=bufs.length){done();return;}
+    var s=ctx.createBufferSource();s.buffer=bufs[i++];s.connect(ctx.destination);REC.src=s;
+    s.onended=function(){if(REC.src===s)REC.src=null;if(alive())setTimeout(next,i<bufs.length?220:0);};
+    try{s.start();}catch(e){done();}
+  })();
+}
+function recLen(bufs){var t=0;bufs.forEach(function(b){t+=b.duration||0;});return t+bufs.length*0.25;}
+function recStop(){var s=REC.src;REC.src=null;if(s){s.onended=null;try{s.stop();}catch(e){}}}
+/* on a tap: wake the audio (iPhone / iPad play nothing until a tap has started it) */
+function recWake(){
+  var ctx=audio();
+  if(ctx){try{var b=ctx.createBuffer(1,1,22050),s=ctx.createBufferSource();s.buffer=b;s.connect(ctx.destination);s.start(0);}catch(e){}}
+  recIdx();
+}
 function ttsAvail(code){if(!tts.ok)return false;if(!tts.voices.length)return true;return !!voiceFor(code);}
 function speak(text,code,slow,force){
   if(!tts.ok)return;if(!force&&!save.sound)return;

@@ -1,13 +1,14 @@
-# Records the interview examiners' sentences with natural voices (Kokoro v1.0, Apache-2.0) and keeps them on the
-# branch "voices" (one commit, replaced each time, so the main history stays small). "Deploy to Cloudflare" copies
-# them to /voice/ on the site, and the page plays them instead of the device's robotic voice (f25_iv.js).
-# Runs when the interview questions change; only new sentences are recorded. See app/babel-flight/voice/.
+# Records the interview examiners' and the mock tests' listening sentences with natural voices (Kokoro v1.0,
+# Apache-2.0) and keeps them on the branch "voices" (one commit, replaced each time, so the main history stays small).
+# "Deploy to Cloudflare" copies them to /voice/ on the site, and the page plays them instead of the device's robotic
+# voice (recGet in parts/e4_core.js). Runs when the interviews or the mocks change; only new sentences are recorded.
+# See app/babel-flight/voice/.
 name: Recorded voices
 
 on:
   push:
     branches: [main]
-    paths: ["app/public/iv/**", "app/babel-flight/voice/**", ".github/workflows/voices.yml"]
+    paths: ["app/public/iv/**", "app/public/mx/**", "app/babel-flight/voice/**", ".github/workflows/voices.yml"]
   workflow_dispatch:
 
 concurrency:
@@ -25,7 +26,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        voice: [af_heart, am_michael, bf_emma, bm_george, ef_dora, em_alex, if_sara, im_nicola]
+        # examiners: the first eight; the mocks' listening: af_heart, am_michael and the last three (lines.MX_WHO)
+        voice: [af_heart, am_michael, bf_emma, bm_george, ef_dora, em_alex, if_sara, im_nicola, am_fenrir, am_puck, af_bella]
     steps:
       - uses: actions/checkout@v4
 
@@ -55,16 +57,18 @@ jobs:
       - name: Recordings already made
         run: |
           mkdir -p have
+          v="${{ matrix.voice }}"
           if git fetch -q --depth=1 origin voices; then
-            git archive FETCH_HEAD "${{ matrix.voice }}" 2>/dev/null | tar -x -C have || true
+            sets=$(git ls-tree --name-only FETCH_HEAD | grep -E "^${v}(-[0-9]+)?$" || true)
+            [ -z "$sets" ] || git archive FETCH_HEAD $sets | tar -x -C have
           fi
-          ls have/${{ matrix.voice }} 2>/dev/null | wc -l
+          for d in have/*/; do [ -d "$d" ] && echo "$d $(ls "$d" | wc -l)"; done; true
 
       - name: Record the missing sentences
         run: python3 app/babel-flight/voice/make.py --voice "${{ matrix.voice }}" --have have --out out --model ~/kokoro
 
       - name: Check that the words come out clearly
-        run: python3 app/babel-flight/voice/check.py out "${{ matrix.voice }}" 12
+        run: python3 app/babel-flight/voice/check.py out "${{ matrix.voice }}" 8
 
       - uses: actions/upload-artifact@v4
         with:
