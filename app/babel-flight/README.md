@@ -202,6 +202,15 @@ Only for ファースト (`cabinLv()` 3; `fcOn()`), never in the iPhone app.
   (not built yet).
 - **称号** (`FT_TITLES`, shown on the ID card and in the lounge) and six first-class icons (`'F'` in `ICONS`,
   `e4_core.js`): only while flying ファースト; a first-class icon falls back to the plane otherwise.
+- **リアル路線シミュレーション** (`parts/f33_route.js` + `f33_css.html`, 日本語 display only): one real route flown
+  from start to finish on the scene engine (通話モード or 入力モード): 機内 (飲み物 → 機内食 → 通路を通してもらう) →
+  入国審査 → タクシー → ホテル → 次の朝の朝ごはん. Each flight picks one or two troubles at random (スーツケースが
+  出てこない after immigration / タクシーでカードが使えない instead of the taxi / 予約が見つからない instead of the hotel),
+  hidden as ？？？ until they happen. Routes in `RT_ROUTES`: 英語 HND → JFK, 韓国語 HND → ICN, スペイン語 HND → MAD,
+  イタリア語 HND → FCO (original dialogues; Korean with katakana readings). The stages are scene units `rt-…` registered
+  after `e3e_reg.js` (not in `ALL_IDS`, never on the map); `sceneFinish` is wrapped so a stage goes back to the route
+  screen (`view 'route'`), and the whole flight lands as one lesson (`completeLesson`, mode `route`). Results per
+  language on this device (`babelflight.routes`). Entry: the lounge tile; the coach can plan it (kind `route`).
 - **先行公開**: `FIRST_EARLY` + `earlyOpen(id)` for features ファースト gets before everyone (empty for now).
 - Schema: `migrations/0014_first_ai.sql` (columns `coach`, `diary` of `bf_ai_usage`). `GET /api/ai/first` tells how
   many are left today.

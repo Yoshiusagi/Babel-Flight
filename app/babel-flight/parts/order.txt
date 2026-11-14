@@ -18,6 +18,7 @@ f27_css.html
 f28_css.html
 f31_css.html
 f32_css.html
+f33_css.html
 @HEADEND
 e2_body.html
 a0_env.js
@@ -94,5 +95,6 @@ f29_fx.js
 f30_xui.js
 f31_motion.js
 f32_first.js
+f33_route.js
 f7_boot.js
 @END

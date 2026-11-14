@@ -37,7 +37,7 @@ function fcToday(){return (new Date().getDay()+6)%7;}
 var COACH_KEY='babelflight.coach';
 var COACH={busy:false,tried:{},err:'',left:null};
 var COACH_KIND={lesson:['📍','次のレッスン'],review:['🔁','復習'],weak:['🎯','弱点コース'],exam:['🏅','検定'],role:['💬','AIロールプレイ'],
-  free:['🎲','自由練習'],diary:['📓','AI日記'],rest:['☕','おやすみ']};
+  free:['🎲','自由練習'],diary:['📓','AI日記'],route:['🛫','路線シミュレーション'],rest:['☕','おやすみ']};
 function coachAll(){return fcJson(COACH_KEY)||{};}
 /* this week's plan for language L, or null */
 function coachPlan(L){var c=coachAll()[L];return c&&c.wk===fcMonday()&&c.plan&&Array.isArray(c.plan.days)&&c.plan.days.length===7?c:null;}
@@ -65,7 +65,7 @@ function coachStats(L){
   if(ids.length)lines.push('ルートマップ('+(typeof modeName==='function'?modeName(L):save.mode)+'): '+unitsDone(L,ids)+'/'+ids.length+'レッスン到着 ・ 次は「'+unitTitle(nx)+'」');
   var prev=coachAll()[L];if(prev&&prev.plan&&prev.wk!==fcMonday())lines.push('先週のプランは7日中'+coachDoneN(prev)+'日できた(テーマ: '+prev.plan.focus+')');
   var dl=diaryList().filter(function(e){return e.L===L;}).length;if(dl)lines.push('この言語のAI日記: これまで'+dl+'日');
-  lines.push('AI会話ロールプレイ: '+(fcAi()?'使える':'使えない'));
+  lines.push('AI会話ロールプレイ: '+(fcAi()?'使える':'使えない')+' ・ 路線シミュレーション: '+(typeof rtOn==='function'&&rtOn(L)?'使える(これまで'+((rtRec()[L]||{}).n||0)+'回)':'この言語では使えない'));
   return lines.join('\n').slice(0,2400);
 }
 function coachMake(L,auto){
@@ -139,6 +139,7 @@ function coachDo(kind){
   if(kind==='free'){startMode('free');return;}
   if(kind==='exam'){if(typeof examModeOn==='function'&&examModeOn()){save.mode='exam';HOME_ANIM='mode';store();}go('home');return;}
   if(kind==='diary'){diarySheet();return;}
+  if(kind==='route'){if(typeof rtOn==='function'&&rtOn(L))rtStart();else startMode('free');return;}
 }
 
 /* ================= AI添削つき日記 ================= */
@@ -304,6 +305,7 @@ function loungeHTML(){
     '<div class="fcl-grid">'+
     '<button class="fcl-tile'+(due?' due':'')+'" type="button" data-diary-open><span class="fcl-ic" aria-hidden="true">📓</span><b>AI日記</b><small>'+(td?'✓ 今日は書いた':due?'今日は何があった？':'今日のことを'+esc(LANGS[L].name)+'で')+'</small></button>'+
     '<button class="fcl-tile" type="button" data-coach-open><span class="fcl-ic" aria-hidden="true">🧭</span><b>AIコーチ</b><small>今週のプラン</small></button>'+
+    (typeof rtOn==='function'&&RT_ROUTES[L]&&UI==='ja'?'<button class="fcl-tile" type="button" data-rt-open><span class="fcl-ic" aria-hidden="true">🛫</span><b>路線シミュレーション</b><small>HND → '+RT_ROUTES[L].code+' ・ 旅をまるごと</small></button>':'')+
     '<button class="fcl-tile" type="button" data-ft-open><span class="fcl-ic" aria-hidden="true">🎖</span><b>称号</b><small>'+FT_TITLES.filter(ftGot).length+' / '+FT_TITLES.length+'</small></button>'+
     '</div>'+
     (early.length?'<p class="fcl-early"><span class="lbl">先行公開</span>'+early.map(function(e){return '<span>'+esc(e[1])+'</span>';}).join(' ・ ')+'</p>':'')+

@@ -634,7 +634,7 @@ async function handleDrill(request: Request, db: D1Database, key: string): Promi
 
 const COACH_PER_DAY = 3; // the Monday plan + rebuilding it twice
 const DIARY_PER_DAY = 2; // today's entry + one rewrite
-const COACH_KINDS = ["lesson", "review", "weak", "exam", "role", "free", "diary", "rest"] as const;
+const COACH_KINDS = ["lesson", "review", "weak", "exam", "role", "free", "diary", "route", "rest"] as const;
 
 type FirstKind = "coach" | "diary";
 type CoachDay = { task: string; kind: string; min: number };
@@ -776,7 +776,8 @@ async function handleCoach(request: Request, db: D1Database, key: string): Promi
     `Write the plan in ${out}. Each day has ONE task the learner can do in the app, with its kind:\n` +
     "lesson = the next lessons on the route map, review = the spaced review (忘れかけた頃の復習), weak = the weak-points course, " +
     "exam = the exam course they target, role = AI role-play conversation, free = free practice, diary = write the AI diary in " +
-    "the language, rest = a rest or very light day.\n" +
+    "the language, route = the route simulation (a whole trip from the plane to the next morning as spoken scenes; only when " +
+    "the data says it can be used), rest = a rest or very light day.\n" +
     "Reply with ONLY this JSON (7 days, Monday first; task at most 40 characters; min = minutes, 5-30, 0 for rest): " +
     '{"focus":"this week\'s theme, at most 24 characters","why":"one sentence: why this theme, from the data",' +
     '"days":[{"task":"...","kind":"review","min":10}],"tip":"one short tip for the week"}';
