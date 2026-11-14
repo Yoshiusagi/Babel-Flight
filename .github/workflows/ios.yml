@@ -124,7 +124,7 @@ jobs:
           xcrun simctl bootstatus "$UDID" -b
           xcrun simctl status_bar "$UDID" override --time 9:41 --batteryLevel 100 --cellularBars 4 || true
           xcrun simctl install "$UDID" "$RUNNER_TEMP/dd/Build/Products/Debug-iphonesimulator/App.app"
-          xcrun simctl launch "$UDID" io.github.yoshiusagi.babelflight
+          xcrun simctl launch "$UDID" com.babelflight.app
           sleep 25
           mkdir -p "$RUNNER_TEMP/report"
           xcrun simctl io "$UDID" screenshot "$RUNNER_TEMP/report/launch.png"

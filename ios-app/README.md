@@ -36,7 +36,7 @@ App Store 版は無料版です。搭乗クラス(課金)の画面は、テス�
 1. [developer.apple.com](https://developer.apple.com/programs/enroll/) で登録(年99ドル)。個人で登録すると、
    **App Store の「販売元」に登録した人の本名が表示されます**。
 2. 「Certificates, Identifiers & Profiles」→「Identifiers」→ App ID を作る
-   - Bundle ID: `io.github.yoshiusagi.babelflight`
+   - Bundle ID: `com.babelflight.app`
    - Capabilities: **Sign in with Apple** にチェック
 3. 「Membership」で **Team ID**(英数字10文字)を確認。
 
@@ -49,7 +49,7 @@ App Store 版は無料版です。搭乗クラス(課金)の画面は、テス�
 
 ### 3. Firebase(ログイン)
 1. [Firebase コンソール](https://console.firebase.google.com) → プロジェクト `babel-flight` →「アプリを追加」→ iOS
-   - Apple バンドル ID: `io.github.yoshiusagi.babelflight`
+   - Apple バンドル ID: `com.babelflight.app`
    - **GoogleService-Info.plist** をダウンロード
 2. 「Authentication」→「Sign-in method」→ **Apple** を有効にする。
    アカウント削除のときに Apple との連携も解除できるよう、「OAuth コードフローの構成」に
