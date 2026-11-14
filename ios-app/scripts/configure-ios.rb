@@ -109,6 +109,14 @@ target.build_configurations.each do |c|
   s["PRODUCT_BUNDLE_IDENTIFIER"] = cap["appId"]
   s["CODE_SIGN_STYLE"] = "Automatic"
   s["DEVELOPMENT_TEAM"] = team unless team.empty?
+  # App Store upload: sign Release with the profile made by asc-signing.rb (no device needed)
+  profile = ENV["SIGN_PROFILE_NAME"].to_s
+  if c.name == "Release" && !profile.empty?
+    s["CODE_SIGN_STYLE"] = "Manual"
+    s["CODE_SIGN_IDENTITY"] = "Apple Distribution"
+    s["CODE_SIGN_IDENTITY[sdk=iphoneos*]"] = "Apple Distribution"
+    s["PROVISIONING_PROFILE_SPECIFIER"] = profile
+  end
 end
 project.build_configurations.each { |c| c.build_settings["IPHONEOS_DEPLOYMENT_TARGET"] = "15.0" }
 project.save
