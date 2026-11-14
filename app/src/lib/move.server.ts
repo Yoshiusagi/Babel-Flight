@@ -87,7 +87,7 @@ export const MOVE_TABLES: Record<string, Table> = {
 };
 /** The new site's public key (ECDSA P-256, from move-auto.yml's "keygen" run); null = not made yet. */
 type PublicJwk = { x: string; y: string };
-const MOVE_PUBLIC_JWK = null as PublicJwk | null;
+const MOVE_PUBLIC_JWK = { x: "1ZSO9M4s0OhFXf4EDHnNMIgaPUr9xYQwMdoe7qQ9yRU", y: "t-iy9RS1NGcF9goyD-tWLQePvX9Fy6w-c_BeF4QrksA" } as PublicJwk | null;
 const SIG_MAX_AGE_MS = 5 * 60 * 1000;
 const SIG_LABEL = "babel-flight move-export";
 
