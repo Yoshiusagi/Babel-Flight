@@ -26,9 +26,20 @@ def words(t):
     return re.findall(r"[a-záéíóúñüàèìòùç0-9']+", t.lower())
 
 
+import subprocess  # noqa: E402
+import numpy as np  # noqa: E402
+
+
+def pcm(path):
+    """mp3 -> 16 kHz mono floats (ffmpeg), so the recognizer does not need its own decoder"""
+    raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', path, '-f', 'f32le', '-ac', '1', '-ar', '16000', '-'],
+                         check=True, capture_output=True).stdout
+    return np.frombuffer(raw, dtype=np.float32)
+
+
 scores = []
 for k in pick:
-    segs, _ = model.transcribe(os.path.join(root, voice, k + '.mp3'), language=lang, beam_size=5)
+    segs, _ = model.transcribe(pcm(os.path.join(root, voice, k + '.mp3')), language=lang, beam_size=5)
     heard = ' '.join(s.text for s in segs)
     a, b = words(by_key[k]), words(heard)
     hit = sum(1 for w in a if w in b) / max(1, len(a))
