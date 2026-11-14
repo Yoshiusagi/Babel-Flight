@@ -103,6 +103,12 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.21',items:[
+  ['🎙','面接官の声が人間らしくなりました','英検・IELTS・TOEFL・DELE・CILS などの面接練習で、面接官のセリフをあらかじめ自然な声で録音しておきました。どの端末でも聞き取りやすい声で話します。模試のリスニングなども、端末に入っている声の中からいちばん自然な声を選ぶようにしました。','exam',1,['ja']],
+  ['📚','TOEIC・IELTS・TOEFL のフレーズが3倍に','TOEIC・IELTS・TOEFL のフレーズが40から120になりました(ステップ6〜15)。会議やメールの決まり文句、ライティング・スピーキングの型、新しい形式の問題の表現まで入っています。','exam',1,['ja']],
+  ['🎙','면접관 목소리가 자연스러워졌어요','OPIc 연습에서 면접관의 말을 미리 자연스러운 목소리로 녹음해 두었어요. 어느 기기에서도 알아듣기 쉬운 목소리로 말해요. TOEIC·IELTS·TOEFL 표현도 40개에서 120개로 늘었어요.','exam',1,['ko']],
+  ['🎙','考官的声音更自然了','CET 口语练习中，考官的话已提前用自然的声音录好，在任何设备上都清晰易懂。TOEIC、IELTS、TOEFL 的短语也从40个增加到了120个。','exam',1,['zh']]
+ ]},
  {v:'2026.11.20',items:[
   ['📝','英検の模試が全部の級で3回分に','英検5級・4級・準2級プラス・2級・準1級・1級の本番形式の模試にも第2回・第3回を追加し、5級から1級まで全部の級が第1回〜第3回の3回分になりました(すべてオリジナル問題)。長文やリスニングには、飛行機や空港の話題も入っています。模試の画面の上で回を選べます。','exam',1,['ja']]
  ]},
