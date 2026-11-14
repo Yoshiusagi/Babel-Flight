@@ -6,6 +6,7 @@ import { handleAccount } from "./lib/account.server";
 import { handleAi } from "./lib/ai.server";
 import { handleAnalytics } from "./lib/analytics.server";
 import { handleBilling } from "./lib/billing.server";
+import { handleFamily } from "./lib/family.server";
 import { appPreflight, withAppCors } from "./lib/http.server";
 import { handleMove } from "./lib/move.server";
 import { handleReward } from "./lib/reward.server";
@@ -77,6 +78,9 @@ export default {
     // The hidden reward: right answers counted per account, at most 300 a day (see lib/reward.server.ts).
     const reward = await handleReward(request, url);
     if (reward) return applySecurityHeaders(withAppCors(request, reward));
+    // 家族シェア: an account flying ファースト shares it with up to two others (see lib/family.server.ts).
+    const family = await handleFamily(request, url);
+    if (family) return applySecurityHeaders(withAppCors(request, family));
     // Copying the data to the new address when the site moves (see lib/move.server.ts).
     const move = await handleMove(request, url);
     if (move) return applySecurityHeaders(move);

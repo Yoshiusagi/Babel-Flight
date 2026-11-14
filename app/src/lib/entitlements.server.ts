@@ -11,12 +11,17 @@
 // The hidden reward (裏設定, reward.server.ts) is kept in its own table, bf_reward, and shows here
 // as `until`: ファースト (First-class AI limits on the server, cabinLv 3 in the page) until then.
 //
+// 家族シェア (family.server.ts): an account flying ファースト by itself can share it with up to two others.
+// Their entitlements get `fam` (the sharer's name): ファースト in the page, First-class AI limits on the server,
+// while the sharer still flies ファースト. A shared ファースト can't be shared on.
+//
 // The test account is recognised by its sign-in email. Only a salted SHA-256 of the
 // address is kept in the code (the repository is public). Once matched, the grant is
 // stored by Firebase uid, so it stays even if the email check is removed later.
 import type { D1Database } from "@cloudflare/workers-types";
 
 import type { FirebaseClaims } from "./firebase-token.server";
+import { GRANT_STATUSES } from "./stripe.server";
 import { sha256Hex, type Row } from "./http.server";
 
 const SALT = "babel-flight:tester:";
@@ -49,10 +54,11 @@ const PLAN_GRANTS: Readonly<Record<string, readonly string[]>> = {
 
 /** until: when the hidden reward's ファースト ends (ms; 0 = none, see reward.server.ts).
  *  grants: single 検定 levels open to this account (bank keys), see PLAN_GRANTS. */
-export type Entitlements = { plan: string; all: boolean; family: boolean; until: number; grants: string[] };
+/*  fam: the name of the account sharing its ファースト with this one (家族シェア), "" for none. */
+export type Entitlements = { plan: string; all: boolean; family: boolean; until: number; grants: string[]; fam: string };
 export type AiTier = "all" | "family" | "free";
 
-const FREE: Entitlements = { plan: "", all: false, family: false, until: 0, grants: [] };
+const FREE: Entitlements = { plan: "", all: false, family: false, until: 0, grants: [], fam: "" };
 
 /** Called when someone signs in: records the "all" plan for the test account. */
 export async function grantOnSignIn(db: D1Database, claims: FirebaseClaims): Promise<void> {
@@ -102,18 +108,68 @@ export async function rewardUntil(db: D1Database, uid: string): Promise<number> 
   }
 }
 
-export async function entitlementsOf(db: D1Database, uid: string): Promise<Entitlements> {
+async function ownEntitlements(db: D1Database, uid: string): Promise<Entitlements> {
   const row = await db.prepare("SELECT plan FROM bf_entitlements WHERE uid = ?").bind(uid).first<Row>();
   const until = await rewardUntil(db, uid);
   if (!row || typeof row.plan !== "string") return { ...FREE, until };
-  return { plan: row.plan, all: row.plan === "all", family: row.plan === "family", until, grants: [...(PLAN_GRANTS[row.plan] ?? [])] };
+  return { plan: row.plan, all: row.plan === "all", family: row.plan === "family", until, grants: [...(PLAN_GRANTS[row.plan] ?? [])], fam: "" };
+}
+
+/** A paid ファースト that is being paid for right now (Stripe). A missing table counts as none. */
+async function paidFirst(db: D1Database, uid: string): Promise<boolean> {
+  try {
+    const r = await db.prepare("SELECT plan, status FROM bf_billing WHERE uid = ?").bind(uid).first<Row>();
+    return !!r && r.plan === "first" && GRANT_STATUSES.includes(String(r.status));
+  } catch {
+    return false;
+  }
+}
+
+/** True when the account flies ファースト by itself (not through 家族シェア): the test account, the family
+ *  account, the hidden reward while it lasts, or a paid ファースト. Only these can share it. */
+export async function ownsFirst(db: D1Database, uid: string): Promise<boolean> {
+  const e = await ownEntitlements(db, uid);
+  return e.all || e.family || e.until > Date.now() || (await paidFirst(db, uid));
+}
+
+/** The display name an account chose (from its synced progress), for 家族シェア. */
+export async function displayName(db: D1Database, uid: string): Promise<{ name: string; icon: string }> {
+  try {
+    const r = await db.prepare("SELECT data FROM bf_saves WHERE uid = ?").bind(uid).first<Row>();
+    const d = r && typeof r.data === "string" ? (JSON.parse(r.data) as Row) : null;
+    const name = d && typeof d.name === "string" ? d.name.slice(0, 24) : "";
+    const icon = d && typeof d.icon === "string" && /^[a-z0-9-]{1,20}$/.test(d.icon) ? d.icon : "";
+    return { name: name && name !== "PASSENGER" ? name : "", icon };
+  } catch {
+    return { name: "", icon: "" };
+  }
+}
+
+/** The account sharing its ファースト with this one, while it still flies ファースト ("" for none). */
+export async function sharedBy(db: D1Database, uid: string): Promise<string> {
+  let owner = "";
+  try {
+    const r = await db.prepare("SELECT owner FROM bf_family_members WHERE member = ?").bind(uid).first<Row>();
+    owner = r && typeof r.owner === "string" ? r.owner : "";
+  } catch {
+    return ""; // the table is missing until its migration runs
+  }
+  return owner && (await ownsFirst(db, owner)) ? owner : "";
+}
+
+export async function entitlementsOf(db: D1Database, uid: string): Promise<Entitlements> {
+  const e = await ownEntitlements(db, uid);
+  if (e.all || e.family) return e;
+  const owner = await sharedBy(db, uid);
+  if (!owner) return e;
+  return { ...e, fam: (await displayName(db, owner)).name || "家族" };
 }
 
 /** How much AI the account gets per day: unlimited (test account), First-class (family, or the
  *  hidden reward while it lasts) or free. */
 export async function aiTier(db: D1Database, uid: string): Promise<AiTier> {
   const e = await entitlementsOf(db, uid);
-  return e.all ? "all" : e.family || e.until > Date.now() ? "family" : "free";
+  return e.all ? "all" : e.family || e.fam || e.until > Date.now() ? "family" : "free";
 }
 
 /** True when the account may use every feature, including paid ones and unlimited AI. */

@@ -219,6 +219,14 @@ Only for ファースト (`cabinLv()` 3; `fcOn()`), never in the iPhone app.
   aligned word by word (characters for Chinese and Japanese; ㅐ/ㅔ count as the same). Browser speech recognition
   only: nothing is sent to the site, and intonation/tones are not judged. 発音のクセ (sounds and words missed most,
   per language, `babelflight.pron`) shows in 復習 and goes to the AI coach. Other classes keep the simple check.
+- **家族シェア** (`parts/f35_family.js` + `f35_css.html`, server `src/lib/family.server.ts`, `migrations/0015_family.sql`):
+  an account flying ファースト by itself (`ownsFirst`: test account, family account, hidden reward, paid ファースト
+  being paid for) shares it with up to 2 members. 記録 → 家族シェア: invite codes (8 characters, one use, 7 days, 3 open
+  at most), sent as `/?family=CODE` (the link waits for sign-in, then asks to join), the seats, removing a member.
+  Members get `fam` (the sharer's name) in their entitlements: ファースト in the page (`cabinPlanLv` 3), First-class
+  AI limits on the server, only while the sharer still flies ファースト. No sharing on, one family per account, an
+  account with its own ファースト can't join, at most 4 joins per sharer in 30 days. Members see only each other's
+  name and icon. Deleting an account removes its family and its seat.
 - **先行公開**: `FIRST_EARLY` + `earlyOpen(id)` for features ファースト gets before everyone (empty for now).
 - Schema: `migrations/0014_first_ai.sql` (columns `coach`, `diary` of `bf_ai_usage`). `GET /api/ai/first` tells how
   many are left today.
