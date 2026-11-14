@@ -177,8 +177,14 @@ function ivSay(text,tok,done,lang){
     recPlay(bufs,function(){return tok===IV.tok;},once);
   });
 }
-function ivHush(){IV.tok++;clearInterval(IV.tm);IV.tm=0;ivSrStop();ivSrOff();recStop();try{speechSynthesis.cancel();}catch(e){}}
+/* everything stops (examiner, timers, listening) but the microphone stays on */
+function ivQuiet(){IV.tok++;clearInterval(IV.tm);IV.tm=0;ivSrStop();recStop();try{speechSynthesis.cancel();}catch(e){}}
+function ivHush(){ivQuiet();ivSrOff();}
 function ivStop(){ivHush();IV.win=null;IV.ask=false;}
+/* the interview is over but the results are on screen: the microphone stays on until the next tap, so its "off"
+   sound comes with the learner's own tap instead of with the results; 「もう一度」 keeps it on for the next run */
+function ivRest(){ivQuiet();IV.win=null;IV.ask=false;}
+function ivMicDone(){if(IVS.r&&IV.stage!=='run')ivSrOff();}
 
 /* ---- listening to the learner (browser speech recognition) ----
    One listening session for the whole interview. Turning the microphone on and off plays a sound on iPhone and
@@ -241,7 +247,7 @@ function ivSrOff(){var r=IVS.r;IVS.r=null;if(r){r.onend=null;r.onresult=null;try
 
 /* ---- running the steps ---- */
 function ivStart(){
-  ivStop();
+  ivRest();if(IVS.r&&IV.data&&IVS.r.lang!==(IV.data.lang||'en-US'))ivSrOff();
   IV.ci=ivPickCard();IV.c=ivCards()[IV.ci];IV.ex=ivPickEx();ivBuild();
   IV.i=0;IV.ans={};IV.yn={};IV.self={};IV.att={};IV.tsel={};IV.up=false;IV.turned=false;IV.line='';IV.pardon=0;IV.stage='run';
   IV.face='';IV.role='';IV.hideLine=false;IV.notes='';IV.notesOn=false;
@@ -307,7 +313,7 @@ function ivFollow(w,yn,tok){
   ivSay(q,tok,function(){ivWindow({kind:'yn',id:w.id,sec:w.step.fsec,label:w.label,step:w.step,follow:true},tok);});
 }
 function ivEnd(){
-  ivStop();IV.stage='result';IV.up=false;
+  ivRest();IV.stage='result';IV.up=false;
   render();window.scrollTo(0,0);
 }
 
@@ -529,7 +535,7 @@ function ivHTML(){
 (function(){
   var r0=render;
   render=function(){
-    if(view!=='iv'){if(IV.stage==='run'){ivStop();IV.stage='intro';}return r0.apply(this,arguments);}
+    if(view!=='iv'){if(IV.stage==='run'){ivStop();IV.stage='intro';}ivMicDone();return r0.apply(this,arguments);}
     if(!IV.key){view='review';return r0.apply(this,arguments);}
     $('tabs').hidden=true;
     var main=$('main');main.innerHTML='<div class="iv">'+ivHTML()+'</div>';
@@ -585,4 +591,6 @@ document.addEventListener('change',function(e){
   if(el.hasAttribute('data-iv-entry')){try{localStorage.setItem(IV_ENTKEY,el.checked?'1':'0');}catch(x){}if(view==='iv'&&IV.stage==='intro')render();return;}
   if(el.hasAttribute('data-iv-att')){IV.att[el.getAttribute('data-iv-att')]=el.checked;var s=$('ivSum');if(s)s.innerHTML=ivSumHTML();if(Object.keys(IV.self).length)ivKeepHist();}
 });
-document.addEventListener('visibilitychange',function(){if(document.hidden&&view==='iv'&&IV.stage==='run'){ivStop();IV.stage='intro';render();}});
+document.addEventListener('visibilitychange',function(){if(document.hidden){if(view==='iv'&&IV.stage==='run'){ivStop();IV.stage='intro';render();}ivMicDone();}});
+/* after the interview: the first tap turns the microphone off (except 「もう一度」 and replaying a line) */
+document.addEventListener('click',function(e){if(IVS.r&&IV.stage!=='run'&&!(e.target.closest&&e.target.closest('[data-iv-again],[data-iv-say]')))ivSrOff();},true);

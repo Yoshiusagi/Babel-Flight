@@ -103,6 +103,15 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.23',items:[
+  ['🏅','TOPIK・DELE・CILS も120フレーズに','韓国語(TOPIK Ⅰ・Ⅱ)・スペイン語(DELE A2・B1)・イタリア語(CILS A2・B1)の検定コースに、ステップ6〜15を追加しました。仕事・社会・ニュース・空港と機内・慣用句まで、本番によく出る表現を学べます。','exam',1,['ja']],
+  ['🎙','面接が終わったあとのマイクの音','面接が終わったあとは、次に画面をタップしたときにマイクを切るようにしました。同じ級で「もう一度」を選ぶとマイクはつけたままなので、切りかえの音は鳴りません。','exam',1,['ja']],
+  ['🏅','TOPIK, DELE and CILS now have 120 phrases','Steps 6 to 15 were added to Korean (TOPIK I and II), Spanish (DELE A2 and B1) and Italian (CILS A2 and B1): work, society, the news, airports and flights, and idioms.','exam',1,['en']],
+  ['🏅','DELE·CILS도 120문장으로','스페인어(DELE A2·B1)와 이탈리아어(CILS A2·B1) 검정 코스에 6~15단계를 추가했어요. 일, 사회, 뉴스, 공항과 기내, 관용구까지 시험에 자주 나오는 표현을 배울 수 있어요.','exam',1,['ko']],
+  ['🎙','면접이 끝난 뒤 마이크 소리','면접이 끝나면 다음에 화면을 탭할 때 마이크를 끄도록 했어요. 같은 면접을 다시 하면 마이크가 켜진 채로 이어져서 전환음이 나지 않아요.','exam',1,['ko']],
+  ['🏅','TOPIK、DELE、CILS 扩充到120句','韩语（TOPIK I、II）、西班牙语（DELE A2、B1）和意大利语（CILS A2、B1）的考试课程新增了第6至15步，涵盖工作、社会、新闻、机场与机舱、惯用语等常考表达。','exam',1,['zh']],
+  ['🎙','面试结束后的麦克风提示音','面试结束后，麦克风会在你下次点按屏幕时才关闭。再来一次同样的面试时麦克风保持开启，不会响起切换提示音。','exam',1,['zh']]
+ ]},
  {v:'2026.11.22',items:[
   ['🎧','模試のリスニングも自然な声に','英検の模試(5級〜1級・全3回)のリスニングを、あらかじめ自然な声で録音しました。会話の2人とナレーターはそれぞれ違う声で、級ごとに本番に近い速さで読みます。','exam',1,['ja']],
   ['🎙','面接中のマイクのオン・オフをやめました','面接練習で、答えるたびにマイクをつけたり消したりしていたのをやめ、面接のあいだはマイクをつけたままにしました。iPhone・iPad で切りかえの音が何度も鳴って、面接官の声が聞こえにくくなるのを防ぎます。使うのは答える時間に話した言葉だけです。','exam',1,['ja']],
