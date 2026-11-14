@@ -103,6 +103,12 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.24',items:[
+  ['🇫🇷','フランス語に職業モード・留学モードが登場','フランス語が「スターター」を卒業しました。13の職業(パイロット・客室乗務員・医療・ITなど)の専門会話と、留学モード(教科の用語・授業やホームステイの会話)を学べます。','lang:fr',1,['ja']],
+  ['🇫🇷','French: job mode and study abroad mode','French is no longer a starter language. You can now learn the 13 jobs (pilot, cabin crew, medical, IT and more) and the study abroad mode (school subjects, class and homestay conversations).','lang:fr',1,['en']],
+  ['🇫🇷','프랑스어에 직업 모드와 유학 모드 추가','프랑스어가 스타터 과정을 졸업했어요. 13가지 직업(파일럿, 객실 승무원, 의료, IT 등)의 전문 회화와 유학 모드(교과 용어, 수업과 홈스테이 회화)를 배울 수 있어요.','lang:fr',1,['ko']],
+  ['🇫🇷','法语新增职业模式和留学模式','法语已不再是入门语言。现在可以学习13种职业（飞行员、空乘、医疗、IT等）的专业会话，以及留学模式（学科用语、课堂和寄宿家庭会话）。','lang:fr',1,['zh']]
+ ]},
  {v:'2026.11.23',items:[
   ['🏅','TOPIK・DELE・CILS も120フレーズに','韓国語(TOPIK Ⅰ・Ⅱ)・スペイン語(DELE A2・B1)・イタリア語(CILS A2・B1)の検定コースに、ステップ6〜15を追加しました。仕事・社会・ニュース・空港と機内・慣用句まで、本番によく出る表現を学べます。','exam',1,['ja']],
   ['🎙','面接が終わったあとのマイクの音','面接が終わったあとは、次に画面をタップしたときにマイクを切るようにしました。同じ級で「もう一度」を選ぶとマイクはつけたままなので、切りかえの音は鳴りません。','exam',1,['ja']],
@@ -218,6 +224,7 @@ function notamHTML(n,first){
     else if(first&&x[3]==='ja'&&LANGS.ja&&learnOrder().indexOf('ja')>=0&&save.lang!=='ja')btn='<button class="ghost nt-go" type="button" data-notam-go="ja">試してみる</button>';
     else if(first&&x[3]==='job')btn='<button class="ghost nt-go" type="button" data-notam-go="job">試してみる</button>';
     else if(first&&x[3]==='study'&&studyLangFor())btn='<button class="ghost nt-go" type="button" data-notam-go="study">試してみる</button>';
+    else if(first&&/^lang:/.test(x[3])&&LANGS[x[3].slice(5)]&&save.lang!==x[3].slice(5)&&learnOrder().indexOf(x[3].slice(5))>=0)btn='<button class="ghost nt-go" type="button" data-notam-go="'+x[3]+'">試してみる</button>';
     else if(first&&x[3]==='first')btn='<button class="ghost nt-go" type="button" data-notam-go="'+(firstOn(save.lang)?'first':'settings')+'">'+(firstOn(save.lang)?'試してみる':'レベルを見る')+'</button>';
     return '<div class="nt-item"><span class="nt-ic" aria-hidden="true">'+x[0]+'</span><div class="nt-tx"><b>'+x[1]+'</b><p>'+x[2]+'</p>'+btn+'</div></div>';
   }).join('')+'</div>';
@@ -253,6 +260,7 @@ document.addEventListener('click',function(e){
     else if(g==='job'){if(profById(save.prof)&&jobOpen(save.prof)){save.mode='job';HOME_ANIM='mode';store();go('home');}else{pickerBack='home';go('picker');}}
     else if(g==='study'){var L=studyLangFor();if(L){var sw=save.lang!==L;save.lang=L;save.mode='study';HOME_ANIM=sw?'lang':'mode';store();go('home');if(sw&&typeof lvNeed==='function'&&lvNeed(L))lvSheet(L);}}
     else if(g==='first'&&typeof openNodeSheet==='function')openNodeSheet('first');
+    else if(/^lang:/.test(g)){var L2=g.slice(5);if(LANGS[L2]){save.lang=L2;if(profById(save.prof)&&jobOpen(save.prof))save.mode='job';HOME_ANIM='lang';store();go('home');if(typeof lvNeed==='function'&&lvNeed(L2))lvSheet(L2);}}
     return;
   }
 });

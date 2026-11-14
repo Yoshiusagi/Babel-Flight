@@ -1,7 +1,7 @@
-/* ================= フランス語 — starter course =================
-   Travel phrases here; daily phrases, scenes and the route map in e3g_fr.js. Readings in katakana.
+/* ================= フランス語 =================
+   Travel phrases here; daily phrases, scenes and the route map in e3g_fr.js; the 職業・留学 units in the PJ() calls (d1–d8, e3a). Readings in katakana.
    ? and ! follow a narrow no-break space, as French is written (the word tiles keep them with the word). */
-LANGS.fr={name:'フランス語',native:'Français',city:'パリ',cityEn:'PARIS',code:'CDG',tts:'fr-FR',km:9700,letter:'F',hasYomi:true,starter:true,units:[
+LANGS.fr={name:'フランス語',native:'Français',city:'パリ',cityEn:'PARIS',code:'CDG',tts:'fr-FR',km:9700,letter:'F',hasYomi:true,units:[
   U("checkin",[
    ["こんにちは", "Bonjour.", "ボンジュール", "朝から夕方まで使えるあいさつ。お店に入るときにも必ず言うのがフランス流です。"],
    ["チェックインしたいのですが", "Je voudrais faire l'enregistrement.", "ジュ ヴドレ フェール ランルジストルマン", "「Je voudrais〜」=〜したいのですが(ていねい)。空港のチェックインは「enregistrement」。"],
