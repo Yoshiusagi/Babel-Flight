@@ -1,0 +1,56 @@
+<style>
+/* ---- 発音の細かい分析 (f34_pron.js) ---- */
+.pa-badge{display:inline-block;margin-left:6px;padding:1px 6px;border-radius:999px;font-style:normal;font-size:9.5px;letter-spacing:.12em;vertical-align:2px;background:#e9d6a8;color:#18130a}
+.pron-out.live{padding:10px 12px;border-radius:12px;border:1.5px dashed var(--bad);color:var(--ink)}
+.pron-out.live q{display:block;font-size:17px;font-weight:600;quotes:none;min-height:1.4em}
+.pa-live-l{font-size:11.5px;color:var(--ink2)!important}
+.pron-out.pa-out{color:var(--ink)}
+.pa{display:grid;gap:8px;padding:12px 14px;border-radius:14px;background:var(--surface2);text-align:left}
+.pa-h{display:flex;justify-content:space-between;align-items:baseline}
+.pa-h b{font-size:16px!important}
+.pa.good .pa-h b{color:var(--good)}.pa.ok .pa-h b{color:var(--info)}.pa.bad .pa-h b{color:var(--bad)}
+.pa-sc{font-size:24px;font-weight:800}
+.pa-sc small{font-size:12px;margin-left:2px}
+.pa-sub{font-size:12.5px;margin-top:-6px}
+.pa-bar{height:6px;border-radius:999px;background:var(--line);overflow:hidden}
+.pa-bar i{display:block;height:100%;background:var(--signal);border-radius:inherit;transition:width .5s ease}
+.pa.good .pa-bar i{background:var(--good)}
+.pa-line{display:flex;flex-wrap:wrap;gap:4px 6px;font-size:19px;line-height:1.5;margin:2px 0}
+.pa-line.zh,.pa-line.ja{gap:2px}
+.pa-w{display:inline-block;padding:0 3px;border-radius:6px;font:inherit;color:inherit;background:none;border:0;border-bottom:3px solid transparent}
+.pa-w.ok{border-bottom-color:color-mix(in srgb,var(--good) 55%,transparent)}
+.pa-w.close{background:color-mix(in srgb,var(--info) 14%,transparent);border-bottom-color:var(--info);cursor:pointer}
+.pa-w.wrong,.pa-w.miss{background:color-mix(in srgb,var(--bad) 13%,transparent);border-bottom-color:var(--bad);cursor:pointer}
+.pa-w.miss{text-decoration:underline dotted var(--bad);text-underline-offset:4px;opacity:.85}
+button.pa-w{min-height:32px}
+.pa-heard{font-size:12.5px;color:var(--ink2)}
+.pa-heard q{color:var(--ink)}
+.pa-fix{margin:0;padding-left:20px;display:grid;gap:10px}
+.pa-fix li{font-size:13.5px;line-height:1.6}
+.pa-what{font-weight:600}
+.pa-what b{color:var(--bad)}
+.pa-tip{margin-top:2px}
+.pa-tip b{display:inline-block;margin-right:6px;padding:0 7px;border-radius:999px;font-size:11.5px;background:var(--ink);color:var(--bg)}
+.pa-tip span{color:var(--ink2)}
+.pa-slow{position:static!important;display:inline-flex!important;align-items:center;gap:6px;width:auto!important;height:auto!important;min-height:36px;margin-top:4px;padding:4px 12px!important;border-radius:999px!important;font-size:12.5px;color:var(--ink)}
+.pa-slow svg{width:18px;height:18px}
+.pa-model{padding:10px 12px;border-radius:12px;border:1.5px solid var(--good);background:var(--surface)}
+.pa-model p{font-size:17px;font-weight:600;margin:2px 0 6px}
+.pa-row{display:flex;flex-wrap:wrap;gap:8px}
+.pa-row .ghost.sm,.pa-row .go.sm{flex:1;min-width:140px;margin:0;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.pa-row svg{width:18px;height:18px}
+.pa .hint{font-size:11px}
+.pa-hab-t{margin:8px 0 10px;padding-left:20px;display:grid;gap:8px}
+.pa-hab-t li b{font-size:14.5px}
+.pa-hab-t li small{margin-left:8px;color:var(--ink2)}
+.pa-hab-t li p{font-size:13px;color:var(--ink2);line-height:1.6}
+.pa-hab-w{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.pa-hab-w button{min-height:36px;padding:4px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:14px}
+.pa-hab-w small{color:var(--bad);font-size:11px}
+</style>
+<style>
+.pron-out.pa-out .pa-what b,.pron-out.pa-out .pa-what span,.pron-out.pa-out .pa-slow span,.pron-out.pa-out .pa-tip b,.pron-out.pa-out .pa-h b,.pron-out.pa-out .pa-row *{display:inline!important}
+.pron-out.pa-out .pa-what span{color:var(--ink)}
+.pron-out.pa-out .pa-tip span{display:block;margin-top:2px}
+.pron-out.pa-out .pa-row button{display:inline-flex!important;white-space:nowrap}
+</style>

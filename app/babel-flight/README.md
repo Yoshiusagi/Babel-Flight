@@ -211,6 +211,14 @@ Only for ファースト (`cabinLv()` 3; `fcOn()`), never in the iPhone app.
   after `e3e_reg.js` (not in `ALL_IDS`, never on the map); `sceneFinish` is wrapped so a stage goes back to the route
   screen (`view 'route'`), and the whole flight lands as one lesson (`completeLesson`, mode `route`). Results per
   language on this device (`babelflight.routes`). Entry: the lounge tile; the coach can plan it (kind `route`).
+- **発音の細かい分析** (`parts/f34_pron.js` + `f34_css.html`): while flying ファースト the 発音チェック after an answer
+  shows the words heard live while speaking, then the phrase word by word (言えた / おしい / ちがって聞こえた /
+  聞こえなかった; tap a word to hear it slowly), a score, and up to three fixes: what it sounded like, which sound
+  (`PRON_TIPS`: L と R, th, V と B, F, S と SH, 語尾の子音, -ed, 語尾の s, 母音, 小さい単語, パッチム, 激音・濃音,
+  ㅓ と ㅗ, ㅡ と ㅜ, 巻き舌の rr, 二重子音) and how to say it, with a slow model. The phrase and the heard words are
+  aligned word by word (characters for Chinese and Japanese; ㅐ/ㅔ count as the same). Browser speech recognition
+  only: nothing is sent to the site, and intonation/tones are not judged. 発音のクセ (sounds and words missed most,
+  per language, `babelflight.pron`) shows in 復習 and goes to the AI coach. Other classes keep the simple check.
 - **先行公開**: `FIRST_EARLY` + `earlyOpen(id)` for features ファースト gets before everyone (empty for now).
 - Schema: `migrations/0014_first_ai.sql` (columns `coach`, `diary` of `bf_ai_usage`). `GET /api/ai/first` tells how
   many are left today.
