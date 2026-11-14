@@ -155,12 +155,22 @@ function acctFixView(){
 var ACCT_DOC={set:function(doc){return acctPush(doc.s,doc.t);}};
 function acctOk(){ACCT.state='ok';ACCT.last=Date.now();acctRefresh();}
 function acctPushNow(){if(cloud.doc!==ACCT_DOC||ACCT.pend)return;acctPush(JSON.stringify(save),save.t);}
+/* progress copied from the old site (the move): merged once into this copy like another device's,
+   then the next save tells the server it is merged (movedT). Waits while a lesson is open. */
+function acctTakeMoved(j){
+  var m=j&&j.moved;if(!m||typeof m.data!=='string'||acctUnsafe()||ACCT.pend)return false;
+  var r=acctParse(m.data,m.t);if(!r)return false;
+  save=unionSave(save,r);persistLocal();applyTheme();acctFixView();render();
+  ACCT.mvT=Math.max(ACCT.mvT||0,+m.t||0);
+  return true;
+}
 function acctPush(data,t){
   if(!ACCT.me||ACCT.pend)return Promise.resolve();
   ACCT.dirty=true;ACCT.state='sync';acctRefresh();
   var force=ACCT.force;ACCT.force=false;
-  return acctApi('PUT','/api/account/save',{data:data,t:t||0,baseRev:ACCT.rev,force:force}).then(function(j){
-    if(j.ok){ACCT.rev=j.rev;ACCT.dirty=false;ACCT.tries=0;acctOk();return;}
+  var mvT=ACCT.mvT||0;
+  return acctApi('PUT','/api/account/save',{data:data,t:t||0,baseRev:ACCT.rev,force:force,movedT:mvT}).then(function(j){
+    if(j.ok){ACCT.rev=j.rev;ACCT.dirty=false;ACCT.tries=0;if(ACCT.mvT===mvT)ACCT.mvT=0;acctOk();return;}
     if(j._s===401){acctSignedOut();return;}
     if(j._s===409&&ACCT.tries<3){
       ACCT.tries++;
@@ -183,8 +193,10 @@ function acctStartSync(otherAccount){
     if(remote){
       var fresh=!save.onboarded&&!save.t;
       acctMerge(remote,fresh||otherAccount);
-      if(sameSave(save,remote))acctOk();else acctPushNow();
-    }else if(save.onboarded||save.t>0)acctPushNow();
+    }
+    var mv=acctTakeMoved(j);
+    if(remote&&!mv&&sameSave(save,remote))acctOk();
+    else if(remote||mv||save.onboarded||save.t>0)acctPushNow();
     else acctOk();
   },function(){ACCT.state='off';acctRefresh();});
 }
@@ -198,8 +210,9 @@ function acctPull(){
       ACCT.rev=j.rev;
       var remote=acctParse(j.data,j.t);
       if(remote)acctMerge(remote,false);
-      if(remote&&sameSave(save,remote)&&!ACCT.dirty)acctOk();else acctPushNow();
-    }else if(ACCT.dirty)acctPushNow();
+      var mv=acctTakeMoved(j);
+      if(remote&&!mv&&sameSave(save,remote)&&!ACCT.dirty)acctOk();else acctPushNow();
+    }else if(acctTakeMoved(j)||ACCT.dirty)acctPushNow();
     else acctOk();
   }).catch(function(){ACCT.state='off';acctRefresh();}).then(function(){ACCT.pulling=false;});
 }

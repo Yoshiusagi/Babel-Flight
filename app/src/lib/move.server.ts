@@ -11,8 +11,10 @@
 //                                                  merges it -> { ok, table, n, next }
 // The GitHub workflow "Move data" walks every table page by page and prints only row counts.
 //
-// Safe to run again: accounts and visitors merge, a save is replaced only by a newer one (its
-// rev goes up so devices pull it), entitlements / billing / the stats password are kept when
+// Safe to run again: accounts and visitors merge, a save is copied only to an account that has none
+// here yet; every old save also waits in bf_moved_saves (the newest one), and the page merges it into
+// the account the next time the person signs in, so progress made on either site is kept.
+// Entitlements / billing / the stats password are kept when
 // already there, the reward keeps the larger count, and usage events continue after the last one copied (never twice).
 // Login sessions are not copied: everyone signs in once on the new address.
 import type { D1Database, D1PreparedStatement } from "@cloudflare/workers-types";
@@ -34,9 +36,7 @@ export const MOVE_TABLES: Record<string, Table> = {
   bf_saves: {
     key: "uid",
     cols: [["uid", "text"], ["data", "text"], ["t", "int"], ["rev", "int"], ["updated_at", "int"]],
-    merge:
-      "ON CONFLICT(uid) DO UPDATE SET data = excluded.data, t = excluded.t, rev = bf_saves.rev + 1, " +
-      "updated_at = excluded.updated_at WHERE excluded.t > bf_saves.t",
+    merge: "ON CONFLICT(uid) DO NOTHING",
   },
   bf_entitlements: {
     key: "uid",
@@ -183,6 +183,18 @@ async function handleImport(request: Request, key: string, db: D1Database): Prom
       statements.push(
         db.prepare(`INSERT INTO ${name} (${cols.join(", ")}) VALUES (${cols.map(() => "?").join(", ")}) ${t.merge}`).bind(...v),
       );
+      if (name === "bf_saves") {
+        // uid, data, t: the old copy waits for the page to merge it (a newer old copy replaces it)
+        statements.push(
+          db
+            .prepare(
+              "INSERT INTO bf_moved_saves (uid, data, t, updated_at) VALUES (?, ?, ?, ?) " +
+                "ON CONFLICT(uid) DO UPDATE SET data = excluded.data, t = excluded.t, updated_at = excluded.updated_at " +
+                "WHERE excluded.t > bf_moved_saves.t",
+            )
+            .bind(v[0], v[1], v[2], Date.now()),
+        );
+      }
     }
   }
   if (t.events && lastId) {

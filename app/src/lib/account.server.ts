@@ -11,8 +11,10 @@
 //   GET  /api/account/config    { enabled, firebase } public web config
 //   POST /api/account/session   { idToken } -> session cookie
 //   GET  /api/account/me        current account (+ ent: what it may use) or 401
-//   GET  /api/account/save      { rev, t, data }
-//   PUT  /api/account/save      { data, t, baseRev, force? } -> { rev } | 409 with the newer copy
+//   GET  /api/account/save      { rev, t, data, moved? }  moved = { data, t }: progress copied from the
+//                               old site that the page has not merged yet (see move.server.ts)
+//   PUT  /api/account/save      { data, t, baseRev, force?, movedT? } -> { rev } | 409 with the newer copy
+//                               (movedT: the page merged that old copy into data)
 //   POST /api/account/logout
 //   POST /api/account/delete    { idToken } from a sign-in made in the last 10 minutes (stops a paid plan first)
 import type { D1Database } from "@cloudflare/workers-types";
@@ -161,10 +163,21 @@ async function readSave(db: D1Database, uid: string): Promise<{ rev: number; t: 
     : { rev: 0, t: 0, data: null };
 }
 
+/** Progress copied from the old site that the page has not merged yet (null when none). */
+async function readMoved(db: D1Database, uid: string): Promise<{ data: string; t: number } | null> {
+  try {
+    const row = await db.prepare("SELECT data, t FROM bf_moved_saves WHERE uid = ? AND t > merged_t").bind(uid).first<Row>();
+    return row && typeof row.data === "string" ? { data: row.data, t: num(row.t) } : null;
+  } catch {
+    return null; // the table is missing until its migration runs
+  }
+}
+
 async function handleGetSave(request: Request, db: D1Database): Promise<Response> {
   const session = await currentSession(request, db);
   if (!session) return signedOut();
-  return json({ ok: true, ...(await readSave(db, session.uid)) });
+  const moved = await readMoved(db, session.uid);
+  return json({ ok: true, ...(await readSave(db, session.uid)), ...(moved ? { moved } : {}) });
 }
 
 async function handlePutSave(request: Request, db: D1Database): Promise<Response> {
@@ -212,6 +225,18 @@ async function handlePutSave(request: Request, db: D1Database): Promise<Response
 
   const current = await readSave(db, session.uid);
   if (changes < 1) return json({ ok: false, error: "conflict", ...current }, 409);
+  // the page has merged the old site's copy saved at movedT into what it just saved
+  const movedT = num(body?.movedT);
+  if (movedT > 0) {
+    try {
+      await db
+        .prepare("UPDATE bf_moved_saves SET merged_t = MAX(merged_t, ?) WHERE uid = ?")
+        .bind(movedT, session.uid)
+        .run();
+    } catch {
+      /* the table is missing until its migration runs */
+    }
+  }
   return json({ ok: true, rev: current.rev });
 }
 
@@ -240,6 +265,11 @@ async function handleDelete(request: Request, db: D1Database, projectId: string)
     db.prepare("DELETE FROM bf_entitlements WHERE uid = ?").bind(session.uid),
     db.prepare("DELETE FROM bf_reward WHERE uid = ?").bind(session.uid),
   ]);
+  try {
+    await db.prepare("DELETE FROM bf_moved_saves WHERE uid = ?").bind(session.uid).run();
+  } catch {
+    /* the table is missing until its migration runs */
+  }
   return withClearedCookies(json({ ok: true }));
 }
 
