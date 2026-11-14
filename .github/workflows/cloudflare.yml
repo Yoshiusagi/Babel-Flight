@@ -70,7 +70,8 @@ jobs:
         run: |
           if git fetch -q --depth=1 origin voices; then
             mkdir -p dist/client/voice
-            git archive FETCH_HEAD | tar -x -C dist/client/voice
+            # from the repository root: run in app/, git archive would take only an app/ folder of that branch
+            git -C .. archive FETCH_HEAD | tar -x -C dist/client/voice
             echo "voices: $(find dist/client/voice -name '*.mp3' | wc -l) files"
           else
             echo "::notice::No recorded voices yet; the page uses the device's voice."
