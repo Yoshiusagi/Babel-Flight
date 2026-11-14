@@ -188,9 +188,11 @@ function openIconSheet(){
   var cur=save.icon||'',anyLk=false;
   $('sheetHost').innerHTML='<div class="sheet" role="dialog" aria-label="アイコンを選ぶ"><div class="sheet-in"><h3>アイコンを選ぶ</h3><div class="icon-grid">'+
     [['','','標準(飛行機)']].concat(ICONS).map(function(x){
-      var lk=!!x[3]&&!(typeof perkHas==='function'&&perkHas(x[3]));if(lk)anyLk=true;
-      return '<button type="button" data-icon-set="'+x[0]+'" aria-pressed="'+(cur===x[0])+'" aria-label="'+x[2]+(lk?'(シルバーで解放)':'')+'"'+(lk?' class="locked" disabled':'')+'>'+avatarHTML(x[0])+(lk?'<i class="lock" aria-hidden="true">🔒</i>':'')+'</button>';}).join('')+
-    '</div>'+(anyLk?'<p class="dim hint">🔒のアイコンは、シルバーになると使えます(一度なればずっと使えます)。</p>':'')+'<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
+      var fc=x[3]==='F';if(fc&&!(typeof fcOn==='function'&&fcOn()))return '';
+      var lk=!!x[3]&&!fc&&!(typeof perkHas==='function'&&perkHas(x[3]));if(lk)anyLk=true;
+      return '<button type="button" data-icon-set="'+x[0]+'" aria-pressed="'+(cur===x[0])+'" aria-label="'+x[2]+(lk?'(シルバーで解放)':fc?'(ファースト)':'')+'"'+(lk?' class="locked" disabled':fc?' class="fc-ic"':'')+'>'+avatarHTML(x[0])+(lk?'<i class="lock" aria-hidden="true">🔒</i>':'')+'</button>';}).join('')+
+    '</div>'+(anyLk?'<p class="dim hint">🔒のアイコンは、シルバーになると使えます(一度なればずっと使えます)。</p>':'')+
+    (typeof fcOn==='function'&&fcOn()?'<p class="dim hint">金色のふちのアイコンは、ファーストクラスの間だけ使えます。</p>':'')+'<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
 }
 /* the first questions: 言語 → 学ぶ理由 → (仕事なら)職業 → レベル → 苦手なこと → 1日の目標 */
 function obSteps(){var s=['lang','why'];if(obDraft&&obDraft.why==='work')s.push('job');return s.concat(['level','weak','goal']);}

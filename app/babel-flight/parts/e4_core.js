@@ -20,9 +20,11 @@ function planeIcon(){return '<svg viewBox="-20 -14 36 28" aria-hidden="true"><pa
 var ICONS=[['pilot','🧑‍✈️','パイロット'],['globe','🌏','地球'],['bag','🧳','スーツケース'],['map','🗺️','地図'],['music','🎧','音楽'],
   ['book','📚','本'],['sakura','🌸','さくら'],['bike','🚲','自転車'],['penguin','🐧','ペンギン'],['fox','🦊','キツネ'],['star','⭐','星'],
   /* silver status perk (kept once unlocked) */
-  ['takeoff','🛫','離陸',1],['landing','🛬','着陸',1],['smallplane','🛩️','小型機',1],['heli','🚁','ヘリコプター',1],['compass','🧭','コンパス',1],['rocket','🚀','ロケット',1]];
+  ['takeoff','🛫','離陸',1],['landing','🛬','着陸',1],['smallplane','🛩️','小型機',1],['heli','🚁','ヘリコプター',1],['compass','🧭','コンパス',1],['rocket','🚀','ロケット',1],
+  /* ファーストクラスの間だけ ('F', f32_first.js) */
+  ['bell','🛎️','コンシェルジュ','F'],['seat','💺','1Aシート','F'],['key','🗝️','ラウンジの鍵','F'],['moon','🌙','夜間飛行','F'],['tea','🫖','ティータイム','F'],['crown','👑','クラウン','F']];
 var ICON_MAP={};ICONS.forEach(function(x){ICON_MAP[x[0]]=x;});
-function avatarHTML(id){var ic=ICON_MAP[id===undefined?save.icon:id];return ic?'<span class="pfp" role="img" aria-label="'+ic[2]+'">'+ic[1]+'</span>':planeIcon();}
+function avatarHTML(id){var ic=ICON_MAP[id===undefined?save.icon:id];if(ic&&ic[3]==='F'&&id===undefined&&!(typeof fcOn==='function'&&fcOn()))ic=null;return ic?'<span class="pfp" role="img" aria-label="'+ic[2]+'">'+ic[1]+'</span>':planeIcon();}
 function starIcon(on){return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6L2.5 9.4l6.6-.8z" fill="'+(on?'var(--signal)':'none')+'" stroke="'+(on?'#b88a00':'var(--line)')+'" stroke-width="1.6" stroke-linejoin="round"/></svg>';}
 function closeIcon(){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>';}
 function speakerIcon(){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4zM15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>';}

@@ -16,6 +16,10 @@
 //   POST /api/ai/drill    { lang, variant?, items[{t,jp}], ui? } -> { qs[{t,jp,wrong[3]}], left }
 //                         (ui: the display language; feedback_ja and the jp translations are then written in it,
 //                         and the items' jp come translated into it)
+//   GET  /api/ai/first    { first, coach?, diary? }  (ファーストクラスのAI: how many calls are left today)
+//   POST /api/ai/coach    { lang, week, stats, ui? } -> { plan{focus, why, days[7]{task, kind, min}, tip}, left }
+//   POST /api/ai/diary    { lang, text, variant?, ui? } -> { corrected, natural, fixes[{from,to,why}], good, next, meaning, left }
+//                         (both ファースト only: aiTier "all" / "family"; their own daily counts, 0014_first_ai.sql)
 import type { D1Database, D1PreparedStatement } from "@cloudflare/workers-types";
 
 import { accountUid } from "./account.server";
@@ -623,6 +627,216 @@ async function handleDrill(request: Request, db: D1Database, key: string): Promi
   return json({ ok: true, qs, left: leftOf(used, tier) });
 }
 
+/* ---------- ファーストクラス: 専属AIコーチ (week plan) and AI添削つき日記 ---------- */
+// Only accounts that fly ファースト get these (the test account, the family account, the hidden reward, and the
+// paid ファースト once billing opens): aiTier() is "all" or "family" for them.
+// Each has its own daily count (columns coach / diary of bf_ai_usage, migrations/0014_first_ai.sql).
+
+const COACH_PER_DAY = 3; // the Monday plan + rebuilding it twice
+const DIARY_PER_DAY = 2; // today's entry + one rewrite
+const COACH_KINDS = ["lesson", "review", "weak", "exam", "role", "free", "diary", "rest"] as const;
+
+type FirstKind = "coach" | "diary";
+type CoachDay = { task: string; kind: string; min: number };
+type CoachPlan = { focus: string; why: string; days: CoachDay[]; tip: string };
+type DiaryFix = { from: string; to: string; why: string };
+type DiaryOut = { corrected: string; natural: string; fixes: DiaryFix[]; good: string; next: string; meaning: string };
+
+async function firstUsed(db: D1Database, uid: string, day: string, col: FirstKind): Promise<number> {
+  const r = await db.prepare(`SELECT ${col} AS n FROM bf_ai_usage WHERE uid = ? AND day = ?`).bind(uid, day).first<Row>();
+  return num(r?.n);
+}
+
+/** Counts one coach / diary call if the account is under its limit; returns the new count or null. */
+async function reserveFirst(db: D1Database, uid: string, day: string, col: FirstKind, max: number): Promise<number | null> {
+  const r = await db
+    .prepare(
+      `INSERT INTO bf_ai_usage (uid, day, ${col}) VALUES (?, ?, 1) ON CONFLICT(uid, day) DO UPDATE ` +
+        `SET ${col} = bf_ai_usage.${col} + 1 WHERE bf_ai_usage.${col} < ? RETURNING ${col} AS n`,
+    )
+    .bind(uid, day, max)
+    .first<Row>();
+  return r ? num(r.n) : null;
+}
+
+async function refundFirst(db: D1Database, uid: string, day: string, col: FirstKind): Promise<void> {
+  await db.prepare(`UPDATE bf_ai_usage SET ${col} = MAX(${col} - 1, 0) WHERE uid = ? AND day = ?`).bind(uid, day).run();
+}
+
+function jsonPart(raw: string): Row | null {
+  const a = raw.indexOf("{");
+  const b = raw.lastIndexOf("}");
+  if (a < 0 || b <= a) return null;
+  try {
+    const v = JSON.parse(raw.slice(a, b + 1)) as unknown;
+    return v && typeof v === "object" ? (v as Row) : null;
+  } catch {
+    return null;
+  }
+}
+
+function cleanCoach(raw: string): CoachPlan | null {
+  const d = jsonPart(raw);
+  if (!d) return null;
+  const focus = text(d.focus, 80, true);
+  const why = text(d.why, 240) ?? "";
+  const tip = text(d.tip, 240) ?? "";
+  if (focus === null || !Array.isArray(d.days)) return null;
+  const days: CoachDay[] = [];
+  for (const x of d.days) {
+    if (days.length >= 7 || !x || typeof x !== "object") continue;
+    const r = x as Row;
+    const task = text(r.task, 90, true);
+    const kind = typeof r.kind === "string" && (COACH_KINDS as readonly string[]).includes(r.kind) ? r.kind : "free";
+    const min = Math.max(0, Math.min(60, Math.round(num(r.min))));
+    if (task !== null) days.push({ task, kind, min: kind === "rest" ? 0 : min || 10 });
+  }
+  return days.length === 7 ? { focus, why, days, tip } : null;
+}
+
+function cleanDiary(raw: string): DiaryOut | null {
+  const d = jsonPart(raw);
+  if (!d) return null;
+  const corrected = text(d.corrected, 1200, true);
+  const natural = text(d.natural, 1200) ?? "";
+  const good = text(d.good, 300) ?? "";
+  const next = text(d.next, 300) ?? "";
+  const meaning = text(d.meaning, 1200) ?? "";
+  if (corrected === null) return null;
+  const fixes: DiaryFix[] = [];
+  for (const x of Array.isArray(d.fixes) ? d.fixes : []) {
+    if (fixes.length >= 6 || !x || typeof x !== "object") continue;
+    const r = x as Row;
+    const from = text(r.from, 200, true);
+    const to = text(r.to, 200, true);
+    const why = text(r.why, 300, true);
+    if (from !== null && to !== null && why !== null && from !== to) fixes.push({ from, to, why });
+  }
+  return { corrected, natural, fixes, good, next, meaning };
+}
+
+async function firstCall(key: string, system: string, prompt: string, maxTokens: number): Promise<string | null> {
+  try {
+    const res = await callClaude(key, { max_tokens: maxTokens, system, messages: [{ role: "user", content: prompt }] });
+    if (!res.ok) {
+      console.error("ai first upstream failed:", res.status);
+      return null;
+    }
+    const data = (await res.json()) as { content?: { type?: string; text?: string }[] };
+    return (data.content ?? []).map((c) => (c.type === "text" ? c.text ?? "" : "")).join("");
+  } catch {
+    console.error("ai first upstream failed: network");
+    return null;
+  }
+}
+
+/** Opens a ファースト AI call: signed in, ファースト, under the site and account limits. */
+async function firstOpen(
+  request: Request,
+  db: D1Database,
+  col: FirstKind,
+  max: number,
+): Promise<{ uid: string; day: string; tier: AiTier; used: number } | Response> {
+  const uid = await accountUid(request, db);
+  if (!uid) return json({ ok: false, error: "signin" }, 401);
+  const tier = await aiTier(db, uid);
+  if (tier === "free") return json({ ok: false, error: "class" }, 403);
+  const day = jstDay(Date.now());
+  const all = tier === "all";
+  if (!all && (await siteBusy(db, day))) return json({ ok: false, error: "busy" }, 429);
+  const used = await reserveFirst(db, uid, day, col, all ? NO_LIMIT : max);
+  if (used === null) return json({ ok: false, error: "quota", left: 0 }, 429);
+  return { uid, day, tier, used };
+}
+
+function firstLeft(tier: AiTier, used: number, max: number): number {
+  return tier === "all" ? UNLIMITED : Math.max(0, max - used);
+}
+
+async function handleCoach(request: Request, db: D1Database, key: string): Promise<Response> {
+  const body = await readJsonBody(request, 6000);
+  const lang = typeof body?.lang === "string" ? body.lang : "";
+  const ui = uiOf(body?.ui);
+  const stats = text(body?.stats, 2500, true);
+  const week = typeof body?.week === "string" && /^\d{4}-\d\d-\d\d$/.test(body.week) ? body.week : "";
+  if (!LANG_EN[lang] || stats === null || !week) return json({ ok: false, error: "bad_request" }, 400);
+  const open = await firstOpen(request, db, "coach", COACH_PER_DAY);
+  if (open instanceof Response) return open;
+  const out = UI_TRANSL[ui] ?? "Japanese";
+  const learner = ui === "ja" ? "a Japanese junior-high or high-school student" : `${UI_LEARNER[ui]} (a teenager or older)`;
+  const system =
+    `You are the personal AI coach ("専属AIコーチ") of the First-class learners of Babel Flight, a flight-themed ` +
+    `language-learning app. The learner is ${learner} learning ${LANG_EN[lang]}. You plan one week of study from the ` +
+    "learner's own data: realistic, concrete and kind, never preachy. Prefer short daily sessions over long ones and keep one " +
+    "rest or light day. Base every choice on the data and say why in one sentence. " +
+    (ui === "ja" ? SAFETY_JA : SAFETY_UI) +
+    " Reply with JSON only.";
+  const prompt =
+    `The week starts on Monday ${week}. The learner's data:\n${stats}\n\n` +
+    `Write the plan in ${out}. Each day has ONE task the learner can do in the app, with its kind:\n` +
+    "lesson = the next lessons on the route map, review = the spaced review (忘れかけた頃の復習), weak = the weak-points course, " +
+    "exam = the exam course they target, role = AI role-play conversation, free = free practice, diary = write the AI diary in " +
+    "the language, rest = a rest or very light day.\n" +
+    "Reply with ONLY this JSON (7 days, Monday first; task at most 40 characters; min = minutes, 5-30, 0 for rest): " +
+    '{"focus":"this week\'s theme, at most 24 characters","why":"one sentence: why this theme, from the data",' +
+    '"days":[{"task":"...","kind":"review","min":10}],"tip":"one short tip for the week"}';
+  const raw = await firstCall(key, system, prompt, 1500);
+  const plan = raw ? cleanCoach(raw) : null;
+  if (!plan) {
+    await refundFirst(db, open.uid, open.day, "coach");
+    return json({ ok: false, error: raw ? "invalid_json" : "upstream" }, 502);
+  }
+  return json({ ok: true, plan, left: firstLeft(open.tier, open.used, COACH_PER_DAY) });
+}
+
+async function handleDiary(request: Request, db: D1Database, key: string): Promise<Response> {
+  const body = await readJsonBody(request, 6000);
+  const lang = typeof body?.lang === "string" ? body.lang : "";
+  const ui = uiOf(body?.ui);
+  const entry = text(body?.text, 600, true);
+  const variant = body?.variant === "uk" ? "British" : "American";
+  if (!LANG_EN[lang] || entry === null) return json({ ok: false, error: "bad_request" }, 400);
+  const open = await firstOpen(request, db, "diary", DIARY_PER_DAY);
+  if (open instanceof Response) return open;
+  const out = UI_TRANSL[ui] ?? "Japanese";
+  const language = lang === "en" ? `${variant} English` : LANG_EN[lang];
+  const learner = ui === "ja" ? "a Japanese junior-high or high-school student" : `${UI_LEARNER[ui]} (a teenager or older)`;
+  const system =
+    `You correct the daily diary of ${learner} who is learning ${language} in Babel Flight, a language-learning app. ` +
+    "Keep the learner's own meaning and voice; fix only what is wrong or unnatural, and explain WHY each fix is needed so the " +
+    "learner understands the rule, not just the answer. Be warm and specific. If the diary mentions something private " +
+    "(full name, address, school name, phone number), do not repeat it: write [名前] or [場所] instead. " +
+    (ui === "ja" ? SAFETY_JA : SAFETY_UI) +
+    " If the text is not a diary entry, still answer in the JSON, with a short kind note in good. Reply with JSON only.";
+  const prompt =
+    `Today's diary (it may mix in some ${out} where the learner did not know the word; translate those parts into ${language}):\n` +
+    `"""${entry}"""\n\n` +
+    `Reply with ONLY this JSON. corrected and natural are in ${language}; every explanation is in easy ${out}:\n` +
+    '{"corrected":"the diary with only the needed corrections",' +
+    '"natural":"the same diary as a native speaker of that age would write it (may equal corrected)",' +
+    '"fixes":[{"from":"the learner\'s words","to":"the corrected words","why":"the reason in one or two sentences"}],' +
+    `"good":"one thing the learner did well","next":"one expression to try in tomorrow's diary, with its meaning",` +
+    `"meaning":"the corrected diary translated into ${out}"}\n` +
+    "At most 6 fixes, the most important first. If there is nothing to fix, fixes is [] and corrected is the diary as it is.";
+  const raw = await firstCall(key, system, prompt, 2000);
+  const res = raw ? cleanDiary(raw) : null;
+  if (!res) {
+    await refundFirst(db, open.uid, open.day, "diary");
+    return json({ ok: false, error: raw ? "invalid_json" : "upstream" }, 502);
+  }
+  return json({ ok: true, ...res, left: firstLeft(open.tier, open.used, DIARY_PER_DAY) });
+}
+
+async function handleFirstStatus(request: Request, db: D1Database): Promise<Response> {
+  const uid = await accountUid(request, db);
+  if (!uid) return json({ ok: false, error: "signin" }, 401);
+  const tier = await aiTier(db, uid);
+  if (tier === "free") return json({ ok: true, first: false });
+  const day = jstDay(Date.now());
+  const [c, d] = await Promise.all([firstUsed(db, uid, day, "coach"), firstUsed(db, uid, day, "diary")]);
+  return json({ ok: true, first: true, coach: firstLeft(tier, c, COACH_PER_DAY), diary: firstLeft(tier, d, DIARY_PER_DAY) });
+}
+
 /* ---------- dispatcher ---------- */
 
 export async function handleAi(request: Request, url: URL): Promise<Response | null> {
@@ -634,12 +848,15 @@ export async function handleAi(request: Request, url: URL): Promise<Response | n
   if (!db) return json({ ok: false, error: "no_db" }, 503);
   try {
     if (route === "status" && request.method === "GET") return await handleStatus(request, db, enabled);
+    if (route === "first" && request.method === "GET") return enabled ? await handleFirstStatus(request, db) : json({ ok: true, first: false });
     if (request.method !== "POST") return json({ ok: false, error: "method" }, 405, { allow: "GET, POST" });
     if (!isSameOrigin(request, url)) return json({ ok: false }, 403);
     if (!enabled || !key) return json({ ok: false, error: "disabled" }, 503);
     if (route === "ask") return await handleAsk(request, db, key);
     if (route === "atc") return await handleAtc(request, db, key);
     if (route === "drill") return await handleDrill(request, db, key);
+    if (route === "coach") return await handleCoach(request, db, key);
+    if (route === "diary") return await handleDiary(request, db, key);
     return json({ ok: false, error: "not_found" }, 404);
   } catch (error) {
     console.error("ai error:", error instanceof Error ? error.message : "unknown");

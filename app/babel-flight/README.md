@@ -182,6 +182,30 @@ that had no translation is counted there.
   screen (`save.seen`); new users never see it; 記録 → このアプリについて keeps all of them. Items marked as paid plans
   are never shown in the iPhone app. Add a new entry at the top of `NOTAM` with each update worth announcing.
 
+## ファーストクラス: FIRST CLASS LOUNGE — `parts/f32_first.js` + `f32_css.html`
+
+Only for ファースト (`cabinLv()` 3; `fcOn()`), never in the iPhone app.
+- **Lounge**: a card under the mode switch on the home screen (its own page, the 2nd, in the スイート design; the
+  「All flights」 button then jumps to page 5): greeting, seat 1A, the chosen title, today's task of the coach's plan,
+  and tiles for AI日記 / AIコーチ / 称号. 復習 gets the coach card above the 弱点レポート.
+- **専属AIコーチ**: `POST /api/ai/coach` (`src/lib/ai.server.ts`, ファースト only, 3 a day) makes a plan for the week
+  (Monday to Sunday: focus, why, 7 days of `{task, kind, min}`, tip) from `coachStats()` (level, reason, weak points,
+  job, exam goal, 14-day answers and accuracy, kinds, weak phrases, due count, the next lesson, last week's result).
+  The first time the lounge or 復習 shows in a new week it is made by itself (once per session if it fails);
+  「プランを立て直す」 makes it again. Each day's task has a start button (`coachDo`: next lesson, review, weak, free,
+  exam mode, role-play, diary) and a check; plans and checks are kept per language on this device (`babelflight.coach`).
+- **AI添削つき日記**: `POST /api/ai/diary` (2 a day: the entry and one rewrite) returns the corrected diary, a native
+  version, up to 6 fixes with the reason for each, one good point, an expression for tomorrow and the meaning. Entries
+  (90 at most) stay on this device (`babelflight.diary`). Reminder (`babelflight.diarySet`, default 21:00, the learner
+  chooses): after that time the AI日記 tile asks 「今日は何があった？」; with notifications allowed, a notification is
+  shown at that time while the page (or the installed app) is open. Notifications to a closed site need Web Push
+  (not built yet).
+- **称号** (`FT_TITLES`, shown on the ID card and in the lounge) and six first-class icons (`'F'` in `ICONS`,
+  `e4_core.js`): only while flying ファースト; a first-class icon falls back to the plane otherwise.
+- **先行公開**: `FIRST_EARLY` + `earlyOpen(id)` for features ファースト gets before everyone (empty for now).
+- Schema: `migrations/0014_first_ai.sql` (columns `coach`, `diary` of `bf_ai_usage`). `GET /api/ai/first` tells how
+  many are left today.
+
 ## Usage counting
 
 `parts/f12_track.js` (standalone site only, never in the Claude version) sends an anonymous
