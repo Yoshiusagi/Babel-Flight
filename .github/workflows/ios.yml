@@ -107,10 +107,17 @@ jobs:
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$PW" "$KC" > /dev/null
           security list-keychains -d user -s "$KC" $(security list-keychains -d user | tr -d '"')
           security find-identity -v -p codesigning "$KC"
-          for d in "$HOME/Library/MobileDevice/Provisioning Profiles" "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles"; do
-            mkdir -p "$d"; cp "$S/profile.mobileprovision" "$d/$SIGN_PROFILE_UUID.mobileprovision"
-          done
           rm -f "$S/key.pem" "$S/dist.p12"
+          # (values written to $GITHUB_ENV only reach later steps, so read the UUID from the profile itself)
+          security cms -D -i "$S/profile.mobileprovision" > "$S/profile.plist"
+          UUID=$(plutil -extract UUID raw -o - "$S/profile.plist")
+          for d in "$HOME/Library/MobileDevice/Provisioning Profiles" "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles"; do
+            mkdir -p "$d"; cp "$S/profile.mobileprovision" "$d/$UUID.mobileprovision"
+          done
+          for k in Name UUID TeamIdentifier.0 Entitlements.application-identifier Entitlements.com\.apple\.developer\.applesignin ExpirationDate; do
+            printf '%s: ' "$k"; plutil -extract "$k" raw -o - "$S/profile.plist" 2>/dev/null || plutil -extract "$k" json -o - "$S/profile.plist" 2>/dev/null || echo "(none)"
+          done
+          ls -la "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles"
 
       - name: Create the Xcode project
         working-directory: ios-app
@@ -189,7 +196,7 @@ jobs:
             <key>teamID</key><string>$TEAM</string>
             <key>signingStyle</key><string>manual</string>
             <key>signingCertificate</key><string>Apple Distribution</string>
-            <key>provisioningProfiles</key><dict><key>$BUNDLE</key><string>$SIGN_PROFILE_NAME</string></dict>
+            <key>provisioningProfiles</key><dict><key>$BUNDLE</key><string>$SIGN_PROFILE_UUID</string></dict>
             <key>uploadSymbols</key><true/>
             <key>manageAppVersionAndBuildNumber</key><false/>
           </dict></plist>

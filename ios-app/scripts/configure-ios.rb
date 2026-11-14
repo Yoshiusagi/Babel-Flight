@@ -115,7 +115,7 @@ target.build_configurations.each do |c|
     s["CODE_SIGN_STYLE"] = "Manual"
     s["CODE_SIGN_IDENTITY"] = "Apple Distribution"
     s["CODE_SIGN_IDENTITY[sdk=iphoneos*]"] = "Apple Distribution"
-    s["PROVISIONING_PROFILE_SPECIFIER"] = profile
+    s["PROVISIONING_PROFILE_SPECIFIER"] = ENV["SIGN_PROFILE_UUID"].to_s.empty? ? profile : ENV["SIGN_PROFILE_UUID"]
   end
 end
 project.build_configurations.each { |c| c.build_settings["IPHONEOS_DEPLOYMENT_TARGET"] = "15.0" }
