@@ -1,6 +1,6 @@
-/* ================= ドイツ語 — starter course =================
-   Travel phrases here; daily phrases, scenes and the route map in e3g_de.js. Readings in katakana. */
-LANGS.de={name:'ドイツ語',native:'Deutsch',city:'フランクフルト',cityEn:'FRANKFURT',code:'FRA',tts:'de-DE',km:9350,letter:'G',hasYomi:true,starter:true,units:[
+/* ================= ドイツ語 =================
+   Travel phrases here; daily phrases, scenes and the route map in e3g_de.js; the 職業・留学 units in the PJ() calls (d1–d8, e3a). Readings in katakana. */
+LANGS.de={name:'ドイツ語',native:'Deutsch',city:'フランクフルト',cityEn:'FRANKFURT',code:'FRA',tts:'de-DE',km:9350,letter:'G',hasYomi:true,units:[
   U("checkin",[
    ["こんにちは", "Guten Tag.", "グーテン ターク", "昼間のていねいなあいさつ。南ドイツでは「Grüß Gott」もよく聞きます。"],
    ["チェックインしたいのですが", "Ich möchte einchecken.", "イッヒ メヒテ アインチェッケン", "「Ich möchte〜」=〜したいのですが(ていねい)。"],
