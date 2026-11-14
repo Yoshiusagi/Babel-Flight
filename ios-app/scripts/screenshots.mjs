@@ -42,7 +42,7 @@ const ctx = await browser.newContext({
 });
 await ctx.addInitScript(NATIVE);
 // the app's server isn't needed for screenshots
-await ctx.route("https://babel-flight.higgsfield.app/**", (r) =>
+await ctx.route("https://babelflight.com/**", (r) =>
   r.request().url().endsWith("/api/account/config") ? r.fulfill({ json: { enabled: false } }) : r.fulfill({ status: 503, json: { ok: false } }),
 );
 const page = await ctx.newPage();

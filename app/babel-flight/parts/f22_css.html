@@ -11,4 +11,7 @@
 .move-sheet h3{color:var(--ink);margin-top:4px}
 .move-sum{font-size:15px;margin-top:8px}
 .move-sheet .ghost{display:block;width:100%;margin-top:8px}
+/* the Higgsfield badge stays visible above the note */
+body:has(.move-note) #hf-watermark{z-index:2147483647 !important}
+body:has(#hf-watermark) .move-note{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
 </style>

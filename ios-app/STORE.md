@@ -10,8 +10,8 @@ App Store Connect の各欄にそのまま貼れるようにしてあります�
 | サブタイトル(30文字まで) | フライト気分で学ぶ4か国語 |
 | カテゴリ | プライマリ: 教育 / セカンダリ: 旅行 |
 | 価格 | 無料 |
-| プライバシーポリシーURL | https://babel-flight.higgsfield.app/privacy |
-| マーケティングURL | https://babel-flight.higgsfield.app |
+| プライバシーポリシーURL | https://babelflight.com/privacy |
+| マーケティングURL | https://babelflight.com |
 | サポートURL | **(決める)** 連絡先がわかるページが必要です |
 | 著作権 | © 2026 Yoshinari Toi |
 | 配信地域 | まずは**日本のみ**がおすすめ(EUに出すと「トレーダー情報」として住所・電話番号の公開を求められることがあるため) |

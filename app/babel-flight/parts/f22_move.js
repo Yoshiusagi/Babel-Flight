@@ -1,9 +1,10 @@
 /* ================= MOVING TO A NEW ADDRESS =================
-   At the move, BF_MOVED_TO (a0_env.js) is set to the new address. The old Higgsfield address then
-   shows only a note with a button to the new one. The button carries this browser's progress in the
+   At the move, BF_MOVED_TO (a0_env.js) is set to the new address. The old addresses (Higgsfield and
+   *.workers.dev) then show only a note with a button to the new one. The button carries this browser's progress in the
    link's #fragment (the part after # is never sent to any server), and the new address offers to add
    it to the progress there with unionSave, so nothing from either side is lost. Accounts' progress
-   is copied server to server (lib/move.server.ts): signing in again on the new address brings it back. */
+   is copied server to server (lib/move.server.ts, .github/workflows/move-auto.yml): signing in on the new address
+   brings it back, merged with anything already done there. */
 var MOVE_TAG='#bfmove=',MOVE_INC=null;
 function moveB64(bytes){var s='';for(var i=0;i<bytes.length;i+=8192)s+=String.fromCharCode.apply(null,bytes.subarray(i,i+8192));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
 function moveUnB64(t){t=t.replace(/-/g,'+').replace(/_/g,'/');while(t.length%4)t+='=';var s=atob(t),b=new Uint8Array(s.length);for(var i=0;i<s.length;i++)b[i]=s.charCodeAt(i);return b;}
@@ -19,7 +20,9 @@ function moveUnpack(t){
   }).then(function(b){return JSON.parse(new TextDecoder().decode(b));});
 }
 function moveHasProgress(s){return !!(s&&(s.flights>0||s.miles>0));}
-function moveOldSite(){try{return !!BF_MOVED_TO&&!BF_APP&&/(^|\.)higgsfield\.app$/.test(location.hostname)&&location.origin!==BF_MOVED_TO.replace(/\/+$/,'');}catch(e){return false;}}
+/* the old addresses: Higgsfield and the Worker's own *.workers.dev address (the same Worker now answers at babelflight.com) */
+var MOVE_OLD_HOSTS=/(^|\.)higgsfield\.app$|\.workers\.dev$/;
+function moveOldSite(){try{return !!BF_MOVED_TO&&!BF_APP&&!window.claude&&MOVE_OLD_HOSTS.test(location.hostname)&&location.origin!==BF_MOVED_TO.replace(/\/+$/,'');}catch(e){return false;}}
 
 /* ---- the old address: a note instead of the app ---- */
 function moveNoteShow(){
@@ -33,7 +36,7 @@ function moveNoteShow(){
     '<a class="go" id="moveGo" href="'+esc(to)+'/">新しいサイトへ</a>'+
     '<ul class="move-list">'+
       (carry?'<li>この端末の記録(マイル・レッスン)も、ボタンから一緒に持っていけます。</li>':'')+
-      '<li>ログインしていた人は、新しいサイトでもう一度ログインすると記録が戻ります。</li>'+
+      '<li>ログインしていた人は、新しいサイトで同じアカウントにログインすると、こちらの記録と合わさります。</li>'+
       '<li>ホーム画面に追加していた人は、新しいサイトを追加し直してね。</li>'+
     '</ul></div>';
   document.body.appendChild(el);

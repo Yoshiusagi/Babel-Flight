@@ -1,8 +1,8 @@
 /* ================= WHERE THE PAGE RUNS =================
-   The same page runs on the website (babel-flight.higgsfield.app), inside Claude, and inside the
+   The same page runs on the website (babelflight.com), inside Claude, and inside the
    iPhone app (Capacitor). In the app the page is loaded from the app bundle, so the server lives at
    another address: API calls go to BF_API and sign in with a bearer token instead of a cookie. */
-var BF_SITE='https://babel-flight.higgsfield.app';
+var BF_SITE='https://babelflight.com';
 /* the website's own addresses: accounts, usage counting, install and share links run only there.
    The Higgsfield address, the owner's Cloudflare account (*.workers.dev) and the own domain babelflight.com
    (the same Cloudflare Worker and database as workers.dev). */
@@ -10,9 +10,9 @@ var BF_HOSTS=/(^|\.)higgsfield\.(app|ai)$|\.workers\.dev$|^(www\.)?babelflight\.
 /* one address for the own domain: www.babelflight.com opens babelflight.com (the progress on this device is kept
    per address, so two addresses would split it) */
 try{if(location.hostname==='www.babelflight.com'&&!window.claude)location.replace('https://babelflight.com'+location.pathname+location.search+location.hash);}catch(e){}
-/* set at the move to the new address (e.g. 'https://babel-flight.app'): the old Higgsfield address then only
-   shows a note with a link there (f22_move.js) */
-var BF_MOVED_TO='';
+/* the move to the own domain (2026-11): the old addresses (babel-flight.higgsfield.app and *.workers.dev) only
+   show a note with a link to babelflight.com that carries this device's progress (f22_move.js) */
+var BF_MOVED_TO='https://babelflight.com';
 function bfOnSite(){try{return location.protocol==='https:'&&BF_HOSTS.test(location.hostname)&&!window.claude;}catch(e){return false;}}
 var BF_APP=false;
 try{BF_APP=!!(window.Capacitor&&typeof window.Capacitor.isNativePlatform==='function'&&window.Capacitor.isNativePlatform());}catch(e){}

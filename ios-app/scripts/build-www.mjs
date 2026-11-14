@@ -12,7 +12,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..");
 const repo = join(root, "..");
 const www = join(root, "www");
-const SITE = "https://babel-flight.higgsfield.app";
+const SITE = "https://babelflight.com";
 // iOS Safari's user agent makes Google Fonts answer with woff2 split by unicode-range
 const UA =
   "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1";
