@@ -105,10 +105,10 @@ However, using these apps can cause trouble. Sometimes an item is in worse condi
          'model': 'Many people now use smartphone apps to sell their used items easily. Sellers can earn money, buyers can get things cheaply, and the apps may reduce waste. However, items are sometimes worse than described, causing arguments, and packing and sending items can be stressful for sellers.',
          'checks': ['第1段落(不要な物をアプリで簡単に売れる)の内容が入っている', '第2段落の利点(お金になる・安く買える・ごみが減る)が入っている', '第3段落の問題点(説明と状態がちがうトラブル・発送の手間)が入っている', '本文の表現を言いかえて短くまとめている(However などで対比)', '語数が45〜55語になっている']},
         {'type': 'opinion',
-         'prompt': '以下のTOPICについて、あなたの意見とその理由を2つ書きなさい。\nPOINTSは理由を書く際の参考となる観点を示したものです。ただし、これら以外の観点から理由を書いてもかまいません。\n\nTOPIC\nSome people say that the government should spend more money on space exploration. Do you agree with this opinion?\n\nPOINTS\n・Science and technology\n・Cost\n・The future',
+         'prompt': '以下のTOPICについて、あなたの意見とその理由を2つ書きなさい。\nPOINTSは理由を書く際の参考となる観点を示したものです。ただし、これら以外の観点から理由を書いてもかまいません。\n\nTOPIC\nSome people say that the government should spend more money to preserve historic buildings. Do you agree with this opinion?\n\nPOINTS\n・Culture\n・Cost\n・Tourism',
          'rules': ['語数の目安は80語〜100語です。', '理由は2つ書きましょう。', 'TOPICに示された問いに答えていない場合や、内容がTOPICからずれている場合は、0点と採点されることがあります。'],
-         'model': 'I agree that the government should spend more money on space exploration. I have two reasons. First, space research leads to new technology that improves our daily lives. For example, satellites help us forecast the weather and use GPS on our smartphones. Second, space exploration inspires young people to study science and engineering. When children see astronauts working in space, they may dream of becoming scientists themselves. For these reasons, I believe investing in space exploration is worthwhile for the future.',
-         'checks': ['最初に賛成か反対かをはっきり書いている', '理由を2つ書き、それぞれに具体的な説明がある', 'POINTSの観点(科学技術・将来など)を使っている', '最後に結論をもう一度書いている', '語数が80〜100語になっている']},
+         'model': 'I agree that the government should spend more money to preserve historic buildings. I have two reasons. First, historic buildings are an important part of our culture. They show how people lived in the past, and once they are destroyed, they can never be replaced. Second, they attract many tourists from Japan and abroad. Visitors spend money at local hotels, restaurants, and shops, so protecting these buildings also helps the local economy. For these reasons, I believe that spending money on historic buildings is a good investment for the future.',
+         'checks': ['最初に賛成か反対かをはっきり書いている', '理由を2つ書き、それぞれに具体的な説明がある', 'POINTSの観点(文化・観光など)を使っている', '最後に結論をもう一度書いている', '語数が80〜100語になっている']},
     ],
     'L': [
         {'type': 'dlg', 'items': [
