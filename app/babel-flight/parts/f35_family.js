@@ -12,6 +12,8 @@ var FAM_PEND='babelflight.famCode';
 function famCode(v){var c=String(v||'').toUpperCase().replace(/[^A-Z0-9]/g,'');return /^[A-HJ-NP-Z2-9]{8}$/.test(c)?c:'';}
 function famLink(c){return location.origin+'/?family='+c;}
 function famShared(){return !!(ENT&&ENT.fam);}
+/* the family account (the owner's brother, plan 'family' on the server): ファースト like the test account, without the switcher */
+function famAcct(){return !!(ENT&&ENT.plan==='family');}
 function famErr(e){
   return ({signin:'ログインすると使えます。',class:'家族シェアは、自分でファーストクラスに乗っている人だけが使えます。',member:'家族のファーストを共有中なので、さらに分けることはできません。',
     full:'家族はもう2人います。',codes:'使っていない招待コードが3つあります。先にそれを使うか、取り消してね。',code:'このコードは使えません(まちがい・使用済み・期限切れのどれか)。',
@@ -130,24 +132,25 @@ function famSend(code,btn){
 (function(){
   var es=entSet;
   entSet=function(e){
-    var before=ENT&&ENT.fam||'';
+    var before=(ENT&&ENT.fam||'')+'|'+(ENT&&ENT.plan||'');
     var r=es.apply(this,arguments);
     ENT.fam=e&&typeof e.fam==='string'?e.fam.slice(0,24):'';
-    if(ENT.fam!==before){applyCabin();if(view!=='flight'&&view!=='atc'&&view!=='scene'&&view!=='route')render();}
+    if(ENT.fam+'|'+ENT.plan!==before){applyCabin();if(view!=='flight'&&view!=='atc'&&view!=='scene'&&view!=='route')render();}
     if(ACCT&&ACCT.me){var pc=null;try{pc=sessionStorage.getItem(FAM_PEND);}catch(x){}
       if(pc){try{sessionStorage.removeItem(FAM_PEND);}catch(x){}setTimeout(function(){if(!famShared())famPeek(pc);},400);}}
     else FAM.data=null;
     return r;
   };
   var pl=cabinPlanLv;
-  cabinPlanLv=function(){return famShared()?3:pl.apply(this,arguments);};
+  cabinPlanLv=function(){return famShared()||famAcct()?3:pl.apply(this,arguments);};
   /* 記録: the class card says where ファースト comes from */
   var cc=cabinCardHTML;
   cabinCardHTML=function(){
-    if(cabinLv()<0||cabinTester()||rewardUntil()||!famShared())return cc.apply(this,arguments);
+    if(cabinLv()<0||cabinTester()||(!famAcct()&&(rewardUntil()||!famShared())))return cc.apply(this,arguments);
+    var acct=famAcct();
     return '<section class="card cabin-card eco reward"><div class="card-h"><h2 class="jh">搭乗クラス</h2><span class="lbl">'+CABINS[3][2]+'</span></div>'+
-      '<div class="cab-now"><b>'+CABINS[3][1]+'</b><small><span>👨‍👩‍👧 家族シェア</span> ・ <span translate="no">'+esc(ENT.fam)+'</span></small></div>'+cabinFeatHTML(3)+cabDesignHTML(3,cabinDesign())+
-      '<p class="dim hint">家族がファーストクラスの間、一緒に使えます。</p></section>';
+      '<div class="cab-now"><b>'+CABINS[3][1]+'</b><small>'+(acct?'<span>👨‍👩‍👧 家族アカウント</span>':'<span>👨‍👩‍👧 家族シェア</span> ・ <span translate="no">'+esc(ENT.fam)+'</span>')+'</small></div>'+cabinFeatHTML(3)+cabDesignHTML(3,cabinDesign())+
+      '<p class="dim hint">'+(acct?'家族アカウントなので、ファーストクラスの機能を全部使えます。':'家族がファーストクラスの間、一緒に使えます。')+'</p></section>';
   };
   var rh=recordHTML;
   recordHTML=function(){
