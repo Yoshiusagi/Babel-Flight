@@ -141,29 +141,83 @@ function ivBuild(){
 /* ---- the examiner's voice ---- */
 function ivLang(v){return v||(IV.data&&IV.data.lang)||'en-US';}
 function ivLA(){return ivLang().slice(0,2);}   /* lang attribute of the test language */
-function ivVoice(lang){
-  lang=ivLang(lang);var pre=lang.slice(0,2),male=IV.ex&&IV.ex[1]==='m',nl=function(v){return String(v.lang||'').replace('_','-').toLowerCase();};
-  var vs=(tts.voices||[]).filter(function(v){return nl(v).indexOf(pre)===0;});
-  if(pre==='en')vs=vs.filter(function(v){return /^en[-_](US|GB|AU|CA|IE|NZ)/i.test(v.lang||'');}).concat(vs.filter(function(v){return !/^en[-_](US|GB|AU|CA|IE|NZ)/i.test(v.lang||'');}));
-  vs=vs.filter(function(v){return nl(v)===lang.toLowerCase();}).concat(vs.filter(function(v){return nl(v)!==lang.toLowerCase();}));   /* en-GB for IELTS first */
-  var M=/\bmale\b|daniel|alex\b|fred|david|mark|guy|ryan|thomas|george|arthur|aaron|oliver|james|gordon|reed|eddy|rocko|lee\b/i,
-      F=/female|samantha|karen|moira|tessa|victoria|susan|zira|kate|serena|allison|ava|jenny|aria|libby|sonia|emma|martha|nicky/i;
-  return vs.filter(function(v){return male?M.test(v.name)&&!F.test(v.name):F.test(v.name);})[0]||vs[0]||null;
+function ivVoice(lang){return voicePick(ivLang(lang),IV.ex&&IV.ex[1]==='m'?'m':'f');}
+/* ---- recorded examiner voices ----
+   Natural voices recorded ahead of time for every examiner sentence (babel-flight/voice, .github/workflows/voices.yml),
+   served from /voice/. A line plays from the recordings only when every sentence of it has one in the examiner's
+   voice; otherwise (and for other languages) the device's voice reads it, as before. */
+var IV_RECV={'en-US':{f:'af_heart',m:'am_michael'},'en-GB':{f:'bf_emma',m:'bm_george'},'es-ES':{f:'ef_dora',m:'em_alex'},'it-IT':{f:'if_sara',m:'im_nicola'}};
+var IVR={load:null,idx:null,src:null,cache:{}};
+function ivRecIdx(){
+  if(IVR.load)return IVR.load;
+  var can=typeof fetch==='function'&&!!(window.crypto&&crypto.subtle)&&typeof TextEncoder==='function'&&typeof Set==='function'&&(bfOnSite()||BF_APP);
+  IVR.load=(can?fetch(bfSiteUrl('/voice/index.json')).then(function(r){return r.ok?r.json():null;}):Promise.resolve(null))
+    .then(function(j){var o={};if(j&&j.voices)for(var v in j.voices)o[v]=new Set(j.voices[v]);IVR.idx=o;return o;})
+    .catch(function(){IVR.idx={};return IVR.idx;});
+  return IVR.load;
+}
+function ivRecVoice(lang){var m=IV_RECV[ivLang(lang)];return m&&IV.ex?m[IV.ex[1]==='m'?'m':'f']:'';}
+function ivRecKey(voice,s){
+  return crypto.subtle.digest('SHA-1',new TextEncoder().encode(voice+'|'+s)).then(function(b){var a=new Uint8Array(b),h='';for(var i=0;i<8;i++)h+=('0'+a[i].toString(16)).slice(-2);return h;});
+}
+/* the decoded sentences of a line, or null when any of them has no recording */
+function ivRecGet(voice,text){
+  return ivRecIdx().then(function(idx){
+    var set=idx&&idx[voice],ctx=set&&audio();if(!set||!ctx)return null;
+    return Promise.all(ttsChunks(text).map(function(p){return ivRecKey(voice,p);})).then(function(keys){
+      if(!keys.every(function(k){return set.has(k);}))return null;
+      return Promise.all(keys.map(function(k){
+        var u=bfSiteUrl('/voice/'+voice+'/'+k+'.mp3');
+        if(!IVR.cache[u])IVR.cache[u]=fetch(u).then(function(r){if(!r.ok)throw new Error('http');return r.arrayBuffer();})
+          .then(function(ab){return new Promise(function(res,rej){ctx.decodeAudioData(ab,res,rej);});})
+          .catch(function(e){delete IVR.cache[u];throw e;});
+        return IVR.cache[u];
+      }));
+    });
+  }).catch(function(){return null;});
+}
+function ivRecPlay(bufs,tok,done){
+  var ctx=audio(),i=0;
+  (function next(){
+    if(tok!==IV.tok)return;
+    if(i>=bufs.length){done();return;}
+    var s=ctx.createBufferSource();s.buffer=bufs[i++];s.connect(ctx.destination);IVR.src=s;
+    s.onended=function(){if(IVR.src===s)IVR.src=null;if(tok===IV.tok)setTimeout(next,i<bufs.length?220:0);};
+    try{s.start();}catch(e){done();}
+  })();
+}
+function ivRecStop(){var s=IVR.src;IVR.src=null;if(s){s.onended=null;try{s.stop();}catch(e){}}}
+/* on the tap that starts the interview: wake the audio (iPhone / iPad) and fetch this run's lines ahead */
+function ivRecStart(){
+  IVR.cache={};
+  var ctx=audio();
+  if(ctx){try{var b=ctx.createBuffer(1,1,22050),s=ctx.createBufferSource();s.buffer=b;s.connect(ctx.destination);s.start(0);}catch(e){}}
+  var vo=ivRecVoice();if(!vo)return;
+  IV.steps.forEach(function(s){if((s.k==='say'||s.k==='rep')&&s.t&&!s.v)ivRecGet(vo,s.t);});
 }
 function ivSay(text,tok,done,lang){
   if(tok!==IV.tok)return;
   var fin=function(){if(tok===IV.tok)setTimeout(function(){if(tok===IV.tok)done();},450);};
   var nw=/^(ja|zh|ko)/.test(ivLang(lang))?Math.ceil(text.length/3):text.split(' ').length;   /* about how many words */
-  if(!tts.ok){setTimeout(fin,Math.min(9000,700+nw*380));return;}
-  try{speechSynthesis.cancel();}catch(e){}
-  var u=new SpeechSynthesisUtterance(text),v=ivVoice(lang),fired=false,guard;
-  u.lang=ivLang(lang);if(v)u.voice=v;u.rate=0.92;
+  var fired=false,guard=setTimeout(function(){once();},5000+nw*600);
   var once=function(){if(fired)return;fired=true;clearTimeout(guard);fin();};
-  u.onend=once;u.onerror=once;
-  guard=setTimeout(once,2500+nw*600);
-  try{speechSynthesis.speak(u);}catch(e){once();}
+  var device=function(){
+    if(!tts.ok){fired=true;clearTimeout(guard);setTimeout(fin,Math.min(9000,700+nw*380));return;}
+    try{speechSynthesis.cancel();}catch(e){}
+    var v=ivVoice(lang);
+    try{ttsQueue(text,function(u){u.lang=ivLang(lang);if(v)u.voice=v;u.rate=0.92;},once);}catch(e){once();}
+  };
+  var vo=ivRecVoice(lang);
+  if(!vo){device();return;}
+  var gone=false,wait=setTimeout(function(){if(gone)return;gone=true;if(tok===IV.tok)device();},2500);   /* slow network: the device reads it */
+  ivRecGet(vo,text).then(function(bufs){
+    if(gone||tok!==IV.tok)return;gone=true;clearTimeout(wait);
+    if(!bufs){device();return;}
+    try{speechSynthesis.cancel();}catch(e){}
+    ivRecPlay(bufs,tok,once);
+  });
 }
-function ivHush(){IV.tok++;clearInterval(IV.tm);IV.tm=0;ivSrStop();try{speechSynthesis.cancel();}catch(e){}}
+function ivHush(){IV.tok++;clearInterval(IV.tm);IV.tm=0;ivSrStop();ivRecStop();try{speechSynthesis.cancel();}catch(e){}}
 function ivStop(){ivHush();IV.win=null;IV.ask=false;}
 
 /* ---- listening to the learner (browser speech recognition) ---- */
@@ -194,6 +248,7 @@ function ivStart(){
   IV.i=0;IV.ans={};IV.yn={};IV.self={};IV.att={};IV.tsel={};IV.up=false;IV.turned=false;IV.line='';IV.pardon=0;IV.stage='run';
   IV.face='';IV.role='';IV.hideLine=false;IV.notes='';IV.notesOn=false;
   try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u);}catch(e){}
+  ivRecStart();
   render();window.scrollTo(0,0);ivNext(IV.tok);
 }
 function ivNext(tok){
@@ -521,7 +576,7 @@ document.addEventListener('click',function(e){
   }
   if(a('data-iv-quit-yes')){closeSheet();ivStop();IV.stage='intro';render();window.scrollTo(0,0);return;}
   if(a('data-iv-rate')){var p=g('data-iv-rate').split(':');IV.self[p[0]]=p[1];Array.prototype.forEach.call(t.parentNode.querySelectorAll('button'),function(b){b.setAttribute('aria-pressed',String(b===t));});var s=$('ivSum');if(s)s.innerHTML=ivSumHTML();ivKeepHist();return;}
-  if(a('data-iv-say')){try{speechSynthesis.cancel();}catch(x){}var tok=++IV.tok;ivSay(g('data-iv-say'),tok,function(){});return;}
+  if(a('data-iv-say')){try{speechSynthesis.cancel();}catch(x){}ivRecStop();var tok=++IV.tok;ivSay(g('data-iv-say'),tok,function(){});return;}
   if(a('data-iv-again')){ivKeepHist();IV.pick=IV.ci;IV.run=Date.now();ivStart();return;}
   if(a('data-iv-next')){ivKeepHist();IV.pick=-1;IV.run=Date.now();ivStart();return;}
 });

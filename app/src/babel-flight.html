@@ -4396,11 +4396,59 @@ function buzz(ms){try{if(navigator.vibrate)navigator.vibrate(ms);}catch(e){}}
 var tts={ok:('speechSynthesis' in window)&&('SpeechSynthesisUtterance' in window),voices:[]};
 function loadVoices(){try{tts.voices=speechSynthesis.getVoices()||[];}catch(e){}}
 if(tts.ok){loadVoices();try{speechSynthesis.onvoiceschanged=loadVoices;}catch(e){}}
-function voiceFor(code){
-  var c=code.toLowerCase(),p=c.slice(0,2),best=null;
-  tts.voices.forEach(function(v){if(!best&&v.lang&&v.lang.replace('_','-').toLowerCase()===c)best=v;});
-  if(!best)tts.voices.forEach(function(v){if(!best&&v.lang&&v.lang.slice(0,2).toLowerCase()===p)best=v;});
-  return best;
+/* ---- the most natural voice the device has ----
+   iPhone, iPad and Mac also list joke voices (Bubbles, Zarvox …) and the robotic "Eloquence" voices (Eddy, Flo,
+   Reed …), often before the good ones. Skip those, and prefer downloaded Enhanced/Premium voices, Microsoft's
+   "Online (Natural)" voices (Edge) and Google's voices (Chrome). */
+var VOICE_JOKE=/^(albert|bad news|bahh|bells|boing|bubbles|cellos|fred|good news|jester|junior|kathy|organ|ralph|superstar|trinoids|whisper|wobble|zarvox|eddy|flo|grandma|grandpa|reed|rocko|sandy|shelley)\b/i;
+var VOICE_M=/\bmale\b|daniel|\balex\b|aaron|arthur|evan|nathan|\btom\b|\bguy\b|ryan|thomas|david|\bmark\b|george|gordon|oliver|james|\blee\b|rishi|william|christopher|\beric\b|roger|andrew|brian|steffan|jorge|diego|juan|pablo|carlos|alvaro|luca|cosimo|diego|giorgio|injoon|hyunsu|otoya|hattori|ichiro|keita/i,
+    VOICE_F=/female|google us english|google español|google italiano|google 한국의|samantha|karen|moira|tessa|victoria|susan|zira|\bkate\b|serena|allison|\bava\b|jenny|aria|libby|sonia|emma|martha|catherine|nicky|\bzoe\b|michelle|natasha|clara|joanna|salli|kimberly|monica|paulina|marisol|helena|elsa|alice|federica|isabella|elvira|yuna|sunhi|sun-hi|kyoko|o-ren|nanami|haruka|ayumi|ting-ting|mei-jia|sin-ji|xiaoxiao|huihui|yaoyao/i;
+function voiceScore(v){
+  var n=String(v.name||''),u=String(v.voiceURI||''),s=0;
+  if(VOICE_JOKE.test(n)||/eloquence|novelty/i.test(u))return -100;
+  if(/espeak/i.test(n+' '+u))s-=50;
+  if(/premium/i.test(n+' '+u))s+=40;else if(/enhanced|neural|natural/i.test(n+' '+u))s+=30;
+  if(/microsoft/i.test(n)&&/online/i.test(n))s+=35;
+  if(/^google\b/i.test(n))s+=20;
+  if(/siri/i.test(u))s+=20;
+  if(/desktop/i.test(n))s-=10;
+  return s;
+}
+function voiceSex(v){var n=String(v.name||'');return VOICE_F.test(n)?'f':VOICE_M.test(n)?'m':'';}
+/* voices for a language, best first: the exact locale, then the main locales, then the rest; joke voices never */
+function voicesFor(code){
+  var c=String(code).toLowerCase().replace('_','-'),p=c.slice(0,2),nl=function(v){return String(v.lang||'').replace('_','-').toLowerCase();};
+  var main=/^(en-(us|gb|au|ca|ie|nz)|es-es|it-it|ko-kr|ja-jp|zh-cn|fr-fr|de-de|pt-br)$/;
+  return (tts.voices||[]).map(function(v,i){var l=nl(v),sc=voiceScore(v);return {v:v,i:i,ok:l.slice(0,2)===p&&sc>-100,k:(l===c?1000:main.test(l)?500:0)+sc};})
+    .filter(function(x){return x.ok;}).sort(function(a,b){return b.k-a.k||a.i-b.i;}).map(function(x){return x.v;});
+}
+/* the best voice of a sex ('m' / 'f'), else one that is not clearly the other sex, else the best */
+function voicePick(code,sex){
+  var vs=voicesFor(code);if(!sex)return vs[0]||null;
+  return vs.filter(function(v){return voiceSex(v)===sex;})[0]||vs.filter(function(v){return !voiceSex(v);})[0]||vs[0]||null;
+}
+function voiceFor(code){return voicePick(code,'');}
+/* long text read as one utterance can stop halfway (Chrome) or sound flat: read it sentence by sentence */
+function ttsChunks(text){
+  var t=String(text).replace(/\s+/g,' ').trim(),out=[],cur='',re=/[^.!?。！？]+(?:[.!?。！？]+["'”’)]*|$)\s*/g,m;
+  while((m=re.exec(t))&&m[0]){
+    var piece=m[0];cur+=piece;
+    if(!/\s$/.test(piece)&&re.lastIndex<t.length)continue;   /* 3.5, U.S. — no space, no new sentence */
+    /* "Mr. Brown", "a.m." and short bits stay with the next sentence */
+    if(/\b(Mr|Mrs|Ms|Dr|St|Mt|vs|etc|No|e\.g|i\.e|a\.m|p\.m|U\.S|U\.K)\.\s*$/i.test(cur)||cur.trim().length<12)continue;
+    out.push(cur.trim());cur='';
+  }
+  if(cur.trim())out.push(cur.trim());
+  return out.length?out:[t];
+}
+/* speak the sentences one after another; done() once at the end (or on an error) */
+function ttsQueue(text,setup,done){
+  var parts=ttsChunks(text),fired=false,fin=function(){if(fired)return;fired=true;done&&done();};
+  parts.forEach(function(p,i){
+    var u=new SpeechSynthesisUtterance(p);setup(u);
+    u.onerror=fin;if(i===parts.length-1)u.onend=fin;
+    speechSynthesis.speak(u);
+  });
 }
 function ttsAvail(code){if(!tts.ok)return false;if(!tts.voices.length)return true;return !!voiceFor(code);}
 function speak(text,code,slow,force){
@@ -11397,26 +11445,21 @@ function mxTestHTML(){
 /* ---- リスニング: the browser reads it, once or twice like the real test ---- */
 var MXV={m:null,w:null};
 function mxVoices(){
-  var vs=(tts.voices||[]).filter(function(v){return /^en[-_](US|GB|AU|CA)/i.test(v.lang||'');});
-  var male=/male|daniel|alex|fred|tom|aaron|arthur|gordon|rishi|ralph|eddy|reed|guy|david|mark|james|oliver/i,
-      female=/female|samantha|karen|moira|tessa|victoria|susan|zira|kate|serena|martha|catherine|nicky|flo|sandy|shelley|allison|ava|jenny|aria|libby|sonia|emma/i;
-  MXV.m=vs.filter(function(v){return male.test(v.name)&&!/female/i.test(v.name);})[0]||null;
-  MXV.w=vs.filter(function(v){return female.test(v.name);})[0]||null;
-  if(!MXV.w)MXV.w=vs.filter(function(v){return v!==MXV.m;})[0]||null;
-  if(!MXV.m)MXV.m=vs.filter(function(v){return v!==MXV.w;})[0]||MXV.w;
+  MXV.m=voicePick('en-US','m');MXV.w=voicePick('en-US','f');
+  if(MXV.m&&voiceSex(MXV.m)==='f')MXV.m=null;
+  if(MXV.w&&voiceSex(MXV.w)==='m')MXV.w=null;
+  if(!MXV.w)MXV.w=voicesFor('en-US').filter(function(v){return v!==MXV.m;})[0]||null;
+  if(!MXV.m)MXV.m=voicesFor('en-US').filter(function(v){return v!==MXV.w;})[0]||MXV.w;
 }
 function mxRate(){var k=MX.key;return k==='ek5'||k==='ek4'?0.82:k==='ek3'?0.86:k==='ekp2'||k==='ekp2p'?0.9:0.95;}
 function mxHush(){MX.tok++;clearInterval(MX.cd);MX.cd=0;try{speechSynthesis.cancel();}catch(e){}}
 function mxSay(text,who,tok,done){
   if(tok!==MX.tok)return;
   if(!tts.ok){setTimeout(function(){if(tok===MX.tok)done();},Math.min(9000,600+mxWords(text)*380));return;}
-  var u=new SpeechSynthesisUtterance(text),v=(who==='M'||who==='B')?MXV.m:MXV.w,fired=false;
-  u.lang='en-US';if(v)u.voice=v;
-  u.rate=mxRate();u.pitch=who==='B'||who==='G'?1.3:who==='M'?(MXV.m&&MXV.m!==MXV.w?1:0.8):who==='N'?1:1.1;
+  var v=(who==='M'||who==='B')?MXV.m:MXV.w,fired=false;
   var fin=function(){if(fired)return;fired=true;clearTimeout(guard);if(tok===MX.tok)setTimeout(function(){if(tok===MX.tok)done();},350);};
   var guard=setTimeout(fin,2500+mxWords(text)*650/mxRate());
-  u.onend=fin;u.onerror=fin;
-  try{speechSynthesis.speak(u);}catch(e){fin();}
+  try{ttsQueue(text,function(u){u.lang=v&&v.lang?v.lang:'en-US';if(v)u.voice=v;u.rate=mxRate();u.pitch=who==='B'||who==='G'?1.15:who==='M'&&MXV.m===MXV.w?0.85:1;},fin);}catch(e){fin();}
 }
 function mxSeq(steps,tok,done){
   var i=0;
@@ -12302,29 +12345,83 @@ function ivBuild(){
 /* ---- the examiner's voice ---- */
 function ivLang(v){return v||(IV.data&&IV.data.lang)||'en-US';}
 function ivLA(){return ivLang().slice(0,2);}   /* lang attribute of the test language */
-function ivVoice(lang){
-  lang=ivLang(lang);var pre=lang.slice(0,2),male=IV.ex&&IV.ex[1]==='m',nl=function(v){return String(v.lang||'').replace('_','-').toLowerCase();};
-  var vs=(tts.voices||[]).filter(function(v){return nl(v).indexOf(pre)===0;});
-  if(pre==='en')vs=vs.filter(function(v){return /^en[-_](US|GB|AU|CA|IE|NZ)/i.test(v.lang||'');}).concat(vs.filter(function(v){return !/^en[-_](US|GB|AU|CA|IE|NZ)/i.test(v.lang||'');}));
-  vs=vs.filter(function(v){return nl(v)===lang.toLowerCase();}).concat(vs.filter(function(v){return nl(v)!==lang.toLowerCase();}));   /* en-GB for IELTS first */
-  var M=/\bmale\b|daniel|alex\b|fred|david|mark|guy|ryan|thomas|george|arthur|aaron|oliver|james|gordon|reed|eddy|rocko|lee\b/i,
-      F=/female|samantha|karen|moira|tessa|victoria|susan|zira|kate|serena|allison|ava|jenny|aria|libby|sonia|emma|martha|nicky/i;
-  return vs.filter(function(v){return male?M.test(v.name)&&!F.test(v.name):F.test(v.name);})[0]||vs[0]||null;
+function ivVoice(lang){return voicePick(ivLang(lang),IV.ex&&IV.ex[1]==='m'?'m':'f');}
+/* ---- recorded examiner voices ----
+   Natural voices recorded ahead of time for every examiner sentence (babel-flight/voice, .github/workflows/voices.yml),
+   served from /voice/. A line plays from the recordings only when every sentence of it has one in the examiner's
+   voice; otherwise (and for other languages) the device's voice reads it, as before. */
+var IV_RECV={'en-US':{f:'af_heart',m:'am_michael'},'en-GB':{f:'bf_emma',m:'bm_george'},'es-ES':{f:'ef_dora',m:'em_alex'},'it-IT':{f:'if_sara',m:'im_nicola'}};
+var IVR={load:null,idx:null,src:null,cache:{}};
+function ivRecIdx(){
+  if(IVR.load)return IVR.load;
+  var can=typeof fetch==='function'&&!!(window.crypto&&crypto.subtle)&&typeof TextEncoder==='function'&&typeof Set==='function'&&(bfOnSite()||BF_APP);
+  IVR.load=(can?fetch(bfSiteUrl('/voice/index.json')).then(function(r){return r.ok?r.json():null;}):Promise.resolve(null))
+    .then(function(j){var o={};if(j&&j.voices)for(var v in j.voices)o[v]=new Set(j.voices[v]);IVR.idx=o;return o;})
+    .catch(function(){IVR.idx={};return IVR.idx;});
+  return IVR.load;
+}
+function ivRecVoice(lang){var m=IV_RECV[ivLang(lang)];return m&&IV.ex?m[IV.ex[1]==='m'?'m':'f']:'';}
+function ivRecKey(voice,s){
+  return crypto.subtle.digest('SHA-1',new TextEncoder().encode(voice+'|'+s)).then(function(b){var a=new Uint8Array(b),h='';for(var i=0;i<8;i++)h+=('0'+a[i].toString(16)).slice(-2);return h;});
+}
+/* the decoded sentences of a line, or null when any of them has no recording */
+function ivRecGet(voice,text){
+  return ivRecIdx().then(function(idx){
+    var set=idx&&idx[voice],ctx=set&&audio();if(!set||!ctx)return null;
+    return Promise.all(ttsChunks(text).map(function(p){return ivRecKey(voice,p);})).then(function(keys){
+      if(!keys.every(function(k){return set.has(k);}))return null;
+      return Promise.all(keys.map(function(k){
+        var u=bfSiteUrl('/voice/'+voice+'/'+k+'.mp3');
+        if(!IVR.cache[u])IVR.cache[u]=fetch(u).then(function(r){if(!r.ok)throw new Error('http');return r.arrayBuffer();})
+          .then(function(ab){return new Promise(function(res,rej){ctx.decodeAudioData(ab,res,rej);});})
+          .catch(function(e){delete IVR.cache[u];throw e;});
+        return IVR.cache[u];
+      }));
+    });
+  }).catch(function(){return null;});
+}
+function ivRecPlay(bufs,tok,done){
+  var ctx=audio(),i=0;
+  (function next(){
+    if(tok!==IV.tok)return;
+    if(i>=bufs.length){done();return;}
+    var s=ctx.createBufferSource();s.buffer=bufs[i++];s.connect(ctx.destination);IVR.src=s;
+    s.onended=function(){if(IVR.src===s)IVR.src=null;if(tok===IV.tok)setTimeout(next,i<bufs.length?220:0);};
+    try{s.start();}catch(e){done();}
+  })();
+}
+function ivRecStop(){var s=IVR.src;IVR.src=null;if(s){s.onended=null;try{s.stop();}catch(e){}}}
+/* on the tap that starts the interview: wake the audio (iPhone / iPad) and fetch this run's lines ahead */
+function ivRecStart(){
+  IVR.cache={};
+  var ctx=audio();
+  if(ctx){try{var b=ctx.createBuffer(1,1,22050),s=ctx.createBufferSource();s.buffer=b;s.connect(ctx.destination);s.start(0);}catch(e){}}
+  var vo=ivRecVoice();if(!vo)return;
+  IV.steps.forEach(function(s){if((s.k==='say'||s.k==='rep')&&s.t&&!s.v)ivRecGet(vo,s.t);});
 }
 function ivSay(text,tok,done,lang){
   if(tok!==IV.tok)return;
   var fin=function(){if(tok===IV.tok)setTimeout(function(){if(tok===IV.tok)done();},450);};
   var nw=/^(ja|zh|ko)/.test(ivLang(lang))?Math.ceil(text.length/3):text.split(' ').length;   /* about how many words */
-  if(!tts.ok){setTimeout(fin,Math.min(9000,700+nw*380));return;}
-  try{speechSynthesis.cancel();}catch(e){}
-  var u=new SpeechSynthesisUtterance(text),v=ivVoice(lang),fired=false,guard;
-  u.lang=ivLang(lang);if(v)u.voice=v;u.rate=0.92;
+  var fired=false,guard=setTimeout(function(){once();},5000+nw*600);
   var once=function(){if(fired)return;fired=true;clearTimeout(guard);fin();};
-  u.onend=once;u.onerror=once;
-  guard=setTimeout(once,2500+nw*600);
-  try{speechSynthesis.speak(u);}catch(e){once();}
+  var device=function(){
+    if(!tts.ok){fired=true;clearTimeout(guard);setTimeout(fin,Math.min(9000,700+nw*380));return;}
+    try{speechSynthesis.cancel();}catch(e){}
+    var v=ivVoice(lang);
+    try{ttsQueue(text,function(u){u.lang=ivLang(lang);if(v)u.voice=v;u.rate=0.92;},once);}catch(e){once();}
+  };
+  var vo=ivRecVoice(lang);
+  if(!vo){device();return;}
+  var gone=false,wait=setTimeout(function(){if(gone)return;gone=true;if(tok===IV.tok)device();},2500);   /* slow network: the device reads it */
+  ivRecGet(vo,text).then(function(bufs){
+    if(gone||tok!==IV.tok)return;gone=true;clearTimeout(wait);
+    if(!bufs){device();return;}
+    try{speechSynthesis.cancel();}catch(e){}
+    ivRecPlay(bufs,tok,once);
+  });
 }
-function ivHush(){IV.tok++;clearInterval(IV.tm);IV.tm=0;ivSrStop();try{speechSynthesis.cancel();}catch(e){}}
+function ivHush(){IV.tok++;clearInterval(IV.tm);IV.tm=0;ivSrStop();ivRecStop();try{speechSynthesis.cancel();}catch(e){}}
 function ivStop(){ivHush();IV.win=null;IV.ask=false;}
 
 /* ---- listening to the learner (browser speech recognition) ---- */
@@ -12355,6 +12452,7 @@ function ivStart(){
   IV.i=0;IV.ans={};IV.yn={};IV.self={};IV.att={};IV.tsel={};IV.up=false;IV.turned=false;IV.line='';IV.pardon=0;IV.stage='run';
   IV.face='';IV.role='';IV.hideLine=false;IV.notes='';IV.notesOn=false;
   try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u);}catch(e){}
+  ivRecStart();
   render();window.scrollTo(0,0);ivNext(IV.tok);
 }
 function ivNext(tok){
@@ -12682,7 +12780,7 @@ document.addEventListener('click',function(e){
   }
   if(a('data-iv-quit-yes')){closeSheet();ivStop();IV.stage='intro';render();window.scrollTo(0,0);return;}
   if(a('data-iv-rate')){var p=g('data-iv-rate').split(':');IV.self[p[0]]=p[1];Array.prototype.forEach.call(t.parentNode.querySelectorAll('button'),function(b){b.setAttribute('aria-pressed',String(b===t));});var s=$('ivSum');if(s)s.innerHTML=ivSumHTML();ivKeepHist();return;}
-  if(a('data-iv-say')){try{speechSynthesis.cancel();}catch(x){}var tok=++IV.tok;ivSay(g('data-iv-say'),tok,function(){});return;}
+  if(a('data-iv-say')){try{speechSynthesis.cancel();}catch(x){}ivRecStop();var tok=++IV.tok;ivSay(g('data-iv-say'),tok,function(){});return;}
   if(a('data-iv-again')){ivKeepHist();IV.pick=IV.ci;IV.run=Date.now();ivStart();return;}
   if(a('data-iv-next')){ivKeepHist();IV.pick=-1;IV.run=Date.now();ivStart();return;}
 });

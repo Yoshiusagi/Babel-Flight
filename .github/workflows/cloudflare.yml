@@ -13,6 +13,10 @@ on:
   push:
     branches: [main]
     paths: ["app/**", ".github/workflows/cloudflare.yml"]
+  # new recordings of the examiners' voices (voices.yml) go live right away
+  workflow_run:
+    workflows: ["Recorded voices"]
+    types: [completed]
   workflow_dispatch:
 
 concurrency:
@@ -24,7 +28,7 @@ permissions:
 
 jobs:
   deploy:
-    if: github.repository_owner == 'Yoshiusagi'
+    if: github.repository_owner == 'Yoshiusagi' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
     runs-on: ubuntu-latest
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -59,6 +63,18 @@ jobs:
         if: steps.ready.outputs.ok == 'true'
         working-directory: app
         run: bun run build
+
+      - name: Recorded voices (branch "voices", from voices.yml)
+        if: steps.ready.outputs.ok == 'true'
+        working-directory: app
+        run: |
+          if git fetch -q --depth=1 origin voices; then
+            mkdir -p dist/client/voice
+            git archive FETCH_HEAD | tar -x -C dist/client/voice
+            echo "voices: $(find dist/client/voice -name '*.mp3' | wc -l) files"
+          else
+            echo "::notice::No recorded voices yet; the page uses the device's voice."
+          fi
 
       - name: Database (made once, then found by name)
         if: steps.ready.outputs.ok == 'true'

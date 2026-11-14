@@ -277,11 +277,59 @@ function buzz(ms){try{if(navigator.vibrate)navigator.vibrate(ms);}catch(e){}}
 var tts={ok:('speechSynthesis' in window)&&('SpeechSynthesisUtterance' in window),voices:[]};
 function loadVoices(){try{tts.voices=speechSynthesis.getVoices()||[];}catch(e){}}
 if(tts.ok){loadVoices();try{speechSynthesis.onvoiceschanged=loadVoices;}catch(e){}}
-function voiceFor(code){
-  var c=code.toLowerCase(),p=c.slice(0,2),best=null;
-  tts.voices.forEach(function(v){if(!best&&v.lang&&v.lang.replace('_','-').toLowerCase()===c)best=v;});
-  if(!best)tts.voices.forEach(function(v){if(!best&&v.lang&&v.lang.slice(0,2).toLowerCase()===p)best=v;});
-  return best;
+/* ---- the most natural voice the device has ----
+   iPhone, iPad and Mac also list joke voices (Bubbles, Zarvox …) and the robotic "Eloquence" voices (Eddy, Flo,
+   Reed …), often before the good ones. Skip those, and prefer downloaded Enhanced/Premium voices, Microsoft's
+   "Online (Natural)" voices (Edge) and Google's voices (Chrome). */
+var VOICE_JOKE=/^(albert|bad news|bahh|bells|boing|bubbles|cellos|fred|good news|jester|junior|kathy|organ|ralph|superstar|trinoids|whisper|wobble|zarvox|eddy|flo|grandma|grandpa|reed|rocko|sandy|shelley)\b/i;
+var VOICE_M=/\bmale\b|daniel|\balex\b|aaron|arthur|evan|nathan|\btom\b|\bguy\b|ryan|thomas|david|\bmark\b|george|gordon|oliver|james|\blee\b|rishi|william|christopher|\beric\b|roger|andrew|brian|steffan|jorge|diego|juan|pablo|carlos|alvaro|luca|cosimo|diego|giorgio|injoon|hyunsu|otoya|hattori|ichiro|keita/i,
+    VOICE_F=/female|google us english|google español|google italiano|google 한국의|samantha|karen|moira|tessa|victoria|susan|zira|\bkate\b|serena|allison|\bava\b|jenny|aria|libby|sonia|emma|martha|catherine|nicky|\bzoe\b|michelle|natasha|clara|joanna|salli|kimberly|monica|paulina|marisol|helena|elsa|alice|federica|isabella|elvira|yuna|sunhi|sun-hi|kyoko|o-ren|nanami|haruka|ayumi|ting-ting|mei-jia|sin-ji|xiaoxiao|huihui|yaoyao/i;
+function voiceScore(v){
+  var n=String(v.name||''),u=String(v.voiceURI||''),s=0;
+  if(VOICE_JOKE.test(n)||/eloquence|novelty/i.test(u))return -100;
+  if(/espeak/i.test(n+' '+u))s-=50;
+  if(/premium/i.test(n+' '+u))s+=40;else if(/enhanced|neural|natural/i.test(n+' '+u))s+=30;
+  if(/microsoft/i.test(n)&&/online/i.test(n))s+=35;
+  if(/^google\b/i.test(n))s+=20;
+  if(/siri/i.test(u))s+=20;
+  if(/desktop/i.test(n))s-=10;
+  return s;
+}
+function voiceSex(v){var n=String(v.name||'');return VOICE_F.test(n)?'f':VOICE_M.test(n)?'m':'';}
+/* voices for a language, best first: the exact locale, then the main locales, then the rest; joke voices never */
+function voicesFor(code){
+  var c=String(code).toLowerCase().replace('_','-'),p=c.slice(0,2),nl=function(v){return String(v.lang||'').replace('_','-').toLowerCase();};
+  var main=/^(en-(us|gb|au|ca|ie|nz)|es-es|it-it|ko-kr|ja-jp|zh-cn|fr-fr|de-de|pt-br)$/;
+  return (tts.voices||[]).map(function(v,i){var l=nl(v),sc=voiceScore(v);return {v:v,i:i,ok:l.slice(0,2)===p&&sc>-100,k:(l===c?1000:main.test(l)?500:0)+sc};})
+    .filter(function(x){return x.ok;}).sort(function(a,b){return b.k-a.k||a.i-b.i;}).map(function(x){return x.v;});
+}
+/* the best voice of a sex ('m' / 'f'), else one that is not clearly the other sex, else the best */
+function voicePick(code,sex){
+  var vs=voicesFor(code);if(!sex)return vs[0]||null;
+  return vs.filter(function(v){return voiceSex(v)===sex;})[0]||vs.filter(function(v){return !voiceSex(v);})[0]||vs[0]||null;
+}
+function voiceFor(code){return voicePick(code,'');}
+/* long text read as one utterance can stop halfway (Chrome) or sound flat: read it sentence by sentence */
+function ttsChunks(text){
+  var t=String(text).replace(/\s+/g,' ').trim(),out=[],cur='',re=/[^.!?。！？]+(?:[.!?。！？]+["'”’)]*|$)\s*/g,m;
+  while((m=re.exec(t))&&m[0]){
+    var piece=m[0];cur+=piece;
+    if(!/\s$/.test(piece)&&re.lastIndex<t.length)continue;   /* 3.5, U.S. — no space, no new sentence */
+    /* "Mr. Brown", "a.m." and short bits stay with the next sentence */
+    if(/\b(Mr|Mrs|Ms|Dr|St|Mt|vs|etc|No|e\.g|i\.e|a\.m|p\.m|U\.S|U\.K)\.\s*$/i.test(cur)||cur.trim().length<12)continue;
+    out.push(cur.trim());cur='';
+  }
+  if(cur.trim())out.push(cur.trim());
+  return out.length?out:[t];
+}
+/* speak the sentences one after another; done() once at the end (or on an error) */
+function ttsQueue(text,setup,done){
+  var parts=ttsChunks(text),fired=false,fin=function(){if(fired)return;fired=true;done&&done();};
+  parts.forEach(function(p,i){
+    var u=new SpeechSynthesisUtterance(p);setup(u);
+    u.onerror=fin;if(i===parts.length-1)u.onend=fin;
+    speechSynthesis.speak(u);
+  });
 }
 function ttsAvail(code){if(!tts.ok)return false;if(!tts.voices.length)return true;return !!voiceFor(code);}
 function speak(text,code,slow,force){

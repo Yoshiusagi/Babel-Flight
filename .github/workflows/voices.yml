@@ -1,0 +1,99 @@
+# Records the interview examiners' sentences with natural voices (Kokoro v1.0, Apache-2.0) and keeps them on the
+# branch "voices" (one commit, replaced each time, so the main history stays small). "Deploy to Cloudflare" copies
+# them to /voice/ on the site, and the page plays them instead of the device's robotic voice (f25_iv.js).
+# Runs when the interview questions change; only new sentences are recorded. See app/babel-flight/voice/.
+name: Recorded voices
+
+on:
+  push:
+    branches: [main]
+    paths: ["app/public/iv/**", "app/babel-flight/voice/**", ".github/workflows/voices.yml"]
+  workflow_dispatch:
+
+concurrency:
+  group: voices
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  record:
+    if: github.repository_owner == 'Yoshiusagi'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        voice: [af_heart, am_michael, bf_emma, bm_george, ef_dora, em_alex, if_sara, im_nicola]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Voice model (kept between runs)
+        uses: actions/cache@v4
+        with:
+          path: ~/kokoro
+          key: kokoro-onnx-model-v1.0
+
+      - name: Install
+        run: |
+          set -euo pipefail
+          mkdir -p ~/kokoro
+          cd ~/kokoro
+          base=https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0
+          [ -s kokoro-v1.0.onnx ] || curl -fsSLO "$base/kokoro-v1.0.onnx"
+          [ -s voices-v1.0.bin ] || curl -fsSLO "$base/voices-v1.0.bin"
+          ls -la
+          pip install -q kokoro-onnx soundfile faster-whisper
+          ffmpeg -version | head -1
+
+      - name: Recordings already made
+        run: |
+          mkdir -p have
+          if git fetch -q --depth=1 origin voices; then
+            git archive FETCH_HEAD "${{ matrix.voice }}" 2>/dev/null | tar -x -C have || true
+          fi
+          ls have/${{ matrix.voice }} 2>/dev/null | wc -l
+
+      - name: Record the missing sentences
+        run: python3 app/babel-flight/voice/make.py --voice "${{ matrix.voice }}" --have have --out out --model ~/kokoro
+
+      - name: Check that the words come out clearly
+        run: python3 app/babel-flight/voice/check.py out "${{ matrix.voice }}" 12
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: voice-${{ matrix.voice }}
+          path: out
+          retention-days: 3
+
+  publish:
+    needs: record
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: rec
+          pattern: voice-*
+          merge-multiple: true
+
+      - name: Publish to the voices branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python3 app/babel-flight/voice/make.py --index rec
+          du -sh rec
+          cd rec
+          git init -q
+          git checkout -q -b voices
+          git add -A
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -q -m "Recorded voices for ${GITHUB_SHA::7}"
+          git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" voices

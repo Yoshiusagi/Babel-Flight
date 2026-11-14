@@ -182,26 +182,21 @@ function mxTestHTML(){
 /* ---- リスニング: the browser reads it, once or twice like the real test ---- */
 var MXV={m:null,w:null};
 function mxVoices(){
-  var vs=(tts.voices||[]).filter(function(v){return /^en[-_](US|GB|AU|CA)/i.test(v.lang||'');});
-  var male=/male|daniel|alex|fred|tom|aaron|arthur|gordon|rishi|ralph|eddy|reed|guy|david|mark|james|oliver/i,
-      female=/female|samantha|karen|moira|tessa|victoria|susan|zira|kate|serena|martha|catherine|nicky|flo|sandy|shelley|allison|ava|jenny|aria|libby|sonia|emma/i;
-  MXV.m=vs.filter(function(v){return male.test(v.name)&&!/female/i.test(v.name);})[0]||null;
-  MXV.w=vs.filter(function(v){return female.test(v.name);})[0]||null;
-  if(!MXV.w)MXV.w=vs.filter(function(v){return v!==MXV.m;})[0]||null;
-  if(!MXV.m)MXV.m=vs.filter(function(v){return v!==MXV.w;})[0]||MXV.w;
+  MXV.m=voicePick('en-US','m');MXV.w=voicePick('en-US','f');
+  if(MXV.m&&voiceSex(MXV.m)==='f')MXV.m=null;
+  if(MXV.w&&voiceSex(MXV.w)==='m')MXV.w=null;
+  if(!MXV.w)MXV.w=voicesFor('en-US').filter(function(v){return v!==MXV.m;})[0]||null;
+  if(!MXV.m)MXV.m=voicesFor('en-US').filter(function(v){return v!==MXV.w;})[0]||MXV.w;
 }
 function mxRate(){var k=MX.key;return k==='ek5'||k==='ek4'?0.82:k==='ek3'?0.86:k==='ekp2'||k==='ekp2p'?0.9:0.95;}
 function mxHush(){MX.tok++;clearInterval(MX.cd);MX.cd=0;try{speechSynthesis.cancel();}catch(e){}}
 function mxSay(text,who,tok,done){
   if(tok!==MX.tok)return;
   if(!tts.ok){setTimeout(function(){if(tok===MX.tok)done();},Math.min(9000,600+mxWords(text)*380));return;}
-  var u=new SpeechSynthesisUtterance(text),v=(who==='M'||who==='B')?MXV.m:MXV.w,fired=false;
-  u.lang='en-US';if(v)u.voice=v;
-  u.rate=mxRate();u.pitch=who==='B'||who==='G'?1.3:who==='M'?(MXV.m&&MXV.m!==MXV.w?1:0.8):who==='N'?1:1.1;
+  var v=(who==='M'||who==='B')?MXV.m:MXV.w,fired=false;
   var fin=function(){if(fired)return;fired=true;clearTimeout(guard);if(tok===MX.tok)setTimeout(function(){if(tok===MX.tok)done();},350);};
   var guard=setTimeout(fin,2500+mxWords(text)*650/mxRate());
-  u.onend=fin;u.onerror=fin;
-  try{speechSynthesis.speak(u);}catch(e){fin();}
+  try{ttsQueue(text,function(u){u.lang=v&&v.lang?v.lang:'en-US';if(v)u.voice=v;u.rate=mxRate();u.pitch=who==='B'||who==='G'?1.15:who==='M'&&MXV.m===MXV.w?0.85:1;},fin);}catch(e){fin();}
 }
 function mxSeq(steps,tok,done){
   var i=0;
