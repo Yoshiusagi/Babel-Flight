@@ -105,9 +105,9 @@ On the other hand, people who are in a hurry feel that standing still is too slo
          'model': 'Some stations ask people not to walk on escalators and to stand on both sides. This prevents accidents and moves more people. However, busy people find it slow, and habits are hard to change.',
          'checks': ['第1段落(エスカレーターで両側に立ち、歩かないようにたのむ駅がある)の内容が入っている', '第2段落(良い点:事故を防ぐ・多くの人が使える)の内容が入っている', '第3段落(悪い点:急ぐ人にはおそい・習慣を変えにくい)の内容が入っている', '本文の文をそのまま写さず、自分の言葉で短くまとめている', '語数が25〜35語になっている']},
         {'type': 'opinion',
-         'prompt': '以下のQUESTIONについて、あなたの意見とその理由を2つ書きなさい。\n\nQUESTION\nDo you think it is a good idea for students to study abroad?',
+         'prompt': '以下のQUESTIONについて、あなたの意見とその理由を2つ書きなさい。\n\nQUESTION\nDo you think cities should have more bike lanes?',
          'rules': ['語数の目安は50語〜60語です。', '理由は2つ書きましょう。', 'QUESTIONに答えていない場合や、内容がQUESTIONからずれている場合は、0点と採点されることがあります。'],
-         'model': 'I think it is a good idea for students to study abroad. First, living in another country helps them improve their foreign language skills quickly, because they have to use the language every day. Second, they can learn about different cultures and ways of thinking, which will help them in their future jobs. That is why I agree.',
+         'model': 'I think cities should have more bike lanes. First, riding a bike on the road with cars is dangerous, so special lanes would protect cyclists and reduce accidents. Second, if cycling becomes safer, more people will choose bikes instead of cars, and this will reduce traffic and air pollution. Therefore, I agree with this idea.',
          'checks': ['最初に賛成か反対かをはっきり書いている', '理由を2つ書いている', '理由に具体的な説明がある', '語数が50〜60語になっている', 'スペルや文法のミスがない']},
     ],
     'L': [

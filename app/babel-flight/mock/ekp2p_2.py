@@ -106,9 +106,9 @@ However, car-sharing also has some problems. On busy days such as weekends, user
          'model': 'More people now use car-sharing instead of owning cars. It saves money on parking and repairs and can reduce traffic. However, cars are sometimes unavailable on busy days and may not be clean.',
          'checks': ['第1段落(車を持たずにカーシェアを使う人が増えている)の内容が入っている', '第2段落(良い点:費用が少ない・渋滞が減る)の内容が入っている', '第3段落(悪い点:混む日に借りられない・汚れていることがある)の内容が入っている', '本文の文をそのまま写さず、自分の言葉で短くまとめている', '語数が25〜35語になっている']},
         {'type': 'opinion',
-         'prompt': '以下のQUESTIONについて、あなたの意見とその理由を2つ書きなさい。\n\nQUESTION\nDo you think schools should have longer summer vacations?',
+         'prompt': '以下のQUESTIONについて、あなたの意見とその理由を2つ書きなさい。\n\nQUESTION\nDo you think students should clean their own classrooms?',
          'rules': ['語数の目安は50語〜60語です。', '理由は2つ書きましょう。', 'QUESTIONに答えていない場合や、内容がQUESTIONからずれている場合は、0点と採点されることがあります。'],
-         'model': 'I do not think schools should have longer summer vacations. First, if the vacation is longer, students may forget what they learned, and it will take time to catch up in September. Second, many parents work during the summer, so it would be hard for them to take care of their children for a long time. Therefore, I disagree.',
+         'model': 'I think students should clean their own classrooms. First, cleaning teaches students to take care of the places they use every day, so they will be more careful not to make them dirty. Second, working together with classmates helps students learn teamwork and responsibility. For these reasons, I think it is a good custom.',
          'checks': ['最初に賛成か反対かをはっきり書いている', '理由を2つ書いている', '理由に具体的な説明がある', '語数が50〜60語になっている', 'スペルや文法のミスがない']},
     ],
     'L': [
