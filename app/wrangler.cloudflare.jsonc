@@ -6,7 +6,8 @@
   //
   // Secrets are NOT here. Set them on the Worker (Cloudflare dashboard → Workers & Pages →
   // babel-flight → Settings → Variables and Secrets): ANTHROPIC_API_KEY, STRIPE_SECRET_KEY,
-  // STRIPE_WEBHOOK_SECRET. MOVE_KEY is copied from the GitHub secret by the workflow.
+  // STRIPE_WEBHOOK_SECRET. MOVE_SIGN_KEY (and a short-lived MOVE_KEY) are set by
+  // .github/workflows/move-auto.yml.
   "name": "babel-flight",
   "main": "dist/server/server.js",
   "compatibility_date": "2025-05-01",

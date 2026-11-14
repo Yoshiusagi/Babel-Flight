@@ -1,10 +1,16 @@
 // Moving the site to a new address (Higgsfield → the owner's own Cloudflare account).
 //
 // The new site pulls the old site's rows itself, so the data goes straight from one server to
-// the other and never through GitHub or a person. Both sites need the same secret MOVE_KEY (a
-// random string of 32+ characters, set in each site's secrets); the new site also needs
-// MOVE_FROM (the old site's address, e.g. https://babel-flight.higgsfield.app). Without
-// MOVE_KEY these routes don't exist (404).
+// the other and never through GitHub or a person. The new site needs MOVE_FROM (the old site's
+// address). How the old site knows a request really comes from the new site, either:
+//   - a signature ("electronic seal"): the new site signs each export request with its secret
+//     MOVE_SIGN_KEY (an ECDSA P-256 private key made by .github/workflows/move-auto.yml), and the
+//     old site checks it with MOVE_PUBLIC_JWK below (a public key: safe to publish). Nothing has to
+//     be set on the old site; or
+//   - the same secret MOVE_KEY (32+ characters) on both sites.
+// The import route (called page by page by the workflow) needs MOVE_KEY on the new site; the
+// workflow sets a fresh random one for each run and removes it afterwards. Without them the routes
+// don't exist (404).
 //
 //   GET  /api/move/export?table=&after=&limit=   (old site) one page of a table, oldest key first
 //   POST /api/move/import { table, after }        (new site) pulls that page from MOVE_FROM and
@@ -79,6 +85,69 @@ export const MOVE_TABLES: Record<string, Table> = {
     events: true,
   },
 };
+/** The new site's public key (ECDSA P-256, from move-auto.yml's "keygen" run); null = not made yet. */
+type PublicJwk = { x: string; y: string };
+const MOVE_PUBLIC_JWK = null as PublicJwk | null;
+const SIG_MAX_AGE_MS = 5 * 60 * 1000;
+const SIG_LABEL = "babel-flight move-export";
+
+function b64u(bytes: ArrayBuffer): string {
+  let bin = "";
+  for (const b of new Uint8Array(bytes)) bin += String.fromCharCode(b);
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function fromB64u(s: string) {
+  const bin = atob(s.replace(/-/g, "+").replace(/_/g, "/") + "===".slice((s.length + 3) % 4));
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+const sigMessage = (pathAndQuery: string, ts: string) => new TextEncoder().encode(`${SIG_LABEL}\n${pathAndQuery}\n${ts}`);
+
+/** New site: "<ms>.<signature>" for an export request, or null without MOVE_SIGN_KEY. */
+async function signExport(pathAndQuery: string): Promise<string | null> {
+  const raw = (bindings().MOVE_SIGN_KEY ?? "").trim();
+  if (!raw) return null;
+  try {
+    const j = JSON.parse(raw) as Row;
+    const key = await crypto.subtle.importKey(
+      "jwk",
+      { kty: "EC", crv: "P-256", x: String(j.x), y: String(j.y), d: String(j.d) },
+      { name: "ECDSA", namedCurve: "P-256" },
+      false,
+      ["sign"],
+    );
+    const ts = String(Date.now());
+    const sig = await crypto.subtle.sign({ name: "ECDSA", hash: "SHA-256" }, key, sigMessage(pathAndQuery, ts));
+    return `${ts}.${b64u(sig)}`;
+  } catch {
+    return null;
+  }
+}
+
+/** Old site: is this export request signed by the new site (and recent)? */
+async function signedByNewSite(request: Request, url: URL, pub: PublicJwk | null = MOVE_PUBLIC_JWK): Promise<boolean> {
+  if (!pub) return false;
+  const m = /^(\d{13})\.([A-Za-z0-9_-]{60,120})$/.exec((request.headers.get("x-move-sig") ?? "").trim());
+  if (!m || !m[1] || !m[2]) return false;
+  if (Math.abs(Date.now() - Number(m[1])) > SIG_MAX_AGE_MS) return false;
+  try {
+    const key = await crypto.subtle.importKey(
+      "jwk",
+      { kty: "EC", crv: "P-256", x: pub.x, y: pub.y },
+      { name: "ECDSA", namedCurve: "P-256" },
+      false,
+      ["verify"],
+    );
+    return await crypto.subtle.verify({ name: "ECDSA", hash: "SHA-256" }, key, fromB64u(m[2]), sigMessage(url.pathname + url.search, m[1]));
+  } catch {
+    return false;
+  }
+}
+/** For tests: the same check with a given public key. */
+export const __signedWith = (request: Request, url: URL, pub: PublicJwk) => signedByNewSite(request, url, pub);
+export const __signExport = signExport;
+
 const PAGE_DEFAULT = 200;
 const PAGE_MAX = 500;
 const EVENTS_CURSOR = "move:bf_events";
@@ -157,7 +226,11 @@ async function handleImport(request: Request, key: string, db: D1Database): Prom
     after = c && typeof c.v === "string" ? c.v : "0";
   }
   const q = new URLSearchParams({ table: name, after, limit: String(PAGE_DEFAULT) });
-  const res = await fetch(`${fromUrl.origin}/api/move/export?${q}`, { headers: { authorization: `Bearer ${key}` } });
+  const exportPath = `/api/move/export?${q}`;
+  const sig = await signExport(exportPath);
+  const res = await fetch(`${fromUrl.origin}${exportPath}`, {
+    headers: sig ? { "x-move-sig": sig } : { authorization: `Bearer ${key}` },
+  });
   if (!res.ok) return json({ ok: false, error: "from", status: res.status }, 502);
   const page = (await res.json().catch(() => null)) as Row | null;
   if (!page || page.ok !== true || !Array.isArray(page.rows)) return json({ ok: false, error: "from" }, 502);
@@ -209,15 +282,18 @@ async function handleImport(request: Request, key: string, db: D1Database): Prom
 
 export async function handleMove(request: Request, url: URL): Promise<Response | null> {
   if (!url.pathname.startsWith("/api/move/")) return null;
+  const route = url.pathname.slice("/api/move/".length);
   const key = moveKey();
-  if (!key) return json({ ok: false, error: "not_found" }, 404);
-  if (!(await authorized(request, key))) return json({ ok: false }, 403);
+  // export: the new site's signature, or the shared key; import: the shared key only
+  const exportBySig = route === "export" && request.method === "GET" && MOVE_PUBLIC_JWK !== null;
+  if (!key && !exportBySig) return json({ ok: false, error: "not_found" }, 404);
+  const ok = (key !== null && (await authorized(request, key))) || (exportBySig && (await signedByNewSite(request, url)));
+  if (!ok) return json({ ok: false }, 403);
   const db = bindings().DB;
   if (!db) return json({ ok: false, error: "no_db" }, 503);
-  const route = url.pathname.slice("/api/move/".length);
   try {
     if (route === "export" && request.method === "GET") return await handleExport(url, db);
-    if (route === "import" && request.method === "POST") return await handleImport(request, key, db);
+    if (route === "import" && request.method === "POST" && key) return await handleImport(request, key, db);
     return json({ ok: false, error: "not_found" }, 404);
   } catch (error) {
     console.error("move error:", error instanceof Error ? error.message : "unknown");

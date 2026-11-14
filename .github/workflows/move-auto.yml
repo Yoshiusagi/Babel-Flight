@@ -1,0 +1,127 @@
+# Moves accounts and progress from the old site (Higgsfield) to the new one (babelflight.com) with
+# nothing to type into any settings page. It reuses the Cloudflare secrets that "Deploy to
+# Cloudflare" already has, and runs when a push to main changes move/request.json:
+#
+#   {"mode":"keygen"}       makes the new site's signing key: the private half goes straight into
+#                           the Worker as the secret MOVE_SIGN_KEY (never printed); the PUBLIC half is
+#                           printed for MOVE_PUBLIC_JWK in app/src/lib/move.server.ts (safe to publish).
+#                           Does nothing if MOVE_SIGN_KEY already exists, unless "force":true.
+#   {"mode":"run","n":1}    copies the data (bump n to run it again; safe to repeat). The Worker gets a
+#                           fresh random MOVE_KEY for its import route for this run only, removed at the
+#                           end. The old site lets the export through because each request is signed.
+#   {"mode":"count"}        prints row counts on the new site.
+#
+# Only counts are printed, never anyone's data. See app/src/lib/move.server.ts.
+name: Move data (no settings)
+
+on:
+  push:
+    branches: [main]
+    paths: ["move/request.json"]
+  workflow_dispatch:
+
+concurrency:
+  group: cloudflare-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  move:
+    if: github.repository_owner == 'Yoshiusagi'
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      NEW_SITE: ${{ vars.NEW_SITE || 'https://babelflight.com' }}
+      WORKER: babel-flight
+      WRANGLER: wrangler@4.148.0
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.2.21
+
+      - name: What to do
+        id: req
+        run: |
+          set -euo pipefail
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::error::Cloudflare isn't set up (CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID)."; exit 1
+          fi
+          mode="$(jq -r '.mode // ""' move/request.json)"
+          force="$(jq -r '.force // false' move/request.json)"
+          case "$mode" in keygen|run|count) ;; *) echo "::error::move/request.json: mode must be keygen, run or count"; exit 1 ;; esac
+          echo "mode=$mode" >> "$GITHUB_OUTPUT"
+          echo "force=$force" >> "$GITHUB_OUTPUT"
+          echo "Mode: $mode"
+
+      - name: Signing key
+        if: steps.req.outputs.mode == 'keygen'
+        env:
+          FORCE: ${{ steps.req.outputs.force }}
+        run: |
+          set -euo pipefail
+          has="$(bunx "$WRANGLER" secret list --name "$WORKER" --format json 2>/dev/null | jq -r '[.[].name] | index("MOVE_SIGN_KEY") != null' || echo false)"
+          if [ "$has" = "true" ] && [ "$FORCE" != "true" ]; then
+            echo "::notice::MOVE_SIGN_KEY already exists on the Worker; nothing changed (use \"force\":true to replace it)."
+            exit 0
+          fi
+          umask 077
+          node -e '
+            const { webcrypto: c } = require("node:crypto");
+            (async () => {
+              const kp = await c.subtle.generateKey({ name: "ECDSA", namedCurve: "P-256" }, true, ["sign", "verify"]);
+              const j = await c.subtle.exportKey("jwk", kp.privateKey);
+              require("node:fs").writeFileSync("priv.json", JSON.stringify({ kty: "EC", crv: "P-256", x: j.x, y: j.y, d: j.d }));
+              require("node:fs").writeFileSync("pub.json", JSON.stringify({ x: j.x, y: j.y }));
+            })().catch((e) => { console.error("keygen failed"); process.exit(1); });
+          '
+          bunx "$WRANGLER" secret put MOVE_SIGN_KEY --name "$WORKER" < priv.json
+          shred -u priv.json 2>/dev/null || rm -f priv.json
+          echo "PUBLIC KEY (for MOVE_PUBLIC_JWK): $(cat pub.json)"
+          echo "### Public key for MOVE_PUBLIC_JWK" >> "$GITHUB_STEP_SUMMARY"
+          echo '`'"$(cat pub.json)"'`' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Copy, table by table
+        if: steps.req.outputs.mode == 'run'
+        run: |
+          set -euo pipefail
+          MK="$(openssl rand -hex 32)"
+          echo "::add-mask::$MK"
+          cleanup() { bunx "$WRANGLER" secret delete MOVE_KEY --name "$WORKER" >/dev/null 2>&1 && echo "Temporary key removed." || echo "::warning::Could not remove the temporary MOVE_KEY; it is random and unused, but delete it in the Worker's settings."; }
+          trap cleanup EXIT
+          printf '%s' "$MK" | bunx "$WRANGLER" secret put MOVE_KEY --name "$WORKER" >/dev/null
+          call() {
+            curl -sS --max-time 90 -o resp.json -w '%{http_code}' -X POST "$NEW_SITE/api/move/import" \
+              -H "authorization: Bearer $MK" -H "content-type: application/json" -d "$1" || echo 000
+          }
+          # wait until the new key is live: an unknown table answers 400 "table" only past the key check
+          for i in $(seq 1 12); do
+            code="$(call '{"table":"_probe"}')"
+            [ "$code" = "400" ] && [ "$(jq -r '.error // ""' resp.json 2>/dev/null)" = "table" ] && break
+            echo "waiting for the key ($code)"; sleep 10
+          done
+          [ "$code" = "400" ] || { echo "::error::The new site did not accept the temporary key ($code): $(jq -c '{ok,error,status}' resp.json 2>/dev/null)"; exit 1; }
+          for t in bf_users bf_saves bf_entitlements bf_billing bf_reward bf_auth bf_visitors bf_events; do
+            after=""; total=0; pages=0
+            while :; do
+              body="$(jq -nc --arg t "$t" --arg a "$after" '{table:$t, after:$a}')"
+              code="$(call "$body")"
+              if [ "$code" != "200" ]; then echo "::error::$t failed ($code): $(jq -c '{ok,error,status}' resp.json 2>/dev/null)"; exit 1; fi
+              total=$((total + $(jq -r '.n // 0' resp.json)))
+              pages=$((pages + 1))
+              after="$(jq -r '.next // empty' resp.json)"
+              if [ -z "$after" ] || [ "$pages" -ge 500 ]; then break; fi
+            done
+            echo "$t: $total rows copied"
+          done
+
+      - name: Counts on the new site
+        if: steps.req.outputs.mode == 'run' || steps.req.outputs.mode == 'count'
+        run: |
+          set -euo pipefail
+          q="SELECT (SELECT COUNT(*) FROM bf_users) AS users, (SELECT COUNT(*) FROM bf_saves) AS saves, (SELECT COUNT(*) FROM bf_moved_saves) AS moved_waiting, (SELECT COUNT(*) FROM bf_moved_saves WHERE t > merged_t) AS moved_not_merged, (SELECT COUNT(*) FROM bf_entitlements) AS entitlements"
+          bunx "$WRANGLER" d1 execute babel-flight-db --remote --json --command "$q" | jq -c '.[0].results[0]'

@@ -1,3 +1,5 @@
+# Older, manual way (needs a shared secret on both sites). The no-settings way is move-auto.yml.
+#
 # Copies accounts, saved progress and usage stats from the old site (Higgsfield) to the new one
 # (the owner's Cloudflare account). Run it by hand: Actions → Move data → Run workflow, type MOVE.
 # Safe to run more than once (see app/src/lib/move.server.ts). Only row counts are printed.
