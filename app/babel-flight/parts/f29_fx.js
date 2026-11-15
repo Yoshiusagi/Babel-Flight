@@ -103,6 +103,12 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.29',items:[
+  ['🇧🇷','ポルトガル語に職業モード・留学モードが登場','ポルトガル語(ブラジル)も「スターター」を卒業しました。13の職業(パイロット・客室乗務員・医療・ITなど)の専門会話と、留学モード(教科の用語・授業やホームステイの会話)を、カタカナの読みつきで学べます。','lang:pt',1,['ja']],
+  ['🇧🇷','Portuguese: job mode and study abroad mode','Portuguese (Brazil) is no longer a starter language. You can now learn the 13 jobs (pilot, cabin crew, medical, IT and more) and the study abroad mode (school subjects, class and homestay conversations).','lang:pt',1,['en']],
+  ['🇧🇷','포르투갈어에 직업 모드와 유학 모드 추가','포르투갈어(브라질)도 스타터 과정을 졸업했어요. 13가지 직업(파일럿, 객실 승무원, 의료, IT 등)의 전문 회화와 유학 모드(교과 용어, 수업과 홈스테이 회화)를 배울 수 있어요.','lang:pt',1,['ko']],
+  ['🇧🇷','葡萄牙语新增职业模式和留学模式','葡萄牙语（巴西）也已不再是入门语言。现在可以学习13种职业（飞行员、空乘、医疗、IT等）的专业会话，以及留学模式（学科用语、课堂和寄宿家庭会话）。','lang:pt',1,['zh']]
+ ]},
  {v:'2026.11.28',items:[
   ['🎧','AI管制官が世界の空港へ','AI管制官が、学んでいる言語の国の空港(ジャカルタ・ドバイ・仁川など)で交信するようになりました。管制官はその国の訛りのある英語で話します。訛りの強さは「なし・弱・強」から選べて、英語圏の空港(ロンドン・シドニー・デリーなど)も選べます。','atc',1,['ja']],
   ['🎧','The AI controller goes abroad','The AI controller now works at the airport of the language you learn (Jakarta, Dubai, Incheon and more) and speaks English with that country\'s accent. Choose the accent strength (Off, Light or Strong), or pick an airport in the English-speaking world such as London, Sydney or Delhi.','atc',1,['en']],

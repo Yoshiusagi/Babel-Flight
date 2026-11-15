@@ -1,7 +1,8 @@
-/* ================= ポルトガル語 (Brazil) — starter course =================
-   Brazilian Portuguese (pt-BR). Travel phrases here; daily phrases, scenes and the route map in e3g_pt.js.
+/* ================= ポルトガル語 (Brazil) =================
+   Brazilian Portuguese (pt-BR). Travel phrases here; daily phrases, scenes and the route map in e3g_pt.js;
+   the 職業・留学 units in the PJ() calls (d1–d8, e3a).
    Readings in katakana, as spoken in Brazil (de = ヂ, -te = チ). */
-LANGS.pt={name:'ポルトガル語',native:'Português',city:'サンパウロ',cityEn:'SÃO PAULO',code:'GRU',tts:'pt-BR',km:18500,letter:'H',hasYomi:true,starter:true,units:[
+LANGS.pt={name:'ポルトガル語',native:'Português',city:'サンパウロ',cityEn:'SÃO PAULO',code:'GRU',tts:'pt-BR',km:18500,letter:'H',hasYomi:true,units:[
   U("checkin",[
    ["こんにちは", "Olá!", "オラー", "いつでも使える「こんにちは」。朝は「Bom dia」、午後は「Boa tarde」。"],
    ["チェックインしたいのですが", "Eu gostaria de fazer o check-in.", "エウ ゴスタリーア ヂ ファゼール ウ シェッキン", "「Eu gostaria de〜」=〜したいのですが(ていねい)。"],
