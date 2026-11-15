@@ -42,7 +42,7 @@ var KEY='babelflight.save.v1';
 var OLD_ORDER=['checkin','inflight','immigration','hotel','restaurant','city','atc1','atc2'];
 function blankProg(){var p={};ORDER.forEach(function(k){p[k]={items:{},units:{}};});return p;}
 function defaults(){return {v:2,t:0,name:'PASSENGER',icon:'',rz:0,lang:'ko',prof:'',level:'mid',lv:{},nw:'',why:'',weak:[],why0:0,seen:'',goal:2,onboarded:false,theme:'auto',sound:true,mode:'daily',amb:false,tap:true,pos:{},
-  miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,dly:[],wb:{},trip:null,daily:{d:'',n:0},mh:null,st:null,cap:0,tq:0,enVar:'us',acc:{},rem:{},stMax:0,accent:'',atcApt:{},atcAcc:1,prog:blankProg()};}
+  miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,dly:[],wb:{},trip:null,daily:{d:'',n:0},mh:null,st:null,cap:0,tq:0,enVar:'us',acc:{},rem:{},stMax:0,accent:'',atcApt:{},atcAcc:1,df:null,prog:blankProg()};}
 function mergeSave(raw){
   var d=defaults();
   if(!raw||typeof raw!=='object')return d;
@@ -110,6 +110,8 @@ function mergeSave(raw){
   var aa={};if(raw.atcApt&&typeof raw.atcApt==='object')Object.keys(raw.atcApt).forEach(function(l){var v=raw.atcApt[l];if(/^[a-z]{2}$/.test(l)&&typeof v==='string'&&/^[A-Z]{3}$/.test(v))aa[l]=v;});
   d.atcApt=aa;if(d.atcAcc!==0&&d.atcAcc!==2)d.atcAcc=1;
   d.cap=+d.cap>0?+d.cap:0;d.tq=+d.tq>0?Math.floor(+d.tq):0;
+  /* DUTY FREE (f44_duty.js): items, what is worn, miles exchanged, yen per month, the monthly limit */
+  d.df=raw.df&&typeof raw.df==='object'?(typeof DF_MAP==='object'&&DF_MAP?dfClean(raw.df):raw.df):null;
   return d;
 }
 function loadLocal(){try{return mergeSave(JSON.parse(localStorage.getItem(KEY)||'null'));}catch(e){return defaults();}}

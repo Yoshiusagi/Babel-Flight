@@ -255,7 +255,7 @@ function mapFrame(){
   if(rp>0.3){
     var bob=reduceMotion?0:Math.sin(now/600)*1;
     g.save();g.translate(pos.x,pos.y+bob);g.rotate(ang);g.scale(.85,.85);
-    g.shadowColor='rgba(255,255,255,.7)';g.shadowBlur=10;g.fillStyle='#fff';g.fill(M.plane);g.restore();
+    g.shadowColor='rgba(255,255,255,.7)';g.shadowBlur=10;g.fillStyle=(typeof dfPlaneFill==='function'&&dfPlaneFill(g))||'#fff';g.fill(M.plane);g.restore();
   }
   M.raf=requestAnimationFrame(mapFrame);
 }

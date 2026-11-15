@@ -473,3 +473,19 @@ files and stops when two tests of a grade share a question:
 
 `build.py` checks every test against the real format (`SPEC`: parts, question counts, option counts,
 listening plays, writing word limits incl. the model answers) and stops with a list of problems.
+
+## DUTY FREE 機内販売 (single cosmetic items) — `parts/f44_duty.js` + `f44_css.html`
+
+Test account only, website only (`dfOn()` = `cabinOn() && cabinTester()`); every other account and the iPhone app see
+nothing. A card under 搭乗クラス in 記録 opens the shop (a sheet): リバリー (the plane on the home map canvas via
+`dfPlaneFill()` in `f5_home.js`, the flight bar `#pp`, the 搭乗券 icon, the takeoff film, the suite home line),
+搭乗券デザイン (`html[data-ps]` overrides the pass colours), サウンドパック (wraps `clack()`, the flight board sound),
+アイコン枠 (`html[data-fr]`) and 称号 (a badge on the ID card, `recordHTML` wrapper). Items: `DF_ITEMS`
+(kind, id, name, 円, マイル or 0, text, look, 限定). Prices 80〜160円.
+- **Save**: `save.df` = `{own, eq, ms, mon, cap, log}` (cleaned by `dfClean`; `unionSave` keeps items bought on either
+  copy via `dfUnion`). Miles exchanged (`ms`) never touch `save.miles`, so the status does not drop.
+- **Brakes**: a final confirmation sheet for every purchase (item, price, monthly total, no refund for digital goods) and
+  a monthly limit (`cap`, default 500円; 購入しない / 300 / 500 / 1,000 / なし). Raising it needs the guardian checkbox.
+- **Payments are TEST only**: nothing is charged. Before real sales: record purchases on the server (Stripe one-time
+  Checkout on the website, In-App Purchase in the iPhone app — Apple's rules), make `own` come from the server like the
+  classes, and keep the limit server-side too.

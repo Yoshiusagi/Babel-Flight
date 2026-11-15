@@ -96,6 +96,7 @@ function unionSave(a,b){
   if((od.d||'')>(out.daily.d||''))out.daily={d:od.d,n:od.n||0};
   else if(od.d===out.daily.d)out.daily.n=Math.max(out.daily.n||0,od.n||0);
   out.tq=Math.max(a.tq||0,b.tq||0);
+  if(typeof dfUnion==='function'&&(a.df||b.df))out.df=dfUnion(a.df,b.df,newer.df);
   out.stMax=Math.max(a.stMax||0,b.stMax||0);
   /* レベル per language: a language set only on the other copy keeps its level; the update notice seen anywhere stays seen */
   var olv=older.lv||{};if(!out.lv)out.lv={};Object.keys(olv).forEach(function(l){if(!out.lv[l])out.lv[l]=olv[l];});

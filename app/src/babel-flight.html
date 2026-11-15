@@ -2201,6 +2201,89 @@ button.pa-w{min-height:32px}
 .atc-apts .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .atc-set .hint{margin:0}
 </style>
+<style>
+/* ---- DUTY FREE 機内販売 (f44_duty.js) ---- */
+.df-card .df-sum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.df-sum span{display:flex;flex-direction:column;gap:2px;padding:10px;border-radius:12px;background:var(--surface2,var(--bg));font-size:11.5px;color:var(--ink2);line-height:1.3}
+.df-sum b{font:700 18px/1.1 var(--f-mono);color:var(--ink);font-variant-numeric:tabular-nums}
+.df-top{display:flex;align-items:center;justify-content:space-between}
+.df-top .x{border:0;background:transparent;color:var(--ink);width:36px;height:36px;display:grid;place-items:center;padding:0}
+.df-top .x svg{width:20px;height:20px}
+.df-sheet h3{color:var(--ink)}
+.df-msg{padding:10px 12px;border-radius:10px;background:var(--surface2,var(--surface));box-shadow:inset 3px 0 0 var(--good);font-size:13.5px;line-height:1.5;animation:dfIn .35s cubic-bezier(.2,.9,.3,1)}
+.df-tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:2px -2px 0;padding:2px}
+.df-tabs::-webkit-scrollbar{display:none}
+.df-tabs button{flex:none;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 14px;font:600 13px/1 var(--f-body);transition:background .25s,color .25s,border-color .25s}
+.df-tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.df-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.df-item{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:10px 10px 12px;border-radius:16px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);text-align:left;font:inherit;transition:transform .18s cubic-bezier(.2,.9,.3,1),border-color .25s;animation:dfIn .4s cubic-bezier(.2,.9,.3,1) both}
+.df-item:nth-child(2){animation-delay:.04s}.df-item:nth-child(3){animation-delay:.08s}.df-item:nth-child(4){animation-delay:.12s}.df-item:nth-child(5){animation-delay:.16s}
+.df-item:active{transform:scale(.97)}
+.df-item.eq{border-color:var(--good);box-shadow:0 0 0 1.5px var(--good) inset}
+.df-item b{font-size:14px;line-height:1.3;margin-top:4px}
+.df-yen{font:700 15px/1.1 var(--f-mono)}
+.df-mi{font-size:11.5px;color:var(--ink2)}
+.df-st{font-size:12px;font-weight:600;color:var(--ink2)}
+.df-st.on{color:var(--good)}
+.df-ltd{position:absolute;top:8px;right:8px;z-index:1;font:700 10.5px/1 var(--f-body);font-style:normal;padding:4px 7px;border-radius:999px;background:var(--signal);color:var(--on-signal,#111)}
+.df-pv{width:100%;height:74px;border-radius:11px;display:grid;place-items:center;background:var(--bg);overflow:hidden}
+.df-big .df-pv{height:150px}
+.pv-lv{background:linear-gradient(180deg,#7ec8ff,#cfeaff)}
+[data-theme="dark"] .pv-lv{background:linear-gradient(180deg,#1b3159,#2f4f80)}
+.df-plane{width:64px;height:50px;transform:rotate(-18deg);filter:drop-shadow(0 4px 6px rgba(0,0,0,.25))}
+.df-big .df-plane{width:130px;height:100px;animation:dfFloat 3s ease-in-out infinite}
+.pv-ps{background:var(--bg)}
+.pv-tk{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:9px;background:var(--pb);color:var(--pi);box-shadow:0 3px 8px rgba(0,0,0,.15);border-top:4px solid var(--pa)}
+.pv-tk b{font:700 18px/1 var(--f-disp);letter-spacing:.04em}
+.pv-tk i{font-style:normal;color:var(--pa)}
+.df-big .pv-tk{padding:18px 24px;gap:14px}.df-big .pv-tk b{font-size:30px}
+.pv-ps.ps-holo .pv-tk{background:linear-gradient(115deg,#e9f6ff,#ffe3f3 35%,#e6ddff 60%,#dffcf1);background-size:220% 100%;animation:dfHolo 4s linear infinite}
+.pv-sd span{font-size:30px}.pv-sd small{display:block;font-size:10.5px;color:var(--ink2);text-align:center}
+.df-big .pv-sd span{font-size:54px}
+.df-ph{display:grid;place-items:center;width:48px;height:58px;border-radius:6px;background:var(--surface);color:var(--ink)}
+.df-ph svg{width:28px;height:28px}.df-ph .pfp{font-size:28px}
+.df-ph.fr-gold{box-shadow:0 0 0 2px var(--surface),0 0 0 4.5px var(--fc)}
+.df-ph.fr-runway{outline:3px dotted var(--fc);outline-offset:3px}
+.df-big .df-ph{transform:scale(1.6)}
+.df-tt{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);font:700 12px/1.2 var(--f-body);color:var(--ink)}
+.id-card .df-tt{margin:6px 0 2px}
+.df-big .df-tt{font-size:16px;padding:8px 16px}
+.df-desc{font-size:14px;line-height:1.6;color:var(--ink2)}
+.df-warn{font-size:12.5px;line-height:1.5;color:var(--bad)}
+.df-sheet .link{border:0;background:none;padding:0 0 0 4px;color:var(--info,var(--ink));text-decoration:underline;font:inherit}
+.df-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12.5px;color:var(--ink2);margin-top:4px}
+.df-foot .ghost{padding:8px 12px;font-size:12.5px;color:var(--ink)}
+.df-caps{display:flex;flex-wrap:wrap;gap:6px}
+.df-caps button{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:9px 12px;font:600 13px/1 var(--f-body)}
+.df-caps button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.df-guard{padding:12px;border-radius:12px;border:1.5px dashed var(--bad);font-size:13.5px;line-height:1.55;display:grid;gap:8px;animation:dfIn .3s ease}
+.df-ck{display:flex;gap:8px;align-items:center;font-size:13.5px}
+.df-ck input{width:20px;height:20px}
+.df-month{font-size:13.5px}
+.df-h{font-size:15px!important;margin-top:6px}
+.df-log{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.df-log li{display:grid;grid-template-columns:44px 1fr auto;gap:8px;font-size:13px;padding:8px 10px;border-radius:10px;background:var(--surface)}
+.df-log li span{color:var(--ink2);font-variant-numeric:tabular-nums}
+@keyframes dfIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes dfFloat{0%,100%{transform:rotate(-18deg) translateY(0)}50%{transform:rotate(-18deg) translateY(-6px)}}
+@keyframes dfHolo{to{background-position:-220% 0}}
+/* the look on the page */
+html[data-lv] #pp path{fill:var(--lv1)}
+html[data-lv] .pass-route svg{color:var(--lv1)}
+html[data-lv] .cine-plane{fill:var(--lv1)}
+html[data-lv] .sp-line path:last-child{stroke:var(--lv1);fill:color-mix(in srgb,var(--lv1) 45%,transparent)}
+html[data-ps="ps-retro"] .pass{--surface:#f4e7c9;--ink:#4a3423;--ink2:#7a5f45;--line:#d9c49a;color:var(--ink)}
+html[data-ps="ps-retro"] .pass .pass-main::before{background:#b5562b}
+html[data-ps="ps-night"] .pass{--surface:#14203f;--ink:#eef3ff;--ink2:#a9b6d6;--line:#33426e;color:var(--ink)}
+html[data-ps="ps-night"] .pass .pass-main::before{background:#ffd34d}
+html[data-ps="ps-night"] .pass .pass-main{background:radial-gradient(1px 1px at 20% 30%,#fff8 50%,transparent 51%),radial-gradient(1px 1px at 70% 20%,#fff6 50%,transparent 51%),radial-gradient(1.5px 1.5px at 85% 60%,#fff7 50%,transparent 51%),#14203f}
+html[data-ps="ps-holo"] .pass{--surface:#f3f7ff;--ink:#1b2440;--ink2:#56607e;--line:#cfd6ee;color:var(--ink)}
+html[data-ps="ps-holo"] .pass .pass-main,html[data-ps="ps-holo"] .pass .pass-stub{background:linear-gradient(115deg,#e9f6ff,#ffe3f3 35%,#e6ddff 60%,#dffcf1);background-size:220% 100%;animation:dfHolo 6s linear infinite}
+html[data-ps="ps-holo"] .pass .pass-main::before{background:linear-gradient(90deg,#8fd3ff,#d2b4ff,#ffd6e8,#9ff0d0)}
+html[data-fr="fr-gold"] .id-card .photo{box-shadow:0 0 0 2px var(--surface),0 0 0 4.5px #d9b25a}
+html[data-fr="fr-runway"] .id-card .photo{outline:3px dotted #ffd34d;outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.df-item,.df-msg,.df-guard,.df-big .df-plane,.pv-ps.ps-holo .pv-tk,html[data-ps="ps-holo"] .pass .pass-main,html[data-ps="ps-holo"] .pass .pass-stub{animation:none!important}}
+</style>
 </head>
 <body>
 <div id="sky" class="sky" aria-hidden="true"></div>
@@ -5021,7 +5104,7 @@ var KEY='babelflight.save.v1';
 var OLD_ORDER=['checkin','inflight','immigration','hotel','restaurant','city','atc1','atc2'];
 function blankProg(){var p={};ORDER.forEach(function(k){p[k]={items:{},units:{}};});return p;}
 function defaults(){return {v:2,t:0,name:'PASSENGER',icon:'',rz:0,lang:'ko',prof:'',level:'mid',lv:{},nw:'',why:'',weak:[],why0:0,seen:'',goal:2,onboarded:false,theme:'auto',sound:true,mode:'daily',amb:false,tap:true,pos:{},
-  miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,dly:[],wb:{},trip:null,daily:{d:'',n:0},mh:null,st:null,cap:0,tq:0,enVar:'us',acc:{},rem:{},stMax:0,accent:'',atcApt:{},atcAcc:1,prog:blankProg()};}
+  miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,dly:[],wb:{},trip:null,daily:{d:'',n:0},mh:null,st:null,cap:0,tq:0,enVar:'us',acc:{},rem:{},stMax:0,accent:'',atcApt:{},atcAcc:1,df:null,prog:blankProg()};}
 function mergeSave(raw){
   var d=defaults();
   if(!raw||typeof raw!=='object')return d;
@@ -5089,6 +5172,8 @@ function mergeSave(raw){
   var aa={};if(raw.atcApt&&typeof raw.atcApt==='object')Object.keys(raw.atcApt).forEach(function(l){var v=raw.atcApt[l];if(/^[a-z]{2}$/.test(l)&&typeof v==='string'&&/^[A-Z]{3}$/.test(v))aa[l]=v;});
   d.atcApt=aa;if(d.atcAcc!==0&&d.atcAcc!==2)d.atcAcc=1;
   d.cap=+d.cap>0?+d.cap:0;d.tq=+d.tq>0?Math.floor(+d.tq):0;
+  /* DUTY FREE (f44_duty.js): items, what is worn, miles exchanged, yen per month, the monthly limit */
+  d.df=raw.df&&typeof raw.df==='object'?(typeof DF_MAP==='object'&&DF_MAP?dfClean(raw.df):raw.df):null;
   return d;
 }
 function loadLocal(){try{return mergeSave(JSON.parse(localStorage.getItem(KEY)||'null'));}catch(e){return defaults();}}
@@ -6009,7 +6094,7 @@ function mapFrame(){
   if(rp>0.3){
     var bob=reduceMotion?0:Math.sin(now/600)*1;
     g.save();g.translate(pos.x,pos.y+bob);g.rotate(ang);g.scale(.85,.85);
-    g.shadowColor='rgba(255,255,255,.7)';g.shadowBlur=10;g.fillStyle='#fff';g.fill(M.plane);g.restore();
+    g.shadowColor='rgba(255,255,255,.7)';g.shadowBlur=10;g.fillStyle=(typeof dfPlaneFill==='function'&&dfPlaneFill(g))||'#fff';g.fill(M.plane);g.restore();
   }
   M.raf=requestAnimationFrame(mapFrame);
 }
@@ -7247,6 +7332,7 @@ function unionSave(a,b){
   if((od.d||'')>(out.daily.d||''))out.daily={d:od.d,n:od.n||0};
   else if(od.d===out.daily.d)out.daily.n=Math.max(out.daily.n||0,od.n||0);
   out.tq=Math.max(a.tq||0,b.tq||0);
+  if(typeof dfUnion==='function'&&(a.df||b.df))out.df=dfUnion(a.df,b.df,newer.df);
   out.stMax=Math.max(a.stMax||0,b.stMax||0);
   /* レベル per language: a language set only on the other copy keeps its level; the update notice seen anywhere stays seen */
   var olv=older.lv||{};if(!out.lv)out.lv={};Object.keys(olv).forEach(function(l){if(!out.lv[l])out.lv[l]=olv[l];});
@@ -19746,6 +19832,250 @@ function localSetAcc(n){
   save.atcAcc=n;store();openNodeSheet('sc-local');
   var u=UNITS[save.lang]&&UNITS[save.lang]['sc-local'];if(u)localSay(save.lang,u.turns[0].p);
 }
+/* ================= DUTY FREE 機内販売 (single cosmetic items; test account only for now) =================
+   Small things to buy once and keep: リバリー (the plane's colours on the map, the flight bar and the 搭乗券),
+   搭乗券デザイン, サウンドパック (the カチカチ of the flight board), アイコン枠 and 称号 (the ID card in 記録).
+   Price 80〜160円; some can also be exchanged for miles. Spending miles never lowers the status: the status counts
+   save.miles, the shop only counts what is left after save.df.ms (miles already exchanged).
+   Brakes for a young audience: every purchase has a final confirmation (what, price, no refund), and a monthly limit
+   (default 500円, raising it asks for a guardian's OK).
+   Paid items are TEST purchases for now (no money moves): real payments are not open yet. When they open, a purchase
+   must be recorded on the server (Stripe on the website, In-App Purchase in the iPhone app) and save.df.own must come
+   from there, like the classes do. Website only, test account only: dfOn(). */
+var DF_KINDS=[['lv','リバリー','機体のデザイン'],['ps','搭乗券','ホームの搭乗券'],['sd','サウンド','カチカチ音'],['fr','アイコン枠','IDカードの写真'],['tt','称号','IDカードの肩書き']];
+/* [kind, id, name, yen, miles (0 = 円だけ), description, look, limited] */
+var DF_ITEMS=[
+ ['lv','lv-sunset','サンセット',120,0,'夕焼けのオレンジから、ピンクへのグラデーション。',['#ff9a3c','#ff5e8a']],
+ ['lv','lv-navy','ミッドナイトネイビー',120,1500,'深い紺に、金色のライン。夜の国際線のイメージです。',['#22346e','#d9b25a']],
+ ['lv','lv-sakura','さくら',120,0,'やわらかい桜色。春のフライトに。',['#ffc2d6','#ff7aa8']],
+ ['lv','lv-mint','ミントジェット',80,800,'さわやかなミントグリーン。',['#5fe0b0','#1aa37a']],
+ ['lv','lv-aurora','オーロラ',160,0,'北極圏の空の色。グリーンからむらさきへ。',['#6cf0c2','#8a7bff'],1],
+ ['ps','ps-retro','レトロペーパー',80,0,'昔の紙の航空券のような、あたたかい色。',['#f4e7c9','#4a3423','#b5562b']],
+ ['ps','ps-night','ナイトフライト',120,1500,'夜空の紺に、金色の文字。',['#14203f','#eef3ff','#ffd34d']],
+ ['ps','ps-holo','ホログラム',160,0,'角度で色が変わる、虹色の搭乗券。',['#e9f6ff','#1b2440','#b58cff'],1],
+ ['sd','sd-wood','ウッド',120,0,'木の札がめくれるような、低くてやわらかい音。',[600,900,.034,3,.3,'bp']],
+ ['sd','sd-metal','メタル',120,0,'金属のフラップが当たる、高くて澄んだ音。',[3400,4400,.012,2.6,.14,'bp',2600]],
+ ['sd','sd-soft','ASMRソフト',120,1500,'小さく、まるい音。ずっと聞いていられる心地よさに。',[900,1300,.026,1.6,.16,'lp']],
+ ['fr','fr-gold','ゴールドリング',80,0,'写真のまわりに、金色のふち。',['#d9b25a']],
+ ['fr','fr-runway','滑走路ライト',80,800,'夜の滑走路のライトのような点線のふち。',['#ffd34d']],
+ ['tt','tt-nav','ナビゲーター',80,0,'IDカードに「ナビゲーター」の肩書き。',['🧭']],
+ ['tt','tt-jet','ジェットセッター',80,0,'世界中を飛び回る人の肩書き。',['🌍']],
+ ['tt','tt-red','レッドアイの常連',80,800,'夜おそくまで飛ぶ人の肩書き(深夜便のこと)。',['🌙']]
+];
+var DF_MAP={};DF_ITEMS.forEach(function(x){DF_MAP[x[1]]=x;});
+var DF_CAPS=[[0,'購入しない'],[300,'300円'],[500,'500円'],[1000,'1,000円'],[-1,'上限なし']];
+var DF_CAP0=500;
+var DFU={tab:'lv',msg:''};
+
+function dfOn(){return typeof cabinOn==='function'&&cabinOn()&&typeof cabinTester==='function'&&cabinTester();}
+function dfYen(n){return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
+function dfYM(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2);}
+function dfClean(x){
+  var o={own:[],eq:{},ms:0,mon:{},cap:DF_CAP0,log:[]};
+  if(!x||typeof x!=='object')return o;
+  if(Array.isArray(x.own))x.own.forEach(function(id){if(DF_MAP[id]&&o.own.indexOf(id)<0)o.own.push(id);});
+  if(x.eq&&typeof x.eq==='object')DF_KINDS.forEach(function(k){var v=x.eq[k[0]];if(typeof v==='string'&&DF_MAP[v]&&DF_MAP[v][0]===k[0]&&o.own.indexOf(v)>=0)o.eq[k[0]]=v;});
+  o.ms=+x.ms>0?Math.floor(+x.ms):0;
+  if(x.mon&&typeof x.mon==='object')Object.keys(x.mon).forEach(function(k){var v=+x.mon[k];if(/^\d{4}-\d\d$/.test(k)&&v>0)o.mon[k]=Math.round(v);});
+  var c=+x.cap;if(DF_CAPS.some(function(p){return p[0]===c;}))o.cap=c;
+  if(Array.isArray(x.log))o.log=x.log.filter(function(l){return l&&DF_MAP[l.id]&&+l.t>0;}).map(function(l){return {id:l.id,t:+l.t,yen:+l.yen>0?Math.round(+l.yen):0,mi:+l.mi>0?Math.round(+l.mi):0};}).slice(-60);
+  return o;
+}
+/* both copies of the save keep everything bought on either one */
+function dfUnion(a,b,newer){
+  var A=dfClean(a),B=dfClean(b),N=dfClean(newer),o=N;
+  o.own=A.own.concat(B.own.filter(function(id){return A.own.indexOf(id)<0;}));
+  o.ms=Math.max(A.ms,B.ms);
+  var mon={};[A.mon,B.mon].forEach(function(m){Object.keys(m).forEach(function(k){mon[k]=Math.max(mon[k]||0,m[k]);});});o.mon=mon;
+  var seen={},log=[];A.log.concat(B.log).forEach(function(l){var k=l.id+'@'+l.t;if(!seen[k]){seen[k]=1;log.push(l);}});
+  o.log=log.sort(function(x,y){return x.t-y.t;}).slice(-60);
+  return dfClean(o);
+}
+function dfS(){if(!save.df||typeof save.df!=='object')save.df=dfClean(null);return save.df;}
+function dfOwn(id){return dfS().own.indexOf(id)>=0;}
+function dfEq(kind){if(!dfOn())return '';var v=dfS().eq[kind];return v&&dfOwn(v)?v:'';}
+function dfMiLeft(){return Math.max(0,(save.miles||0)-dfS().ms);}
+function dfMonth(){return dfS().mon[dfYM()]||0;}
+function dfCapLeft(){var c=dfS().cap;return c<0?Infinity:Math.max(0,c-dfMonth());}
+
+/* ---- the look, on the whole page ---- */
+function dfApply(){
+  var r=rootEl,lv=DF_MAP[dfEq('lv')],ps=dfEq('ps'),fr=dfEq('fr');
+  if(lv){r.setAttribute('data-lv',lv[1]);r.style.setProperty('--lv1',lv[6][0]);r.style.setProperty('--lv2',lv[6][1]);}
+  else{r.removeAttribute('data-lv');r.style.removeProperty('--lv1');r.style.removeProperty('--lv2');}
+  if(ps)r.setAttribute('data-ps',ps);else r.removeAttribute('data-ps');
+  if(fr)r.setAttribute('data-fr',fr);else r.removeAttribute('data-fr');
+}
+/* the plane on the home route map (canvas, drawn in the plane's own coordinates: tail -18 … nose 14) */
+function dfPlaneFill(g){
+  var lv=DF_MAP[dfEq('lv')];if(!lv)return '';
+  try{var gr=g.createLinearGradient(-18,0,14,0);gr.addColorStop(0,lv[6][0]);gr.addColorStop(1,lv[6][1]);return gr;}catch(e){return lv[6][0];}
+}
+/* サウンドパック: the flight board's clack in another material */
+function dfClack(p){
+  if(!save.sound)return;var a=audio();if(!a)return;
+  try{
+    var n=Math.floor(a.sampleRate*p[2]),b=a.createBuffer(1,n,a.sampleRate),c=b.getChannelData(0);
+    for(var i=0;i<n;i++)c[i]=(Math.random()*2-1)*Math.pow(1-i/n,p[3]);
+    var s=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain();
+    s.buffer=b;f.type=p[5]==='lp'?'lowpass':'bandpass';f.frequency.value=p[0]+Math.random()*(p[1]-p[0]);if(p[5]==='bp')f.Q.value=p[0]<1000?1.4:0.9;
+    g.gain.value=p[4];s.connect(f);f.connect(g);g.connect(a.destination);s.start();
+    if(p[6]){var t=a.currentTime,o=a.createOscillator(),og=a.createGain();o.type='sine';o.frequency.setValueAtTime(p[6]+Math.random()*300,t);
+      og.gain.setValueAtTime(0.0001,t);og.gain.exponentialRampToValueAtTime(0.012,t+0.003);og.gain.exponentialRampToValueAtTime(0.0001,t+0.09);
+      o.connect(og);og.connect(a.destination);o.start(t);o.stop(t+0.1);}
+  }catch(e){}
+}
+(function(){
+  var c0=clack;
+  clack=function(){var sd=DF_MAP[dfEq('sd')];if(sd)return dfClack(sd[6]);return c0.apply(this,arguments);};
+})();
+function dfPlayDemo(id){
+  var it=DF_MAP[id];if(!it)return;var on=save.sound;save.sound=true;
+  for(var k=0;k<6;k++)(function(k){setTimeout(function(){if(it[0]==='sd')dfClack(it[6]);},k*70);})(k);
+  setTimeout(function(){save.sound=on;},500);
+}
+/* 称号 on the ID card */
+(function(){
+  var r0=recordHTML;
+  recordHTML=function(){
+    var h=r0.apply(this,arguments),tt=DF_MAP[dfEq('tt')];
+    if(tt)h=h.replace('<div class="cls">','<div class="df-tt"><span aria-hidden="true">'+tt[6][0]+'</span>'+esc(tt[2])+'</div><div class="cls">');
+    return h;
+  };
+})();
+(function(){var e0=entSet;entSet=function(){var r=e0.apply(this,arguments);dfApply();return r;};})();
+
+/* ---- previews ---- */
+function dfPlaneSVG(c1,c2,uid){
+  return '<svg class="df-plane" viewBox="-20 -14 36 28" aria-hidden="true"><defs><linearGradient id="dfg-'+uid+'" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="'+c1+'"/><stop offset="1" stop-color="'+c2+'"/></linearGradient></defs><path d="'+PLANE_D+'" fill="url(#dfg-'+uid+')"/></svg>';
+}
+function dfPreview(it,big){
+  var k=it[0],l=it[6],u=it[1]+(big?'-b':'');
+  if(k==='lv')return '<div class="df-pv pv-lv">'+dfPlaneSVG(l[0],l[1],u)+'</div>';
+  if(k==='ps')return '<div class="df-pv pv-ps '+it[1]+'" style="--pb:'+l[0]+';--pi:'+l[1]+';--pa:'+l[2]+'"><span class="pv-tk"><b>HND</b><i>✈</i><b>ICN</b></span></div>';
+  if(k==='sd')return '<div class="df-pv pv-sd"><span aria-hidden="true">🔊</span>'+(big?'':'<small>タップで試聴</small>')+'</div>';
+  if(k==='fr')return '<div class="df-pv pv-fr"><span class="df-ph '+it[1]+'" style="--fc:'+l[0]+'">'+avatarHTML()+'</span></div>';
+  return '<div class="df-pv pv-tt"><span class="df-tt"><span aria-hidden="true">'+l[0]+'</span>'+esc(it[2])+'</span></div>';
+}
+function dfPriceHTML(it){
+  if(dfOwn(it[1]))return dfEq(it[0])===it[1]?'<span class="df-st on">使用中</span>':'<span class="df-st">持っています</span>';
+  return '<span class="df-yen">'+it[3]+'円</span>'+(it[4]?'<span class="df-mi">または '+dfYen(it[4])+'マイル</span>':'');
+}
+
+/* ---- 記録: the shop card ---- */
+function dfCardHTML(){
+  if(!dfOn())return '';
+  var n=dfS().own.length,cap=dfS().cap;
+  return '<section class="card df-card"><div class="card-h"><h2 class="jh">DUTY FREE ・ 機内販売</h2><span class="lbl">テスト用だけ</span></div>'+
+    '<p class="dim hint">機体の色、搭乗券、カチカチ音などを、1つ80〜160円で着せかえられます。マイルで交換できるものもあります。</p>'+
+    '<div class="df-sum"><span><b>'+n+'</b>持っているもの</span><span><b>'+dfYen(dfMiLeft())+'</b>交換に使えるマイル</span><span><b>'+(cap<0?'なし':dfYen(cap)+'円')+'</b>1か月の上限</span></div>'+
+    '<button class="go sm" type="button" data-df-open>ショップを開く<small>テスト購入なので、お金はかかりません</small></button></section>';
+}
+(function(){var c0=cabinCardHTML;cabinCardHTML=function(){return c0.apply(this,arguments)+dfCardHTML();};})();
+
+/* ---- the shop (a sheet) ---- */
+function dfShop(tab){
+  if(!dfOn())return;if(tab)DFU.tab=tab;
+  var t=DFU.tab,items=DF_ITEMS.filter(function(x){return x[0]===t;}),kind=DF_KINDS.filter(function(k){return k[0]===t;})[0];
+  var eq=dfS().eq[t]||'';
+  $('sheetHost').innerHTML='<div class="sheet plain df-sheet" role="dialog" aria-label="DUTY FREE"><div class="sheet-in">'+
+    '<div class="df-top"><span class="lbl">DUTY FREE ・ 機内販売</span><button class="x" type="button" data-close-sheet aria-label="閉じる">'+closeIcon()+'</button></div>'+
+    '<h3>ショップ</h3>'+
+    '<p class="bill-test sm"><b>🧪 テスト購入</b><span>まだ本物の支払いは始まっていないので、お金はかかりません。</span></p>'+
+    (DFU.msg?'<p class="df-msg" role="status">'+DFU.msg+'</p>':'')+
+    '<div class="df-tabs" role="tablist">'+DF_KINDS.map(function(k){return '<button type="button" role="tab" data-df-tab="'+k[0]+'" aria-selected="'+(k[0]===t)+'">'+k[1]+'</button>';}).join('')+'</div>'+
+    '<p class="dim hint">'+esc(kind[2])+'が変わります。</p>'+
+    '<div class="df-grid">'+items.map(function(it){
+      return '<button type="button" class="df-item'+(dfOwn(it[1])?' own':'')+(eq===it[1]?' eq':'')+'" data-df-item="'+it[1]+'">'+(it[7]?'<i class="df-ltd">限定</i>':'')+dfPreview(it)+
+        '<b>'+esc(it[2])+'</b>'+dfPriceHTML(it)+'</button>';}).join('')+'</div>'+
+    (eq?'<button class="ghost" type="button" data-df-unequip="'+t+'">標準のデザインにもどす</button>':'')+
+    '<div class="df-foot"><span>今月の購入 <b>'+dfYen(dfMonth())+'円</b> / 上限 '+(dfS().cap<0?'なし':dfYen(dfS().cap)+'円')+'</span><button class="ghost" type="button" data-df-settings>上限と履歴</button></div>'+
+    '</div></div>';
+  DFU.msg='';
+}
+function dfItemSheet(id){
+  var it=DF_MAP[id];if(!it||!dfOn())return;
+  var own=dfOwn(id),on=dfEq(it[0])===id,mi=dfMiLeft(),capL=dfCapLeft();
+  var h='<div class="sheet plain df-sheet" role="dialog" aria-label="'+esc(it[2])+'"><div class="sheet-in">'+
+    '<div class="df-top"><span class="lbl">'+esc(DF_KINDS.filter(function(k){return k[0]===it[0];})[0][1])+(it[7]?' ・ 限定':'')+'</span><button class="x" type="button" data-df-back aria-label="戻る">'+closeIcon()+'</button></div>'+
+    '<div class="df-big">'+dfPreview(it,true)+'</div><h3>'+esc(it[2])+'</h3><p class="df-desc">'+esc(it[5])+'</p>';
+  if(it[0]==='sd')h+='<button class="ghost" type="button" data-df-demo="'+id+'">🔊 試しに聞く</button>';
+  if(own){
+    h+=on?'<button class="go sm" type="button" data-df-unequip="'+it[0]+'">はずす</button>':'<button class="go sm" type="button" data-df-equip="'+id+'">使う</button>';
+  }else{
+    h+='<button class="go sm" type="button" data-df-buy="'+id+'"'+(capL<it[3]?' disabled':'')+'>'+it[3]+'円で購入<small>テスト購入 ・ お金はかかりません</small></button>';
+    if(capL<it[3])h+='<p class="df-warn">'+(dfS().cap===0?'「購入しない」に設定されています。':'今月の上限('+dfYen(dfS().cap)+'円)をこえてしまうので、購入できません。')+'<button class="link" type="button" data-df-settings>上限を確認する</button></p>';
+    if(it[4])h+='<button class="go sm alt" type="button" data-df-swap="'+id+'"'+(mi<it[4]?' disabled':'')+'>'+dfYen(it[4])+'マイルで交換<small>交換に使えるマイル：'+dfYen(mi)+'(ステータスは下がりません)</small></button>';
+  }
+  $('sheetHost').innerHTML=h+'</div></div>';
+}
+/* the final confirmation (what, price, when, no refund) */
+function dfConfirm(id,how){
+  var it=DF_MAP[id];if(!it||!dfOn()||dfOwn(id))return;
+  var yen=how==='yen',h='<div class="sheet plain df-sheet bill-sheet" role="dialog" aria-label="購入の確認"><div class="sheet-in">'+
+    '<span class="lbl">最終確認</span><h3>'+(yen?it[3]+'円で購入しますか❓':dfYen(it[4])+'マイルで交換しますか❓')+'</h3>';
+  if(yen)h+='<p class="bill-test sm"><b>🧪 テスト購入</b><span>本物のお金は動きません。</span></p>';
+  h+='<dl class="bill-dl"><dt>商品</dt><dd>DUTY FREE「'+esc(it[2])+'」('+esc(DF_KINDS.filter(function(k){return k[0]===it[0];})[0][1])+')</dd>'+
+    (yen?'<dt>価格</dt><dd><b>'+it[3]+'円(税込)</b> ・ 1回だけの支払い</dd>'+
+      '<dt>今月の購入</dt><dd>'+dfYen(dfMonth())+'円 → '+dfYen(dfMonth()+it[3])+'円(上限 '+(dfS().cap<0?'なし':dfYen(dfS().cap)+'円')+')</dd>'
+    :'<dt>使うマイル</dt><dd><b>'+dfYen(it[4])+'マイル</b>(残り '+dfYen(dfMiLeft()-it[4])+'マイル)</dd><dt>ステータス</dt><dd>下がりません(ステータスは、ためたマイルで決まります)</dd>')+
+    '<dt>使える時期</dt><dd>すぐ。ずっと使えます</dd>'+
+    (yen?'<dt>返品</dt><dd>デジタルの商品なので、購入後の返品・返金はできません</dd>':'')+'</dl>'+
+    '<button class="go sm" type="button" data-df-do="'+id+'" data-df-how="'+how+'">'+(yen?'購入する':'交換する')+'</button>'+
+    '<button class="ghost" type="button" data-df-item="'+id+'">やめる</button></div></div>';
+  $('sheetHost').innerHTML=h;
+}
+function dfDo(id,how){
+  var it=DF_MAP[id],d=dfS();if(!it||!dfOn()||dfOwn(id))return;
+  if(how==='yen'){if(dfCapLeft()<it[3])return dfItemSheet(id);d.mon[dfYM()]=dfMonth()+it[3];d.log.push({id:id,t:Date.now(),yen:it[3],mi:0});}
+  else{if(!it[4]||dfMiLeft()<it[4])return dfItemSheet(id);d.ms+=it[4];d.log.push({id:id,t:Date.now(),yen:0,mi:it[4]});}
+  d.log=d.log.slice(-60);d.own.push(id);d.eq[it[0]]=id;
+  store();dfApply();
+  DFU.msg='✨ 「'+esc(it[2])+'」を'+(how==='yen'?'購入':'交換')+'しました。さっそく使っています。';
+  if(typeof buzz==='function')buzz(12);if(typeof chimeOK==='function')chimeOK();
+  if(view==='record')render();
+  dfShop(it[0]);
+}
+function dfSettings(step){
+  var d=dfS(),h='<div class="sheet plain df-sheet" role="dialog" aria-label="上限と履歴"><div class="sheet-in">'+
+    '<div class="df-top"><span class="lbl">DUTY FREE</span><button class="x" type="button" data-df-back aria-label="戻る">'+closeIcon()+'</button></div><h3>1か月の上限</h3>'+
+    '<p class="dim hint">1か月に使える金額の上限です。上げるときは、保護者の方と相談してから変えてね。マイルでの交換は上限に入りません。</p>'+
+    '<div class="df-caps" role="group" aria-label="1か月の上限">'+DF_CAPS.map(function(c){return '<button type="button" data-df-cap="'+c[0]+'" aria-pressed="'+(d.cap===c[0])+'">'+c[1]+'</button>';}).join('')+'</div>';
+  if(step!==undefined){
+    h+='<div class="df-guard"><p><b>上限を'+(step<0?'なし':dfYen(step)+'円')+'に上げます。</b>保護者の方と相談しましたか❓</p>'+
+      '<label class="df-ck"><input type="checkbox" id="dfGuard"> 保護者の方の同意をもらいました</label>'+
+      '<button class="go sm" type="button" data-df-capok="'+step+'" disabled id="dfCapOk">上限を変える</button></div>';
+  }
+  h+='<p class="df-month">今月の購入：<b>'+dfYen(dfMonth())+'円</b></p><h3 class="df-h">購入の履歴</h3>';
+  var log=d.log.slice().reverse();
+  h+=log.length?'<ul class="df-log">'+log.map(function(l){var it=DF_MAP[l.id],t=new Date(l.t);
+      return '<li><span>'+(t.getMonth()+1)+'/'+t.getDate()+'</span><b>'+esc(it[2])+'</b><span>'+(l.yen?l.yen+'円(テスト)':dfYen(l.mi)+'マイル')+'</span></li>';}).join('')+'</ul>':'<p class="dim hint">まだありません。</p>';
+  $('sheetHost').innerHTML=h+'<button class="ghost" type="button" data-df-back>ショップにもどる</button></div></div>';
+}
+document.addEventListener('change',function(e){if(e.target&&e.target.id==='dfGuard'){var b=$('dfCapOk');if(b)b.disabled=!e.target.checked;}});
+document.addEventListener('click',function(e){
+  var t=e.target&&e.target.closest&&e.target.closest('button');if(!t||!dfOn())return;
+  var g=function(n){return t.getAttribute(n);};
+  if(t.hasAttribute('data-df-open')){DFU.msg='';dfShop();return;}
+  if(t.hasAttribute('data-df-tab')){dfShop(g('data-df-tab'));return;}
+  if(t.hasAttribute('data-df-back')){dfShop();return;}
+  if(t.hasAttribute('data-df-item')){var it=DF_MAP[g('data-df-item')];if(it&&it[0]==='sd'&&t.classList.contains('df-item'))dfPlayDemo(it[1]);dfItemSheet(g('data-df-item'));return;}
+  if(t.hasAttribute('data-df-demo')){dfPlayDemo(g('data-df-demo'));return;}
+  if(t.hasAttribute('data-df-buy')){dfConfirm(g('data-df-buy'),'yen');return;}
+  if(t.hasAttribute('data-df-swap')){dfConfirm(g('data-df-swap'),'mi');return;}
+  if(t.hasAttribute('data-df-do')){dfDo(g('data-df-do'),g('data-df-how'));return;}
+  if(t.hasAttribute('data-df-equip')){var id=g('data-df-equip');if(dfOwn(id)){dfS().eq[DF_MAP[id][0]]=id;store();dfApply();if(view==='record')render();dfShop(DF_MAP[id][0]);}return;}
+  if(t.hasAttribute('data-df-unequip')){var k=g('data-df-unequip');delete dfS().eq[k];store();dfApply();if(view==='record')render();dfShop(k);return;}
+  if(t.hasAttribute('data-df-settings')){dfSettings();return;}
+  if(t.hasAttribute('data-df-cap')){
+    var c=+g('data-df-cap'),cur=dfS().cap,up=c<0?cur>=0:(cur>=0&&c>cur);
+    if(up){dfSettings(c);return;}
+    dfS().cap=c;store();if(view==='record')render();dfSettings();return;
+  }
+  if(t.hasAttribute('data-df-capok')){var ck=$('dfGuard');if(!ck||!ck.checked)return;dfS().cap=+g('data-df-capok');store();if(view==='record')render();dfSettings();return;}
+});
+if(save.df)save.df=dfClean(save.df);
+dfApply();
 /* ================= EVENTS + BOOT ================= */
 function go(v){view=v;confirmReset=false;render();window.scrollTo(0,0);}
 document.addEventListener('click',function(e){
