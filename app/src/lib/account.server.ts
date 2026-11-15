@@ -8,6 +8,7 @@
 //
 // Routes (dispatched from server.ts before the SSR handler):
 //   GET  /privacy               privacy policy page
+//   GET  /support               support page (contact, FAQ; the App Store's support URL)
 //   GET  /api/account/config    { enabled, firebase } public web config
 //   POST /api/account/session   { idToken } -> session cookie
 //   GET  /api/account/me        current account (+ ent: what it may use) or 401
@@ -20,6 +21,7 @@
 import type { D1Database } from "@cloudflare/workers-types";
 
 import PRIVACY_HTML from "../privacy.html?raw";
+import SUPPORT_HTML from "../support.html?raw";
 import { bindings } from "./bindings.server";
 import { entitlementsOf, grantOnSignIn } from "./entitlements.server";
 import { deleteFamilyOf } from "./family.server";
@@ -281,12 +283,12 @@ async function handleDelete(request: Request, db: D1Database, projectId: string)
 
 export async function handleAccount(request: Request, url: URL): Promise<Response | null> {
   const path = url.pathname;
-  if (path === "/privacy/") return Response.redirect(`${url.origin}/privacy`, 301);
-  if (path === "/privacy") {
+  if (path === "/privacy/" || path === "/support/") return Response.redirect(`${url.origin}${path.slice(0, -1)}`, 301);
+  if (path === "/privacy" || path === "/support") {
     if (request.method !== "GET" && request.method !== "HEAD") {
       return new Response("Method Not Allowed", { status: 405, headers: { allow: "GET, HEAD" } });
     }
-    return new Response(request.method === "HEAD" ? null : PRIVACY_HTML, {
+    return new Response(request.method === "HEAD" ? null : path === "/support" ? SUPPORT_HTML : PRIVACY_HTML, {
       headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, max-age=600" },
     });
   }

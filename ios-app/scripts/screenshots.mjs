@@ -30,7 +30,7 @@ const base = `http://127.0.0.1:${server.address().port}/`;
 const NATIVE = `window.Capacitor={isNativePlatform:()=>true,getPlatform:()=>'ios',Plugins:new Proxy({},{get:(t,name)=>new Proxy({},{get:(o,m)=>()=>Promise.resolve(
   m==='checkPermissions'||m==='requestPermissions'?{display:'granted'}:{})})})};`;
 
-const browser = await chromium.launch();
+const browser = await chromium.launch(process.env.CHROME ? { executablePath: process.env.CHROME } : {});
 const ctx = await browser.newContext({
   viewport: { width: 440, height: 956 },
   deviceScaleFactor: 3,
@@ -60,15 +60,22 @@ async function shot(name) {
 }
 
 await shot("welcome");
-// onboarding: language → profession → level → goal
-const click = (sel) => page.locator(sel).first().click();
+// onboarding: language → reason → profession → level → weak points → daily goal
+const click = (sel) => page.locator(sel).first().click({ timeout: 8000 });
+const tryClick = (sel) => click(sel).catch(() => console.log(`(skipped ${sel})`));
 await click('[data-ob-lang="en"]');
-await click('[data-ob-next]');
+await click("[data-ob-next]");
+await tryClick('[data-ob-why="work"]');
+await tryClick("[data-ob-next]");
 await click('[data-ob-prof="pilot"]').catch(() => click("[data-ob-prof]"));
-await click('[data-ob-next]');
-await click('[data-ob-next]');
-await click('[data-ob-next]').catch(() => {});
-await page.waitForTimeout(1200);
+await click("[data-ob-next]");
+await tryClick('[data-ob-level="mid"]');
+await tryClick("[data-ob-next]");
+await tryClick('[data-ob-weak="listen"]');
+await tryClick("[data-ob-next]");
+await tryClick('[data-ob-goal="2"]');
+await tryClick("[data-ob-next]");
+await page.waitForTimeout(1500);
 await shot("route-map");
 
 // a lesson
