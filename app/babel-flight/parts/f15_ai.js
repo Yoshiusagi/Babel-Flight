@@ -139,7 +139,7 @@ if(SAI.on){
     var me={who:'me',text:text,wait:true};ATC.log.push(me);atcRefresh();
     var ctl=new AbortController();ATC.ctl=ctl;
     var at=ATC,sc=ATC.sc;
-    saiPost('/api/ai/atc',{scenario:sc.id,history:ATC.ex.slice(),pilot:text,ui:UI},ctl.signal)
+    saiPost('/api/ai/atc',{scenario:sc.id,apt:ATC.apt?ATC.apt.id:'HND',acc:ATC.apt?atcAccOf(ATC.apt):0,history:ATC.ex.slice(),pilot:text,ui:UI},ctl.signal)
     .then(function(r){return r.json().catch(function(){return {};});})
     .then(function(j){
       if(ATC!==at||ATC.sc!==sc)return; // left this call meanwhile
@@ -155,7 +155,7 @@ if(SAI.on){
       var s=parseInt(j.score,10);me.score=isNaN(s)?0:clamp(s,0,3);me.fb=String(j.feedback_ja||'');me.better=String(j.better||'');
       var atc=String(j.atc||'').trim();
       ATC.ex.push({pilot:text,atc:atc,score:me.score,feedback:me.fb,better:me.better});
-      if(atc){ATC.log.push({who:'atc',text:atc});speak(atc,'en-US',false,true);}
+      if(atc){ATC.log.push({who:'atc',text:atc,local:String(j.atc_local||'').trim().slice(0,600)});atcSay(ATC.log[ATC.log.length-1]);}
       if(j.done===true||ATC.ex.length>=8){ATC.done=true;render();window.scrollTo(0,document.body.scrollHeight);}
       else atcRefresh();
       if(me.score>=3)chimeOK();

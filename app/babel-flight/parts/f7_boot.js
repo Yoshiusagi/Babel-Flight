@@ -75,7 +75,9 @@ document.addEventListener('click',function(e){
   if(a('data-atc-back')){if(ATC.ctl){try{ATC.ctl.abort();}catch(x){}}ATC.busy=false;if(ATC.sc){ATC.sc=null;render();window.scrollTo(0,0);}else go('review');return;}
   if(a('data-atc-send')){atcSend();return;}
   if(a('data-atc-hint')){ATC.hint=true;var hl=$('atcHint');if(hl){hl.innerHTML='例: <span translate="no">'+esc(ATC.sc.hint)+'</span>';hl.classList.remove('hidden-hint');}t.hidden=true;return;}
-  if(a('data-atc-say')){var m=ATC.log[parseInt(g('data-atc-say'),10)];if(m)speak(m.text,'en-US',false,true);return;}
+  if(a('data-atc-say')){atcSay(ATC.log[parseInt(g('data-atc-say'),10)]);return;}
+  if(a('data-atc-apt')){atcSetApt(g('data-atc-apt'));return;}
+  if(a('data-atc-acc')){atcSetAcc(g('data-atc-acc'));return;}
   /* AI ask */
   if(a('data-ai-open')){aiOpen();return;}
   if(a('data-ai-q')){aiAsk(AI_Q[parseInt(g('data-ai-q'),10)]);return;}

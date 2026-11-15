@@ -277,6 +277,12 @@ All free to run (no AI). 日本語 display only unless noted.
   ITエンジニア on the route-simulation engine (`RTX.job`), with one trouble picked at random from two. Mode `jobday`.
 - **雑音の中で聞き取る** (`f42_noise.js`, 学習の設定): 機内 / 空港 / 無線 / カフェ noise made with Web Audio, played under
   each voice in lessons, conversations, the route and the job day (not under 「ゆっくり」). Kept per device.
+- **訛りのある英語** (`f43_accent.js`, AI管制官): the controller works at the airport of the course (`LANGS[L].code`: Dubai
+  for アラビア語, Incheon for 韓国語 …; New York for 英語), or 羽田 / an English-speaking airport, chosen per course
+  (`save.atcApt`). 訛り (`save.atcAcc`): なし (en-US) / 弱 (the English read by the device voice of that language) /
+  強 (the server also asks the AI for `atc_local`, the line respelled in that language's letters, e.g. katakana).
+  Airports, stations and runways are in `ATC_APTS`, mirrored in `src/lib/ai.server.ts` (harness test `atcapt_sync`).
+  中国語 (北京) has no accent until a good voice is found.
 
 ## AI代とクラスの決め方 (rule for new features)
 

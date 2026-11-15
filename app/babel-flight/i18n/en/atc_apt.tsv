@@ -1,0 +1,40 @@
+# AI管制官の空港と訛り(f43_accent.js)
+羽田空港	Haneda Airport
+ケネディ空港	JFK Airport
+ヒースロー空港	Heathrow Airport
+シドニー空港	Sydney Airport
+デリー空港	Delhi Airport
+ダブリン空港	Dublin Airport
+ヨハネスブルグ空港	Johannesburg Airport
+仁川空港	Incheon Airport
+マドリード空港	Madrid Airport
+ローマ空港	Rome Airport
+パリ空港	Paris Airport
+フランクフルト空港	Frankfurt Airport
+北京空港	Beijing Airport
+サンパウロ空港	São Paulo Airport
+モスクワ空港	Moscow Airport
+イスタンブール空港	Istanbul Airport
+ジャカルタ空港	Jakarta Airport
+ドバイ空港	Dubai Airport
+駐機場から滑走路へ	From the stand to the runway
+滑走路{0}	Runway {0}
+最終進入	Final approach
+エンジン故障	Engine failure
+{0}の駐機場(スポット{1})にいます。出発の準備ができたので、地上管制に地上走行の許可をもらおう。	You're at stand {1} at {0} and ready to go. Ask ground control for taxi clearance.
+滑走路{0}の手前で待機中です。管制塔の指示を正しく復唱して、離陸しよう。	You're holding short of runway {0}. Read back the tower's instructions correctly and take off.
+{0}の滑走路{1}に向けて最終進入中(約{2}マイル手前)。管制塔に連絡して着陸の許可をもらおう。	On final approach to runway {1} at {0} (about {2} miles out). Call the tower and get landing clearance.
+離陸して上昇中(高度{0}フィート)に、エンジン{1}基が止まった！管制に緊急事態を宣言して、{2}に戻る許可をもらおう。	Climbing after takeoff ({0} feet), engine {1} has failed! Declare an emergency and get permission to return to {2}.
+{0}で、管制官役のAIと無線交信	Radio calls at {0} with an AI controller
+空港	Airport
+訛り	Accent
+なし	Off
+弱	Light
+強	Strong
+あり	On
+中国語の声は準備中なので、今は普通の英語で話します。	The Chinese voice isn't ready yet, so the controller speaks plain English for now.
+普通の英語(アメリカ英語)で話します。	The controller speaks plain (American) English.
+この端末にこの国の言語の声がないので、普通の英語で読みます。声は端末の設定(読み上げコンテンツ)から追加できます。	This device has no voice for this country's language, so it reads plain English. You can add voices in the device's settings (Spoken Content).
+この空港の管制官は、その地域の英語の発音で話します。	The controllers at this airport speak with the local English pronunciation.
+強: AIがその国の文字で書き直した英語を読むので、なめらかで本物っぽくなります。聞き取りは難しめ。	Strong: the voice reads the English the AI rewrote in that country's letters, so it sounds smooth and real. Harder to catch.
+弱: その国の言語の声が英語を読むので、その国の人のような訛りになります。	Light: a voice of that country's language reads the English, so it sounds like a local speaker's accent.

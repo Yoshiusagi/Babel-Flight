@@ -103,6 +103,12 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.28',items:[
+  ['🎧','AI管制官が世界の空港へ','AI管制官が、学んでいる言語の国の空港(ジャカルタ・ドバイ・仁川など)で交信するようになりました。管制官はその国の訛りのある英語で話します。訛りの強さは「なし・弱・強」から選べて、英語圏の空港(ロンドン・シドニー・デリーなど)も選べます。','atc',1,['ja']],
+  ['🎧','The AI controller goes abroad','The AI controller now works at the airport of the language you learn (Jakarta, Dubai, Incheon and more) and speaks English with that country\'s accent. Choose the accent strength (Off, Light or Strong), or pick an airport in the English-speaking world such as London, Sydney or Delhi.','atc',1,['en']],
+  ['🎧','AI 관제사가 세계의 공항으로','AI 관제사가 배우는 언어 나라의 공항(자카르타, 두바이, 인천 등)에서 교신하게 됐어요. 관제사는 그 나라 억양의 영어로 말해요. 억양의 세기(없음, 약, 강)를 고를 수 있고, 런던, 시드니, 델리 같은 영어권 공항도 고를 수 있어요.','atc',1,['ko']],
+  ['🎧','AI管制员走向世界机场','AI管制员现在会在你所学语言国家的机场（雅加达、迪拜、仁川等）通话，并用带有该国口音的英语说话。可以选择口音强度（无、弱、强），也可以选择伦敦、悉尼、德里等英语国家的机场。','atc',1,['zh']]
+ ]},
  {v:'2026.11.27',items:[
   ['🇦🇪','アラビア語に職業モード・留学モードが登場','アラビア語も「スターター」を卒業しました。13の職業(パイロット・客室乗務員・医療・ITなど)の専門会話と、留学モード(教科の用語・授業やホームステイの会話)を、カタカナの読みつきで学べます。','lang:ar',1,['ja']],
   ['🇦🇪','Arabic: job mode and study abroad mode','Arabic is no longer a starter language. You can now learn the 13 jobs (pilot, cabin crew, medical, IT and more) and the study abroad mode (school subjects, class and homestay conversations).','lang:ar',1,['en']],
@@ -239,6 +245,7 @@ function notamHTML(n,first){
     if(first&&x[3]==='tune')btn='<button class="ghost nt-go" type="button" data-notam-go="tune">試してみる</button>';
     else if(first&&x[3]==='exam'&&typeof examModeOn==='function'&&examModeOn())btn='<button class="ghost nt-go" type="button" data-notam-go="exam">試してみる</button>';
     else if(first&&x[3]==='ja'&&LANGS.ja&&learnOrder().indexOf('ja')>=0&&save.lang!=='ja')btn='<button class="ghost nt-go" type="button" data-notam-go="ja">試してみる</button>';
+    else if(first&&x[3]==='atc')btn='<button class="ghost nt-go" type="button" data-notam-go="atc">試してみる</button>';
     else if(first&&x[3]==='job')btn='<button class="ghost nt-go" type="button" data-notam-go="job">試してみる</button>';
     else if(first&&x[3]==='study'&&studyLangFor())btn='<button class="ghost nt-go" type="button" data-notam-go="study">試してみる</button>';
     else if(first&&/^lang:/.test(x[3])&&LANGS[x[3].slice(5)]&&save.lang!==x[3].slice(5)&&learnOrder().indexOf(x[3].slice(5))>=0)btn='<button class="ghost nt-go" type="button" data-notam-go="'+x[3]+'">試してみる</button>';
@@ -272,6 +279,7 @@ document.addEventListener('click',function(e){
     closeSheet();
     if(g==='tune'){TUNE={step:0,why:save.why,weak:(save.weak||[]).slice()};view='tune';render();window.scrollTo(0,0);}
     else if(g==='settings')go('record');
+    else if(g==='atc'){ATC.sc=null;go('atc');}
     else if(g==='ja'){save.lang='ja';HOME_ANIM='lang';store();go('home');if(typeof lvNeed==='function'&&lvNeed('ja'))lvSheet('ja');}
     else if(g==='exam'){if(save.mode!=='exam'){save.mode='exam';HOME_ANIM='mode';store();}go('home');}
     else if(g==='job'){if(profById(save.prof)&&jobOpen(save.prof)){save.mode='job';HOME_ANIM='mode';store();go('home');}else{pickerBack='home';go('picker');}}

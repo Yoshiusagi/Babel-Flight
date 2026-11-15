@@ -12,7 +12,7 @@
 //   GET  /api/ai/status   { enabled, signedIn, left? }
 //   POST /api/ai/ask      { lang, phrase, jp, reading?, note?, question, ui? } -> streamed plain text
 //                         (ui: the display language ja/en/ko/zh; jp and note then come translated into it)
-//   POST /api/ai/atc      { scenario, history[], pilot, ui? } -> { atc, score, feedback_ja, better, done, left }
+//   POST /api/ai/atc      { scenario, apt?, acc?, history[], pilot, ui? } -> { atc, atc_local, score, feedback_ja, better, done, left }
 //   POST /api/ai/drill    { lang, variant?, items[{t,jp}], ui? } -> { qs[{t,jp,wrong[3]}], left }
 //                         (ui: the display language; feedback_ja and the jp translations are then written in it,
 //                         and the items' jp come translated into it)
@@ -139,29 +139,85 @@ function roleSystem(id: string, ui = "ja"): string | null {
     safetyRole(fk)
   );
 }
-// Must stay in step with ATC_SC in babel-flight/parts/c8_ai.js (ids, station, opening call).
-const ATC_SCENARIOS: Record<string, Scenario> = {
-  taxi: {
-    fac: "TOKYO GROUND",
-    en: "The aircraft is parked at spot 12 at Tokyo Haneda and ready for departure. The pilot must call you and request taxi. Give a taxi clearance to runway 34R, check the readback, then tell the pilot to contact Tokyo Tower on 124.35 when holding short.",
-    first: "",
-  },
-  takeoff: {
-    fac: "TOKYO TOWER",
-    en: "The aircraft is holding short of runway 34R at Tokyo Haneda. You have already told the pilot to line up and wait. Next, issue the takeoff clearance with the wind, check the readback, and after takeoff tell the pilot to contact Tokyo Departure on 126.0.",
-    first: "Babel 201, Tokyo Tower, runway 34R, line up and wait.",
-  },
-  landing: {
-    fac: "TOKYO TOWER",
-    en: "The aircraft is on final approach to runway 34L at Tokyo Haneda, about 8 miles out, and has just switched to your frequency. The pilot must check in. Give a landing clearance with the wind, check the readback, and after landing tell the pilot to vacate the runway and contact Tokyo Ground on 121.7.",
-    first: "",
-  },
-  emergency: {
-    fac: "TOKYO DEPARTURE",
-    en: "Shortly after departure from Tokyo Haneda, climbing through 5000 feet, the aircraft has an engine failure. The pilot should declare an emergency (MAYDAY) and request to return. Acknowledge, ask for persons on board and fuel endurance, and give a heading and altitude for an approach to runway 34L.",
-    first: "",
-  },
+// 訛りのある英語: the AI管制官 talks from an airport, in its country's accent. Must stay in step with ATC_APTS and
+// ATC_RESP in babel-flight/parts/f43_accent.js (the harness test atcapt_sync compares them).
+type Apt = {
+  icao: string; name: string; gnd: string; twr: string; dep: string; spot: string;
+  rd: string; ra: string; ft: string; fd: string; fg: string; acc: string; noacc?: boolean;
 };
+const ATC_APTS: Record<string, Apt> = {
+  HND: { icao: "RJTT", name: "Tokyo Haneda", gnd: "Tokyo Ground", twr: "Tokyo Tower", dep: "Tokyo Departure", spot: "12", rd: "34R", ra: "34L", ft: "124.35", fd: "126.0", fg: "121.7", acc: "ja" },
+  JFK: { icao: "KJFK", name: "New York JFK", gnd: "Kennedy Ground", twr: "Kennedy Tower", dep: "New York Departure", spot: "7", rd: "31L", ra: "31R", ft: "119.1", fd: "135.9", fg: "121.9", acc: "" },
+  LHR: { icao: "EGLL", name: "London Heathrow", gnd: "Heathrow Ground", twr: "Heathrow Tower", dep: "London Control", spot: "512", rd: "27R", ra: "27L", ft: "118.5", fd: "135.125", fg: "121.9", acc: "" },
+  SYD: { icao: "YSSY", name: "Sydney", gnd: "Sydney Ground", twr: "Sydney Tower", dep: "Sydney Departures", spot: "50", rd: "34L", ra: "34R", ft: "120.5", fd: "123.0", fg: "121.7", acc: "" },
+  DEL: { icao: "VIDP", name: "Delhi", gnd: "Delhi Ground", twr: "Delhi Tower", dep: "Delhi Departure", spot: "31", rd: "29R", ra: "28", ft: "118.1", fd: "126.35", fg: "121.75", acc: "" },
+  DUB: { icao: "EIDW", name: "Dublin", gnd: "Dublin Ground", twr: "Dublin Tower", dep: "Dublin Departures", spot: "302", rd: "28L", ra: "28R", ft: "118.6", fd: "129.175", fg: "121.8", acc: "" },
+  JNB: { icao: "FAOR", name: "Johannesburg", gnd: "Johannesburg Ground", twr: "Johannesburg Tower", dep: "Johannesburg Departure", spot: "A7", rd: "03L", ra: "03R", ft: "118.1", fd: "124.5", fg: "121.9", acc: "" },
+  ICN: { icao: "RKSI", name: "Seoul Incheon", gnd: "Incheon Ground", twr: "Incheon Tower", dep: "Incheon Departure", spot: "25", rd: "33L", ra: "33R", ft: "118.2", fd: "124.2", fg: "121.75", acc: "ko" },
+  MAD: { icao: "LEMD", name: "Madrid Barajas", gnd: "Madrid Ground", twr: "Madrid Tower", dep: "Madrid Departure", spot: "18", rd: "36L", ra: "32R", ft: "118.15", fd: "127.5", fg: "121.85", acc: "es" },
+  FCO: { icao: "LIRF", name: "Rome Fiumicino", gnd: "Roma Ground", twr: "Roma Tower", dep: "Roma Departure", spot: "40", rd: "25", ra: "16R", ft: "118.7", fd: "119.2", fg: "121.9", acc: "it" },
+  CDG: { icao: "LFPG", name: "Paris Charles de Gaulle", gnd: "De Gaulle Ground", twr: "De Gaulle Tower", dep: "Paris Departure", spot: "E22", rd: "27L", ra: "27R", ft: "119.25", fd: "124.35", fg: "121.6", acc: "fr" },
+  FRA: { icao: "EDDF", name: "Frankfurt", gnd: "Frankfurt Ground", twr: "Frankfurt Tower", dep: "Langen Radar", spot: "V105", rd: "18", ra: "25L", ft: "119.9", fd: "120.8", fg: "121.8", acc: "de" },
+  PEK: { icao: "ZBAA", name: "Beijing Capital", gnd: "Beijing Ground", twr: "Beijing Tower", dep: "Beijing Departure", spot: "215", rd: "36R", ra: "36L", ft: "118.5", fd: "125.4", fg: "121.7", acc: "", noacc: true },
+  GRU: { icao: "SBGR", name: "Sao Paulo Guarulhos", gnd: "Guarulhos Ground", twr: "Guarulhos Tower", dep: "Sao Paulo Departure", spot: "214", rd: "27L", ra: "27R", ft: "118.4", fd: "127.75", fg: "121.7", acc: "pt" },
+  SVO: { icao: "UUEE", name: "Moscow Sheremetyevo", gnd: "Sheremetyevo Ground", twr: "Sheremetyevo Tower", dep: "Moscow Departure", spot: "12", rd: "24C", ra: "24L", ft: "118.1", fd: "127.0", fg: "121.7", acc: "ru" },
+  IST: { icao: "LTFM", name: "Istanbul", gnd: "Istanbul Ground", twr: "Istanbul Tower", dep: "Istanbul Departure", spot: "A12", rd: "35L", ra: "34L", ft: "118.1", fd: "120.5", fg: "121.8", acc: "tr" },
+  CGK: { icao: "WIII", name: "Jakarta Soekarno-Hatta", gnd: "Soekarno Ground", twr: "Soekarno Tower", dep: "Jakarta Departure", spot: "23", rd: "25R", ra: "25L", ft: "118.2", fd: "123.2", fg: "121.6", acc: "id" },
+  DXB: { icao: "OMDB", name: "Dubai", gnd: "Dubai Ground", twr: "Dubai Tower", dep: "Dubai Departure", spot: "C21", rd: "30R", ra: "30L", ft: "118.75", fd: "124.45", fg: "118.35", acc: "ar" },
+};
+// how the AI writes a transmission in a language's letters for 訛り「強」
+const ATC_RESP: Record<string, { s: string; who: string; ex: string }> = {
+  ja: { s: "Japanese katakana", who: "a Japanese", ex: "ジャパンエア フォー ファイブ ワン、ディセンド アンド メンテイン フライトレベル ワン ツー ゼロ。" },
+  ko: { s: "Korean Hangul", who: "a Korean", ex: "재팬 에어 포 파이브 원, 디센드 앤 메인테인 플라이트 레벨 원 투 제로." },
+  es: { s: "Spanish spelling", who: "a Spanish", ex: "Yapan Er, for faif uan, disend an meintein flait level uan tu siro." },
+  it: { s: "Italian spelling", who: "an Italian", ex: "Giapan Er, for faiv uan, disend end mentein flait level uan tu ziro." },
+  fr: { s: "French spelling", who: "a French", ex: "Djapane Èr, for faïve ouane, dissènde ènde mèntéïne flaïte lèvel ouane tou ziro." },
+  de: { s: "German spelling", who: "a German", ex: "Dschäpän Ähr, foa faif wann, dissend änd mentejn flait lewel wann tu siero." },
+  pt: { s: "Brazilian Portuguese spelling", who: "a Brazilian", ex: "Djapan Ér, fór fáivi uan, dissendi end meintêin fláiti lévou uan tu zírou." },
+  ru: { s: "Russian Cyrillic", who: "a Russian", ex: "Джапан Эйр, фо файв уан, дисенд энд мэйнтейн флайт левел уан ту зиро." },
+  tr: { s: "Turkish spelling", who: "a Turkish", ex: "Cepen Er, for fayv van, disend end meynteyn flayt levıl van tu ziro." },
+  id: { s: "Indonesian spelling", who: "an Indonesian", ex: "Jepen Er, for faif wan, disen en menten flait lefel wan tu ziro." },
+  ar: { s: "Arabic script with long vowels (ا و ي)", who: "an Emirati", ex: "جابان إير فور فايف وان، ديسيند آند مينتين فلايت ليفيل وان تو زيرو." },
+};
+const ATC_IDS = ["taxi", "takeoff", "landing", "emergency"];
+function atcScenario(id: string, a: Apt): Scenario | undefined {
+  if (id === "taxi")
+    return {
+      fac: a.gnd.toUpperCase(),
+      en: `The aircraft is parked at spot ${a.spot} at ${a.name} and ready for departure. The pilot must call you and request taxi. Give a taxi clearance to runway ${a.rd}, check the readback, then tell the pilot to contact ${a.twr} on ${a.ft} when holding short.`,
+      first: "",
+    };
+  if (id === "takeoff")
+    return {
+      fac: a.twr.toUpperCase(),
+      en: `The aircraft is holding short of runway ${a.rd} at ${a.name}. You have already told the pilot to line up and wait. Next, issue the takeoff clearance with the wind, check the readback, and after takeoff tell the pilot to contact ${a.dep} on ${a.fd}.`,
+      first: `Babel 201, ${a.twr}, runway ${a.rd}, line up and wait.`,
+    };
+  if (id === "landing")
+    return {
+      fac: a.twr.toUpperCase(),
+      en: `The aircraft is on final approach to runway ${a.ra} at ${a.name}, about 8 miles out, and has just switched to your frequency. The pilot must check in. Give a landing clearance with the wind, check the readback, and after landing tell the pilot to vacate the runway and contact ${a.gnd} on ${a.fg}.`,
+      first: "",
+    };
+  if (id === "emergency")
+    return {
+      fac: a.dep.toUpperCase(),
+      en: `Shortly after departure from ${a.name}, climbing through 5000 feet, the aircraft has an engine failure. The pilot should declare an emergency (MAYDAY) and request to return. Acknowledge, ask for persons on board and fuel endurance, and give a heading and altitude for an approach to runway ${a.ra}.`,
+      first: "",
+    };
+  return undefined;
+}
+/* 訛り「強」: the AI also writes "atc_local" — only for an airport whose language has a spelling rule */
+function atcLocalRule(a: Apt, acc: number): string {
+  const r = acc === 2 && !a.noacc ? ATC_RESP[a.acc] : undefined;
+  if (!r) return "";
+  return (
+    `Also write "atc_local": the same transmission respelled in ${r.s}, the way ${r.who} air traffic controller with a typical ` +
+    "accent pronounces English, so that a text-to-speech voice of that language reads it smoothly. Keep the same words and " +
+    'numbers and change only the spelling. Example: "Japan Air four five one, descend and maintain flight level one two zero." ' +
+    `-> "${r.ex}"\n`
+  );
+}
 
 type Usage = { ask: number; atcStart: number; atcTurn: number; drill: number };
 type Exchange = { pilot: string; atc: string; score: number; feedback: string; better: string };
@@ -423,19 +479,20 @@ function readHistory(v: unknown): Exchange[] | null {
   return out;
 }
 
-function atcSystem(sc: Scenario, ui = "ja"): string {
+function atcSystem(sc: Scenario, ui = "ja", a: Apt = ATC_APTS.HND, acc = 0): string {
   const fk = fbKey(ui);
   return (
     "You are role-playing an air traffic controller for a pilot-training app called Babel Flight. The learner is " +
     `${UI_LEARNER[ui] ?? UI_LEARNER.ja} who dreams of becoming an airline pilot. Use standard ICAO radiotelephony phraseology ` +
     "in English. This is a training simulation only.\n" +
-    `Airport: Tokyo Haneda (RJTT). Your station: ${sc.fac}. The pilot's callsign is "Babel 201".\nScenario: ${sc.en}\n` +
+    `Airport: ${a.name} (${a.icao}). Your station: ${sc.fac}. The pilot's callsign is "Babel 201".\nScenario: ${sc.en}\n` +
     (sc.first ? `You have already transmitted: "${sc.first}"\n` : "") +
     "After each pilot transmission, reply with ONLY one JSON object and no other text, in this shape:\n" +
     '{"atc":"your next radio transmission in English, short and realistic. Use an empty string only when the scenario is finished.",' +
     `"score":3,"${fk}":"1-2 short sentences in easy ${UI_TRANSL[ui] ?? "Japanese"} for the student: what was good and what to fix, such as the callsign, ` +
     'the readback of runway, altitude or frequency, or missing words.","better":"a model version of the pilot\'s last transmission in English",' +
     '"done":false}\n' +
+    atcLocalRule(a, acc) +
     "score: 3 = correct and complete, 2 = understandable with small mistakes, 1 = important items missing, 0 = not usable.\n" +
     'Keep the scenario to about 4 pilot transmissions, then finish with done true and a short friendly sign-off in "atc". ' +
     `If the pilot writes in another language than English or seems confused, kindly explain in ${fk} what to say and repeat ` +
@@ -444,7 +501,9 @@ function atcSystem(sc: Scenario, ui = "ja"): string {
   );
 }
 
-function parseAtc(raw: string): { atc: string; score: number; feedback_ja: string; better: string; done: boolean } | null {
+function parseAtc(
+  raw: string,
+): { atc: string; atc_local: string; score: number; feedback_ja: string; better: string; done: boolean } | null {
   const a = raw.indexOf("{");
   const b = raw.lastIndexOf("}");
   if (a < 0 || b <= a) return null;
@@ -453,6 +512,7 @@ function parseAtc(raw: string): { atc: string; score: number; feedback_ja: strin
     const score = Math.round(num(r.score));
     return {
       atc: String(r.atc ?? "").slice(0, 400),
+      atc_local: typeof r.atc_local === "string" ? r.atc_local.slice(0, 600) : "",
       score: score < 0 ? 0 : score > 3 ? 3 : score,
       feedback_ja: String(r.feedback_ja ?? r.feedback ?? "").slice(0, 400),
       better: String(r.better ?? "").slice(0, 400),
@@ -470,7 +530,11 @@ async function handleAtc(request: Request, db: D1Database, key: string): Promise
   const scName = typeof body?.scenario === "string" ? body.scenario : "";
   const ui = uiOf(body?.ui);
   const role = roleSystem(scName, ui);
-  const sc = role ? undefined : ATC_SCENARIOS[scName];
+  const aptRaw = body?.apt;
+  const aptId = typeof aptRaw === "string" && /^[A-Z]{3}$/.test(aptRaw) ? aptRaw : "HND";
+  const apt = Object.prototype.hasOwnProperty.call(ATC_APTS, aptId) ? ATC_APTS[aptId] : ATC_APTS.HND;
+  const acc = body?.acc === 0 ? 0 : body?.acc === 2 ? 2 : 1;
+  const sc = role || !ATC_IDS.includes(scName) ? undefined : atcScenario(scName, apt);
   const history = readHistory(body?.history ?? []);
   const pilot = text(body?.pilot, 300, true);
   if ((!sc && !role) || !history || pilot === null) return json({ ok: false, error: "bad_request" }, 400);
@@ -499,7 +563,7 @@ async function handleAtc(request: Request, db: D1Database, key: string): Promise
   let reply: ReturnType<typeof parseAtc> = null;
   let upstreamOk = false;
   try {
-    const res = await callClaude(key, { max_tokens: 600, system: role ?? atcSystem(sc as Scenario, ui), messages });
+    const res = await callClaude(key, { max_tokens: 800, system: role ?? atcSystem(sc as Scenario, ui, apt, acc), messages });
     if (res.ok) {
       upstreamOk = true;
       const data = (await res.json()) as { content?: { type?: string; text?: string }[] };

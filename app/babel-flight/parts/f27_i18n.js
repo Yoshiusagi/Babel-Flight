@@ -34,6 +34,7 @@ function uiNames(){
   var n={};ORDER.forEach(function(k){n[LANGS[k].name]=1;n[LANGS[k].city]=1;});
   if(typeof CITIES==='object')Object.keys(CITIES).forEach(function(k){(CITIES[k]||[]).forEach(function(c){if(c&&c[1])n[c[1]]=1;});});
   if(typeof PROF==='object'&&PROF.forEach)PROF.forEach(function(p){if(p&&p.jp)n[p.jp]=1;});
+  if(typeof ATC_APTS==='object')ATC_APTS.forEach(function(a){n[a.jp]=1;});  /* 「ジャカルタ空港の滑走路25Lに…」 */
   if(typeof UM==='object')Object.keys(UM).forEach(function(k){if(UM[k]&&UM[k].jp)n[UM[k].jp]=1;});
   if(typeof XBANK==='object')Object.keys(XBANK).forEach(function(k){if(XBANK[k]&&XBANK[k].name)n[XBANK[k].name]=1;});  /* 「HSK 3級」 inside 「HSK 3級をめざす」 */
   if(typeof JOBX_C==='object')Object.keys(JOBX_C).forEach(function(k){n[JOBX_C[k].title]=1;});  /* the certificates in the 💼 line */

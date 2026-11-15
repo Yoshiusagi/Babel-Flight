@@ -26,6 +26,7 @@ f37_css.html
 f38_css.html
 f39_css.html
 f40_css.html
+f43_css.html
 @HEADEND
 e2_body.html
 a0_env.js
@@ -113,5 +114,6 @@ f39_special.js
 f40_coop.js
 f41_jobday.js
 f42_noise.js
+f43_accent.js
 f7_boot.js
 @END
