@@ -1,8 +1,8 @@
-/* ================= 中国語 (普通话, simplified characters) — starter course =================
-   Travel phrases here; daily phrases, scenes and the route map in e3g_zh.js. Readings are pinyin with tone
+/* ================= 中国語 (普通话, simplified characters) =================
+   Travel phrases here; daily phrases, scenes and the route map in e3g_zh.js; the 職業・留学 units in the PJ() calls (d1–d8, e3a), with the words as a 4th column. Readings are pinyin with tone
    marks. The 5th column splits the sentence into words for the 並べ替え questions (Chinese has no spaces).
    No typing questions (they would need a Chinese keyboard). */
-LANGS.zh={name:'中国語',native:'中文',city:'北京',cityEn:'BEIJING',code:'PEK',tts:'zh-CN',km:2100,letter:'E',hasYomi:true,noType:true,starter:true,units:[
+LANGS.zh={name:'中国語',native:'中文',city:'北京',cityEn:'BEIJING',code:'PEK',tts:'zh-CN',km:2100,letter:'E',hasYomi:true,noType:true,units:[
   U('checkin',[
    ["こんにちは","你好。","nǐ hǎo","一日中いつでも使えるあいさつ。目上の人には「您好(nín hǎo)」。","你好。"],
    ["チェックインしたいのですが","我想办理登机手续。","wǒ xiǎng bànlǐ dēngjī shǒuxù","「我想〜」=〜したい。登机手续=搭乗手続き。","我 想 办理 登机 手续。"],

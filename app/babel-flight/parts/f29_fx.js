@@ -103,6 +103,11 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.26',items:[
+  ['🇨🇳','中国語に職業モード・留学モードが登場','中国語も「スターター」を卒業しました。13の職業(パイロット・客室乗務員・医療・ITなど)の専門会話と、留学モード(教科の用語・授業やホームステイの会話)を、ピンインつきで学べます。','lang:zh',1,['ja']],
+  ['🇨🇳','Chinese: job mode and study abroad mode','Chinese is no longer a starter language. You can now learn the 13 jobs (pilot, cabin crew, medical, IT and more) and the study abroad mode (school subjects, class and homestay conversations), all with pinyin.','lang:zh',1,['en']],
+  ['🇨🇳','중국어에 직업 모드와 유학 모드 추가','중국어도 스타터 과정을 졸업했어요. 13가지 직업(파일럿, 객실 승무원, 의료, IT 등)의 전문 회화와 유학 모드(교과 용어, 수업과 홈스테이 회화)를 병음과 함께 배울 수 있어요.','lang:zh',1,['ko']]
+ ]},
  {v:'2026.11.25',items:[
   ['🇩🇪','ドイツ語に職業モード・留学モードが登場','ドイツ語も「スターター」を卒業しました。13の職業(パイロット・客室乗務員・医療・ITなど)の専門会話と、留学モード(教科の用語・授業やホームステイの会話)を学べます。','lang:de',1,['ja']],
   ['🇩🇪','German: job mode and study abroad mode','German is no longer a starter language. You can now learn the 13 jobs (pilot, cabin crew, medical, IT and more) and the study abroad mode (school subjects, class and homestay conversations).','lang:de',1,['en']],
