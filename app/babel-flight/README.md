@@ -289,6 +289,7 @@ Decide a feature's class by (cost of one AI call) × (calls a person makes a day
 | 3 とても重い | images, or voice processed on the server | (planned) 写真からフレーズ | ファースト + a daily limit |
 
 Keep each person's AI cost per month well under the class price (aim: under 20–30%), by daily limits.
+Planned for when paid plans go live (not before): let free accounts try one 段階2 feature once a week.
 
 ## Usage counting
 
