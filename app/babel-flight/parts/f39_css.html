@@ -1,0 +1,49 @@
+<style>
+/* ---- できることリスト・次のフライト・ブリーフィング (f39_special.js) ---- */
+.cd-top{display:flex;align-items:baseline;gap:10px;margin-top:4px}
+.cd-top b{font-size:30px}.cd-top b small{font-size:15px;color:var(--ink2)}
+.cd-top span{font-size:13px;color:var(--ink2)}
+.cd-bar{height:8px;margin:8px 0 6px;border-radius:999px;background:var(--surface2);overflow:hidden}
+.cd-bar i{display:block;height:100%;background:var(--good);border-radius:inherit}
+.cd-g{border-top:1px solid var(--line)}
+.cd-gh{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;padding:6px 2px;border:0;background:none;color:var(--ink);text-align:left}
+.cd-gh b{flex:1;font-size:15px}.cd-gh span{font-size:13px;color:var(--ink2)}.cd-gh i{font-style:normal;font-size:18px;width:20px;text-align:center}
+.cd-list{list-style:none;margin:0 0 8px;padding:0;display:grid;gap:6px}
+.cd-list li{display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:center;padding:8px 10px;border-radius:12px;background:var(--surface2)}
+.cd-mk{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;border:2px solid var(--line);font-weight:800;font-size:13px}
+.lv2 .cd-mk{background:var(--good);border-color:var(--good);color:#06281a}
+.lv1 .cd-mk{border-color:var(--info);color:var(--info)}
+.cd-t{font-size:14px;line-height:1.45}
+.cd-t small{display:block;font-size:11.5px;color:var(--ink2)}
+.lv2 .cd-t{font-weight:600}
+.cd-list .ghost.sm{margin:0;min-height:40px;padding:0 12px}
+.trip-add{display:flex;gap:12px;align-items:center;width:100%;margin:12px 0 0;padding:12px 14px;border-radius:16px;border:1.5px dashed var(--line);background:transparent;color:var(--ink);text-align:left}
+.trip-add>span:first-child{font-size:24px}
+.trip-add b{display:block;font-size:14.5px}.trip-add small{font-size:12px;color:var(--ink2);line-height:1.45}
+.trip-card{margin:12px 0 0;padding:14px 16px;border-radius:18px;color:#f3f6fb;background:linear-gradient(150deg,#0f2747,#0a1830);box-shadow:0 18px 30px -24px rgba(10,24,48,.9)}
+.trip-card .lbl{color:#9fb3cf}
+.tp-h{display:flex;justify-content:space-between;align-items:center}
+.tp-edit{min-height:32px;padding:0 10px;border-radius:999px;border:1px solid rgba(255,255,255,.25);background:transparent;color:#cfdbec;font-size:12px}
+.tp-main{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:6px}
+.tp-city{font-size:24px;letter-spacing:.02em}
+.tp-d{font-size:13px;color:#cfdbec}.tp-d b{font-size:30px;color:#ffd23f;margin-right:3px}
+.tp-bar{height:6px;margin:10px 0 6px;border-radius:999px;background:rgba(255,255,255,.14);overflow:hidden}
+.tp-bar i{display:block;height:100%;background:#ffd23f}
+.tp-sub{font-size:12.5px;color:#cfdbec;line-height:1.55}
+.tp-sub b{color:#fff}
+.tp-next{display:block;width:100%;margin-top:10px;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;text-align:left}
+.tp-next span{display:block;font-size:11px;color:#9fb3cf}.tp-next b{font-size:14.5px}
+.tp-next:disabled{opacity:.6}
+.trip-card .go{margin-top:10px}
+.tp-row{display:flex;gap:8px;margin-top:10px}
+.tp-row .go.sm,.tp-row .ghost.sm{flex:1;margin:0;min-height:44px}
+.trip-card .ghost.sm{color:#fff;border-color:rgba(255,255,255,.3);background:transparent}
+.tp-local{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px}
+.tp-local button{display:block;width:100%;padding:8px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;text-align:left}
+.tp-local b{display:block;font-size:15.5px}.tp-local small{font-size:12px;color:#cfdbec}
+.tp-f{display:block;margin-top:10px}
+.tp-f select,.tp-f input{display:block;width:100%;margin-top:4px;min-height:48px;padding:8px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font-size:16px}
+.tp-2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.brief-card .brief-b{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.brief-card .ghost.sm{margin:0;min-height:44px;width:100%;padding:0 4px}
+</style>

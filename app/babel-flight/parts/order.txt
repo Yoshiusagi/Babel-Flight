@@ -24,6 +24,7 @@ f35_css.html
 f36_css.html
 f37_css.html
 f38_css.html
+f39_css.html
 @HEADEND
 e2_body.html
 a0_env.js
@@ -57,6 +58,7 @@ e3g_ja.js
 e3h_first.js
 e3e_reg.js
 e3f_enuk.js
+e3g_special.js
 d4_more1.js
 d5_more2.js
 d6_more3.js
@@ -106,5 +108,6 @@ f35_family.js
 f36_offline.js
 f37_common.js
 f38_social.js
+f39_special.js
 f7_boot.js
 @END
