@@ -1,6 +1,6 @@
-/* ================= インドネシア語 — starter course =================
+/* ================= インドネシア語 =================
    Travel phrases here; daily phrases, scenes and the route map in e3g_id.js. Readings in katakana. */
-LANGS.id={name:'インドネシア語',native:'Bahasa Indonesia',city:'ジャカルタ',cityEn:'JAKARTA',code:'CGK',tts:'id-ID',km:5800,letter:'K',hasYomi:true,starter:true,units:[
+LANGS.id={name:'インドネシア語',native:'Bahasa Indonesia',city:'ジャカルタ',cityEn:'JAKARTA',code:'CGK',tts:'id-ID',km:5800,letter:'K',hasYomi:true,units:[
   U("checkin",[
    ["こんにちは", "Selamat siang.", "スラマッ シアン", "昼のあいさつ。朝は「Selamat pagi」、夕方は「Selamat sore」。"],
    ["チェックインしたいのですが", "Saya mau check-in.", "サヤ マウ チェックイン", "「mau」=〜したい。"],
