@@ -25,6 +25,7 @@ f36_css.html
 f37_css.html
 f38_css.html
 f39_css.html
+f40_css.html
 @HEADEND
 e2_body.html
 a0_env.js
@@ -109,5 +110,6 @@ f36_offline.js
 f37_common.js
 f38_social.js
 f39_special.js
+f40_coop.js
 f7_boot.js
 @END

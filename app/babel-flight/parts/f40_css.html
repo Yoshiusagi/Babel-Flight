@@ -1,0 +1,28 @@
+<style>
+/* 共同フライト (f40_coop.js) */
+.soc-list li{display:flex!important}
+.soc-list li b{flex:1;min-width:0}
+.coop-ask{margin:0!important;min-height:40px!important;width:auto!important;padding:0 12px!important;font-size:13px!important;white-space:nowrap}
+.coop-block{margin-top:14px;padding:12px;border-radius:14px;border:1px solid var(--line);background:var(--surface2)}
+.coop-h{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.coop-t{margin:8px 0 2px;font-size:15px}
+.coop-n{margin:6px 0 0;font-size:13px;line-height:1.7}
+.coop-dot{display:inline-block;width:9px;height:9px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.coop-dme,.coop-me{background:var(--signal)}
+.coop-dthem,.coop-them{background:#5aa9e6}
+.coop-route{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;margin:10px 0 2px;font-size:12px;font-weight:700;color:var(--ink2)}
+.coop-bar{position:relative;height:8px;border-radius:99px;background:var(--line)}
+.coop-bar i{position:absolute;top:0;bottom:0;left:0}
+.coop-me{border-radius:99px 0 0 99px}
+.coop-them{border-radius:0 99px 99px 0}
+.coop-plane{position:absolute;top:50%;transform:translate(-50%,-55%);font-size:18px;color:var(--ink);line-height:1}
+.coop-inv{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;margin-top:8px;padding:8px 10px;border-radius:12px;background:var(--surface);border:1px solid var(--signal)}
+.coop-inv p{margin:0;font-size:13px;line-height:1.5}
+.coop-inv .go.sm{margin:0;min-height:40px;width:auto;padding:0 12px;white-space:nowrap}
+.coop-home h2{display:flex;align-items:center;gap:8px;margin:6px 0 0}
+.coop-home .dim{margin:6px 0 0;font-size:13px}
+.coop-toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:90;max-width:min(92vw,420px);padding:12px 16px;border-radius:14px;background:var(--ink);color:var(--bg);font-weight:700;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:opacity .5s}
+.coop-toast.out{opacity:0}
+/* the chosen choice in a segmented control kept light text on a light fill in the First cabins */
+[data-cabin] .seg button[aria-pressed="true"]{color:var(--bg)}
+</style>
