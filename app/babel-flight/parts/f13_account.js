@@ -55,7 +55,10 @@ function fbLoad(){
   ACCT.fbp=Promise.all([import(base+'firebase-app.js'),import(base+'firebase-auth.js')]).then(function(m){
     var A=m[0],F=m[1],c=ACCT.cfg;
     var app=A.initializeApp({apiKey:c.apiKey,authDomain:c.authDomain,projectId:c.projectId,appId:c.appId},'babel-flight');
-    var auth=F.initializeAuth(app,{persistence:F.inMemoryPersistence,popupRedirectResolver:F.browserPopupRedirectResolver});
+    /* in the iPhone app the popup/redirect helper (a hidden iframe from the auth domain) never finishes loading
+       inside the app's web view, and every sign-in waits for it forever; the app signs in through the native
+       sheets and email only, so it is left out there */
+    var auth=F.initializeAuth(app,BF_APP?{persistence:F.inMemoryPersistence}:{persistence:F.inMemoryPersistence,popupRedirectResolver:F.browserPopupRedirectResolver});
     auth.languageCode='ja';
     ACCT.fb={F:F,auth:auth};
     return ACCT.fb;
@@ -271,6 +274,9 @@ function acctDeleteWith(user){
 function acctErr(msg){var e=$('acErr')||$('acNote');if(e)e.textContent=msg||'';}
 function acctBusy(on){
   ACCT.busy=on;
+  /* never leave the sheet frozen: give up after 40 seconds with a message */
+  clearTimeout(ACCT.busyT);
+  if(on)ACCT.busyT=setTimeout(function(){if(ACCT.busy){acctBusy(false);acctErr('時間がかかりすぎています。通信を確認して、もう一度試してね。');}},40000);
   var s=document.querySelector('.acct-sheet');if(!s)return;
   s.classList.toggle('busy',on);
   Array.prototype.forEach.call(s.querySelectorAll('button,input'),function(b){if(!b.hasAttribute('data-close-sheet'))b.disabled=on||(!ACCT.fb&&b.hasAttribute('data-needs-fb'));});
