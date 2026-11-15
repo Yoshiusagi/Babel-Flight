@@ -3,6 +3,8 @@ name: Accent demo
 on:
   push:
     branches: [accent-demo]
+permissions:
+  contents: write
 jobs:
   rec:
     runs-on: ubuntu-latest
@@ -26,8 +28,10 @@ jobs:
           pip install -q kokoro-onnx soundfile
           command -v ffmpeg >/dev/null || { sudo apt-get update -q && sudo apt-get install -y -q ffmpeg >/dev/null; }
       - run: python3 demo/accent.py
-      - uses: actions/upload-artifact@v4
-        with:
-          name: accent-demo
-          path: demo/out
-          retention-days: 3
+      - name: Save to this branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add demo/out
+          git commit -q -m "訛りの英語の試聴用の録音"
+          git push origin HEAD:accent-demo
