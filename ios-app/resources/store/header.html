@@ -1,0 +1,37 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+html,body{margin:0;width:3840px;height:1646px;overflow:hidden}
+body{position:relative;background:linear-gradient(180deg,#ffa25c 0%,#f78a68 28%,#e7677c 55%,#b45a9a 80%,#5d4bb6 100%);font-family:'Noto Sans CJK JP','Noto Sans JP',sans-serif}
+.sun{position:absolute;left:50%;top:1260px;width:2600px;height:2600px;margin-left:-1300px;border-radius:50%;background:radial-gradient(circle,rgba(255,236,190,.55) 0%,rgba(255,200,150,.18) 35%,rgba(255,180,140,0) 62%)}
+.cloud{position:absolute;border-radius:999px;background:rgba(255,255,255,.16);filter:blur(6px)}
+svg.map{position:absolute;inset:0}
+.logo{position:absolute;left:0;right:0;top:560px;display:flex;justify-content:center;align-items:center;gap:56px;color:#fff}
+.logo svg{width:190px;height:148px}
+.logo .w{font-weight:900;font-size:220px;letter-spacing:.08em;line-height:1}
+.logo .f{font-weight:900;font-size:220px;letter-spacing:.08em;line-height:1;background:#ffd21f;color:#14213a;padding:18px 34px 14px;border-radius:14px}
+.tag{position:absolute;left:0;right:0;top:900px;text-align:center;color:#fff;font-weight:700;font-size:112px;letter-spacing:.12em;text-shadow:0 6px 30px rgba(80,30,90,.25)}
+</style></head><body>
+<div class="sun"></div>
+<div class="cloud" style="left:180px;top:300px;width:620px;height:110px"></div>
+<div class="cloud" style="left:420px;top:380px;width:420px;height:80px"></div>
+<div class="cloud" style="left:3020px;top:240px;width:560px;height:100px"></div>
+<div class="cloud" style="left:2860px;top:1220px;width:700px;height:120px"></div>
+<div class="cloud" style="left:260px;top:1300px;width:520px;height:90px"></div>
+<svg class="map" viewBox="0 0 3840 1646">
+ <defs><path id="pl" d="M14 0C14 -1.5 10 -2.2 4 -2.2L-3 -12.5L-7 -12.5L-4 -2.2L-11 -2.2L-15 -6L-18 -6L-16 -1.6L-18 0L-16 1.6L-18 6L-15 6L-11 2.2L-4 2.2L-7 12.5L-3 12.5L4 2.2C10 2.2 14 1.5 14 0Z"/></defs>
+ <g fill="none" stroke="rgba(255,255,255,.55)" stroke-width="7" stroke-dasharray="4 26" stroke-linecap="round">
+  <path d="M3330 1180 Q 3150 250 1920 300"/>
+  <path d="M3330 1180 Q 2000 1600 520 1240"/>
+  <path d="M3330 1180 Q 2100 -250 400 520"/>
+  <path d="M3330 1180 Q 3420 500 3560 300"/>
+ </g>
+ <g fill="#fff"><circle cx="3330" cy="1180" r="22"/><circle cx="1920" cy="300" r="14"/><circle cx="520" cy="1240" r="14"/><circle cx="400" cy="520" r="14"/><circle cx="3560" cy="300" r="14"/></g>
+ <circle cx="3330" cy="1180" r="48" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="5"/>
+ <g font-family="'Noto Sans CJK JP',sans-serif" font-weight="700" font-size="46" fill="rgba(255,255,255,.85)" letter-spacing="6">
+  <text x="3330" y="1290" text-anchor="middle">HND</text><text x="1920" y="250" text-anchor="middle">JFK</text>
+  <text x="520" y="1320" text-anchor="middle">CDG</text><text x="400" y="470" text-anchor="middle">MAD</text><text x="3560" y="250" text-anchor="middle">ICN</text>
+ </g>
+ <use href="#pl" fill="#fff" transform="translate(2381 1378) rotate(174) scale(6)"/>
+</svg>
+<div class="logo"><svg viewBox="-20 -14 36 28"><use href="#pl" fill="#fff"/></svg><span class="w">BABEL</span><span class="f">FLIGHT</span></div>
+<div class="tag">フライト気分で学ぶ12か国語</div>
+</body></html>
