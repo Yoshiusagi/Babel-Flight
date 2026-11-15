@@ -1,7 +1,7 @@
-/* ================= ロシア語 — starter course =================
+/* ================= ロシア語 =================
    Travel phrases here; daily phrases, scenes and the route map in e3g_ru.js. Readings in katakana.
    No typing questions (they would need a Cyrillic keyboard). */
-LANGS.ru={name:'ロシア語',native:'Русский',city:'モスクワ',cityEn:'MOSCOW',code:'SVO',tts:'ru-RU',km:7500,letter:'I',hasYomi:true,noType:true,starter:true,units:[
+LANGS.ru={name:'ロシア語',native:'Русский',city:'モスクワ',cityEn:'MOSCOW',code:'SVO',tts:'ru-RU',km:7500,letter:'I',hasYomi:true,noType:true,units:[
   U("checkin",[
    ["こんにちは", "Здравствуйте.", "ズドラーストヴィチェ", "ていねいな「こんにちは」。友だちには「Привет(プリヴェート)」。"],
    ["チェックインしたいのですが", "Я хочу зарегистрироваться на рейс.", "ヤー ハチュー ザリギストリーラヴァッツァ ナ レイス", "「Я хочу〜」=〜したい。「рейс」=便。"],

@@ -14,6 +14,10 @@ Rebuild the page after editing any part:
 `ORDER` (end of `parts/p3b_data.js`) lists the languages. 韓国語・英語・スペイン語・イタリア語 have every mode; a
 **スターター** language (`starter:true`: 中国語, フランス語, …) has only 日常会話モード to begin with: 基本の日常会話, 旅行フレーズ
 and the 8 travel scenes. Its 職業 / 留学 / 検定 modes show a 準備中 card (`modeSoonHTML` in `f5_home.js`).
+A language graduates by getting its row in every `PJ()` unit of `d1_prof.js`…`d8_more5.js` (13 jobs and the 留学
+subjects), the 3 study scenes (`sc-class`, `sc-teacher`, `sc-home`) in `e3g_<lang>.js`, and dropping `starter:true`.
+Every learning language has graduated now (中国語 … ロシア語); only the 日本語 course (for the en / ko / zh display
+languages) is still a スターター.
 
 Adding one (中国語 is the example):
 - `parts/p3c_<lang>.js` (after `p3b_data.js` in `order.txt`): `LANGS.<lang>={…, units:[U('checkin',…), …]}` with the
