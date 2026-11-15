@@ -7,6 +7,7 @@ import { handleAi } from "./lib/ai.server";
 import { handleAnalytics } from "./lib/analytics.server";
 import { handleBilling } from "./lib/billing.server";
 import { handleFamily } from "./lib/family.server";
+import { handleSocial } from "./lib/social.server";
 import { appPreflight, withAppCors } from "./lib/http.server";
 import { handleMove } from "./lib/move.server";
 import { handleReward } from "./lib/reward.server";
@@ -81,6 +82,9 @@ export default {
     // 家族シェア: an account flying ファースト shares it with up to two others (see lib/family.server.ts).
     const family = await handleFamily(request, url);
     if (family) return applySecurityHeaders(withAppCors(request, family));
+    // フレンドとランキング (see lib/social.server.ts).
+    const social = await handleSocial(request, url);
+    if (social) return applySecurityHeaders(withAppCors(request, social));
     // Copying the data to the new address when the site moves (see lib/move.server.ts).
     const move = await handleMove(request, url);
     if (move) return applySecurityHeaders(move);

@@ -23,6 +23,7 @@ import PRIVACY_HTML from "../privacy.html?raw";
 import { bindings } from "./bindings.server";
 import { entitlementsOf, grantOnSignIn } from "./entitlements.server";
 import { deleteFamilyOf } from "./family.server";
+import { deleteSocialOf } from "./social.server";
 import { ALLOWED_PROVIDERS, FIREBASE_WEB_CONFIG } from "./firebase-config";
 import { KeysUnavailableError, verifyFirebaseIdToken, type FirebaseClaims } from "./firebase-token.server";
 import { appOrigin, isSameOrigin, json, num, randomHex, readJsonBody, readSessionToken, sha256Hex, type Row } from "./http.server";
@@ -267,6 +268,7 @@ async function handleDelete(request: Request, db: D1Database, projectId: string)
     db.prepare("DELETE FROM bf_reward WHERE uid = ?").bind(session.uid),
   ]);
   await deleteFamilyOf(db, session.uid);
+  await deleteSocialOf(db, session.uid);
   try {
     await db.prepare("DELETE FROM bf_moved_saves WHERE uid = ?").bind(session.uid).run();
   } catch {

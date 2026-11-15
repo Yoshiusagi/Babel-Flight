@@ -23,6 +23,7 @@ f34_css.html
 f35_css.html
 f36_css.html
 f37_css.html
+f38_css.html
 @HEADEND
 e2_body.html
 a0_env.js
@@ -104,5 +105,6 @@ f34_pron.js
 f35_family.js
 f36_offline.js
 f37_common.js
+f38_social.js
 f7_boot.js
 @END

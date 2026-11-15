@@ -254,6 +254,12 @@ Only for ファースト (`cabinLv()` 3; `fcOn()`), never in the iPhone app.
   in half a day. The box `b` still moves 1→6 as before (mastery, the ladder).
 - **3分クイック** (home, mode `quick`): 8 phrases — up to 3 due, 2 weak, 2 new from the next lesson (with their card),
   the rest learned ones — asked in the harder forms (listen, write, order, type, cloze).
+- **フレンドとランキング** (`parts/f38_social.js` + `f38_css.html`, server `src/lib/social.server.ts`,
+  `migrations/0016_social.sql`): 記録 → フレンド (signed in). Each account has a friend code (it can be changed);
+  typing a friend's code or opening `/?friend=CODE` makes both friends (30 at most, 15 adds a day). Friends see
+  only each other's name and icon (sent by the page to `bf_rank`). The weekly ranking (Monday to Sunday, Japan
+  time) is OFF at first: only while on are the miles of each lesson sent (400 a post, 3,000 a day, one post every
+  20 seconds), and only friends who also turned it on are ranked. Turning it off deletes this week's miles.
 
 ## Usage counting
 
