@@ -94,7 +94,7 @@ function completeLesson(o){
   var firstCap=statusEarn(miles);
   store();
   var rankAfter=statusIdx(),gpct=clamp(save.daily.n/save.goal,0,1)*100;
-  var c=ix>=0?cityFor(L,ix):[LG.cityEn,LG.city,0,0];
+  var c=o.city||(ix>=0?cityFor(L,ix):[LG.cityEn,LG.city,0,0]);
   var h='<div class="land"><span class="lbl">'+(unitMode?flightNo(L,o.uid)+' ・ '+esc(c[0])+' に到着':'おつかれさま！')+'</span>';
   if(unitMode)h+='<div class="stamp-wrap slam">'+stampSVG(L,o.uid,rec,'-land')+'</div>';
   h+='<div class="grade">'+o.grade[0]+'</div><div class="lbl" style="margin-top:4px">'+o.grade[1]+'</div><div class="dim" style="font-size:14px;margin-top:6px">'+o.grade[2]+'</div>'+
@@ -121,7 +121,7 @@ function completeLesson(o){
   h+='<button class="ghost" type="button" data-home>ホームに戻る(地図を見る)</button></div></div>';
   view='land';F=null;board=null;closeSheet();$('tabs').hidden=true;
   try{speechSynthesis.cancel();}catch(e){}
-  cineLanding({city:c[0],cityJp:c[1],coord:ix>=0?fmtCoord(c):'',grade:o.grade[1]},function(){
+  cineLanding({no:o.landNo,city:c[0],cityJp:c[1],coord:ix>=0&&!o.city?fmtCoord(c):'',grade:o.grade[1]},function(){
     var main=$('main');main.innerHTML=h;main.classList.remove('enter');void main.offsetWidth;main.classList.add('enter');
     window.scrollTo(0,0);chimeLand();
     if(goalJust)confetti();

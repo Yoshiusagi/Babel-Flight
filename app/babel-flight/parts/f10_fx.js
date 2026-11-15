@@ -32,7 +32,7 @@ function cineLanding(info,done){
   if(reduceMotion){done();return;}
   var c=$('cine');cineDone=done;
   c.innerHTML='<div class="cine-sky '+skyPhase()+' land"></div><div class="cine-bank l"></div><div class="cine-bank r"></div>'+
-    '<div class="cine-txt land"><span class="c-no mono">ARRIVED</span><h1 class="c-city">'+letters(info.city)+'</h1><span class="c-sub">'+esc(info.cityJp)+'</span>'+(info.coord?'<span class="c-coord mono">'+esc(info.coord)+'</span>':'')+'<span class="c-grade mono">'+esc(info.grade)+'</span></div>'+
+    '<div class="cine-txt land"><span class="c-no mono">'+esc(info.no||'ARRIVED')+'</span><h1 class="c-city">'+letters(info.city)+'</h1><span class="c-sub">'+esc(info.cityJp)+'</span>'+(info.coord?'<span class="c-coord mono">'+esc(info.coord)+'</span>':'')+'<span class="c-grade mono">'+esc(info.grade)+'</span></div>'+
     '';
   c.className='cine landing';c.hidden=false;void c.offsetWidth;c.classList.add('play');
   tone(392,0.9,'sine',0.04,0,-120);
