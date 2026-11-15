@@ -90,7 +90,7 @@ function completeLesson(o){
   /* many mistakes in a lesson: add a remedial flight made of those phrases */
   var remAdded=0;
   if(o.mode==='unit'&&!o.skip&&o.wrongKeys&&o.wrongKeys.length>=2&&o.answered>0&&o.corr/o.answered<0.75){remAdd(L,o.uid,o.wrongKeys);remAdded=o.wrongKeys.length;}
-  AID.wrong=o.mode==='ai'?null:(o.wrong||[]).slice(0,3);AID.L=L;
+  AID.wrong=o.mode==='ai'||o.noAid?null:(o.wrong||[]).slice(0,3);  /* noAid: English lines in another course (現地の人と英語で話す) */AID.L=L;
   var firstCap=statusEarn(miles);
   store();
   var rankAfter=statusIdx(),gpct=clamp(save.daily.n/save.goal,0,1)*100;

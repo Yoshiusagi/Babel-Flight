@@ -283,6 +283,11 @@ All free to run (no AI). 日本語 display only unless noted.
   強 (the server also asks the AI for `atc_local`, the line respelled in that language's letters, e.g. katakana).
   Airports, stations and runways are in `ATC_APTS`, mirrored in `src/lib/ai.server.ts` (harness test `atcapt_sync`).
   中国語 (北京) has no accent until a good voice is found.
+- **現地の人と英語で話す** (`e3h_local.js`, scene `sc-local`, 旅行モード): one scene per course (not 英語) in its city —
+  a Dubai taxi, a Seoul street stall, the Istanbul bazaar … The local speaks English in that country's accent (the
+  AI管制官's voice and 訛りの強さ; for 強, `LOCAL_SC[L].resp` has each line in that language's letters), you answer in
+  English (en-US). Each ワンポイント explains why the accent sounds the way it does. Hidden in the English display
+  (the task would be the answer itself). The scene's own place and person come from `scMeta(L, uid)`.
 
 ## AI代とクラスの決め方 (rule for new features)
 

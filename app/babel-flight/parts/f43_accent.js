@@ -128,3 +128,33 @@ function atcSetAcc(n){
   save.atcAcc=n;store();render();
   atcSay({text:'Babel 201, radio check, read you five.',local:''});
 }
+
+/* ---- 現地の人と英語で話す (sc-local, e3h_local.js): the same accent for the people of each course's city ---- */
+function isLocalSc(uid){return uid==='sc-local';}
+/* the English-speaking display does not get these scenes: the task would be the answer itself */
+function localOn(L){return UI!=='en'&&L!=='en'&&!!(UNITS[L]&&UNITS[L]['sc-local']);}
+function scMeta(L,uid){var m=SCENE_META[uid]||{};if(isLocalSc(uid)&&typeof LOCAL_SC==='object'&&LOCAL_SC[L]){var o={},x=LOCAL_SC[L];Object.keys(m).forEach(function(k){o[k]=m[k];});o.jp=x.jp;o.role=x.role;o.ini=x.ini;o.sit=x.sit;return o;}return m;}
+function localApt(L){return atcAptById(LANGS[L]&&LANGS[L].code)||atcAptById('HND');}
+/* the local's line in that language's letters (for 強), by the line itself */
+function localResp(L,text){
+  var x=typeof LOCAL_SC==='object'&&LOCAL_SC[L],u=UNITS[L]&&UNITS[L]['sc-local'];if(!x||!x.resp||!x.resp.length||!u)return '';
+  for(var i=0;i<u.turns.length;i++)if(u.turns[i].p===text)return x.resp[i]||'';
+  return u.end&&u.end[0]===text?x.resp[u.turns.length]||'':'';
+}
+function localSay(L,text,slow){
+  var apt=localApt(L),acc=atcAccOf(apt),code=atcVoiceCode(apt);
+  if(acc>0&&!atcHasVoice(apt)){code='en-US';acc=0;}
+  var loc=acc===2?localResp(L,text):'';
+  speak(loc||text,code,slow,true);
+}
+/* 訛りの強さ in the scene's sheet */
+function localAccHTML(L){
+  var apt=localApt(L),segs=apt.acc?[[0,'なし'],[1,'弱'],[2,'強']]:[[0,'なし'],[1,'あり']];
+  return '<div class="atc-set"><span class="lbl">訛りの強さ</span>'+(apt.noacc?'<p class="dim hint">中国語の声は準備中なので、今は普通の英語で話します。</p>':seg('data-local-acc',apt.acc?atcAccSet():Math.min(atcAccSet(),1),segs))+
+    '<p class="dim hint">相手は英語で話し、あなたも英語で答えます。訛りの強さはAI管制官と同じ設定です。</p></div>';
+}
+function localSetAcc(n){
+  n=parseInt(n,10);if(n!==0&&n!==1&&n!==2)return;
+  save.atcAcc=n;store();openNodeSheet('sc-local');
+  var u=UNITS[save.lang]&&UNITS[save.lang]['sc-local'];if(u)localSay(save.lang,u.turns[0].p);
+}

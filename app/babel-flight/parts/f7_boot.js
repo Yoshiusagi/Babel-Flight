@@ -78,6 +78,7 @@ document.addEventListener('click',function(e){
   if(a('data-atc-say')){atcSay(ATC.log[parseInt(g('data-atc-say'),10)]);return;}
   if(a('data-atc-apt')){atcSetApt(g('data-atc-apt'));return;}
   if(a('data-atc-acc')){atcSetAcc(g('data-atc-acc'));return;}
+  if(a('data-local-acc')){localSetAcc(g('data-local-acc'));return;}
   /* AI ask */
   if(a('data-ai-open')){aiOpen();return;}
   if(a('data-ai-q')){aiAsk(AI_Q[parseInt(g('data-ai-q'),10)]);return;}

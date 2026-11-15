@@ -13,7 +13,7 @@ function simScore(a,b){
 function startScene(uid,mode){
   var L=save.lang,u=UNITS[L][uid];if(!u)return;
   closeSheet();
-  SCX={lang:L,uid:uid,u:u,meta:SCENE_META[uid],mode:mode,idx:0,stage:'ring',grades:[],log:[],t0:0,timer:0,sub:true,tr:lvOf(L)==='beg',back:(view==='review'?'review':'home'),hint:false};
+  SCX={lang:L,uid:uid,u:u,meta:scMeta(L,uid),en:isLocalSc(uid),mode:mode,idx:0,stage:'ring',grades:[],log:[],t0:0,timer:0,sub:true,tr:lvOf(L)==='beg',back:(view==='review'?'review':'home'),hint:false};
   view='scene';render();window.scrollTo(0,0);
   ringTone();
   setTimeout(function(){if(SCX&&SCX.stage==='ring'&&view==='scene')scBegin();},reduceMotion?300:1900);
@@ -23,7 +23,7 @@ function sceneHTML(){
   var S=SCX;if(!S)return '';
   var LG=LANGS[S.lang];
   var h='<div class="call"><div class="call-top"><span class="avatar big'+(S.stage==='ring'?' ringing':'')+'" aria-hidden="true">'+esc(S.meta.ini)+'</span>'+
-    '<div class="call-who"><b>'+esc(S.meta.role)+'</b><span class="mono" id="scTimer">'+(S.stage==='ring'?'呼び出し中…':scClock())+'</span><small>'+esc(S.meta.jp)+' ・ '+esc(LG.name)+' ・ '+(S.mode==='call'?'通話モード':'入力モード')+'</small></div></div>';
+    '<div class="call-who"><b>'+esc(S.meta.role)+'</b><span class="mono" id="scTimer">'+(S.stage==='ring'?'呼び出し中…':scClock())+'</span><small>'+esc(S.meta.jp)+' ・ '+(S.en?'英語':esc(LG.name))+' ・ '+(S.mode==='call'?'通話モード':'入力モード')+'</small></div></div>';
   h+='<div class="sc-sitline">'+esc(S.meta.sit)+'</div>';
   h+='<div id="scLog" class="sclog" aria-live="polite">'+scLogHTML()+'</div>';
   h+='<div id="scPanel" class="scpanel">'+scPanelHTML()+'</div>';
@@ -37,7 +37,7 @@ function sceneHTML(){
 function scLogHTML(){
   /* the learning language's font class goes on the phrase itself, so the labels and the meaning around it are
      still translated in another display language */
-  var S=SCX,pc=lfc(S.lang)?' class="'+lfc(S.lang)+'"':'';
+  var S=SCX,pc=!S.en&&lfc(S.lang)?' class="'+lfc(S.lang)+'"':'';
   return S.log.map(function(m){
     if(m.who==='them'){
       if(m.typing)return '<div class="bub them typing"><i></i><i></i><i></i></div>';
@@ -59,7 +59,7 @@ function scPanelHTML(){
   if(S.stage==='you'){
     if(S.mode==='call')return step+task+'<p class="dim hint">声に出して言ってみよう。言えたらボタンでお手本を確認。</p><button class="go" type="button" data-sc-reveal>言った！ お手本を聞く</button>';
     return step+task+(S.hint?'<p class="hintline">ヒント: <span translate="no">'+esc(/ /.test(t.a.trim())?t.a.split(' ').slice(0,2).join(' '):Array.from(t.a).slice(0,Math.max(2,Math.floor(Array.from(t.a).length/3))).join(''))+'</span> …</p>':'')+
-      '<div class="row2"><input id="scIn" class="typebox" type="text" dir="auto" autocomplete="off" autocapitalize="none" spellcheck="false" lang="'+LANGS[S.lang].tts.slice(0,2)+'" placeholder="'+esc(LANGS[S.lang].name)+'で入力(マイク入力もOK)" aria-label="返事を入力"><button class="go" type="button" data-sc-send style="width:auto;margin:0;padding:12px 16px">送信</button></div>'+
+      '<div class="row2"><input id="scIn" class="typebox" type="text" dir="auto" autocomplete="off" autocapitalize="none" spellcheck="false" lang="'+(S.en?'en':LANGS[S.lang].tts.slice(0,2))+'" placeholder="'+(S.en?'英語で入力(マイク入力もOK)':esc(LANGS[S.lang].name)+'で入力(マイク入力もOK)')+'" aria-label="返事を入力"><button class="go" type="button" data-sc-send style="width:auto;margin:0;padding:12px 16px">送信</button></div>'+
       (S.hint?'':'<button class="sq" type="button" data-sc-hint>ヒントを見る</button>');
   }
   if(S.stage==='grade')return step+task+(t.n?'<div class="note"><b>ワンポイント</b>'+esc(t.n)+'</div>':'')+
@@ -84,7 +84,11 @@ function scBegin(){
   tone(660,0.12,'sine',0.05,0);tone(880,0.16,'sine',0.05,0.12);
   scTurn();
 }
-function scSay(text,slow){speak(text,LANGS[SCX.lang].tts,slow,true);}
+/* me: your own line (the model answer). In 現地の人と英語で話す the local has the accent, you speak plain English. */
+function scSay(text,slow,me){
+  if(SCX&&SCX.en){if(me)speak(text,'en-US',slow,true);else localSay(SCX.lang,text,slow);return;}
+  speak(text,LANGS[SCX.lang].tts,slow,true);
+}
 function scTurn(){
   var S=SCX,t=S.u.turns[S.idx];
   if(t.p){
@@ -94,7 +98,7 @@ function scTurn(){
 }
 function scReveal(){
   var S=SCX,t=S.u.turns[S.idx];
-  S.log.push({who:'me',model:t.a,r:t.r});S.stage='grade';scRefresh();scSay(t.a);
+  S.log.push({who:'me',model:t.a,r:t.r});S.stage='grade';scRefresh();scSay(t.a,false,true);
 }
 function scGrade(g){
   var S=SCX;S.grades.push(g);S.log[S.log.length-1].grade=g;
@@ -106,7 +110,7 @@ function scSend(){
   var v=inp.value.trim();if(!v)return;
   var t=S.u.turns[S.idx],sc=simScore(v,t.a),g=sc>=0.85?2:sc>=0.6?1:0;
   S.grades.push(g);S.log.push({who:'me',typed:v,model:g===2?'':t.a,r:g===2?'':t.r,grade:g});S.stage='result';scRefresh();
-  if(g===2){chimeOK();fxGood();}else{if(g===0)chimeBad();scSay(t.a);}
+  if(g===2){chimeOK();fxGood();}else{if(g===0)chimeBad();scSay(t.a,false,true);}
 }
 function scNext(){
   var S=SCX;S.idx++;
@@ -121,7 +125,7 @@ function sceneFinish(){
   var grade=ratio>=0.9?['完璧な通話','PERFECT CALL','最後までスムーズに話せたね']:ratio>=0.6?['いい感じの通話','GOOD CALL','ほぼ通じてるよ。△のところをもう一回']:['また話してみよう','KEEP TALKING','お手本を聞いて、もう一度チャレンジしよう'];
   var wrong=[];S.u.turns.forEach(function(t,i){if(S.grades[i]<2)wrong.push({t:t.a,jp:t.aj});});
   var L=S.lang,uid=S.uid;SCX=null;document.body.classList.remove('dark-ui');
-  completeLesson({L:L,uid:uid,mode:'scene',stars:stars,answered:S.grades.length,corr:S.grades.filter(function(g){return g===2;}).length,corrLabel:'◎',grade:grade,wrong:wrong.slice(0,4),wrongTitle:'もう一度言いたいフレーズ',wrongNote:'次はここを意識'});
+  completeLesson({L:L,uid:uid,mode:'scene',noAid:S.en,stars:stars,answered:S.grades.length,corr:S.grades.filter(function(g){return g===2;}).length,corrLabel:'◎',grade:grade,wrong:wrong.slice(0,4),wrongTitle:'もう一度言いたいフレーズ',wrongNote:'次はここを意識'});
 }
 function sceneQuit(){
   if(SCX){clearInterval(SCX.timer);var back=SCX.back;SCX=null;try{speechSynthesis.cancel();}catch(e){}document.body.classList.remove('dark-ui');closeSheet();view=back;render();window.scrollTo(0,0);}

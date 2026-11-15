@@ -58,6 +58,7 @@ e3g_id.js
 e3g_ar.js
 e3g_ja.js
 e3h_first.js
+e3h_local.js
 e3e_reg.js
 e3f_enuk.js
 e3g_special.js

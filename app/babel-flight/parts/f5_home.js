@@ -113,9 +113,9 @@ function homeHTML(){
   return h;
 }
 function sceneSheetHTML(L,uid){
-  var m=SCENE_META[uid],u=UNITS[L][uid],LG=LANGS[L],rec=unitRec(L,uid);
-  return '<section class="scene-card"><div class="sc-top"><span class="avatar" aria-hidden="true">'+esc(m.ini)+'</span><div><span class="lbl">会話の場面 ・ '+esc(LG.name)+'</span><b>'+esc(m.jp)+'</b><small>相手: '+esc(m.role)+(rec.n>0?' ・ '+rec.n+'回クリア':'')+'</small></div></div>'+
-    '<p class="sc-sit">'+esc(m.sit)+'</p><div class="sc-meta mono">'+u.turns.length+'往復 ・ 約3分 ・ '+flightNo(L,uid)+'</div>'+
+  var m=scMeta(L,uid),u=UNITS[L][uid],LG=LANGS[L],rec=unitRec(L,uid),loc=isLocalSc(uid);
+  return '<section class="scene-card"><div class="sc-top"><span class="avatar" aria-hidden="true">'+esc(m.ini)+'</span><div><span class="lbl">会話の場面 ・ '+(loc?'英語(現地の人)':esc(LG.name))+'</span><b>'+esc(m.jp)+'</b><small>相手: '+esc(m.role)+(rec.n>0?' ・ '+rec.n+'回クリア':'')+'</small></div></div>'+
+    '<p class="sc-sit">'+esc(m.sit)+'</p><div class="sc-meta mono">'+u.turns.length+'往復 ・ 約3分 ・ '+flightNo(L,uid)+'</div>'+(loc?localAccHTML(L):'')+
     '<button class="go" type="button" data-scene="'+esc(uid)+'" data-scmode="call">通話モードで話す<small>相手の声に、声に出して答える ・ 自己採点</small></button>'+
     '<button class="go alt" type="button" data-scene="'+esc(uid)+'" data-scmode="type">入力モードで答える<small>文字で返事 ・ 自動採点 ・ キーボードのマイクで話してもOK</small></button></section>';
 }

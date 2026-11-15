@@ -10,7 +10,9 @@ var SCENE_META={
  'sc-booking':{jp:'トラブル: 予約が見つからない',lat:'NO RESERVATION',role:'ホテルのフロント',ini:'受',sit:'ホテルに着いたのに、予約が見つからないと言われた。',grp:'travel'},
  'sc-class':{jp:'留学初日: クラスで自己紹介',lat:'FIRST DAY',role:'担任の先生',ini:'師',sit:'留学先の学校の初日。クラスのみんなの前で自己紹介しよう。',grp:'study'},
  'sc-teacher':{jp:'留学: 先生に質問する',lat:'ASK A TEACHER',role:'理科の先生',ini:'師',sit:'授業でわからないところがあった。放課後に先生に質問しよう。',grp:'study'},
- 'sc-home':{jp:'留学: ホームステイ先で',lat:'HOMESTAY',role:'ホストマザー',ini:'母',sit:'ホームステイ先に帰宅。ホストマザーと話そう。',grp:'study'}
+ 'sc-home':{jp:'留学: ホームステイ先で',lat:'HOMESTAY',role:'ホストマザー',ini:'母',sit:'ホームステイ先に帰宅。ホストマザーと話そう。',grp:'study'},
+ /* 現地の人と英語で話す: each course has its own place and person (LOCAL_SC in e3h_local.js) */
+ 'sc-local':{jp:'現地の人と英語で話す',lat:'LOCAL ENGLISH',role:'現地の人',ini:'人',sit:'旅先で、現地の人が英語で話しかけてきた。英語で答えよう。',grp:'local'}
 };
 Object.keys(SCENE_META).forEach(function(k){UM[k]={jp:SCENE_META[k].jp,lat:SCENE_META[k].lat};});
 var SCN={ko:{},en:{},es:{},it:{}};ORDER.forEach(function(l){if(!SCN[l])SCN[l]={};});

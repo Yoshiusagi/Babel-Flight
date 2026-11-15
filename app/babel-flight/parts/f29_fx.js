@@ -103,6 +103,11 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.30',items:[
+  ['🗣️','現地の人と英語で話す','旅行モードに新しい会話「現地の人と英語で話す」が登場。ドバイのタクシー、ソウルの屋台、イスタンブールのバザールなどで、現地の人がその国の訛りのある英語で話しかけてきます。ワンポイントで「なぜそう聞こえるのか」もわかります。','local',1,['ja']],
+  ['🗣️','현지 사람과 영어로 말하기','여행 모드에 새 회화 "현지 사람과 영어로 말하기"가 추가됐어요. 두바이의 택시, 이스탄불의 바자르 등에서 현지 사람이 그 나라 억양이 있는 영어로 말을 걸어와요. 원포인트에서 왜 그렇게 들리는지도 알 수 있어요.','local',1,['ko']],
+  ['🗣️','用英语和当地人交谈','旅行模式新增会话“用英语和当地人交谈”。在迪拜的出租车、首尔的小吃摊、伊斯坦布尔的大巴扎等地，当地人会用带有本国口音的英语跟你搭话。小贴士还会告诉你为什么听起来是那样。','local',1,['zh']]
+ ]},
  {v:'2026.11.29',items:[
   ['🇧🇷','ポルトガル語に職業モード・留学モードが登場','ポルトガル語(ブラジル)も「スターター」を卒業しました。13の職業(パイロット・客室乗務員・医療・ITなど)の専門会話と、留学モード(教科の用語・授業やホームステイの会話)を、カタカナの読みつきで学べます。','lang:pt',1,['ja']],
   ['🇧🇷','Portuguese: job mode and study abroad mode','Portuguese (Brazil) is no longer a starter language. You can now learn the 13 jobs (pilot, cabin crew, medical, IT and more) and the study abroad mode (school subjects, class and homestay conversations).','lang:pt',1,['en']],
@@ -251,6 +256,7 @@ function notamHTML(n,first){
     if(first&&x[3]==='tune')btn='<button class="ghost nt-go" type="button" data-notam-go="tune">試してみる</button>';
     else if(first&&x[3]==='exam'&&typeof examModeOn==='function'&&examModeOn())btn='<button class="ghost nt-go" type="button" data-notam-go="exam">試してみる</button>';
     else if(first&&x[3]==='ja'&&LANGS.ja&&learnOrder().indexOf('ja')>=0&&save.lang!=='ja')btn='<button class="ghost nt-go" type="button" data-notam-go="ja">試してみる</button>';
+    else if(first&&x[3]==='local'&&localOn(save.lang))btn='<button class="ghost nt-go" type="button" data-notam-go="local">試してみる</button>';
     else if(first&&x[3]==='atc')btn='<button class="ghost nt-go" type="button" data-notam-go="atc">試してみる</button>';
     else if(first&&x[3]==='job')btn='<button class="ghost nt-go" type="button" data-notam-go="job">試してみる</button>';
     else if(first&&x[3]==='study'&&studyLangFor())btn='<button class="ghost nt-go" type="button" data-notam-go="study">試してみる</button>';
@@ -286,6 +292,7 @@ document.addEventListener('click',function(e){
     if(g==='tune'){TUNE={step:0,why:save.why,weak:(save.weak||[]).slice()};view='tune';render();window.scrollTo(0,0);}
     else if(g==='settings')go('record');
     else if(g==='atc'){ATC.sc=null;go('atc');}
+    else if(g==='local'){go('home');if(localOn(save.lang))openNodeSheet('sc-local');}
     else if(g==='ja'){save.lang='ja';HOME_ANIM='lang';store();go('home');if(typeof lvNeed==='function'&&lvNeed('ja'))lvSheet('ja');}
     else if(g==='exam'){if(save.mode!=='exam'){save.mode='exam';HOME_ANIM='mode';store();}go('home');}
     else if(g==='job'){if(profById(save.prof)&&jobOpen(save.prof)){save.mode='job';HOME_ANIM='mode';store();go('home');}else{pickerBack='home';go('picker');}}

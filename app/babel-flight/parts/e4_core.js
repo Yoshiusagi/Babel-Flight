@@ -202,9 +202,9 @@ function pathSections(lang){
     {key:'basic',title:'基本の日常会話',sub:'あいさつ・自己紹介・数字・気持ち',ids:dailyIds(lang)},
     {key:'travel',title:'旅行フレーズ',sub:'空港・機内・入国・ホテル・街',ids:LANGS[lang].units.map(function(u){return u.id;})},
     {key:'scenes',title:'旅行の場面で話す',sub:'入国審査からトラブルまで、会話で練習',ids:TRAVEL_SC.slice()}
-  ];
+  ].concat(localOn(lang)?[{key:'local',title:'現地の人と英語で話す',sub:'旅先の人が、その国の訛りのある英語で話しかけてくる',ids:['sc-local']}]:[]);
   /* 学ぶ理由「旅行」: the travel phrases and scenes come first */
-  if(save.why==='travel')secs=[secs[1],secs[2],secs[0]];
+  if(save.why==='travel')secs=[secs[1],secs[2],secs[0]].concat(secs.slice(3));
   if(firstOn(lang))secs.unshift({key:'first',title:'はじめの一歩',sub:'はい・いいえ・ありがとう … 短い言葉から',ids:['first']});
   return secs.concat(lang==='en'&&UNITS.en.usuk?[{key:'usuk',title:'アメリカ英語とイギリス英語',sub:'同じ意味でも、国によって言い方やつづりが変わる',ids:['usuk']}]:[]);
 }

@@ -3445,7 +3445,9 @@ var SCENE_META={
  'sc-booking':{jp:'トラブル: 予約が見つからない',lat:'NO RESERVATION',role:'ホテルのフロント',ini:'受',sit:'ホテルに着いたのに、予約が見つからないと言われた。',grp:'travel'},
  'sc-class':{jp:'留学初日: クラスで自己紹介',lat:'FIRST DAY',role:'担任の先生',ini:'師',sit:'留学先の学校の初日。クラスのみんなの前で自己紹介しよう。',grp:'study'},
  'sc-teacher':{jp:'留学: 先生に質問する',lat:'ASK A TEACHER',role:'理科の先生',ini:'師',sit:'授業でわからないところがあった。放課後に先生に質問しよう。',grp:'study'},
- 'sc-home':{jp:'留学: ホームステイ先で',lat:'HOMESTAY',role:'ホストマザー',ini:'母',sit:'ホームステイ先に帰宅。ホストマザーと話そう。',grp:'study'}
+ 'sc-home':{jp:'留学: ホームステイ先で',lat:'HOMESTAY',role:'ホストマザー',ini:'母',sit:'ホームステイ先に帰宅。ホストマザーと話そう。',grp:'study'},
+ /* 現地の人と英語で話す: each course has its own place and person (LOCAL_SC in e3h_local.js) */
+ 'sc-local':{jp:'現地の人と英語で話す',lat:'LOCAL ENGLISH',role:'現地の人',ini:'人',sit:'旅先で、現地の人が英語で話しかけてきた。英語で答えよう。',grp:'local'}
 };
 Object.keys(SCENE_META).forEach(function(k){UM[k]={jp:SCENE_META[k].jp,lat:SCENE_META[k].lat};});
 var SCN={ko:{},en:{},es:{},it:{}};ORDER.forEach(function(l){if(!SCN[l])SCN[l]={};});
@@ -4292,6 +4294,36 @@ FIRST_U.ja=[["はい","はい。","hai",""],["いいえ","いいえ。","iie",""
   ["こんにちは","こんにちは。","konnichiwa","「は」は「wa」と読みます。"],["じゃあね","じゃあね。","jā ne","友だちどうしの「またね」。"],["お願いします","お願いします。","onegai shimasu","何かを頼むとき、いろいろな場面で使えます。"],["大丈夫です","大丈夫です。","daijōbu desu",""]]
   .map(function(x){return [x[0],JA_M+x[1],x[2],x[3]];});
 Object.keys(FIRST_U).forEach(function(l){if(DU[l])DU[l].unshift(U('first',FIRST_U[l]));});
+/* ================= 現地の人と英語で話す (sc-local) =================
+   One scene per course (not 英語): a local speaks English with that country's accent and you answer in English.
+   The voice and 訛りの強さ are the AI管制官's (f43_accent.js, save.atcAcc); "resp" is each line of the local written
+   in that language's letters, read for 訛り「強」 (none for 中国語: no accent until a good voice is found). */
+var LOCAL_SC={
+ ko:{jp:"ソウル: 屋台で",role:"屋台の店主",ini:"店",sit:"明洞(ミョンドン)の屋台。店主さんが英語で話しかけてきた。",resp:["헬로! 트라이 떡볶이. 베리 딜리셔스!", "어 리틀 스파이시. 두 유 원트 피시 케이크 투?", "오케이! 댓츠 세븐 사우전드 원.", "슈어. 웨어 아 유 프롬?", "오, 재팬! 인조이 서울!"]},
+ es:{jp:"マドリード: バルで",role:"バルの店員",ini:"店",sit:"マドリードのバル(居酒屋)。店員さんが英語で話しかけてきた。",resp:["¡Jelou! ¿Du iu guant sámthin tu drink?", "Beri gud. ¿An tu it? De tortiya is beri espeshal jier.", "Perfect. ¿Is dis iur ferst taim in Espein?", "¡Guelcom! Jier is iur tortiya. ¡Enyoi!", "Iur guelcom. ¡Jav a nais dei!"]},
+ it:{jp:"ローマ: ジェラート屋で",role:"ジェラート屋の店員",ini:"店",sit:"ローマのジェラート屋。店員さんが英語で話しかけてきた。",resp:["Ello! Uich flavor du iu uont?", "Pistacchio is de best. Its a veri feimus in Itali.", "Cap or con?", "Ier iu ar. Dets tri iuros.", "Grazie! Ev a nais dei in Rom!"]},
+ fr:{jp:"パリ: パン屋で",role:"パン屋の店員",ini:"店",sit:"パリのパン屋。店員さんが英語で話しかけてきた。",resp:["Èlo ! Ouate oude you laïke ?", "Ofe corse. Dou you ouante zème in a bague ?", "Zats srî iourôs. Iz zis your feurste taïme in Pari ?", "Sank you ! Go ènde si ze Eiffel Taouère ate naïte.", "Ave a naïce dé !"]},
+ de:{jp:"フランクフルト: 駅で",role:"駅の案内係",ini:"案",sit:"フランクフルト中央駅の案内所。係の人が英語で話しかけてきた。",resp:["Hällo! Hau kän ei hälp ju?", "Tejk se Äs äit or Äs nain. Itt lihfs fromm träck wann.", "Abaut fiftien minnits. Wie häw ä trejn ewwri tänn minnits.", "Ätt se rätt meschien ower säär. Ju kän pej bei kart.", "Jor wällkamm. Häw ä gutt flait!"]},
+ zh:{jp:"北京: お茶屋さんで",role:"お茶屋さんの店員",ini:"店",sit:"北京の胡同(フートン)にあるお茶屋さん。店員さんが英語で話しかけてきた。",resp:[]},
+ pt:{jp:"サンパウロ: 量り売りのレストランで",role:"レストランの店員",ini:"店",sit:"サンパウロの「ポル・キロ(量り売り)」レストラン。店員さんが英語で話しかけてきた。",resp:["Hai! Iz dis iór fêrsti taimi hír?", "Teiki uót iú uónti, end uí uei iór pleiti.", "Dônti forguéti tchu trai dji feijoada. Its véri tchípicou.", "Its bléqui binz uíd míti. Véri delíchas!", "Endjói iór míu!"]},
+ ru:{jp:"モスクワ: 地下鉄の駅で",role:"地下鉄の駅員",ini:"駅",sit:"モスクワの地下鉄の駅。駅員さんが英語で話しかけてきた。",resp:["Хэлло. Ю нид хэлп?", "Тэйк рэд лайн, сри стопс. Стэйшн из Охотный Ряд.", "Ю хэв тикет? Из беттер ту бай Тройка кард.", "Хиа, эт уиндоу. Из вэри изи.", "Ноу проблем. Хэв э гуд дэй."]},
+ tr:{jp:"イスタンブール: バザールで",role:"バザールの店主",ini:"店",sit:"イスタンブールのグランドバザール。お店の人が英語で話しかけてきた。",resp:["Velkım, may frend! Kam, luk. Veri nays lemps!", "For yu, speşıl prays. Fayv handrıt lira.", "Okey, okey. For handrıt. Veri gud kualiti.", "Tri handrıt fifti, last prays! Dil?", "Tenk yu, may frend! Encoy İstanbul!"]},
+ id:{jp:"ジャカルタ: 屋台で",role:"屋台の店主",ini:"店",sit:"ジャカルタの屋台。店主さんが英語で話しかけてきた。",resp:["Helo, mister! Sate, peri fres. Yu won tu trai?", "Ciken en bif. Wit pinat sos, peri delisius.", "Oke. Yu won rais kek olso?", "Terti tausen rupiah.", "Tenkyu, mister! Kam bek egen!"]},
+ ar:{jp:"ドバイ: タクシーで",role:"タクシーの運転手",ini:"運",sit:"ドバイ空港からホテルへ向かうタクシー。運転手さんが英語で話しかけてきた。",resp:["ويلكم تو دوباي! وير آر يو غوينغ، ماي فريند؟", "إز ذيس يور فيرست تايم إن دوباي؟", "يو مست سي ذا برج خليفة. إتس فيري بيوتيفول آت نايت!", "نو، أباوت توينتي مينتس. كارد أور كاش؟", "هير وي آر. إنجوي يور ستاي، ماي فريند!"]},
+ ja:{jp:"東京: 駅で",role:"駅員",ini:"駅",sit:"東京の駅の改札。駅員さんが英語で話しかけてきた。",resp:["ハロー。キャン アイ ヘルプ ユー?", "プリーズ テイク ザ ヤマノテ ライン。プラットフォーム ツー。", "アバウト トゥエンティ ミニッツ。ザ ネクスト トレイン カムズ イン スリー ミニッツ。", "ノー、ユー キャン ユーズ ユア アイシー カード。", "ユア ウェルカム。ハブ ア ナイス トリップ!"]}
+};
+if(SCN["ko"])SC("ko","sc-local",[["Hello! Try tteokbokki. Very delicious!", "こんにちは!トッポッキどうぞ。すごくおいしいよ!", "Is it spicy?", "辛いですか?", "", "韓国語には「v」の音がないので、「very」が「ベリー」のように聞こえます。"], ["A little spicy. Do you want fish cake too?", "少し辛いよ。おでんもいる?", "Yes, one of each, please.", "はい、1つずつください。", "", "韓国語の「f」は「p」に近い音になるので、「fish」が「ピッシュ」のように聞こえることがあります。"], ["Okay! That's seven thousand won.", "はい!7000ウォンね。", "Can I pay by card?", "カードで払えますか?", "", "語尾の子音のあとに軽く「ウ」がつき、「card」が「カードゥ」、「cake」が「ケイク」のように聞こえます。"], ["Sure. Where are you from?", "もちろん。どこから来たの?", "I'm from Japan.", "日本から来ました。", "", ""]],["Oh, Japan! Enjoy Seoul!", "へえ、日本!ソウルを楽しんでね!"]);
+if(SCN["es"])SC("es","sc-local",[["Hello! Do you want something to drink?", "こんにちは!何か飲む?", "Yes, a lemonade, please.", "はい、レモネードをください。", "", ""], ["Very good. And to eat? The tortilla is very special here.", "いいね。食べるものは?ここのトルティーヤは特別なんだ。", "Then I'll have the tortilla.", "じゃあトルティーヤにします。", "", "スペイン語では b と v が同じ音なので、「very」が「ベリー(bery)」のように聞こえます。"], ["Perfect. Is this your first time in Spain?", "いいね。スペインは初めて?", "Yes, I arrived yesterday.", "はい、昨日着きました。", "", "スペイン語には「s+子音」で始まる単語がないので、「Spain」の前に「エ」がついて「エスペイン」のように聞こえます。"], ["Welcome! Here is your tortilla. Enjoy!", "ようこそ!トルティーヤだよ。どうぞ!", "Thank you. It looks delicious!", "ありがとう。おいしそう!", "", "スペイン語の「j」は強い「h」の音なので、「hello」「here」の h がのどの奥でこすれるように強く聞こえます。"]],["You're welcome. Have a nice day!", "どういたしまして。よい一日を!"]);
+if(SCN["it"])SC("it","sc-local",[["Hello! Which flavor do you want?", "こんにちは!どの味にする?", "What do you recommend?", "おすすめは何ですか?", "", "イタリア語は「h」を発音しないので、「hello」が「エロー」のように聞こえます。"], ["Pistachio is the best. It's very famous in Italy.", "ピスタチオが一番だよ。イタリアですごく有名なんだ。", "Okay, pistachio, please.", "じゃあ、ピスタチオをください。", "", "イタリア語の単語は母音で終わるので、英語の語尾にも「ア」がついて「It's a very famous-a」のように聞こえることがあります。"], ["Cup or cone?", "カップ?コーン?", "A cone, please.", "コーンでお願いします。", "", ""], ["Here you are. That's three euros.", "はいどうぞ。3ユーロね。", "Here you go. Thank you!", "はい、どうぞ。ありがとう!", "", "イタリア語には「th」の音がないので、「three」が「トリー」、「that's」が「デッツ」のように聞こえます。"]],["Grazie! Have a nice day in Rome!", "ありがとう!ローマでよい一日を!"]);
+if(SCN["fr"])SC("fr","sc-local",[["Hello! What would you like?", "こんにちは!何にしますか?", "A croissant and a baguette, please.", "クロワッサンとバゲットをください。", "", "フランス語は「h」を発音しないので、「hello」が「エロー」のように聞こえます。単語の最後を強く読むクセもあります。"], ["Of course. Do you want them in a bag?", "かしこまりました。袋に入れますか?", "Yes, please.", "はい、お願いします。", "", ""], ["That's three euros. Is this your first time in Paris?", "3ユーロです。パリは初めてですか?", "Yes. The city is beautiful!", "はい。すてきな街ですね!", "", "フランス語には「th」の音がないので、「this」が「ジス」、「three」が「スリー(s)」のように聞こえます。"], ["Thank you! Go and see the Eiffel Tower at night.", "ありがとう!夜はエッフェル塔を見に行ってね。", "I will. Thank you very much!", "そうします。どうもありがとう!", "", ""]],["Have a nice day!", "よい一日を!"]);
+if(SCN["de"])SC("de","sc-local",[["Hello! How can I help you?", "こんにちは!どうしましたか?", "Which train goes to the airport?", "空港へ行く電車はどれですか?", "", ""], ["Take the S8 or S9. It leaves from track one.", "S8かS9に乗ってください。1番線から出ます。", "How long does it take?", "どのくらいかかりますか?", "", ""], ["About fifteen minutes. We have a train every ten minutes.", "15分くらいです。10分ごとに電車がありますよ。", "Great. Where can I buy a ticket?", "よかった。切符はどこで買えますか?", "", "ドイツ語の「w」は英語の「v」の音なので、「we」が「ヴィー」のように聞こえます。"], ["At the red machine over there. You can pay by card.", "あそこの赤い機械です。カードで払えますよ。", "Thank you for your help!", "助けてくれてありがとう!", "", "ドイツ語では語尾の「d」が「t」になるので、「red」が「レット」、「card」が「カート」のように聞こえます。"]],["You're welcome. Have a good flight!", "どういたしまして。よいフライトを!"]);
+if(SCN["zh"])SC("zh","sc-local",[["Hello! Welcome. Would you like to try some tea?", "こんにちは!いらっしゃい。お茶を試してみる?", "Yes, please. Which one is popular?", "はい、お願いします。どれが人気ですか?", "", ""], ["Jasmine tea is very popular in Beijing.", "ジャスミン茶が北京ではとても人気だよ。", "It smells nice!", "いい香り!", "", "中国語では語尾の子音を軽く発音するので、英語の単語の最後(「popular」の l など)が弱く聞こえることがあります。"], ["This box is one hundred yuan. It's a good gift.", "この箱は100元。おみやげにいいよ。", "Can you make it cheaper?", "少し安くできますか?", "", "中国語には「th」の音がないので、「this」が「ディス」、「three」が「スリー(s)」のように聞こえることがあります。"], ["Okay, eighty yuan for you.", "いいよ、あなたには80元。", "Great, I'll take it.", "よかった、それにします。", "", ""]],["Thank you! Come again!", "ありがとう!また来てね!"]);
+if(SCN["pt"])SC("pt","sc-local",[["Hi! Is this your first time here?", "こんにちは!ここは初めて?", "Yes. How does it work?", "はい。どういうしくみですか?", "", ""], ["Take what you want, and we weigh your plate.", "好きなものを取って、お皿の重さを量るんだ。", "Oh, I see. That's interesting!", "なるほど。おもしろいですね!", "", "ブラジルの人は語尾の子音のあとに「イ」をつけるので、「take」が「テイキ」、「plate」が「プレイチ」のように聞こえます。"], ["Don't forget to try the feijoada. It's very typical.", "フェイジョアーダをぜひ食べてみて。とても定番なんだ。", "What is feijoada?", "フェイジョアーダって何ですか?", "", "「t」+「i」が「チ」の音になり、語尾の「l」は「ウ」になるので、「typical」が「チピカウ」のように聞こえます。"], ["It's black beans with meat. Very delicious!", "黒い豆と肉の煮込みだよ。すごくおいしい!", "I'll try it!", "食べてみます!", "", ""]],["Enjoy your meal!", "召し上がれ!"]);
+if(SCN["ru"])SC("ru","sc-local",[["Hello. You need help?", "こんにちは。お困りですか?", "Yes. How do I get to Red Square?", "はい。赤の広場へはどう行けばいいですか?", "", "ロシア語には「a」「the」(冠詞)がないので、「Do you need help?」が「You need help?」のように省略されがちです。"], ["Take red line, three stops. Station is Okhotny Ryad.", "赤い線で3駅。駅はオホートヌイ・リャドだよ。", "Three stops on the red line. Got it.", "赤い線で3駅ですね。わかりました。", "", "ロシア語には「th」の音がないので、「three」が「スリー(s)」のように聞こえます。"], ["You have ticket? Is better to buy Troika card.", "切符はある?トロイカカードを買うほうがいいよ。", "Where can I buy it?", "どこで買えますか?", "", ""], ["Here, at window. Is very easy.", "ここの窓口で。とても簡単だよ。", "Thank you very much!", "どうもありがとうございます!", "", "ロシア語の「r」は巻き舌で、「h」はのどをこする音になるので、「help」「here」の h が「フ」と「ハ」の間のように聞こえます。"]],["No problem. Have a good day.", "どういたしまして。よい一日を。"]);
+if(SCN["tr"])SC("tr","sc-local",[["Welcome, my friend! Come, look. Very nice lamps!", "いらっしゃい!見ていって。すてきなランプだよ!", "How much is this lamp?", "このランプはいくらですか?", "", "トルコ語には「w」の音がないので、「welcome」が「ヴェルカム」のように聞こえます。"], ["For you, special price. Five hundred lira.", "あなたには特別価格。500リラ。", "That's too expensive.", "それは高すぎます。", "", ""], ["Okay, okay. Four hundred. Very good quality.", "わかった、わかった。400。品質はとてもいいよ。", "How about three hundred?", "300はどうですか?", "", "バザールでは値段交渉がふつう。最初の値段から2〜3割下げて言ってみるのが定番です。"], ["Three hundred fifty, last price! Deal?", "350、最後の値段!どう?", "Deal!", "決まり!", "", "トルコ語には「th」の音がないので、「three」が「トリー」のように聞こえます。"]],["Thank you, my friend! Enjoy Istanbul!", "ありがとう!イスタンブールを楽しんで!"]);
+if(SCN["id"])SC("id","sc-local",[["Hello, mister! Satay, very fresh. You want to try?", "こんにちは!サテ(焼き鳥)だよ、新鮮だよ。食べてみる?", "Yes, please. Is it chicken?", "はい、お願いします。鶏肉ですか?", "", "インドネシアでは、男性客に「mister」、女性客に「miss」とよく呼びかけます。"], ["Chicken and beef. With peanut sauce, very delicious.", "鶏肉と牛肉。ピーナッツソースで、すごくおいしいよ。", "Chicken, please. Ten sticks.", "鶏肉をください。10本。", "", "インドネシア語の「f」「v」は「p」に近くなることがあり、「very」が「ペリー」のように聞こえます。"], ["Okay. You want rice cake also?", "はい。ロントン(ライスケーキ)もいる?", "No, thank you. How much is it?", "いいえ、大丈夫です。いくらですか?", "", ""], ["Thirty thousand rupiah.", "3万ルピアだよ。", "Here you are.", "はい、どうぞ。", "", "「th」の音は「t」になるので、「thirty thousand」が「テルティ タウサン」のように聞こえます。"]],["Thank you, mister! Come back again!", "ありがとう!また来てね!"]);
+if(SCN["ar"])SC("ar","sc-local",[["Welcome to Dubai! Where are you going, my friend?", "ドバイへようこそ!どこへ行くの?", "To the Marina Hotel, please.", "マリーナホテルまでお願いします。", "", "アラビア語には「p」の音がないので、「please」が「ブリーズ」のように聞こえることがあります。"], ["Is this your first time in Dubai?", "ドバイは初めて?", "Yes, it's my first time.", "はい、初めてです。", "", ""], ["You must see the Burj Khalifa. It's very beautiful at night!", "ブルジュ・ハリファは絶対見て。夜はすごくきれいだよ!", "Sounds great. Is it far from the hotel?", "いいですね。ホテルから遠いですか?", "", "アラビア語の「r」は舌をふるわせる巻き舌なので、「very」「first」の r が強く聞こえます。"], ["No, about twenty minutes. Card or cash?", "ううん、20分くらい。カード?現金?", "By card, please.", "カードでお願いします。", "", ""]],["Here we are. Enjoy your stay, my friend!", "着いたよ。楽しんでね!"]);
+if(SCN["ja"])SC("ja","sc-local",[["Hello. Can I help you?", "こんにちは。どうしましたか?", "Yes. Which line goes to Shibuya?", "はい。渋谷へ行くのは何線ですか?", "", "日本語は子音のあとに母音がつくので、「help」が「ヘルプ」のように、音を1つずつ区切って聞こえます。"], ["Please take the Yamanote Line. Platform two.", "山手線に乗ってください。2番線です。", "How long does it take?", "どのくらいかかりますか?", "", ""], ["About twenty minutes. The next train comes in three minutes.", "20分くらいです。次の電車は3分後に来ます。", "Do I need a new ticket?", "新しい切符はいりますか?", "", "日本語には「th」の音がないので、「three」が「スリー」のように聞こえます。"], ["No, you can use your IC card.", "いいえ、ICカードが使えますよ。", "Thank you very much!", "どうもありがとうございます!", "", "日本語は「r」と「l」を区別しないので、「line」「platform」の l が r のように聞こえることがあります。"]],["You're welcome. Have a nice trip!", "どういたしまして。よい旅を!"]);
 /* ---- register daily, study and scene units ---- */
 var DAILY_IDS=['greet','intro','num','time','feel','chat'];
 var TRAVEL_SC=['sc-imm','sc-cafe','sc-hotel','sc-rest','sc-card','sc-wc','sc-wallet','sc-booking'];
@@ -5097,9 +5129,9 @@ function pathSections(lang){
     {key:'basic',title:'基本の日常会話',sub:'あいさつ・自己紹介・数字・気持ち',ids:dailyIds(lang)},
     {key:'travel',title:'旅行フレーズ',sub:'空港・機内・入国・ホテル・街',ids:LANGS[lang].units.map(function(u){return u.id;})},
     {key:'scenes',title:'旅行の場面で話す',sub:'入国審査からトラブルまで、会話で練習',ids:TRAVEL_SC.slice()}
-  ];
+  ].concat(localOn(lang)?[{key:'local',title:'現地の人と英語で話す',sub:'旅先の人が、その国の訛りのある英語で話しかけてくる',ids:['sc-local']}]:[]);
   /* 学ぶ理由「旅行」: the travel phrases and scenes come first */
-  if(save.why==='travel')secs=[secs[1],secs[2],secs[0]];
+  if(save.why==='travel')secs=[secs[1],secs[2],secs[0]].concat(secs.slice(3));
   if(firstOn(lang))secs.unshift({key:'first',title:'はじめの一歩',sub:'はい・いいえ・ありがとう … 短い言葉から',ids:['first']});
   return secs.concat(lang==='en'&&UNITS.en.usuk?[{key:'usuk',title:'アメリカ英語とイギリス英語',sub:'同じ意味でも、国によって言い方やつづりが変わる',ids:['usuk']}]:[]);
 }
@@ -5578,7 +5610,7 @@ function creditsHTML(){
 }
 var LEVEL_HINT={beg:'はじめの一歩から。新しいフレーズはカードで見てから解きます。読み方のヒントつき、選択肢は3つ。',mid:'標準。並べ替えや入力問題も出ます。',adv:'入力問題が多め。職業コースが先に表示されます。'};
 function pathIdsFor(l){
-  var ids=(firstOn(l)?['first']:[]).concat(dailyIds(l),LANGS[l].units.map(function(u){return u.id;}),TRAVEL_SC,STUDY_ALL,UNITS[l].usuk&&UI==='ja'?['usuk']:[]),p=profById(save.prof);
+  var ids=(firstOn(l)?['first']:[]).concat(dailyIds(l),LANGS[l].units.map(function(u){return u.id;}),TRAVEL_SC,localOn(l)?['sc-local']:[],STUDY_ALL,UNITS[l].usuk&&UI==='ja'?['usuk']:[]),p=profById(save.prof);
   if(p&&jobOpen(p.id))ids=ids.concat(p.units[l]);
   ALL_IDS[l].forEach(function(uid){if(ids.indexOf(uid)<0&&unitRec(l,uid).n>0)ids.push(uid);});
   return ids.filter(function(uid){return !!UNITS[l][uid];}); /* a スターター language has no 職業・留学 units yet */
@@ -5783,9 +5815,9 @@ function homeHTML(){
   return h;
 }
 function sceneSheetHTML(L,uid){
-  var m=SCENE_META[uid],u=UNITS[L][uid],LG=LANGS[L],rec=unitRec(L,uid);
-  return '<section class="scene-card"><div class="sc-top"><span class="avatar" aria-hidden="true">'+esc(m.ini)+'</span><div><span class="lbl">会話の場面 ・ '+esc(LG.name)+'</span><b>'+esc(m.jp)+'</b><small>相手: '+esc(m.role)+(rec.n>0?' ・ '+rec.n+'回クリア':'')+'</small></div></div>'+
-    '<p class="sc-sit">'+esc(m.sit)+'</p><div class="sc-meta mono">'+u.turns.length+'往復 ・ 約3分 ・ '+flightNo(L,uid)+'</div>'+
+  var m=scMeta(L,uid),u=UNITS[L][uid],LG=LANGS[L],rec=unitRec(L,uid),loc=isLocalSc(uid);
+  return '<section class="scene-card"><div class="sc-top"><span class="avatar" aria-hidden="true">'+esc(m.ini)+'</span><div><span class="lbl">会話の場面 ・ '+(loc?'英語(現地の人)':esc(LG.name))+'</span><b>'+esc(m.jp)+'</b><small>相手: '+esc(m.role)+(rec.n>0?' ・ '+rec.n+'回クリア':'')+'</small></div></div>'+
+    '<p class="sc-sit">'+esc(m.sit)+'</p><div class="sc-meta mono">'+u.turns.length+'往復 ・ 約3分 ・ '+flightNo(L,uid)+'</div>'+(loc?localAccHTML(L):'')+
     '<button class="go" type="button" data-scene="'+esc(uid)+'" data-scmode="call">通話モードで話す<small>相手の声に、声に出して答える ・ 自己採点</small></button>'+
     '<button class="go alt" type="button" data-scene="'+esc(uid)+'" data-scmode="type">入力モードで答える<small>文字で返事 ・ 自動採点 ・ キーボードのマイクで話してもOK</small></button></section>';
 }
@@ -6352,7 +6384,7 @@ function completeLesson(o){
   /* many mistakes in a lesson: add a remedial flight made of those phrases */
   var remAdded=0;
   if(o.mode==='unit'&&!o.skip&&o.wrongKeys&&o.wrongKeys.length>=2&&o.answered>0&&o.corr/o.answered<0.75){remAdd(L,o.uid,o.wrongKeys);remAdded=o.wrongKeys.length;}
-  AID.wrong=o.mode==='ai'?null:(o.wrong||[]).slice(0,3);AID.L=L;
+  AID.wrong=o.mode==='ai'||o.noAid?null:(o.wrong||[]).slice(0,3);  /* noAid: English lines in another course (現地の人と英語で話す) */AID.L=L;
   var firstCap=statusEarn(miles);
   store();
   var rankAfter=statusIdx(),gpct=clamp(save.daily.n/save.goal,0,1)*100;
@@ -6405,7 +6437,7 @@ function simScore(a,b){
 function startScene(uid,mode){
   var L=save.lang,u=UNITS[L][uid];if(!u)return;
   closeSheet();
-  SCX={lang:L,uid:uid,u:u,meta:SCENE_META[uid],mode:mode,idx:0,stage:'ring',grades:[],log:[],t0:0,timer:0,sub:true,tr:lvOf(L)==='beg',back:(view==='review'?'review':'home'),hint:false};
+  SCX={lang:L,uid:uid,u:u,meta:scMeta(L,uid),en:isLocalSc(uid),mode:mode,idx:0,stage:'ring',grades:[],log:[],t0:0,timer:0,sub:true,tr:lvOf(L)==='beg',back:(view==='review'?'review':'home'),hint:false};
   view='scene';render();window.scrollTo(0,0);
   ringTone();
   setTimeout(function(){if(SCX&&SCX.stage==='ring'&&view==='scene')scBegin();},reduceMotion?300:1900);
@@ -6415,7 +6447,7 @@ function sceneHTML(){
   var S=SCX;if(!S)return '';
   var LG=LANGS[S.lang];
   var h='<div class="call"><div class="call-top"><span class="avatar big'+(S.stage==='ring'?' ringing':'')+'" aria-hidden="true">'+esc(S.meta.ini)+'</span>'+
-    '<div class="call-who"><b>'+esc(S.meta.role)+'</b><span class="mono" id="scTimer">'+(S.stage==='ring'?'呼び出し中…':scClock())+'</span><small>'+esc(S.meta.jp)+' ・ '+esc(LG.name)+' ・ '+(S.mode==='call'?'通話モード':'入力モード')+'</small></div></div>';
+    '<div class="call-who"><b>'+esc(S.meta.role)+'</b><span class="mono" id="scTimer">'+(S.stage==='ring'?'呼び出し中…':scClock())+'</span><small>'+esc(S.meta.jp)+' ・ '+(S.en?'英語':esc(LG.name))+' ・ '+(S.mode==='call'?'通話モード':'入力モード')+'</small></div></div>';
   h+='<div class="sc-sitline">'+esc(S.meta.sit)+'</div>';
   h+='<div id="scLog" class="sclog" aria-live="polite">'+scLogHTML()+'</div>';
   h+='<div id="scPanel" class="scpanel">'+scPanelHTML()+'</div>';
@@ -6429,7 +6461,7 @@ function sceneHTML(){
 function scLogHTML(){
   /* the learning language's font class goes on the phrase itself, so the labels and the meaning around it are
      still translated in another display language */
-  var S=SCX,pc=lfc(S.lang)?' class="'+lfc(S.lang)+'"':'';
+  var S=SCX,pc=!S.en&&lfc(S.lang)?' class="'+lfc(S.lang)+'"':'';
   return S.log.map(function(m){
     if(m.who==='them'){
       if(m.typing)return '<div class="bub them typing"><i></i><i></i><i></i></div>';
@@ -6451,7 +6483,7 @@ function scPanelHTML(){
   if(S.stage==='you'){
     if(S.mode==='call')return step+task+'<p class="dim hint">声に出して言ってみよう。言えたらボタンでお手本を確認。</p><button class="go" type="button" data-sc-reveal>言った！ お手本を聞く</button>';
     return step+task+(S.hint?'<p class="hintline">ヒント: <span translate="no">'+esc(/ /.test(t.a.trim())?t.a.split(' ').slice(0,2).join(' '):Array.from(t.a).slice(0,Math.max(2,Math.floor(Array.from(t.a).length/3))).join(''))+'</span> …</p>':'')+
-      '<div class="row2"><input id="scIn" class="typebox" type="text" dir="auto" autocomplete="off" autocapitalize="none" spellcheck="false" lang="'+LANGS[S.lang].tts.slice(0,2)+'" placeholder="'+esc(LANGS[S.lang].name)+'で入力(マイク入力もOK)" aria-label="返事を入力"><button class="go" type="button" data-sc-send style="width:auto;margin:0;padding:12px 16px">送信</button></div>'+
+      '<div class="row2"><input id="scIn" class="typebox" type="text" dir="auto" autocomplete="off" autocapitalize="none" spellcheck="false" lang="'+(S.en?'en':LANGS[S.lang].tts.slice(0,2))+'" placeholder="'+(S.en?'英語で入力(マイク入力もOK)':esc(LANGS[S.lang].name)+'で入力(マイク入力もOK)')+'" aria-label="返事を入力"><button class="go" type="button" data-sc-send style="width:auto;margin:0;padding:12px 16px">送信</button></div>'+
       (S.hint?'':'<button class="sq" type="button" data-sc-hint>ヒントを見る</button>');
   }
   if(S.stage==='grade')return step+task+(t.n?'<div class="note"><b>ワンポイント</b>'+esc(t.n)+'</div>':'')+
@@ -6476,7 +6508,11 @@ function scBegin(){
   tone(660,0.12,'sine',0.05,0);tone(880,0.16,'sine',0.05,0.12);
   scTurn();
 }
-function scSay(text,slow){speak(text,LANGS[SCX.lang].tts,slow,true);}
+/* me: your own line (the model answer). In 現地の人と英語で話す the local has the accent, you speak plain English. */
+function scSay(text,slow,me){
+  if(SCX&&SCX.en){if(me)speak(text,'en-US',slow,true);else localSay(SCX.lang,text,slow);return;}
+  speak(text,LANGS[SCX.lang].tts,slow,true);
+}
 function scTurn(){
   var S=SCX,t=S.u.turns[S.idx];
   if(t.p){
@@ -6486,7 +6522,7 @@ function scTurn(){
 }
 function scReveal(){
   var S=SCX,t=S.u.turns[S.idx];
-  S.log.push({who:'me',model:t.a,r:t.r});S.stage='grade';scRefresh();scSay(t.a);
+  S.log.push({who:'me',model:t.a,r:t.r});S.stage='grade';scRefresh();scSay(t.a,false,true);
 }
 function scGrade(g){
   var S=SCX;S.grades.push(g);S.log[S.log.length-1].grade=g;
@@ -6498,7 +6534,7 @@ function scSend(){
   var v=inp.value.trim();if(!v)return;
   var t=S.u.turns[S.idx],sc=simScore(v,t.a),g=sc>=0.85?2:sc>=0.6?1:0;
   S.grades.push(g);S.log.push({who:'me',typed:v,model:g===2?'':t.a,r:g===2?'':t.r,grade:g});S.stage='result';scRefresh();
-  if(g===2){chimeOK();fxGood();}else{if(g===0)chimeBad();scSay(t.a);}
+  if(g===2){chimeOK();fxGood();}else{if(g===0)chimeBad();scSay(t.a,false,true);}
 }
 function scNext(){
   var S=SCX;S.idx++;
@@ -6513,7 +6549,7 @@ function sceneFinish(){
   var grade=ratio>=0.9?['完璧な通話','PERFECT CALL','最後までスムーズに話せたね']:ratio>=0.6?['いい感じの通話','GOOD CALL','ほぼ通じてるよ。△のところをもう一回']:['また話してみよう','KEEP TALKING','お手本を聞いて、もう一度チャレンジしよう'];
   var wrong=[];S.u.turns.forEach(function(t,i){if(S.grades[i]<2)wrong.push({t:t.a,jp:t.aj});});
   var L=S.lang,uid=S.uid;SCX=null;document.body.classList.remove('dark-ui');
-  completeLesson({L:L,uid:uid,mode:'scene',stars:stars,answered:S.grades.length,corr:S.grades.filter(function(g){return g===2;}).length,corrLabel:'◎',grade:grade,wrong:wrong.slice(0,4),wrongTitle:'もう一度言いたいフレーズ',wrongNote:'次はここを意識'});
+  completeLesson({L:L,uid:uid,mode:'scene',noAid:S.en,stars:stars,answered:S.grades.length,corr:S.grades.filter(function(g){return g===2;}).length,corrLabel:'◎',grade:grade,wrong:wrong.slice(0,4),wrongTitle:'もう一度言いたいフレーズ',wrongNote:'次はここを意識'});
 }
 function sceneQuit(){
   if(SCX){clearInterval(SCX.timer);var back=SCX.back;SCX=null;try{speechSynthesis.cancel();}catch(e){}document.body.classList.remove('dark-ui');closeSheet();view=back;render();window.scrollTo(0,0);}
@@ -15852,7 +15888,7 @@ function uiSwap(){
 }
 /* 表示言語: the version of public/i18n/*.json and the display languages that have one
    (written by babel-flight/i18n/build.py) */
-var I18N_V='f7ea392a39',I18N_UIS=["en", "ko", "zh"];
+var I18N_V='6f2dd945b8',I18N_UIS=["en", "ko", "zh"];
 /* ================= 表示言語 (display language: 日本語 / English / 한국어 / 简体中文) =================
    The page is written in Japanese. For another display language the dictionary public/i18n/<ui>.json
    (built from babel-flight/i18n/<ui>/*.tsv by i18n/build.py) is loaded, kept on the device, and every
@@ -15890,6 +15926,7 @@ function uiNames(){
   if(typeof CITIES==='object')Object.keys(CITIES).forEach(function(k){(CITIES[k]||[]).forEach(function(c){if(c&&c[1])n[c[1]]=1;});});
   if(typeof PROF==='object'&&PROF.forEach)PROF.forEach(function(p){if(p&&p.jp)n[p.jp]=1;});
   if(typeof ATC_APTS==='object')ATC_APTS.forEach(function(a){n[a.jp]=1;});  /* 「ジャカルタ空港の滑走路25Lに…」 */
+  if(typeof LOCAL_SC==='object'){Object.keys(LOCAL_SC).forEach(function(l){n[LOCAL_SC[l].jp]=1;});n['英語(現地の人)']=1;}  /* 「ドバイ: タクシーで ・ 英語 ・ 入力モード」 */
   if(typeof UM==='object')Object.keys(UM).forEach(function(k){if(UM[k]&&UM[k].jp)n[UM[k].jp]=1;});
   if(typeof XBANK==='object')Object.keys(XBANK).forEach(function(k){if(XBANK[k]&&XBANK[k].name)n[XBANK[k].name]=1;});  /* 「HSK 3級」 inside 「HSK 3級をめざす」 */
   if(typeof JOBX_C==='object')Object.keys(JOBX_C).forEach(function(k){n[JOBX_C[k].title]=1;});  /* the certificates in the 💼 line */
@@ -16373,6 +16410,11 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.11.30',items:[
+  ['🗣️','現地の人と英語で話す','旅行モードに新しい会話「現地の人と英語で話す」が登場。ドバイのタクシー、ソウルの屋台、イスタンブールのバザールなどで、現地の人がその国の訛りのある英語で話しかけてきます。ワンポイントで「なぜそう聞こえるのか」もわかります。','local',1,['ja']],
+  ['🗣️','현지 사람과 영어로 말하기','여행 모드에 새 회화 "현지 사람과 영어로 말하기"가 추가됐어요. 두바이의 택시, 이스탄불의 바자르 등에서 현지 사람이 그 나라 억양이 있는 영어로 말을 걸어와요. 원포인트에서 왜 그렇게 들리는지도 알 수 있어요.','local',1,['ko']],
+  ['🗣️','用英语和当地人交谈','旅行模式新增会话“用英语和当地人交谈”。在迪拜的出租车、首尔的小吃摊、伊斯坦布尔的大巴扎等地，当地人会用带有本国口音的英语跟你搭话。小贴士还会告诉你为什么听起来是那样。','local',1,['zh']]
+ ]},
  {v:'2026.11.29',items:[
   ['🇧🇷','ポルトガル語に職業モード・留学モードが登場','ポルトガル語(ブラジル)も「スターター」を卒業しました。13の職業(パイロット・客室乗務員・医療・ITなど)の専門会話と、留学モード(教科の用語・授業やホームステイの会話)を、カタカナの読みつきで学べます。','lang:pt',1,['ja']],
   ['🇧🇷','Portuguese: job mode and study abroad mode','Portuguese (Brazil) is no longer a starter language. You can now learn the 13 jobs (pilot, cabin crew, medical, IT and more) and the study abroad mode (school subjects, class and homestay conversations).','lang:pt',1,['en']],
@@ -16521,6 +16563,7 @@ function notamHTML(n,first){
     if(first&&x[3]==='tune')btn='<button class="ghost nt-go" type="button" data-notam-go="tune">試してみる</button>';
     else if(first&&x[3]==='exam'&&typeof examModeOn==='function'&&examModeOn())btn='<button class="ghost nt-go" type="button" data-notam-go="exam">試してみる</button>';
     else if(first&&x[3]==='ja'&&LANGS.ja&&learnOrder().indexOf('ja')>=0&&save.lang!=='ja')btn='<button class="ghost nt-go" type="button" data-notam-go="ja">試してみる</button>';
+    else if(first&&x[3]==='local'&&localOn(save.lang))btn='<button class="ghost nt-go" type="button" data-notam-go="local">試してみる</button>';
     else if(first&&x[3]==='atc')btn='<button class="ghost nt-go" type="button" data-notam-go="atc">試してみる</button>';
     else if(first&&x[3]==='job')btn='<button class="ghost nt-go" type="button" data-notam-go="job">試してみる</button>';
     else if(first&&x[3]==='study'&&studyLangFor())btn='<button class="ghost nt-go" type="button" data-notam-go="study">試してみる</button>';
@@ -16556,6 +16599,7 @@ document.addEventListener('click',function(e){
     if(g==='tune'){TUNE={step:0,why:save.why,weak:(save.weak||[]).slice()};view='tune';render();window.scrollTo(0,0);}
     else if(g==='settings')go('record');
     else if(g==='atc'){ATC.sc=null;go('atc');}
+    else if(g==='local'){go('home');if(localOn(save.lang))openNodeSheet('sc-local');}
     else if(g==='ja'){save.lang='ja';HOME_ANIM='lang';store();go('home');if(typeof lvNeed==='function'&&lvNeed('ja'))lvSheet('ja');}
     else if(g==='exam'){if(save.mode!=='exam'){save.mode='exam';HOME_ANIM='mode';store();}go('home');}
     else if(g==='job'){if(profById(save.prof)&&jobOpen(save.prof)){save.mode='job';HOME_ANIM='mode';store();go('home');}else{pickerBack='home';go('picker');}}
@@ -19614,6 +19658,36 @@ function atcSetAcc(n){
   save.atcAcc=n;store();render();
   atcSay({text:'Babel 201, radio check, read you five.',local:''});
 }
+
+/* ---- 現地の人と英語で話す (sc-local, e3h_local.js): the same accent for the people of each course's city ---- */
+function isLocalSc(uid){return uid==='sc-local';}
+/* the English-speaking display does not get these scenes: the task would be the answer itself */
+function localOn(L){return UI!=='en'&&L!=='en'&&!!(UNITS[L]&&UNITS[L]['sc-local']);}
+function scMeta(L,uid){var m=SCENE_META[uid]||{};if(isLocalSc(uid)&&typeof LOCAL_SC==='object'&&LOCAL_SC[L]){var o={},x=LOCAL_SC[L];Object.keys(m).forEach(function(k){o[k]=m[k];});o.jp=x.jp;o.role=x.role;o.ini=x.ini;o.sit=x.sit;return o;}return m;}
+function localApt(L){return atcAptById(LANGS[L]&&LANGS[L].code)||atcAptById('HND');}
+/* the local's line in that language's letters (for 強), by the line itself */
+function localResp(L,text){
+  var x=typeof LOCAL_SC==='object'&&LOCAL_SC[L],u=UNITS[L]&&UNITS[L]['sc-local'];if(!x||!x.resp||!x.resp.length||!u)return '';
+  for(var i=0;i<u.turns.length;i++)if(u.turns[i].p===text)return x.resp[i]||'';
+  return u.end&&u.end[0]===text?x.resp[u.turns.length]||'':'';
+}
+function localSay(L,text,slow){
+  var apt=localApt(L),acc=atcAccOf(apt),code=atcVoiceCode(apt);
+  if(acc>0&&!atcHasVoice(apt)){code='en-US';acc=0;}
+  var loc=acc===2?localResp(L,text):'';
+  speak(loc||text,code,slow,true);
+}
+/* 訛りの強さ in the scene's sheet */
+function localAccHTML(L){
+  var apt=localApt(L),segs=apt.acc?[[0,'なし'],[1,'弱'],[2,'強']]:[[0,'なし'],[1,'あり']];
+  return '<div class="atc-set"><span class="lbl">訛りの強さ</span>'+(apt.noacc?'<p class="dim hint">中国語の声は準備中なので、今は普通の英語で話します。</p>':seg('data-local-acc',apt.acc?atcAccSet():Math.min(atcAccSet(),1),segs))+
+    '<p class="dim hint">相手は英語で話し、あなたも英語で答えます。訛りの強さはAI管制官と同じ設定です。</p></div>';
+}
+function localSetAcc(n){
+  n=parseInt(n,10);if(n!==0&&n!==1&&n!==2)return;
+  save.atcAcc=n;store();openNodeSheet('sc-local');
+  var u=UNITS[save.lang]&&UNITS[save.lang]['sc-local'];if(u)localSay(save.lang,u.turns[0].p);
+}
 /* ================= EVENTS + BOOT ================= */
 function go(v){view=v;confirmReset=false;render();window.scrollTo(0,0);}
 document.addEventListener('click',function(e){
@@ -19694,6 +19768,7 @@ document.addEventListener('click',function(e){
   if(a('data-atc-say')){atcSay(ATC.log[parseInt(g('data-atc-say'),10)]);return;}
   if(a('data-atc-apt')){atcSetApt(g('data-atc-apt'));return;}
   if(a('data-atc-acc')){atcSetAcc(g('data-atc-acc'));return;}
+  if(a('data-local-acc')){localSetAcc(g('data-local-acc'));return;}
   /* AI ask */
   if(a('data-ai-open')){aiOpen();return;}
   if(a('data-ai-q')){aiAsk(AI_Q[parseInt(g('data-ai-q'),10)]);return;}
