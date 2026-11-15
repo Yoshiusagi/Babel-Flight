@@ -83,6 +83,10 @@ function unionSave(a,b){
   out.miles=Math.max(a.miles||0,b.miles||0);
   out.flights=Math.max(a.flights||0,b.flights||0);
   out.bestStreak=Math.max(a.bestStreak||0,b.bestStreak||0);
+  var dl={};[a.dly,b.dly].forEach(function(x){(Array.isArray(x)?x:[]).forEach(function(d){if(typeof d==='string')dl[d]=1;});});out.dly=Object.keys(dl).sort().slice(-12);
+  /* 単語帳: the phrases saved on either copy */
+  var wb={};[newer.wb,older.wb].forEach(function(x){if(!x||typeof x!=='object')return;Object.keys(x).forEach(function(l){if(!Array.isArray(x[l]))return;var a=wb[l]||(wb[l]=[]);x[l].forEach(function(k){if(typeof k==='string'&&a.indexOf(k)<0)a.push(k);});});});
+  Object.keys(wb).forEach(function(l){wb[l]=wb[l].slice(0,300);});out.wb=wb;
   if((older.lastDay||'')>(out.lastDay||'')){out.lastDay=older.lastDay;out.streak=older.streak;}
   else if(older.lastDay===out.lastDay)out.streak=Math.max(a.streak||0,b.streak||0);
   var od=older.daily||{d:'',n:0};

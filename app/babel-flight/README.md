@@ -238,6 +238,23 @@ Only for ファースト (`cabinLv()` 3; `fcOn()`), never in the iPhone app.
 - Schema: `migrations/0014_first_ai.sql` (columns `coach`, `diary` of `bf_ai_usage`). `GET /api/ai/first` tells how
   many are left today.
 
+## 全クラス共通の底上げ — `parts/f37_common.js` + `f37_css.html`
+
+- **フライト遅延チケット** (`dayAgo`, `weekOfDay`, `dlyPending` in `e4_core.js`; used in `completeLesson`): one a week
+  (the week of the missed day). Missing a single day keeps the streak; the next lesson uses the ticket by itself
+  (`save.dly`, the covered days, synced as a union). Home shows it while pending, 記録 shows this week's ticket.
+- **どうしてちがう？**: after a wrong answer, one reason made from the answer (no AI): the picked option's real
+  meaning and the word that tells them apart; for build/type the first difference (missing/extra word, a/an/the,
+  s, -ed, -ing, spelling, word order).
+- **単語帳** (`save.wb`, per language, ☆ on the answer sheet and in search; missed phrases are added by themselves)
+  and **単語をさがす** (all phrases of the learning language, by the phrase, its reading or its Japanese meaning):
+  view `words`, from 復習. 「この単語帳で練習する」 is a 10-question flight (mode `wb`).
+- **復習の間隔の自動調整** (`srsNext`, called from `land`): per phrase ease `e` (1.3–3.0) and interval `iv` (days, up to
+  180, ±8% spread): fast answers stretch it, slow or hinted ones shorten it, overdue time counts, a miss comes back
+  in half a day. The box `b` still moves 1→6 as before (mastery, the ladder).
+- **3分クイック** (home, mode `quick`): 8 phrases — up to 3 due, 2 weak, 2 new from the next lesson (with their card),
+  the rest learned ones — asked in the harder forms (listen, write, order, type, cloze).
+
 ## Usage counting
 
 `parts/f12_track.js` (standalone site only, never in the Claude version) sends an anonymous

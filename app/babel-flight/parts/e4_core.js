@@ -42,7 +42,7 @@ var KEY='babelflight.save.v1';
 var OLD_ORDER=['checkin','inflight','immigration','hotel','restaurant','city','atc1','atc2'];
 function blankProg(){var p={};ORDER.forEach(function(k){p[k]={items:{},units:{}};});return p;}
 function defaults(){return {v:2,t:0,name:'PASSENGER',icon:'',rz:0,lang:'ko',prof:'',level:'mid',lv:{},nw:'',why:'',weak:[],why0:0,seen:'',goal:2,onboarded:false,theme:'auto',sound:true,mode:'daily',amb:false,tap:true,pos:{},
-  miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,daily:{d:'',n:0},mh:null,st:null,cap:0,tq:0,enVar:'us',acc:{},rem:{},stMax:0,accent:'',prog:blankProg()};}
+  miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,dly:[],wb:{},daily:{d:'',n:0},mh:null,st:null,cap:0,tq:0,enVar:'us',acc:{},rem:{},stMax:0,accent:'',prog:blankProg()};}
 function mergeSave(raw){
   var d=defaults();
   if(!raw||typeof raw!=='object')return d;
@@ -207,7 +207,15 @@ function pathSections(lang){
 }
 function pathIds(lang){var a=[];pathSections(lang).forEach(function(s){a=a.concat(s.ids);});return a;}
 function unitsDone(lang,ids){var n=0;(ids||pathIds(lang)).forEach(function(uid){if(unitRec(lang,uid).n>0)n++;});return n;}
-function streakNow(){return(save.lastDay===dayStr()||save.lastDay===yesterdayStr())?save.streak:0;}
+/* フライト遅延チケット: one a week (Monday to Sunday, of the day missed). Missing a single day doesn't break the
+   streak: the next lesson uses the ticket by itself and covers that day (save.dly: the days covered). */
+function dayAgo(n){var d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-n);return dayStr(d);}
+function weekOfDay(s){var p=String(s).split('-'),d=new Date(+p[0],+p[1]-1,+p[2],12);d.setDate(d.getDate()-((d.getDay()+6)%7));return dayStr(d);}
+function dlyList(){return Array.isArray(save.dly)?save.dly.filter(function(x){return typeof x==='string'&&/^\d{4}-\d\d-\d\d$/.test(x);}):[];}
+function dlyFree(day){var w=weekOfDay(day);return !dlyList().some(function(x){return weekOfDay(x)===w;});}
+/* yesterday was missed, the day before was flown, and that week's ticket is unused: today keeps the streak */
+function dlyPending(){return save.streak>0&&save.lastDay===dayAgo(2)&&dlyFree(dayAgo(1));}
+function streakNow(){return(save.lastDay===dayStr()||save.lastDay===yesterdayStr()||dlyPending())?save.streak:0;}
 function todayCount(){return save.daily&&save.daily.d===dayStr()?save.daily.n:0;}
 function rankIdx(m){var r=0;for(var i=0;i<RANKS.length;i++)if(m>=RANKS[i][2])r=i;return r;}
 /* miles earned in the last 6 months (never more than the lifetime total) */

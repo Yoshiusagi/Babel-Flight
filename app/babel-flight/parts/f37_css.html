@@ -1,0 +1,48 @@
+<style>
+/* ---- 全クラス共通 (f37_common.js) ---- */
+.dly-home{display:flex;gap:10px;align-items:center;margin:10px 0 0;padding:10px 14px;border-radius:14px;border:1.5px dashed var(--signal);background:color-mix(in srgb,var(--signal) 10%,var(--surface))}
+.dly-home>span:first-child{font-size:22px}
+.dly-home b{display:block;font-size:13.5px}
+.dly-home small{font-size:12px;color:var(--ink2)}
+.dly-rec{display:flex;gap:10px;align-items:flex-start;margin:10px 2px 4px;font-size:13.5px;line-height:1.55}
+.dly-rec>span:first-child{font-size:20px}
+.dly-rec small{display:block;font-size:12px;color:var(--ink2)}
+.dly-note{border-color:var(--signal)}
+.quick-go{display:flex;align-items:center;gap:12px;width:100%;margin:10px 0 0;padding:12px 14px;border-radius:16px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);text-align:left;min-height:60px}
+.quick-go:active{transform:scale(.985)}
+.qk-ic{display:grid;place-items:center;flex:none;width:40px;height:40px;border-radius:12px;background:var(--ink);font-size:20px}
+.wb-b .mini svg{width:20px;height:20px;color:var(--ink)}
+.quick-go b{display:block;font-size:15px}
+.quick-go small{font-size:12px;color:var(--ink2);line-height:1.4}
+.why-miss{margin:10px 0 2px;padding:10px 12px;border-radius:12px;border-left:3px solid var(--bad);background:color-mix(in srgb,var(--bad) 8%,var(--surface));font-size:13.5px;line-height:1.6;text-align:left}
+.why-miss b{display:block;font-size:12px;color:var(--bad);margin-bottom:2px}
+.why-miss p b{display:inline;font-size:inherit;color:var(--ink)}
+.sq.wb-star{font-size:20px;color:var(--signal-ink,var(--ink))}
+.sq.wb-star[aria-pressed="true"]{color:#d79b00}
+.wb-card{padding:10px}
+.wb-entry{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.wb-entry button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:84px;padding:12px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);text-align:left}
+.wb-entry button span{font-size:22px;line-height:1}
+.wb-entry button b{font-size:15px;margin-top:4px}
+.wb-entry button small{font-size:11.5px;color:var(--ink2);line-height:1.4}
+.wb{padding-bottom:30px}
+.wb-langs{display:flex;gap:6px;overflow-x:auto;margin:10px 0 0;padding-bottom:2px}
+.wb-langs .chip{flex:none;min-height:36px;color:var(--ink)}
+.wb-langs .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.wb-mode,.wb-tabs{margin:12px 0 10px}
+.wb-search input{display:block;width:100%;min-height:52px;padding:10px 14px;border:1.5px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);font-size:17px}
+.wb-search input:focus{outline:none;border-color:var(--signal)}
+.wb-empty{margin:20px 4px;text-align:center;line-height:1.8}
+.wb-list{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px}
+.wb-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:10px 10px 10px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.wb-t b{display:block;font-size:16px;line-height:1.4}
+.wb-r{display:block;font-size:11.5px;color:var(--ink2)}
+.wb-jp{display:block;font-size:13.5px;margin-top:2px}
+.wb-src{display:flex;flex-wrap:wrap;gap:8px;margin-top:3px;font-size:11px;color:var(--ink2)}
+.wb-miss{color:var(--bad);font-weight:700}.wb-miss.done{color:var(--good)}
+.wb-b{display:flex;gap:6px}
+.wb-b .mini{position:static;width:40px;height:40px;display:grid;place-items:center}
+.wb-b .wb-star{font-size:19px}
+.wb-b .wb-star[aria-pressed="true"]{color:#d79b00}
+.wb .go{margin-bottom:6px}
+</style>

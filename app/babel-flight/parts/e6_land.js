@@ -24,13 +24,9 @@ function land(){
   if(F.mode==='ai'){landAi();return;}
   if(F.mode==='mock'&&typeof landMock==='function'){landMock();return;}
   keys.forEach(function(k){
-    var rec=P.items[k]||{b:0,d:0},w=F.wrong[k]||0,wasDue=rec.b===0||rec.d<=now;
-    if(w===0){
-      if(rec.b===0){rec.b=1;rec.d=now+ivlDays(1)*DAY;}
-      else if(wasDue){rec.b=Math.min(6,rec.b+1);rec.d=now+ivlDays(rec.b)*DAY;}
-      if(rec.m)rec.k=(rec.k||0)+1;
-    }else{rec.b=Math.max(1,rec.b-1);rec.d=now+0.5*DAY;rec.m=(rec.m||0)+w;rec.k=0;}
-    P.items[k]=rec;
+    var rec=P.items[k]||{b:0,d:0},w=F.wrong[k]||0;
+    /* the interval follows how it was answered (srsNext, f37_common.js) */
+    P.items[k]=srsNext(rec,w,now,F.rt&&F.rt[k]);
   });
   var mist=F.mist,stars=mist===0?3:mist<=2?2:1;
   var grade=mist===0?['完璧な着陸','PERFECT LANDING','ミスなし！バターのようになめらか']:mist<=2?['なめらかな着陸','SMOOTH LANDING','いい調子。この感覚で続けよう']:mist<=5?['しっかり着陸','FIRM LANDING','間違えたフレーズは復習に回るよ']:['ちょっと揺れた着陸','HARD LANDING','大丈夫。間違えた分だけ記憶に残りやすいよ'];
@@ -82,7 +78,8 @@ function completeLesson(o){
       if(from!==ix){pendingFly={key:posKey(L),from:from,to:ix};save.pos[posKey(L)]=ix;}
     }
   }
-  var streakUp=save.lastDay!==today;
+  var streakUp=save.lastDay!==today,dlyUsed='';
+  if(save.lastDay!==today&&dlyPending()){dlyUsed=dayAgo(1);save.dly=dlyList().concat([dlyUsed]).slice(-12);save.lastDay=dlyUsed;}
   if(save.lastDay!==today){
     save.streak=(save.lastDay===yesterdayStr())?save.streak+1:1;
     save.lastDay=today;save.bestStreak=Math.max(save.bestStreak||0,save.streak);
@@ -104,6 +101,7 @@ function completeLesson(o){
      '<div class="stars">'+[1,2,3].map(function(n){return starIcon(n<=o.stars);}).join('')+'</div>';
   h+='<div class="goalbox"><div class="card-h" style="margin:0"><span>今日の目標</span><b class="mono">'+save.daily.n+' / '+save.goal+' レッスン</b></div><div class="gbar"><i style="width:'+gpct+'%"></i></div>'+
      (save.daily.n>=save.goal?'<div class="gdone">'+(goalJust?'今日の目標を達成しました！':'目標達成ずみ。おかわりフライト中')+'</div>':'')+'</div>';
+  if(dlyUsed)h+='<div class="up-note dly-note">🎫 フライト遅延チケットを使いました。昨日のお休みをカバーして、連続記録がつながりました(チケットは1週間に1枚)</div>';
   if(streakUp&&save.streak>1)h+='<div class="streak-up" aria-label="連続'+save.streak+'日"><span class="su-fl" aria-hidden="true">🔥</span><span class="su-n mono"><i>'+(save.streak-1)+'</i><i>'+save.streak+'</i></span><span>日連続のフライト！</span></div>';
   h+='<div class="receipt" aria-label="獲得マイルの明細">'+lines.map(function(x){return '<div class="ln"><span>'+esc(x[0])+'</span><span>+'+x[1]+'</span></div>';}).join('')+
      '<div class="ln tot"><span>獲得マイル</span><span>+'+miles+' mi</span></div></div>';
