@@ -261,6 +261,23 @@ Only for ファースト (`cabinLv()` 3; `fcOn()`), never in the iPhone app.
   time) is OFF at first: only while on are the miles of each lesson sent (400 a post, 3,000 a day, one post every
   20 seconds), and only friends who also turned it on are ranked. Turning it off deletes this week's miles.
 
+## 他のアプリにない練習 — `parts/e3g_special.js`, `f39_special.js` … `f42_noise.js` (CSS in `f39_css.html`, `f40_css.html`)
+
+All free to run (no AI). 日本語 display only unless noted.
+- **日本人のための特別コース** (`e3g_special.js`): one more section of 日常会話モード — 和製英語のワナ ①②, 相手で変わる言い方
+  (英語 and 韓国語), 日本を説明する ①②. Units with `track:'daily', special:1`.
+- **できることリスト** (`f39_special.js`, 記録): what you can now do in the language (旅行 / 日常 / 留学 / 日本を説明 / the
+  chosen job), each line from the units it needs: ◐ after one lesson, ✓ once remembered after a gap.
+- **次のフライト** (`f39_special.js`, home): the date of a real trip (`save.trip`): a countdown, what to learn each day
+  before it, 出発前ブリーフィング (mode `brief`) in the last days, and 現地モード (tap to say a phrase) while away.
+- **共同フライト** (`f40_coop.js`, server `social.server.ts` coop-*, `migrations/0017_coop.sql`): two friends share a
+  weekly goal of 14 lessons (each person counts at most 6 a day); it only starts when both said yes. Reaching it moves
+  the pair to the next city (`COOP_DEST`). Shown in 記録 → フレンド and on the home screen while flying together.
+- **職業の1日** (`f41_jobday.js`, English, 職業モード home): a working day of パイロット / 客室乗務員 / 医師・看護師 /
+  ITエンジニア on the route-simulation engine (`RTX.job`), with one trouble picked at random from two. Mode `jobday`.
+- **雑音の中で聞き取る** (`f42_noise.js`, 学習の設定): 機内 / 空港 / 無線 / カフェ noise made with Web Audio, played under
+  each voice in lessons, conversations, the route and the job day (not under 「ゆっくり」). Kept per device.
+
 ## Usage counting
 
 `parts/f12_track.js` (standalone site only, never in the Claude version) sends an anonymous

@@ -112,5 +112,6 @@ f38_social.js
 f39_special.js
 f40_coop.js
 f41_jobday.js
+f42_noise.js
 f7_boot.js
 @END
