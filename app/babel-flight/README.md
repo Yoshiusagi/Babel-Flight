@@ -278,6 +278,18 @@ All free to run (no AI). 日本語 display only unless noted.
 - **雑音の中で聞き取る** (`f42_noise.js`, 学習の設定): 機内 / 空港 / 無線 / カフェ noise made with Web Audio, played under
   each voice in lessons, conversations, the route and the job day (not under 「ゆっくり」). Kept per device.
 
+## AI代とクラスの決め方 (rule for new features)
+
+Decide a feature's class by (cost of one AI call) × (calls a person makes a day):
+| 段階 | What it does | Examples | Classes |
+|---|---|---|---|
+| 0 AIなし | runs on the device (or plain D1 reads/writes) | f37–f42, search, 単語帳 | all |
+| 1 軽いAI | one short text call | AIの例文練習 (`ask`), 管制官 (`atc`), `drill` — daily limits in `ai.server.ts` | all, more per day in higher classes |
+| 2 重いAI | long output, free conversation, or daily automatic generation | AIコーチ, 日記, (planned) 職業の先輩AIキャラ | ファースト |
+| 3 とても重い | images, or voice processed on the server | (planned) 写真からフレーズ | ファースト + a daily limit |
+
+Keep each person's AI cost per month well under the class price (aim: under 20–30%), by daily limits.
+
 ## Usage counting
 
 `parts/f12_track.js` (standalone site only, never in the Claude version) sends an anonymous
