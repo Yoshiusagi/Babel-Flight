@@ -103,6 +103,12 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.12.01',items:[
+  ['🇹🇷','トルコ語に職業モード・留学モードが登場','トルコ語も「スターター」を卒業しました。13の職業(パイロット・客室乗務員・医療・ITなど)の専門会話と、留学モード(教科の用語・授業やホームステイの会話)を、カタカナの読みつきで学べます。','lang:tr',1,['ja']],
+  ['🇹🇷','Turkish: job mode and study abroad mode','Turkish is no longer a starter language. You can now learn the 13 jobs (pilot, cabin crew, medical, IT and more) and the study abroad mode (school subjects, class and homestay conversations).','lang:tr',1,['en']],
+  ['🇹🇷','터키어에 직업 모드와 유학 모드 추가','터키어도 스타터 과정을 졸업했어요. 13가지 직업(파일럿, 객실 승무원, 의료, IT 등)의 전문 회화와 유학 모드(교과 용어, 수업과 홈스테이 회화)를 배울 수 있어요.','lang:tr',1,['ko']],
+  ['🇹🇷','土耳其语新增职业模式和留学模式','土耳其语也已不再是入门语言。现在可以学习13种职业（飞行员、空乘、医疗、IT等）的专业会话，以及留学模式（学科用语、课堂和寄宿家庭会话）。','lang:tr',1,['zh']]
+ ]},
  {v:'2026.11.30',items:[
   ['🗣️','現地の人と英語で話す','旅行モードに新しい会話「現地の人と英語で話す」が登場。ドバイのタクシー、ソウルの屋台、イスタンブールのバザールなどで、現地の人がその国の訛りのある英語で話しかけてきます。ワンポイントで「なぜそう聞こえるのか」もわかります。','local',1,['ja']],
   ['🗣️','현지 사람과 영어로 말하기','여행 모드에 새 회화 "현지 사람과 영어로 말하기"가 추가됐어요. 두바이의 택시, 이스탄불의 바자르 등에서 현지 사람이 그 나라 억양이 있는 영어로 말을 걸어와요. 원포인트에서 왜 그렇게 들리는지도 알 수 있어요.','local',1,['ko']],

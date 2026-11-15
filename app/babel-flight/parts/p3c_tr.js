@@ -1,6 +1,7 @@
-/* ================= トルコ語 — starter course =================
-   Travel phrases here; daily phrases, scenes and the route map in e3g_tr.js. Readings in katakana. */
-LANGS.tr={name:'トルコ語',native:'Türkçe',city:'イスタンブール',cityEn:'ISTANBUL',code:'IST',tts:'tr-TR',km:8950,letter:'J',hasYomi:true,starter:true,units:[
+/* ================= トルコ語 =================
+   Travel phrases here; daily phrases, scenes and the route map in e3g_tr.js; the 職業・留学 units in the PJ() calls
+   (d1–d8, e3a). Readings in katakana. */
+LANGS.tr={name:'トルコ語',native:'Türkçe',city:'イスタンブール',cityEn:'ISTANBUL',code:'IST',tts:'tr-TR',km:8950,letter:'J',hasYomi:true,units:[
   U("checkin",[
    ["こんにちは", "Merhaba.", "メルハバ", "いつでも使える「こんにちは」。"],
    ["チェックインしたいのですが", "Check-in yapmak istiyorum.", "チェックイン ヤプマク イスティヨルム", "「〜istiyorum」=〜したいです。"],
