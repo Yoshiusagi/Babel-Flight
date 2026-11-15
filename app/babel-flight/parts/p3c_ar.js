@@ -1,9 +1,9 @@
-/* ================= アラビア語 — starter course =================
+/* ================= アラビア語 =================
    Modern Standard Arabic (فصحى), understood across the Arab world; prices in UAE dirhams (the route starts in Dubai).
    Written right to left: rtl:true makes the flight board show the whole phrase instead of split-flap letters (Arabic letters join),
    and the word tiles and text run right to left. No typing questions (they would need an Arabic keyboard).
-   Travel phrases here; daily phrases, scenes and the route map in e3g_ar.js. Readings in katakana. */
-LANGS.ar={name:'アラビア語',native:'العربية',city:'ドバイ',cityEn:'DUBAI',code:'DXB',tts:'ar-SA',km:7950,letter:'L',hasYomi:true,noType:true,rtl:true,starter:true,units:[
+   Travel phrases here; daily phrases, scenes and the route map in e3g_ar.js; the 職業・留学 units in the PJ() calls (d1–d8, e3a). Readings in katakana. */
+LANGS.ar={name:'アラビア語',native:'العربية',city:'ドバイ',cityEn:'DUBAI',code:'DXB',tts:'ar-SA',km:7950,letter:'L',hasYomi:true,noType:true,rtl:true,units:[
   U("checkin",[
    ["こんにちは", "مرحبا.", "マルハバ", "いつでも使える「こんにちは」。ていねいには「السلام عليكم(アッサラーム アライクム)」。"],
    ["チェックインしたいのですが", "أريد تسجيل الوصول، من فضلك.", "ウリード タスジール アルウスール ミン ファドリク", "「أريد〜」=〜したい。「من فضلك」=お願いします。"],
