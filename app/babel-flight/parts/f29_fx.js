@@ -103,6 +103,12 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.12.05',items:[
+  ['📚','授業の用語(くわしく)がすべての言語に','留学モードの「授業の用語(くわしく)」が、英語以外の11言語にも登場しました。数学・理科・社会・国語・情報・保健体育・音楽・美術の大事な用語を16語ずつ(1言語128語)、読みと先生が授業で言いそうな文つきで学べます(プレミアムエコノミーから)。','study',1,['ja']],
+  ['📚','Class terms (in depth) in every language','The "Class terms (in depth)" of the study abroad mode now come in the other 11 languages too: 16 key terms from each of 8 subjects (math, science, social studies, language arts, computing, P.E. and health, music and art), with readings and a sentence a teacher might say in class (from Premium Economy).','study',1,['en']],
+  ['📚','수업 용어(자세히)를 모든 언어로','유학 모드의 "수업 용어(자세히)"가 영어 외의 11개 언어에도 생겼어요. 수학, 과학, 사회, 국어, 정보, 보건 체육, 음악, 미술의 중요한 용어를 16개씩(언어마다 128개), 읽는 법과 선생님이 수업에서 할 법한 문장과 함께 배울 수 있어요(프리미엄 이코노미부터).','study',1,['ko']],
+  ['📚','课堂术语（详细）扩展到所有语言','留学模式的“课堂术语（详细）”现在除英语外的11种语言也有了。数学、理科、社会、语文、信息科技、体育与健康、音乐、美术各16个重要术语（每种语言128个），附带读音和老师上课时可能会说的句子（高级经济舱起）。','study',1,['zh']]
+ ]},
  {v:'2026.12.04',items:[
   ['📚','授業の用語(くわしく)が8教科に','留学モード(英語)の「授業の用語(くわしく)」に、社会・国語(英語の授業)・情報・保健体育・音楽・美術が加わりました。数学・理科と合わせて8教科512語を、意味と先生が授業で言いそうな英文つきで学べます(プレミアムエコノミーから)。','study',1,['ja']],
   ['📚','수업 용어(자세히)가 8과목으로','유학 모드(영어)의 "수업 용어(자세히)"에 사회, 국어(영어 수업), 정보, 보건 체육, 음악, 미술이 추가됐어요. 수학, 과학과 합쳐 8과목 512개 용어를 뜻과 선생님이 수업에서 할 법한 영어 문장과 함께 배울 수 있어요(프리미엄 이코노미부터).','study',1,['ko']],

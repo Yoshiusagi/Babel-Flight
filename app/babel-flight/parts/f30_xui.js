@@ -231,7 +231,8 @@ function xuiUnits(ui){
   var x=XUI_EXTRA[ui]||{};
   Object.keys(x).forEach(function(L){x[L].forEach(function(e){e.slice(1).forEach(function(k){k.goals.forEach(function(g){add(L,g[1]);});});});});
   XUI_JOB.forEach(function(k){if(XBANK[k])add(XBANK[k].L,k);});
-  ['sd-math','sd-sci','sd-soc','sd-ela','sd-cs','sd-pe','sd-mus','sd-art'].forEach(function(k){add('en',k);});   /* 授業の用語(くわしく) in 留学モード */
+  ['sd-math','sd-sci','sd-soc','sd-ela','sd-cs','sd-pe','sd-mus','sd-art'].forEach(function(k){add('en',k);});
+  if(typeof SDL_MORE==='object')Object.keys(SDL_MORE).forEach(function(L){SDL_MORE[L].forEach(function(x){add(L,x.bank);});});   /* 授業の用語(くわしく) in 留学モード */
   return out;
 }
 if(typeof jobxApply==='function'&&typeof render==='function'){

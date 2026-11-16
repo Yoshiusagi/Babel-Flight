@@ -365,6 +365,11 @@ in `f17_exam.js`; 社会・国語(英語の授業)・情報・保健体育・音
 translations are in `i18n/<ui>/sdmore.tsv` (both were generated together; a changed note needs its line in both). Each item is [English term, 日本語, meaning + a sentence a
 teacher might say in class]. `STUDY_MORE` (`f17_cabin.js`) lists the banks for the map and the card; the card folds
 each subject (the first one, or the ones already started, open; `SM_OPEN` keeps what was opened by hand).
+The other 11 languages get 8 subjects × 16 core terms in 2 banks of 64 (`sd-<lang>-a` 数学・理科・社会・国語,
+`sd-<lang>-b` 情報・保健体育・音楽・美術; units `sd-<lang>-<subject><1|2>`) in `f17_sdlang.js` (`SUL()`, `SDL_MORE`), with
+the term, its reading and a classroom sentence in that language; the meaning and the 日本語 / English / 한국어 / 中文
+parts are shared with the English terms (`i18n/<ui>/sdlang.tsv`). Arabic sentences are wrapped in bidi isolates (U+2067…2069)
+so they stay in one piece inside a left-to-right note.
 
 ### 裏設定 (the hidden reward)
 
