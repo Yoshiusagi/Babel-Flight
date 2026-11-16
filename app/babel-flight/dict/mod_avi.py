@@ -224,5 +224,4 @@ M = [
 ("on time", "句", "定刻どおり", "avi", "Our flight is on time.", "私たちの便は定刻どおり。", "on-time performance は「定時運航率」。"),
 ("delayed", "形", "遅延した", "avi", "The flight is delayed by one hour.", "便は1時間遅れている。", ""),
 ("diverted", "形", "(目的地以外に)ダイバートした", "avi", "We were diverted to Osaka because of fog.", "霧のため大阪にダイバートした。", ""),
-("go-around", "名", "着陸のやり直し", "avi", "", "", ""),
 ]

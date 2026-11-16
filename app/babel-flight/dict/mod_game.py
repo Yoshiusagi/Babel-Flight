@@ -84,7 +84,6 @@ M = [
 ("clan", "名", "クラン(ゲーム内のチーム)", "game mean", "Our clan has fifty members.", "うちのクランは50人いる。", ""),
 ("1v1", "名・動", "タイマン(1対1で戦う)", "game", "1v1 me!", "タイマンしよう！", "one versus one と読む。"),
 ("K/D", "略", "キル・デス比", "game", "My K/D is better this season.", "今シーズンはキルデス比がいい。", "kill/death ratio の略。"),
-("game changer", "名", "流れを変えるもの、画期的なもの", "game mean", "This new controller is a game changer.", "この新しいコントローラーは革命的。", ""),
 ("respec", "動", "(キャラの能力を)振り直す", "game", "I need to respec my character.", "キャラのステータスを振り直さなきゃ。", ""),
 ("noob-friendly", "形", "初心者にやさしい", "game slang", "This game is very noob-friendly.", "このゲームは初心者にすごくやさしい。", ""),
 ("rage", "動", "(ゲームで)キレる", "game slang mean", "He raged after losing.", "彼は負けてキレた。", "rage quit は「キレてやめる」。"),

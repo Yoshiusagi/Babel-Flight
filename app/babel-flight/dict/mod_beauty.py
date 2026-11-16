@@ -93,8 +93,6 @@ M = [
 ("cologne", "名", "コロン(軽い香水)", "beauty", "Just a little cologne is enough.", "コロンはほんの少しで十分。", ""),
 ("nail polish", "名", "マニキュア", "beauty", "Nail polish isn't allowed at my school.", "うちの学校はマニキュア禁止。", "「マニキュア」は英語では manicure(爪のお手入れ)のこと。"),
 ("colored contacts", "名", "カラコン", "beauty", "See an eye doctor before using colored contacts.", "カラコンを使う前に眼科で診てもらおう。", "目の安全のため、正しく使うこと。"),
-("aesthetic", "形", "おしゃれな、世界観のある", "beauty slang mean", "Her room is so aesthetic.", "彼女の部屋、世界観があっておしゃれ。", ""),
-("drip", "名", "(かっこいい)服装のセンス", "beauty slang", "Check out his drip.", "彼の服のセンス見て。", ""),
 ("fit check", "名", "コーデ紹介、今日の服チェック", "beauty sns slang", "Fit check before the concert!", "ライブ前のコーデチェック！", "fit は outfit の略。"),
 ("matching outfits", "名", "おそろいコーデ", "beauty", "We wore matching outfits to the concert.", "ライブにおそろいコーデで行った。", "twinning ともいう。"),
 ("twinning", "名", "(友達と)おそろい", "beauty sns slang", "Twinning with my bestie today!", "今日は親友とおそろい！", ""),

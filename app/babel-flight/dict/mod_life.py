@@ -130,7 +130,6 @@ M = [
 ("you're on mute", "句", "ミュートになってるよ", "new", "Sorry, you're on mute!", "ごめん、ミュートになってるよ！", "オンライン会議の定番のひとこと。"),
 ("can you hear me", "句", "聞こえますか", "new", "Can you hear me? Can you see my screen?", "聞こえますか？画面見えてますか？", ""),
 ("share my screen", "句", "画面を共有する", "new", "Let me share my screen.", "画面を共有しますね。", ""),
-("burnout", "名", "燃え尽き", "mean", "Avoid burnout by resting.", "休んで燃え尽きを防ごう。", ""),
 ("budget", "名・動", "予算(を立てる)", "mean", "I'm on a tight budget this month.", "今月は予算がきびしい。", ""),
 ("allowance", "名", "おこづかい", "mean", "I save my allowance for trips.", "おこづかいは旅行のためにためている。", "イギリスでは pocket money。"),
 ("cashback", "名", "キャッシュバック、ポイント還元", "new", "This card gives 1% cashback.", "このカードは1%還元。", ""),
@@ -140,7 +139,6 @@ M = [
 ("scam call", "名", "詐欺電話", "new", "That was a scam call. Hang up!", "それ詐欺電話だよ。切って！", ""),
 # 日常の新しい言い方
 ("hashtag blessed", "句", "(冗談で)幸せ、恵まれてる", "slang sns", "Sunny day and free ice cream, hashtag blessed.", "晴れてアイスも無料、しあわせ。", ""),
-("FaceTime", "名", "(アップルの)ビデオ通話", "new", "Let's FaceTime tonight.", "今夜ビデオ通話しよう。", ""),
 ("Uber", "動", "(配車アプリで)車を呼んで行く", "new slang", "Let's just Uber there.", "配車アプリで行っちゃおう。", "会社名がそのまま動詞になったもの。"),
 ("airdrop", "動", "(iPhoneで)AirDropで送る", "new", "Can you AirDrop me the photo?", "その写真AirDropしてくれる？", ""),
 ("ghost kitchen", "名", "宅配専門の厨房", "new", "That restaurant is just a ghost kitchen.", "そのレストランは宅配専門の厨房だけだ。", ""),
