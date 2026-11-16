@@ -11,7 +11,7 @@ var CAB_DESIGN=[['','いつもの','今のデザイン'],['window','窓側の席
 var CAB_FEAT=[
  ['発音チェック',['◯','◯','◯','◯']],
  ['検定コース',['—','英検5級〜準2級など','すべての検定','すべて+模試']],
- ['授業の用語(くわしく)',['—','数学・理科(英語)','数学・理科(英語)','数学・理科(英語)']],
+ ['授業の用語(くわしく)',['—','8教科(英語)','8教科(英語)','8教科(英語)']],
  ['AI会話ロールプレイ',['—','1日5回','1日15回','1日30回']],
  ['弱点レポート',['—','かんたん版','詳しい版','詳しい版+AIコーチ']],
  ['専用デザイン',['—','窓側の席','+ラウンジ','+スイート']]
@@ -233,7 +233,10 @@ function examHomeHTML(L){
 }
 
 /* ---- 授業の用語(くわしく): 留学モード, 英語, プレミアムエコノミーから ---- */
-var STUDY_MORE=[{bank:'sd-math',title:'数学の用語(くわしく)',sub:'数と式・図形・関数・確率とデータ ・ 英語'},{bank:'sd-sci',title:'理科の用語(くわしく)',sub:'物理・化学・生物・地学 ・ 英語'}];
+var STUDY_MORE=[{bank:'sd-math',title:'数学の用語(くわしく)',sub:'数と式・図形・関数・確率とデータ ・ 英語'},{bank:'sd-sci',title:'理科の用語(くわしく)',sub:'物理・化学・生物・地学 ・ 英語'},
+ {bank:'sd-soc',title:'社会の用語(くわしく)',sub:'地理・歴史・政治・経済 ・ 英語'},{bank:'sd-ela',title:'国語(英語)の用語(くわしく)',sub:'文法・読解と文学・作文・スピーチ ・ 英語'},
+ {bank:'sd-cs',title:'情報の用語(くわしく)',sub:'コンピューター・プログラミング・ネット・データ ・ 英語'},{bank:'sd-pe',title:'保健体育の用語(くわしく)',sub:'体のしくみ・健康・応急手当・スポーツ ・ 英語'},
+ {bank:'sd-mus',title:'音楽の用語(くわしく)',sub:'楽譜・楽器・演奏・ジャンルと作曲 ・ 英語'},{bank:'sd-art',title:'美術の用語(くわしく)',sub:'絵・色・材料と技法・デザイン・鑑賞 ・ 英語'}];
 (function(){
   var ps0=pathSections;
   pathSections=function(lang){
@@ -248,13 +251,20 @@ var STUDY_MORE=[{bank:'sd-math',title:'数学の用語(くわしく)',sub:'数�
   var ut0=unitTitle;
   unitTitle=function(uid){if(uid==null&&save.mode==='exam'&&examModeOn())return '🔒 検定コースは'+CABINS[1][4]+'から';return ut0.apply(this,arguments);};
 })();
+/* 8 subjects fold; the ones opened or closed by hand stay that way until the page reloads */
+var SM_OPEN={};
+document.addEventListener('toggle',function(e){var d=e.target;if(d&&d.classList&&d.classList.contains('sm-sub')&&d.dataset.bank)SM_OPEN[d.dataset.bank]=d.open;},true);
 function studyMoreHTML(L){
   var lv=cabinLv();
   if(lv<0||L!=='en')return '';
   var h='<section class="card exam-card study-more"><span class="lbl">STUDY ・ '+CABINS[lv][2]+'</span><h2 class="jh">授業の用語(くわしく)</h2>';
-  if(lv<1)return h+'<p class="dim" style="font-size:13.5px;margin-top:4px">数学と理科の用語128語を、意味と授業での使われ方つきで。</p><p class="dim hint">🔒 「プレミアムエコノミー」から</p></section>';
-  h+='<p class="dim" style="font-size:13.5px;margin-top:4px">数学と理科の用語を、意味と授業での使われ方つきで。答えたあとの説明に、先生が授業で言いそうな英文がのっています。</p>';
-  STUDY_MORE.forEach(function(x){h+='<div class="sm-sub"><b>'+esc(x.title.replace('(くわしく)',''))+'</b>'+trainBlockHTML(XBANK[x.bank])+'</div>';});
+  if(lv<1)return h+'<p class="dim" style="font-size:13.5px;margin-top:4px">数学・理科・社会・国語・情報・保健体育・音楽・美術の用語512語を、意味と授業での使われ方つきで。</p><p class="dim hint">🔒 「プレミアムエコノミー」から</p></section>';
+  h+='<p class="dim" style="font-size:13.5px;margin-top:4px">数学・理科・社会・国語・情報・保健体育・音楽・美術の用語を、意味と授業での使われ方つきで。答えたあとの説明に、先生が授業で言いそうな英文がのっています。</p>';
+  var started=STUDY_MORE.filter(function(x){return bankMeter(XBANK[x.bank]).seen>0;});
+  STUDY_MORE.forEach(function(x,i){
+    var open=x.bank in SM_OPEN?SM_OPEN[x.bank]:started.length?started.indexOf(x)>=0:i===0;
+    h+='<details class="sm-sub" data-bank="'+esc(x.bank)+'"'+(open?' open':'')+'><summary><b>'+esc(x.title.replace('(くわしく)',''))+'</b><small>'+esc(x.sub)+'</small></summary>'+trainBlockHTML(XBANK[x.bank])+'</details>';
+  });
   return h+'</section>';
 }
 

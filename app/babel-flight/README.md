@@ -360,6 +360,12 @@ classes' features (検定コース, 模試, AI会話ロールプレイ, 弱点�
 「もうすぐ申し込めます」. When billing goes live, `cabinPlanLv()` should return the class the account has paid for
 (server-checked, like `entitled()`), and the plan card in `f21_billing.js` opens to everyone signed in.
 
+授業の用語(くわしく) (留学モード, 英語, プレミアムエコノミーから): 8 subjects × 64 terms (8 units of 8). 数学・理科 are
+in `f17_exam.js`; 社会・国語(英語の授業)・情報・保健体育・音楽・美術 in `f17_sdmore.js`, whose 한국어 / 中文
+translations are in `i18n/<ui>/sdmore.tsv` (both were generated together; a changed note needs its line in both). Each item is [English term, 日本語, meaning + a sentence a
+teacher might say in class]. `STUDY_MORE` (`f17_cabin.js`) lists the banks for the map and the card; the card folds
+each subject (the first one, or the ones already started, open; `SM_OPEN` keeps what was opened by hand).
+
 ### 裏設定 (the hidden reward)
 
 `src/lib/reward.server.ts` + `migrations/0012_reward.sql` (table `bf_reward`). The landing screen of every lesson

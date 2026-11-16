@@ -103,6 +103,11 @@ function fxLand(goalJust,streakUp){
 /* ---- NOTAM: what is new (newest first). Item: [icon, title, text, go (tune|first|exam|''), paid plans (never in the
    iPhone app), display languages it is for (all when left out)]. A notice with nothing for this person is marked seen. ---- */
 var NOTAM=[
+ {v:'2026.12.04',items:[
+  ['📚','授業の用語(くわしく)が8教科に','留学モード(英語)の「授業の用語(くわしく)」に、社会・国語(英語の授業)・情報・保健体育・音楽・美術が加わりました。数学・理科と合わせて8教科512語を、意味と先生が授業で言いそうな英文つきで学べます(プレミアムエコノミーから)。','study',1,['ja']],
+  ['📚','수업 용어(자세히)가 8과목으로','유학 모드(영어)의 "수업 용어(자세히)"에 사회, 국어(영어 수업), 정보, 보건 체육, 음악, 미술이 추가됐어요. 수학, 과학과 합쳐 8과목 512개 용어를 뜻과 선생님이 수업에서 할 법한 영어 문장과 함께 배울 수 있어요(프리미엄 이코노미부터).','study',1,['ko']],
+  ['📚','课堂术语（详细）扩展到8个科目','留学模式（英语）的“课堂术语（详细）”新增了社会、语文（英语课）、信息科技、体育与健康、音乐和美术。加上数学和理科，共8个科目512个术语，附带含义和老师上课时可能会说的英语句子（高级经济舱起）。','study',1,['zh']]
+ ]},
  {v:'2026.12.03',items:[
   ['🇷🇺','ロシア語に職業モード・留学モードが登場','ロシア語も「スターター」を卒業しました。13の職業(パイロット・客室乗務員・医療・ITなど)の専門会話と、留学モード(教科の用語・授業やホームステイの会話)を、カタカナの読みつきで学べます。','lang:ru',1,['ja']],
   ['🇷🇺','Russian: job mode and study abroad mode','Russian is no longer a starter language. You can now learn the 13 jobs (pilot, cabin crew, medical, IT and more) and the study abroad mode (school subjects, class and homestay conversations).','lang:ru',1,['en']],

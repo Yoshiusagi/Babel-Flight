@@ -75,6 +75,13 @@
 .xg-chip.none{opacity:.45}
 .study-more .sm-sub{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
 .study-more .sm-sub>b{font-size:15px}
+.study-more summary{cursor:pointer;list-style:none;display:flex;flex-direction:column;gap:2px;padding-right:22px;position:relative}
+.study-more summary::-webkit-details-marker{display:none}
+.study-more summary::after{content:'';position:absolute;right:4px;top:6px;width:8px;height:8px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg);transition:transform .2s}
+.study-more details[open]>summary::after{transform:rotate(-135deg);top:10px}
+.study-more summary b{font-size:15px}
+.study-more summary small{font-size:12.5px;color:var(--ink2)}
+.study-more details[open]>summary{margin-bottom:8px}
 .mock-tm{margin-left:auto;font:700 15px var(--f-mono);padding:6px 10px;border-radius:8px;background:var(--surface2);border:1px solid var(--line);font-variant-numeric:tabular-nums}
 .mock-tm.low{color:var(--bad);border-color:var(--bad)}
 /* 発音チェック */
