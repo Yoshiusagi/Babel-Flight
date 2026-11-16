@@ -84,8 +84,8 @@ function socPeek(code){
 }
 function socSend(btn){
   var c=SOC.data&&SOC.data.code;if(!c)return;
-  var url=bfSiteUrl('/?friend='+c),txt='Babel Flight でフレンドになろう！ フレンドコード: '+c;
-  if(navigator.share){navigator.share({title:'Babel Flight フレンド',text:txt,url:url}).catch(function(){});return;}
+  var url=bfSiteUrl('/?friend='+c),txt=uiF('Babel Flight でフレンドになろう！ フレンドコード: {0}',[c]);
+  if(navigator.share){navigator.share({title:T('Babel Flight フレンド'),text:txt,url:url}).catch(function(){});return;}
   function done(ok){btn.textContent=ok?'コピーしました ✓':'コピーできませんでした';setTimeout(function(){if(btn.isConnected)btn.textContent='送る';},1800);}
   try{navigator.clipboard.writeText(txt+' '+url).then(function(){done(true);},function(){done(false);});}catch(e){done(false);}
 }

@@ -42,18 +42,19 @@ function mwDiff(given,right){
 }
 function mwWordWhy(op,L){
   var g=op.g,c=op.c,en=L==='en';
-  if(op.kind==='miss')return en&&ARTICLES[c]?'「'+c+'」が抜けています。英語では、数えられる名詞の前に a / an / the が必要なことが多いです。':'「'+c+'」が抜けています。';
-  if(op.kind==='extra')return '「'+g+'」は要りません。';
+  /* uiF: the sentence in the display language, the words of the course left as they are */
+  if(op.kind==='miss')return en&&ARTICLES[c]?uiF('「{0}」が抜けています。英語では、数えられる名詞の前に a / an / the が必要なことが多いです。',[c]):uiF('「{0}」が抜けています。',[c]);
+  if(op.kind==='extra')return uiF('「{0}」は要りません。',[g]);
   if(en){
-    if((g==='a'&&c==='an')||(g==='an'&&c==='a'))return '次の言葉が母音の「音」で始まるときは an、それ以外は a です。';
-    if(ARTICLES[g]&&ARTICLES[c])return '「'+g+'」ではなく「'+c+'」。a / an は「どれか1つ」、the は「その(決まった)」ものに使います。';
-    if(c===g+'s'||c===g+'es')return '「'+c+'」の s を忘れずに。複数のものや、he / she / it が主語の現在形には s がつきます。';
-    if(g===c+'s'||g===c+'es')return '「'+c+'」には s がつきません(1つのもの、または I / you / we / they が主語)。';
-    if(/ed$/.test(c)&&(g===c.replace(/e?d$/,'')||g+'d'===c||g+'ed'===c))return '「'+c+'」と過去形にします(もう終わったこと)。';
-    if(/ing$/.test(c)&&c.indexOf(g.replace(/e$/,''))===0)return '「'+c+'」と -ing の形にします。';
+    if((g==='a'&&c==='an')||(g==='an'&&c==='a'))return T('次の言葉が母音の「音」で始まるときは an、それ以外は a です。');
+    if(ARTICLES[g]&&ARTICLES[c])return uiF('「{0}」ではなく「{1}」。a / an は「どれか1つ」、the は「その(決まった)」ものに使います。',[g,c]);
+    if(c===g+'s'||c===g+'es')return uiF('「{0}」の s を忘れずに。複数のものや、he / she / it が主語の現在形には s がつきます。',[c]);
+    if(g===c+'s'||g===c+'es')return uiF('「{0}」には s がつきません(1つのもの、または I / you / we / they が主語)。',[c]);
+    if(/ed$/.test(c)&&(g===c.replace(/e?d$/,'')||g+'d'===c||g+'ed'===c))return uiF('「{0}」と過去形にします(もう終わったこと)。',[c]);
+    if(/ing$/.test(c)&&c.indexOf(g.replace(/e$/,''))===0)return uiF('「{0}」と -ing の形にします。',[c]);
   }
-  if(mwLev(g,c)<=Math.max(1,Math.floor(c.length/4)))return 'つづりが少しちがいます:「'+g+'」→「'+c+'」';
-  return '「'+g+'」ではなく「'+c+'」です。';
+  if(mwLev(g,c)<=Math.max(1,Math.floor(c.length/4)))return uiF('つづりが少しちがいます:「{0}」→「{1}」',[g,c]);
+  return uiF('「{0}」ではなく「{1}」です。',[g,c]);
 }
 function missWhy(q,d,L){
   var k=q.k,pick=F.pick,given=F.given;
@@ -64,25 +65,25 @@ function missWhy(q,d,L){
     var a=mwTok(d.t,L),b=mwTok(other.t,L),key='';
     for(var i=0;i<a.length;i++)if(b.indexOf(a[i])<0&&a[i].length>key.length)key=a[i];
     if(key.length<3&&L!=='ko'&&L!=='zh'&&L!=='ja')key='';
-    var s=field==='jp'?'選んだ意味は、<b class="'+lfc(L)+'" translate="no">'+esc(other.t)+'</b> のほうです。':
-      '選んだ <b class="'+lfc(L)+'" translate="no">'+esc(other.t)+'</b> は「'+esc(other.jp)+'」という意味です。';
-    return s+(key?' 見分けるポイントは「<span class="'+lfc(L)+'" translate="no">'+esc(key)+'</span>」。':'');
+    var w='<b class="'+lfc(L)+'" translate="no">'+esc(other.t)+'</b>';
+    var s=field==='jp'?uiF('選んだ意味は、{0} のほうです。',[w]):uiF('選んだ {0} は「{1}」という意味です。',[w,esc(T(other.jp))]);
+    return s+(key?uiF(' 見分けるポイントは「{0}」。',['<span class="'+lfc(L)+'" translate="no">'+esc(key)+'</span>']):'');
   }
   if(k==='cloze'&&pick>=0&&q.ck){
     var w=q.ck.w,pw=F.opts[pick]||'';
     var same=L==='en'&&(pw.toLowerCase().indexOf(w.toLowerCase().slice(0,Math.max(3,w.length-3)))===0||w.toLowerCase().indexOf(pw.toLowerCase().slice(0,Math.max(3,pw.length-3)))===0);
-    return same?'「'+esc(pw)+'」と「'+esc(w)+'」は同じ言葉の形ちがい。主語や「いつのことか」に合う形を選ぼう。':
-      'この文は「'+esc(d.jp)+'」という意味。「'+esc(pw)+'」では意味が通じません。';
+    return same?uiF('「{0}」と「{1}」は同じ言葉の形ちがい。主語や「いつのことか」に合う形を選ぼう。',[esc(pw),esc(w)]):
+      uiF('この文は「{0}」という意味。「{1}」では意味が通じません。',[esc(T(d.jp)),esc(pw)]);
   }
   if((k==='build'||k==='type')&&typeof given==='string'&&given.trim()){
     var g=mwTok(given,L),c=mwTok(k==='build'?bTok(d).join(' '):d.t,L);
     if(!g.length||!c.length)return '';
     if(g.slice().sort().join(' ')===c.slice().sort().join(' ')){
-      for(var j=0;j<c.length;j++)if(g[j]!==c[j])return '言葉はそろっています。語順がちがいます:「'+esc(c[j])+'」は '+(j+1)+'番目に来ます。';
+      for(var j=0;j<c.length;j++)if(g[j]!==c[j])return uiF('言葉はそろっています。語順がちがいます:「{0}」は {1}番目に来ます。',[esc(c[j]),j+1]);
     }
     var ops=mwDiff(g,c).slice(0,2);
     if(!ops.length)return '';
-    if(ops.length===2&&ops[0].kind===ops[1].kind&&ops[0].kind!=='sub')return esc(mwWordWhy(ops[0],L).replace(/。$/,''))+'、ほかにもう1か所ちがいます。';
+    if(ops.length===2&&ops[0].kind===ops[1].kind&&ops[0].kind!=='sub')return uiF('{0}、ほかにもう1か所ちがいます。',[esc(mwWordWhy(ops[0],L).replace(/[。.]$/,''))]);
     return ops.map(function(o){return esc(mwWordWhy(o,L));}).join(' ');
   }
   return '';

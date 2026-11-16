@@ -181,7 +181,7 @@ function dfConfirm(id,how){
   var yen=how==='yen',h='<div class="sheet plain df-sheet bill-sheet" role="dialog" aria-label="購入の確認"><div class="sheet-in">'+
     '<span class="lbl">最終確認</span><h3>'+(yen?it[3]+'円で購入しますか❓':dfYen(it[4])+'マイルで交換しますか❓')+'</h3>';
   if(yen)h+='<p class="bill-test sm"><b>🧪 テスト購入</b><span>本物のお金は動きません。</span></p>';
-  h+='<dl class="bill-dl"><dt>商品</dt><dd>DUTY FREE「'+esc(it[2])+'」('+esc(DF_KINDS.filter(function(k){return k[0]===it[0];})[0][1])+')</dd>'+
+  h+='<dl class="bill-dl"><dt>商品</dt><dd>'+uiF('DUTY FREE「{0}」({1})',[esc(T(it[2])),esc(T(DF_KINDS.filter(function(k){return k[0]===it[0];})[0][1]))])+'</dd>'+
     (yen?'<dt>価格</dt><dd><b>'+it[3]+'円(税込)</b> ・ 1回だけの支払い</dd>'+
       '<dt>今月の購入</dt><dd>'+dfYen(dfMonth())+'円 → '+dfYen(dfMonth()+it[3])+'円(上限 '+(dfS().cap<0?'なし':dfYen(dfS().cap)+'円')+')</dd>'
     :'<dt>使うマイル</dt><dd><b>'+dfYen(it[4])+'マイル</b>(残り '+dfYen(dfMiLeft()-it[4])+'マイル)</dd><dt>ステータス</dt><dd>下がりません(ステータスは、ためたマイルで決まります)</dd>')+
@@ -197,7 +197,7 @@ function dfDo(id,how){
   else{if(!it[4]||dfMiLeft()<it[4])return dfItemSheet(id);d.ms+=it[4];d.log.push({id:id,t:Date.now(),yen:0,mi:it[4]});}
   d.log=d.log.slice(-60);d.own.push(id);d.eq[it[0]]=id;
   store();dfApply();
-  DFU.msg='✨ 「'+esc(it[2])+'」を'+(how==='yen'?'購入':'交換')+'しました。さっそく使っています。';
+  DFU.msg='✨ '+uiF(how==='yen'?'「{0}」を購入しました。さっそく使っています。':'「{0}」を交換しました。さっそく使っています。',[esc(T(it[2]))]);
   if(typeof buzz==='function')buzz(12);if(typeof chimeOK==='function')chimeOK();
   if(view==='record')render();
   dfShop(it[0]);

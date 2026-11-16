@@ -28,14 +28,14 @@ function coopBlockHTML(){
   });
   if(c.state==='together'){
     var d=coopDest(c),tot=c.me+c.them,w=c['with']||{};
-    h+='<p class="coop-t"><b translate="no">'+esc(w.name||'友達')+'</b> と '+d[2]+' '+d[0]+' へ飛行中</p>'+coopBarHTML(c)+
+    h+='<p class="coop-t">'+uiF('{0} と {1} {2} へ飛行中',['<b translate="no">'+esc(w.name||T('友達'))+'</b>',d[2],esc(T(d[0]))])+'</p>'+coopBarHTML(c)+
       '<p class="coop-n"><span class="coop-dot coop-dme"></span>あなた '+c.me+' ・ <span class="coop-dot coop-dthem"></span><span translate="no">'+esc(w.name||'友達')+'</span> '+c.them+
       ' ・ <b>'+(tot>=c.goal?'今週は到着しました ✓':'あと '+(c.goal-tot)+' レッスン')+'</b></p>'+
-      '<p class="dim hint">2人のレッスンを合わせて、週に'+c.goal+'回で到着(1人1日6回まで数えます)。毎週月曜日に次の便が出ます。<button class="linkish" type="button" data-coop-leave>やめる</button></p>';
+      '<p class="dim hint">'+uiF('2人のレッスンを合わせて、週に{0}回で到着(1人1日6回まで数えます)。毎週月曜日に次の便が出ます。',[c.goal])+'<button class="linkish" type="button" data-coop-leave>やめる</button></p>';
   }else if(c.state==='asked'){
     h+='<p class="dim"><b translate="no">'+esc((c['with']||{}).name||'友達')+'</b> の返事を待っています。相手が「一緒に飛ぶ」を押すと出発します。<button class="linkish" type="button" data-coop-leave>取り消す</button></p>';
   }else if(!(c.invites||[]).length){
-    h+='<p class="dim">フレンドと2人で、1週間に'+c.goal+'レッスンを目指します。競争ではなく協力。下のフレンドの「一緒に飛ぶ」から誘えます。</p>';
+    h+='<p class="dim">'+uiF('フレンドと2人で、1週間に{0}レッスンを目指します。競争ではなく協力。下のフレンドの「一緒に飛ぶ」から誘えます。',[c.goal])+'</p>';
   }
   return h+'</div>';
 }
@@ -47,7 +47,7 @@ function coopHomeHTML(){
   if(c.state!=='together')return '';
   var d=coopDest(c),tot=c.me+c.them,w=c['with']||{};
   return '<section class="card coop-home"><div class="card-h"><span class="lbl">CO-OP FLIGHT ・ '+d[1]+'</span><span class="lbl">'+Math.min(tot,c.goal)+' / '+c.goal+'</span></div>'+
-    '<h2 class="jh">'+socAv(w.icon)+'<span translate="no">'+esc(w.name||'友達')+'</span> と '+d[0]+' へ</h2>'+coopBarHTML(c)+
+    '<h2 class="jh">'+socAv(w.icon)+uiF('{0} と {1} へ',['<span translate="no">'+esc(w.name||T('友達'))+'</span>',esc(T(d[0]))])+'</h2>'+coopBarHTML(c)+
     '<p class="dim">'+(tot>=c.goal?'今週は到着！ 来週は次の街へ。':'あなた '+c.me+' ・ 相手 '+c.them+' ・ あと '+(c.goal-tot)+' レッスン')+'</p></section>';
 }
 
@@ -84,7 +84,7 @@ function coopToast(m){
     var r=cl.apply(this,arguments);
     if(coopOnLocal())socCall('POST','/api/social/coop-tick',{}).then(function(j){
       var c=coopData();if(c&&j.counted){c.me=j.me;c.them=j.them;if(j.reached)c.trips=(c.trips||0)+1;}
-      if(j.reached)setTimeout(function(){coopToast('共同フライト到着！ '+coopDest({trips:(c&&c.trips||1)-1})[0]+' に着きました ✈');},1200);
+      if(j.reached)setTimeout(function(){coopToast(uiF('共同フライト到着！ {0} に着きました ✈',[T(coopDest({trips:(c&&c.trips||1)-1})[0])]));},1200);
     }).catch(function(){});
     return r;
   };

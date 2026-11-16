@@ -115,7 +115,7 @@ function coachSheet(){
     var p=c.plan;
     h+='<div class="cw-focus"><span class="lbl">今週のテーマ</span><b>'+esc(p.focus)+'</b>'+(p.why?'<p>'+esc(p.why)+'</p>':'')+'</div>'+
       '<ol class="cw-list">'+p.days.map(function(d,i){return coachDayHTML(c,i,L);}).join('')+'</ol>'+
-      (function(){var i=fcToday(),d=p.days[i],b=c.done[i]?'':coachTaskBtn(d,L);return b?'<div class="cw-go"><span class="lbl">今日('+FC_DAYS[i]+')のぶん</span>'+b.replace('>はじめる<','>'+esc(d.task)+'をはじめる<')+'</div>':'';})()+
+      (function(){var i=fcToday(),d=p.days[i],b=c.done[i]?'':coachTaskBtn(d,L);return b?'<div class="cw-go"><span class="lbl">今日('+FC_DAYS[i]+')のぶん</span>'+b.replace('>はじめる<','>'+uiF('{0}をはじめる',[esc(d.task)])+'<')+'</div>':'';})()+
       '<div class="cw-sum"><span>'+coachDoneN(c)+' / 7日 できた</span><i style="width:'+Math.round(coachDoneN(c)/7*100)+'%"></i></div>'+
       (p.tip?'<p class="cw-tip"><b>コーチから</b><span>'+esc(p.tip)+'</span></p>':'')+
       '<p class="dim hint">'+(c.auto?'週のはじめに自動で作りました':'作り直したプランです')+' ・ '+fmtStamp(c.at)+'</p>';
@@ -173,7 +173,7 @@ function diarySheet(){
       $('sheetHost').innerHTML=h+'<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
       return;
     }
-    h+='<p class="dim">'+esc(LG.name)+'で、今日のことを短く書いてみよう。わからない単語は日本語のままでOK。AIが自然な言い方に直して、<b>なぜそう直すのか</b>も教えてくれます。</p>'+
+    h+='<p class="dim">'+uiF('{0}で、今日のことを短く書いてみよう。わからない単語は日本語のままでOK。AIが自然な言い方に直して、{1}も教えてくれます。',[esc(T(LG.name)),'<b>'+esc(T('なぜそう直すのか'))+'</b>'])+'</p>'+
       '<p class="dy-idea"><span class="lbl">迷ったら</span><span>'+esc(diaryIdea())+'</span></p>'+
       '<textarea id="dyText" class="dy-text '+lfc(L)+'" lang="'+LG.tts.slice(0,2)+'" maxlength="'+DIARY_MAX+'" rows="5" spellcheck="false" autocapitalize="sentences" aria-label="日記">'+esc(txt)+'</textarea>'+
       '<div class="dy-row"><small class="dy-n" id="dyN">'+txt.length+' / '+DIARY_MAX+'</small>'+
@@ -251,7 +251,7 @@ function diaryArm(){
   DIARY_TIMER=setTimeout(function(){
     if(diaryToday()||!fcOn())return;
     var key='babelflight.diaryPing',d=dayStr();if(lsGet(key)===d)return;lsSet(key,d);
-    var title='今日は何があった？',opt={body:LANGS[save.lang].name+'で日記を書いてみよう ・ Babel Flight',tag:'bf-diary',icon:'/icons/app-192.png'};
+    var title=T('今日は何があった？'),opt={body:uiF('{0}で日記を書いてみよう ・ Babel Flight',[T(LANGS[save.lang].name)]),tag:'bf-diary',icon:'/icons/app-192.png'};
     try{
       if(navigator.serviceWorker&&navigator.serviceWorker.controller)navigator.serviceWorker.ready.then(function(r){r.showNotification(title,opt);});
       else new Notification(title,opt);
@@ -299,7 +299,7 @@ function loungeHTML(){
   var L=save.lang,t=ftCur(),due=diaryDue(),td=diaryToday(),early=earlyList();
   setTimeout(coachAuto,0);
   return '<section class="card fcl" aria-label="ファーストクラス ラウンジ"><div class="fcl-top"><span class="lbl">FIRST CLASS LOUNGE</span><span class="fcl-seat mono">1A</span></div>'+
-    '<h2 class="fcl-hello">'+fcHello()+'、<span translate="no">'+esc(save.name||'PASSENGER')+'</span> 様</h2>'+
+    '<h2 class="fcl-hello">'+uiF('{0}、{1} 様',[esc(T(fcHello())),'<span translate="no">'+esc(save.name||'PASSENGER')+'</span>'])+'</h2>'+
     '<button class="fcl-title" type="button" data-ft-open><span aria-hidden="true">◆</span> '+esc(t[1])+'</button>'+
     loungeTodayHTML(L)+
     '<div class="fcl-grid">'+

@@ -18215,7 +18215,7 @@ function uiSwap(){
 }
 /* 表示言語: the version of public/i18n/*.json and the display languages that have one
    (written by babel-flight/i18n/build.py) */
-var I18N_V='416a1b0750',I18N_UIS=["en", "ko", "zh"];
+var I18N_V='10808c9dc9',I18N_UIS=["en", "ko", "zh"];
 /* ================= 表示言語 (display language: 日本語 / English / 한국어 / 简体中文) =================
    The page is written in Japanese. For another display language the dictionary public/i18n/<ui>.json
    (built from babel-flight/i18n/<ui>/*.tsv by i18n/build.py) is loaded, kept on the device, and every
@@ -18246,6 +18246,9 @@ function T(s){
   if(UI==='ja'||!I18N||s==null)return s;
   s=String(s);if(!JPX.test(s))return s;var r=uiLook(s);return r==null?s:r;
 }
+/* a sentence with parts that change (a Japanese meaning, a word of the course): the template is translated, then filled in.
+   uiF('選んだ {0} は「{1}」という意味です。',[b,T(jp)]) — in 日本語 it is the template itself */
+function uiF(t,a){var D=UI!=='ja'&&I18N&&I18N.d,v=D&&D[t]!=null?D[t]:T(t);return String(v).replace(/\{(\d+)\}/g,function(_,i){return a[+i]==null?'':a[+i];});}
 var UI_NAMES=null;
 function uiNames(){
   if(UI_NAMES!==null)return UI_NAMES;
@@ -19490,7 +19493,7 @@ function coachSheet(){
     var p=c.plan;
     h+='<div class="cw-focus"><span class="lbl">今週のテーマ</span><b>'+esc(p.focus)+'</b>'+(p.why?'<p>'+esc(p.why)+'</p>':'')+'</div>'+
       '<ol class="cw-list">'+p.days.map(function(d,i){return coachDayHTML(c,i,L);}).join('')+'</ol>'+
-      (function(){var i=fcToday(),d=p.days[i],b=c.done[i]?'':coachTaskBtn(d,L);return b?'<div class="cw-go"><span class="lbl">今日('+FC_DAYS[i]+')のぶん</span>'+b.replace('>はじめる<','>'+esc(d.task)+'をはじめる<')+'</div>':'';})()+
+      (function(){var i=fcToday(),d=p.days[i],b=c.done[i]?'':coachTaskBtn(d,L);return b?'<div class="cw-go"><span class="lbl">今日('+FC_DAYS[i]+')のぶん</span>'+b.replace('>はじめる<','>'+uiF('{0}をはじめる',[esc(d.task)])+'<')+'</div>':'';})()+
       '<div class="cw-sum"><span>'+coachDoneN(c)+' / 7日 できた</span><i style="width:'+Math.round(coachDoneN(c)/7*100)+'%"></i></div>'+
       (p.tip?'<p class="cw-tip"><b>コーチから</b><span>'+esc(p.tip)+'</span></p>':'')+
       '<p class="dim hint">'+(c.auto?'週のはじめに自動で作りました':'作り直したプランです')+' ・ '+fmtStamp(c.at)+'</p>';
@@ -19548,7 +19551,7 @@ function diarySheet(){
       $('sheetHost').innerHTML=h+'<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
       return;
     }
-    h+='<p class="dim">'+esc(LG.name)+'で、今日のことを短く書いてみよう。わからない単語は日本語のままでOK。AIが自然な言い方に直して、<b>なぜそう直すのか</b>も教えてくれます。</p>'+
+    h+='<p class="dim">'+uiF('{0}で、今日のことを短く書いてみよう。わからない単語は日本語のままでOK。AIが自然な言い方に直して、{1}も教えてくれます。',[esc(T(LG.name)),'<b>'+esc(T('なぜそう直すのか'))+'</b>'])+'</p>'+
       '<p class="dy-idea"><span class="lbl">迷ったら</span><span>'+esc(diaryIdea())+'</span></p>'+
       '<textarea id="dyText" class="dy-text '+lfc(L)+'" lang="'+LG.tts.slice(0,2)+'" maxlength="'+DIARY_MAX+'" rows="5" spellcheck="false" autocapitalize="sentences" aria-label="日記">'+esc(txt)+'</textarea>'+
       '<div class="dy-row"><small class="dy-n" id="dyN">'+txt.length+' / '+DIARY_MAX+'</small>'+
@@ -19626,7 +19629,7 @@ function diaryArm(){
   DIARY_TIMER=setTimeout(function(){
     if(diaryToday()||!fcOn())return;
     var key='babelflight.diaryPing',d=dayStr();if(lsGet(key)===d)return;lsSet(key,d);
-    var title='今日は何があった？',opt={body:LANGS[save.lang].name+'で日記を書いてみよう ・ Babel Flight',tag:'bf-diary',icon:'/icons/app-192.png'};
+    var title=T('今日は何があった？'),opt={body:uiF('{0}で日記を書いてみよう ・ Babel Flight',[T(LANGS[save.lang].name)]),tag:'bf-diary',icon:'/icons/app-192.png'};
     try{
       if(navigator.serviceWorker&&navigator.serviceWorker.controller)navigator.serviceWorker.ready.then(function(r){r.showNotification(title,opt);});
       else new Notification(title,opt);
@@ -19674,7 +19677,7 @@ function loungeHTML(){
   var L=save.lang,t=ftCur(),due=diaryDue(),td=diaryToday(),early=earlyList();
   setTimeout(coachAuto,0);
   return '<section class="card fcl" aria-label="ファーストクラス ラウンジ"><div class="fcl-top"><span class="lbl">FIRST CLASS LOUNGE</span><span class="fcl-seat mono">1A</span></div>'+
-    '<h2 class="fcl-hello">'+fcHello()+'、<span translate="no">'+esc(save.name||'PASSENGER')+'</span> 様</h2>'+
+    '<h2 class="fcl-hello">'+uiF('{0}、{1} 様',[esc(T(fcHello())),'<span translate="no">'+esc(save.name||'PASSENGER')+'</span>'])+'</h2>'+
     '<button class="fcl-title" type="button" data-ft-open><span aria-hidden="true">◆</span> '+esc(t[1])+'</button>'+
     loungeTodayHTML(L)+
     '<div class="fcl-grid">'+
@@ -20483,8 +20486,8 @@ function famJoin(){
   });
 }
 function famSend(code,btn){
-  var url=famLink(code),txt='Babel Flight のファーストクラスを一緒に使おう！ 招待コード: '+code;
-  if(navigator.share){navigator.share({title:'Babel Flight 家族シェア',text:txt,url:url}).catch(function(){});return;}
+  var url=famLink(code),txt=uiF('Babel Flight のファーストクラスを一緒に使おう！ 招待コード: {0}',[code]);
+  if(navigator.share){navigator.share({title:T('Babel Flight 家族シェア'),text:txt,url:url}).catch(function(){});return;}
   var t=txt+' '+url;
   function done(ok){if(btn){btn.textContent=ok?'コピーしました ✓':'コピーできませんでした';setTimeout(function(){if(btn.isConnected)btn.textContent='送る';},1800);}}
   try{navigator.clipboard.writeText(t).then(function(){done(true);},function(){done(false);});}catch(e){done(false);}
@@ -20739,18 +20742,19 @@ function mwDiff(given,right){
 }
 function mwWordWhy(op,L){
   var g=op.g,c=op.c,en=L==='en';
-  if(op.kind==='miss')return en&&ARTICLES[c]?'「'+c+'」が抜けています。英語では、数えられる名詞の前に a / an / the が必要なことが多いです。':'「'+c+'」が抜けています。';
-  if(op.kind==='extra')return '「'+g+'」は要りません。';
+  /* uiF: the sentence in the display language, the words of the course left as they are */
+  if(op.kind==='miss')return en&&ARTICLES[c]?uiF('「{0}」が抜けています。英語では、数えられる名詞の前に a / an / the が必要なことが多いです。',[c]):uiF('「{0}」が抜けています。',[c]);
+  if(op.kind==='extra')return uiF('「{0}」は要りません。',[g]);
   if(en){
-    if((g==='a'&&c==='an')||(g==='an'&&c==='a'))return '次の言葉が母音の「音」で始まるときは an、それ以外は a です。';
-    if(ARTICLES[g]&&ARTICLES[c])return '「'+g+'」ではなく「'+c+'」。a / an は「どれか1つ」、the は「その(決まった)」ものに使います。';
-    if(c===g+'s'||c===g+'es')return '「'+c+'」の s を忘れずに。複数のものや、he / she / it が主語の現在形には s がつきます。';
-    if(g===c+'s'||g===c+'es')return '「'+c+'」には s がつきません(1つのもの、または I / you / we / they が主語)。';
-    if(/ed$/.test(c)&&(g===c.replace(/e?d$/,'')||g+'d'===c||g+'ed'===c))return '「'+c+'」と過去形にします(もう終わったこと)。';
-    if(/ing$/.test(c)&&c.indexOf(g.replace(/e$/,''))===0)return '「'+c+'」と -ing の形にします。';
+    if((g==='a'&&c==='an')||(g==='an'&&c==='a'))return T('次の言葉が母音の「音」で始まるときは an、それ以外は a です。');
+    if(ARTICLES[g]&&ARTICLES[c])return uiF('「{0}」ではなく「{1}」。a / an は「どれか1つ」、the は「その(決まった)」ものに使います。',[g,c]);
+    if(c===g+'s'||c===g+'es')return uiF('「{0}」の s を忘れずに。複数のものや、he / she / it が主語の現在形には s がつきます。',[c]);
+    if(g===c+'s'||g===c+'es')return uiF('「{0}」には s がつきません(1つのもの、または I / you / we / they が主語)。',[c]);
+    if(/ed$/.test(c)&&(g===c.replace(/e?d$/,'')||g+'d'===c||g+'ed'===c))return uiF('「{0}」と過去形にします(もう終わったこと)。',[c]);
+    if(/ing$/.test(c)&&c.indexOf(g.replace(/e$/,''))===0)return uiF('「{0}」と -ing の形にします。',[c]);
   }
-  if(mwLev(g,c)<=Math.max(1,Math.floor(c.length/4)))return 'つづりが少しちがいます:「'+g+'」→「'+c+'」';
-  return '「'+g+'」ではなく「'+c+'」です。';
+  if(mwLev(g,c)<=Math.max(1,Math.floor(c.length/4)))return uiF('つづりが少しちがいます:「{0}」→「{1}」',[g,c]);
+  return uiF('「{0}」ではなく「{1}」です。',[g,c]);
 }
 function missWhy(q,d,L){
   var k=q.k,pick=F.pick,given=F.given;
@@ -20761,25 +20765,25 @@ function missWhy(q,d,L){
     var a=mwTok(d.t,L),b=mwTok(other.t,L),key='';
     for(var i=0;i<a.length;i++)if(b.indexOf(a[i])<0&&a[i].length>key.length)key=a[i];
     if(key.length<3&&L!=='ko'&&L!=='zh'&&L!=='ja')key='';
-    var s=field==='jp'?'選んだ意味は、<b class="'+lfc(L)+'" translate="no">'+esc(other.t)+'</b> のほうです。':
-      '選んだ <b class="'+lfc(L)+'" translate="no">'+esc(other.t)+'</b> は「'+esc(other.jp)+'」という意味です。';
-    return s+(key?' 見分けるポイントは「<span class="'+lfc(L)+'" translate="no">'+esc(key)+'</span>」。':'');
+    var w='<b class="'+lfc(L)+'" translate="no">'+esc(other.t)+'</b>';
+    var s=field==='jp'?uiF('選んだ意味は、{0} のほうです。',[w]):uiF('選んだ {0} は「{1}」という意味です。',[w,esc(T(other.jp))]);
+    return s+(key?uiF(' 見分けるポイントは「{0}」。',['<span class="'+lfc(L)+'" translate="no">'+esc(key)+'</span>']):'');
   }
   if(k==='cloze'&&pick>=0&&q.ck){
     var w=q.ck.w,pw=F.opts[pick]||'';
     var same=L==='en'&&(pw.toLowerCase().indexOf(w.toLowerCase().slice(0,Math.max(3,w.length-3)))===0||w.toLowerCase().indexOf(pw.toLowerCase().slice(0,Math.max(3,pw.length-3)))===0);
-    return same?'「'+esc(pw)+'」と「'+esc(w)+'」は同じ言葉の形ちがい。主語や「いつのことか」に合う形を選ぼう。':
-      'この文は「'+esc(d.jp)+'」という意味。「'+esc(pw)+'」では意味が通じません。';
+    return same?uiF('「{0}」と「{1}」は同じ言葉の形ちがい。主語や「いつのことか」に合う形を選ぼう。',[esc(pw),esc(w)]):
+      uiF('この文は「{0}」という意味。「{1}」では意味が通じません。',[esc(T(d.jp)),esc(pw)]);
   }
   if((k==='build'||k==='type')&&typeof given==='string'&&given.trim()){
     var g=mwTok(given,L),c=mwTok(k==='build'?bTok(d).join(' '):d.t,L);
     if(!g.length||!c.length)return '';
     if(g.slice().sort().join(' ')===c.slice().sort().join(' ')){
-      for(var j=0;j<c.length;j++)if(g[j]!==c[j])return '言葉はそろっています。語順がちがいます:「'+esc(c[j])+'」は '+(j+1)+'番目に来ます。';
+      for(var j=0;j<c.length;j++)if(g[j]!==c[j])return uiF('言葉はそろっています。語順がちがいます:「{0}」は {1}番目に来ます。',[esc(c[j]),j+1]);
     }
     var ops=mwDiff(g,c).slice(0,2);
     if(!ops.length)return '';
-    if(ops.length===2&&ops[0].kind===ops[1].kind&&ops[0].kind!=='sub')return esc(mwWordWhy(ops[0],L).replace(/。$/,''))+'、ほかにもう1か所ちがいます。';
+    if(ops.length===2&&ops[0].kind===ops[1].kind&&ops[0].kind!=='sub')return uiF('{0}、ほかにもう1か所ちがいます。',[esc(mwWordWhy(ops[0],L).replace(/[。.]$/,''))]);
     return ops.map(function(o){return esc(mwWordWhy(o,L));}).join(' ');
   }
   return '';
@@ -21132,8 +21136,8 @@ function socPeek(code){
 }
 function socSend(btn){
   var c=SOC.data&&SOC.data.code;if(!c)return;
-  var url=bfSiteUrl('/?friend='+c),txt='Babel Flight でフレンドになろう！ フレンドコード: '+c;
-  if(navigator.share){navigator.share({title:'Babel Flight フレンド',text:txt,url:url}).catch(function(){});return;}
+  var url=bfSiteUrl('/?friend='+c),txt=uiF('Babel Flight でフレンドになろう！ フレンドコード: {0}',[c]);
+  if(navigator.share){navigator.share({title:T('Babel Flight フレンド'),text:txt,url:url}).catch(function(){});return;}
   function done(ok){btn.textContent=ok?'コピーしました ✓':'コピーできませんでした';setTimeout(function(){if(btn.isConnected)btn.textContent='送る';},1800);}
   try{navigator.clipboard.writeText(txt+' '+url).then(function(){done(true);},function(){done(false);});}catch(e){done(false);}
 }
@@ -21485,14 +21489,14 @@ function coopBlockHTML(){
   });
   if(c.state==='together'){
     var d=coopDest(c),tot=c.me+c.them,w=c['with']||{};
-    h+='<p class="coop-t"><b translate="no">'+esc(w.name||'友達')+'</b> と '+d[2]+' '+d[0]+' へ飛行中</p>'+coopBarHTML(c)+
+    h+='<p class="coop-t">'+uiF('{0} と {1} {2} へ飛行中',['<b translate="no">'+esc(w.name||T('友達'))+'</b>',d[2],esc(T(d[0]))])+'</p>'+coopBarHTML(c)+
       '<p class="coop-n"><span class="coop-dot coop-dme"></span>あなた '+c.me+' ・ <span class="coop-dot coop-dthem"></span><span translate="no">'+esc(w.name||'友達')+'</span> '+c.them+
       ' ・ <b>'+(tot>=c.goal?'今週は到着しました ✓':'あと '+(c.goal-tot)+' レッスン')+'</b></p>'+
-      '<p class="dim hint">2人のレッスンを合わせて、週に'+c.goal+'回で到着(1人1日6回まで数えます)。毎週月曜日に次の便が出ます。<button class="linkish" type="button" data-coop-leave>やめる</button></p>';
+      '<p class="dim hint">'+uiF('2人のレッスンを合わせて、週に{0}回で到着(1人1日6回まで数えます)。毎週月曜日に次の便が出ます。',[c.goal])+'<button class="linkish" type="button" data-coop-leave>やめる</button></p>';
   }else if(c.state==='asked'){
     h+='<p class="dim"><b translate="no">'+esc((c['with']||{}).name||'友達')+'</b> の返事を待っています。相手が「一緒に飛ぶ」を押すと出発します。<button class="linkish" type="button" data-coop-leave>取り消す</button></p>';
   }else if(!(c.invites||[]).length){
-    h+='<p class="dim">フレンドと2人で、1週間に'+c.goal+'レッスンを目指します。競争ではなく協力。下のフレンドの「一緒に飛ぶ」から誘えます。</p>';
+    h+='<p class="dim">'+uiF('フレンドと2人で、1週間に{0}レッスンを目指します。競争ではなく協力。下のフレンドの「一緒に飛ぶ」から誘えます。',[c.goal])+'</p>';
   }
   return h+'</div>';
 }
@@ -21504,7 +21508,7 @@ function coopHomeHTML(){
   if(c.state!=='together')return '';
   var d=coopDest(c),tot=c.me+c.them,w=c['with']||{};
   return '<section class="card coop-home"><div class="card-h"><span class="lbl">CO-OP FLIGHT ・ '+d[1]+'</span><span class="lbl">'+Math.min(tot,c.goal)+' / '+c.goal+'</span></div>'+
-    '<h2 class="jh">'+socAv(w.icon)+'<span translate="no">'+esc(w.name||'友達')+'</span> と '+d[0]+' へ</h2>'+coopBarHTML(c)+
+    '<h2 class="jh">'+socAv(w.icon)+uiF('{0} と {1} へ',['<span translate="no">'+esc(w.name||T('友達'))+'</span>',esc(T(d[0]))])+'</h2>'+coopBarHTML(c)+
     '<p class="dim">'+(tot>=c.goal?'今週は到着！ 来週は次の街へ。':'あなた '+c.me+' ・ 相手 '+c.them+' ・ あと '+(c.goal-tot)+' レッスン')+'</p></section>';
 }
 
@@ -21541,7 +21545,7 @@ function coopToast(m){
     var r=cl.apply(this,arguments);
     if(coopOnLocal())socCall('POST','/api/social/coop-tick',{}).then(function(j){
       var c=coopData();if(c&&j.counted){c.me=j.me;c.them=j.them;if(j.reached)c.trips=(c.trips||0)+1;}
-      if(j.reached)setTimeout(function(){coopToast('共同フライト到着！ '+coopDest({trips:(c&&c.trips||1)-1})[0]+' に着きました ✈');},1200);
+      if(j.reached)setTimeout(function(){coopToast(uiF('共同フライト到着！ {0} に着きました ✈',[T(coopDest({trips:(c&&c.trips||1)-1})[0])]));},1200);
     }).catch(function(){});
     return r;
   };
@@ -22228,7 +22232,7 @@ function dfConfirm(id,how){
   var yen=how==='yen',h='<div class="sheet plain df-sheet bill-sheet" role="dialog" aria-label="購入の確認"><div class="sheet-in">'+
     '<span class="lbl">最終確認</span><h3>'+(yen?it[3]+'円で購入しますか❓':dfYen(it[4])+'マイルで交換しますか❓')+'</h3>';
   if(yen)h+='<p class="bill-test sm"><b>🧪 テスト購入</b><span>本物のお金は動きません。</span></p>';
-  h+='<dl class="bill-dl"><dt>商品</dt><dd>DUTY FREE「'+esc(it[2])+'」('+esc(DF_KINDS.filter(function(k){return k[0]===it[0];})[0][1])+')</dd>'+
+  h+='<dl class="bill-dl"><dt>商品</dt><dd>'+uiF('DUTY FREE「{0}」({1})',[esc(T(it[2])),esc(T(DF_KINDS.filter(function(k){return k[0]===it[0];})[0][1]))])+'</dd>'+
     (yen?'<dt>価格</dt><dd><b>'+it[3]+'円(税込)</b> ・ 1回だけの支払い</dd>'+
       '<dt>今月の購入</dt><dd>'+dfYen(dfMonth())+'円 → '+dfYen(dfMonth()+it[3])+'円(上限 '+(dfS().cap<0?'なし':dfYen(dfS().cap)+'円')+')</dd>'
     :'<dt>使うマイル</dt><dd><b>'+dfYen(it[4])+'マイル</b>(残り '+dfYen(dfMiLeft()-it[4])+'マイル)</dd><dt>ステータス</dt><dd>下がりません(ステータスは、ためたマイルで決まります)</dd>')+
@@ -22244,7 +22248,7 @@ function dfDo(id,how){
   else{if(!it[4]||dfMiLeft()<it[4])return dfItemSheet(id);d.ms+=it[4];d.log.push({id:id,t:Date.now(),yen:0,mi:it[4]});}
   d.log=d.log.slice(-60);d.own.push(id);d.eq[it[0]]=id;
   store();dfApply();
-  DFU.msg='✨ 「'+esc(it[2])+'」を'+(how==='yen'?'購入':'交換')+'しました。さっそく使っています。';
+  DFU.msg='✨ '+uiF(how==='yen'?'「{0}」を購入しました。さっそく使っています。':'「{0}」を交換しました。さっそく使っています。',[esc(T(it[2]))]);
   if(typeof buzz==='function')buzz(12);if(typeof chimeOK==='function')chimeOK();
   if(view==='record')render();
   dfShop(it[0]);

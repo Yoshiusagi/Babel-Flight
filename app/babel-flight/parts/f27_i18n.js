@@ -28,6 +28,9 @@ function T(s){
   if(UI==='ja'||!I18N||s==null)return s;
   s=String(s);if(!JPX.test(s))return s;var r=uiLook(s);return r==null?s:r;
 }
+/* a sentence with parts that change (a Japanese meaning, a word of the course): the template is translated, then filled in.
+   uiF('選んだ {0} は「{1}」という意味です。',[b,T(jp)]) — in 日本語 it is the template itself */
+function uiF(t,a){var D=UI!=='ja'&&I18N&&I18N.d,v=D&&D[t]!=null?D[t]:T(t);return String(v).replace(/\{(\d+)\}/g,function(_,i){return a[+i]==null?'':a[+i];});}
 var UI_NAMES=null;
 function uiNames(){
   if(UI_NAMES!==null)return UI_NAMES;

@@ -1,0 +1,478 @@
+# 全クラス共通の機能 (単語帳・どうしてちがう？・遅延チケット・フレンド・共同フライト・家族シェア・オフライン・ラウンジ・DUTY FREE)
+昨日のお休みは、フライト遅延チケットでカバー中	Yesterday's day off is covered by your flight delay ticket
+今日{0}レッスン飛べば、連続{1}日につながります	Fly {0} lesson today and your streak reaches {1} days
+フライト遅延チケット	Flight delay ticket
+・ 今週は{0}枚あります	· {0} left this week
+・ 今週は使用済み({0})	· used this week ({0})
+1週間に1枚。1日休んでも、次に飛んだ時に自動で使われて、連続記録が切れません。	One a week. If you miss a day, it's used automatically the next time you fly, so your streak doesn't break.
+単語帳から外す	Remove from the word book
+単語帳に保存	Save to the word book
+単語帳・単語をさがす	Word book · Find a word
+📒 単語帳	📒 Word book
+🔍 さがす	🔍 Find
+すべて {0}	All {0}
+✕ 間違えた {0}	✕ Missed {0}
+{0} 保存 {1}	{0} Saved {1}
+この単語帳で練習する	Practice with this word book
+{0}問 ・ 間違えた回数が多いものから	{0} questions · most-missed first
+答えのあとや「さがす」の {0} を押すと、ここに保存されます。	Tap {0} after an answer or in Find, and it is saved here.
+間違えたフレーズは、ここに自動でたまります。	Phrases you get wrong collect here automatically.
+ほかに{0}フレーズあります(多い順に150まで表示)	{0} more phrases (showing the top 150)
+さがす言葉	Word to find
+{0}でも{1}でも{2}	{0} or {1} is {2}
+例: 「ありがとう」「空港」	e.g. a Japanese word like “空港” (airport)
+{0}のフレーズを、{1}でも{2}でも探せます。	Find {0} phrases by {1} or by {2}.
+例: {0}「空港」	e.g. {0} “空港”
+{0}件	{0} results
+{0}件以上	{0}+ results
+{0}は、まだアプリのフレーズにありません。	{0} is not in the app's phrases yet.
+ちがう言い方や、短い言葉でも試してみてね。	Try another way of saying it, or a shorter word.
+単語帳	Word book
+{0}フレーズ ・ 間違えた・保存した	{0} phrases · missed and saved
+単語をさがす	Find a word
+{0}でも{1}でも	By {0} or {1}
+英語でも日本語でも	By English or Japanese
+と、記憶は前より長持ちします。正解が続くと復習までの間隔がだいたい1→3→7→16→35日…と伸び、間違えると短くなります。すぐに正解できたフレーズは間隔を長めに、時間がかかったりヒントを使ったフレーズは短めに、一つずつ自動で調整しています。	makes memories last longer. Each right answer stretches the gap to the next review: about 1 → 3 → 7 → 16 → 35 days… A wrong answer shortens it. Phrases you answer quickly get longer gaps, and ones that took time or a hint get shorter ones, adjusted one by one.
+{0}分クイック	{0}-minute quick
+復習・苦手・新しいフレーズを少しずつ。短いけど本気の{0}問	A little review, weak points and new phrases. Short but real: {0} questions
+どうしてちがう？	Why is it wrong?
+「{0}」が抜けています。英語では、数えられる名詞の前に a / an / the が必要なことが多いです。	“{0}” is missing. In English, a countable noun usually needs a / an / the in front of it.
+「{0}」が抜けています。	“{0}” is missing.
+「{0}」は要りません。	“{0}” isn't needed.
+次の言葉が母音の「音」で始まるときは an、それ以外は a です。	Use an when the next word starts with a vowel sound, and a otherwise.
+「{0}」ではなく「{1}」。a / an は「どれか1つ」、the は「その(決まった)」ものに使います。	Not “{0}” but “{1}”. a / an means “any one”; the is for “that particular” one.
+「{0}」の s を忘れずに。複数のものや、he / she / it が主語の現在形には s がつきます。	Don't forget the s in “{0}”. Plurals, and the present tense with he / she / it, take an s.
+「{0}」には s がつきません(1つのもの、または I / you / we / they が主語)。	“{0}” takes no s (one thing, or I / you / we / they as the subject).
+「{0}」と過去形にします(もう終わったこと)。	Use the past tense: “{0}” (it's already over).
+「{0}」と -ing の形にします。	Use the -ing form: “{0}”.
+つづりが少しちがいます:「{0}」→「{1}」	The spelling is a little off: “{0}” → “{1}”
+「{0}」ではなく「{1}」です。	Not “{0}” but “{1}”.
+選んだ意味は、{0} のほうです。	The meaning you picked belongs to {0}.
+選んだ {0} は「{1}」という意味です。	{0}, which you picked, means “{1}”.
+ 見分けるポイントは「{0}」。	 The word to look for: “{0}”.
+「{0}」と「{1}」は同じ言葉の形ちがい。主語や「いつのことか」に合う形を選ぼう。	“{0}” and “{1}” are forms of the same word. Pick the one that fits the subject and the time.
+この文は「{0}」という意味。「{1}」では意味が通じません。	This sentence means “{0}”. With “{1}” it doesn't make sense.
+言葉はそろっています。語順がちがいます:「{0}」は {1}番目に来ます。	All the words are there; the order is off: “{0}” comes {1}th.
+{0}、ほかにもう1か所ちがいます。	{0}, and one more thing is different.
+英検{0}級 ステップ{1}	Eiken Grade {0} Step {1}
+発音のクセ	Your pronunciation habits
+レッスンの答えのあとにある「発音チェック」を使うと、あなたのつまずきやすい音がここにたまります({0} / {1}回)。	Use the pronunciation check after an answer and the sounds you trip on collect here ({0} / {1} times).
+雑音の中で聞き取る	Listening through noise
+✈️ 機内	✈️ In the cabin
+🧳 空港	🧳 Airport
+📻 無線	📻 Radio
+☕ カフェ	☕ Café
+レッスンや会話の音声に、本物の場所の音を重ねます。聞き取りに慣れたら試してみてね。	Adds the sound of real places under the lessons and conversations. Try it once you're used to listening.
+{0}をフレンドから外す	Remove {0} from friends
+フレンド	Friends
+あなたのフレンドコード	Your friend code
+送る	Send
+コードを入れる	Enter a code
+週のランキング	Weekly ranking
+オンのフレンドどうしで、今週(月〜日)のマイルを比べます。オフにすると、今週の記録は消えます。	Friends who turned it on compare this week's miles (Mon–Sun). Turning it off deletes this week's record.
+オフの間は、マイルはどこにも送られません。比べたくなったらオンにしてね。	While it's off, your miles aren't sent anywhere. Turn it on when you want to compare.
+(あなた)	(you)
+名前なし	No name
+ランキングをオンにしているフレンドがまだいません。	None of your friends have turned the ranking on yet.
+毎週月曜日にリセット ・ 1日に数えるのは3,000マイルまで	Resets every Monday · up to 3,000 miles counted per day
+フレンド {0} / {1}	Friends {0} / {1}
+まだフレンドはいません。コードを送るか、友達のコードを入れてね。	No friends yet. Send your code, or enter a friend's code.
+{0} とフレンドになりました！	You and {0} are now friends!
+新しい友達 とフレンドになりました！	You have a new friend!
+フレンドに見えるのは、名前とアイコン(と、おたがいにオンの時だけ今週のマイル)です。学習記録やメールアドレスは見えません。	Friends see your name and icon (and this week's miles, only when you both have it on). They can't see your learning record or email address.
+コードを変える	Change the code
+新しいフレンドコードにしました。	Your friend code has been changed.
+ログインすると、フレンドを追加して、週のマイルを競えます(ランキングは自分でオンにした時だけ)。	Log in to add friends and compete on weekly miles (the ranking only when you turn it on yourself).
+読み込み中…	Loading…
+このフレンドコードは見つかりません(まちがい・変更ずみのどちらか)。	That friend code wasn't found (mistyped, or already changed).
+自分のコードです。	That's your own code.
+もうフレンドです。	You're already friends.
+フレンドは{0}人までです。	You can have up to {0} friends.
+相手のフレンドがいっぱいです。	Their friend list is full.
+今日はたくさん追加しました。また明日ね。	You've added a lot today. Try again tomorrow.
+うまくいきませんでした。電波を確かめて、もう一度試してね。	That didn't work. Check your connection and try again.
+フレンドを追加	Add a friend
+フレンドコード	Friend code
+友達の{0}文字のフレンドコードを入れてね。	Enter your friend's {0}-character friend code.
+{0}文字のフレンドコードを入れてね。	Enter the {0}-character friend code.
+とフレンドになります	will become your friend
+おたがいに名前とアイコンが見えるようになります。いつでも外せます。	You'll see each other's name and icon. You can remove them any time.
+フレンドになる	Become friends
+ログインすると追加できます。	Log in to add friends.
+Babel Flight でフレンドになろう！ フレンドコード: {0}	Let's be friends on Babel Flight! Friend code: {0}
+Babel Flight フレンド	Babel Flight friend
+コピーしました ✓	Copied ✓
+コピーできませんでした	Couldn't copy
+本当に変える？(前のコードは使えなくなります)	Really change it? (The old code will stop working)
+その友達は、もう別の人と共同フライト中です。	That friend is already on a co-op flight with someone else.
+フレンドではなくなったようです。	It looks like you're no longer friends.
+共同フライト	Co-op flight
+から、一緒に飛ぼうとお誘いが来ています	invited you to fly together
+一緒に飛ぶ	Fly together
+フレンドと2人で、1週間に{0}レッスンを目指します。競争ではなく協力。下のフレンドの「一緒に飛ぶ」から誘えます。	You and a friend aim for {0} lessons in one week. Not a race but teamwork. Invite someone with “Fly together” on a friend below.
+到着 {0}回	Arrived {0}×
+の返事を待っています。相手が「一緒に飛ぶ」を押すと出発します。	: waiting for the answer. You take off when they tap “Fly together”.
+取り消す	Cancel
+あと{0}レッスンで到着	{0} lessons to arrival
+{0} と {1} {2} へ飛行中	Flying to {1} {2} with {0}
+あなた {0} ・	You {0} ·
+{0} ・	{0} ·
+あと {0} レッスン	{0} lessons to go
+今週は到着しました ✓	Arrived this week ✓
+2人のレッスンを合わせて、週に{0}回で到着(1人1日6回まで数えます)。毎週月曜日に次の便が出ます。	Your lessons add up: {0} a week together and you arrive (up to 6 a day count for each of you). The next flight leaves every Monday.
+{0} と {1} へ	To {1} with {0}
+あなた {0} ・ 相手 {1} ・ あと {2} レッスン	You {0} · Friend {1} · {2} lessons to go
+今週は到着！ 来週は次の街へ。	Arrived this week! Next week, on to the next city.
+共同フライト到着！ {0} に着きました ✈	Co-op flight arrived! You reached {0} ✈
+共同フライト出発！ 2人で今週の目的地を目指そう。	Co-op flight departing! Fly to this week's destination together.
+お誘いを送りました。相手が「一緒に飛ぶ」を押すと出発します。	Invitation sent. You take off when they tap “Fly together”.
+本当にやめる？	Really quit?
+家族シェア	Family sharing
+ファーストクラスを、家族{0}人まで分け合えます。いま	Share First Class with up to {0} family members. Now
+{0} / {1}人	{0} / {1}
+家族を招待する	Invite family
+家族シェアを管理する	Manage family sharing
+家族からファーストクラスの招待コードをもらったら、ここに入れると一緒に使えます。	Got a First Class invitation code from your family? Enter it here to share it.
+招待コードを入れる	Enter an invitation code
+さんのファーストクラスを共有中です	's First Class is shared with you
+さんのファーストクラスを共有しています(いまは相手がファーストではありません)	's First Class is shared with you (they aren't flying First right now)
+くわしく・抜ける	Details · Leave
+{0}を外す	Remove {0}
+この人	this person
+FAMILY SHARING ・ FIRST CLASS	FAMILY SHARING · FIRST CLASS
+ファーストクラスを、家族2人まで分け合えます。分けた人も、ファーストの機能を全部使えます。学習の記録は別々で、おたがいに見えるのは名前とアイコンだけです。	Share First Class with up to 2 family members. They can use every First feature too. Learning records stay separate; you only see each other's name and icon.
+{0}月{1}日から	since {0}/{1}
+空いている席	Empty seat
+招待コード(1回だけ使える ・ 7日間)	Invitation codes (one use each · 7 days)
+招待コードを作りました。「送る」から家族に送ってね。	Invitation code created. Send it to your family with “Send”.
+招待コードを作る	Create an invitation code
+家族のためのしくみです。外した人の席は、すぐまた使えます(ただし{0}か月に参加できるのは{1}人まで)。あなたがファーストクラスでなくなると、家族のファーストも終わります。	This is meant for families. A removed person's seat can be used again right away (but at most {1} people can join in {0} month). If you stop flying First Class, your family's First ends too.
+ファーストクラスを共有してくれています	is sharing First Class with you
+いまファーストクラスではありません	isn't flying First Class right now
+共有してくれている人がファーストクラスの間、あなたもファーストクラスの機能を全部使えます。学習の記録は別々で、相手には見えません(見えるのは名前とアイコンだけ)。	While the person sharing with you flies First Class, you can use every First Class feature too. Learning records stay separate and they can't see yours (only your name and icon).
+この家族から抜ける	Leave this family
+からの招待	invited you
+この人のファーストクラスを、一緒に使えるようになります。	You'll be able to share this person's First Class.
+学習の記録は別々で、相手に見えるのはあなたの名前とアイコンだけです。いつでも抜けられます。	Learning records stay separate; they only see your name and icon. You can leave any time.
+参加する	Join
+招待コード	Invitation code
+家族からもらった{0}文字の招待コードを入れてね。	Enter the {0}-character invitation code from your family.
+{0}文字の招待コードを入れてね。	Enter the {0}-character invitation code.
+家族シェアは、自分でファーストクラスに乗っている人だけが使えます。	Only someone flying First Class themselves can use family sharing.
+家族のファーストを共有中なので、さらに分けることはできません。	You're sharing your family's First, so you can't share it further.
+家族はもう{0}人います。	You already have {0} family members.
+使っていない招待コードが{0}つあります。先にそれを使うか、取り消してね。	You have {0} unused invitation codes. Use them or cancel them first.
+このコードは使えません(まちがい・使用済み・期限切れのどれか)。	This code can't be used (mistyped, already used, or expired).
+自分のコードには参加できません。	You can't join with your own code.
+もう別の家族に参加しています。先に今の家族から抜けてね。	You're already in another family. Leave it first.
+あなたは家族とファーストを共有している側なので、参加できません。	You're the one sharing First with your family, so you can't join.
+あなたはもうファーストクラスです。参加しなくても全部使えます。	You're already in First Class. You can use everything without joining.
+招待した人が、いまファーストクラスではありません。	The person who invited you isn't flying First Class right now.
+この家族には、最近たくさんの人が参加しています。しばらくしてからもう一度試してね。	Many people have joined this family recently. Please try again later.
+ファーストクラスへようこそ	Welcome to First Class
+さんのファーストクラスを共有しました。	's First Class is now shared with you.
+ホームのラウンジから、AIコーチ・AI日記・路線シミュレーションなどが使えます。	From the lounge on the home screen you can use the AI coach, the AI diary, the route simulation and more.
+外す？	Remove?
+本当に抜ける？(ファーストが使えなくなります)	Really leave? (You'll lose First)
+Babel Flight のファーストクラスを一緒に使おう！ 招待コード: {0}	Let's share First Class on Babel Flight! Invitation code: {0}
+Babel Flight 家族シェア	Babel Flight family sharing
+家族シェアの招待	Family sharing invitation
+家族から、ファーストクラスの招待が届いています。	Your family has invited you to First Class.
+参加するには、ログイン(または新規登録)してね。ログインすると、すぐ参加の画面になります。	Log in (or sign up) to join. After logging in, the joining screen opens right away.
+👨‍👩‍👧 家族アカウント	👨‍👩‍👧 Family account
+👨‍👩‍👧 家族シェア	👨‍👩‍👧 Family sharing
+家族アカウントなので、ファーストクラスの機能を全部使えます。	This is a family account, so every First Class feature is yours.
+家族がファーストクラスの間、一緒に使えます。	You can use it while your family member flies First Class.
+オフライン完全版	Full offline mode
+このブラウザでは使えません。SafariやChromeで開いて、ホーム画面に追加すると使えます。	Not available in this browser. Open the site in Safari or Chrome and add it to your home screen.
+電波がない機内や海外でも、模試・面接練習・路線シミュレーションまで使えるように、この端末に保存します。	Saves to this device so mock exams, interview practice and even the route simulation work on a plane or abroad with no signal.
+基本データ	Basic data
+模試・面接練習・表示言語 ・ 約{0}	Mock exams · interview practice · display language · about {0}
+{0}の録音した声	Recorded {0} voices
+面接官・模試のリスニングの声	The interviewer's and mock exam listening voices
+面接官・模試のリスニングの声 ・ 約{0}	The interviewer's and mock exam listening voices · about {0}
+✓ 保存済み ・ {0} ・ {1}	✓ Saved · {0} · {1}
+✓ 保存済み ・ {0}	✓ Saved · {0}
+更新	Update
+⚠️ {0}あります。{1}のときに保存してね。	⚠️ That's {0}. Save it on {1}.
+ダウンロード	Download
+止める	Stop
+ダウンロードを止めました。続きは、もう一度押すとはじまります(済んだ分はそのまま)。	Download stopped. Tap again to continue (what's done is kept).
+電波が弱くて、{0}個がダウンロードできませんでした。{1}につないで、もう一度試してね。	The signal was weak and {0} files couldn't be downloaded. Connect to {1} and try again.
+この端末では保存できませんでした(空き容量やブラウザの設定を確かめてね)。	Couldn't save on this device (check the free space and your browser settings).
+この言語の録音はまだありません(端末の声で読み上げます)。	No recordings for this language yet (your device's voice reads aloud).
+オフラインで使えるもの・使えないもの	What works offline and what doesn't
+✓ レッスン・復習・弱点コース・路線シミュレーション・模試・面接練習・単語の読み上げ	✓ Lessons · review · weak points · route simulation · mock exams · interview practice · reading words aloud
+✕ AI(AIコーチ・AI日記・AIロールプレイ・AIに質問)、ログイン	✕ AI (AI coach · AI diary · AI role-play · Ask the AI), logging in
+△ 記録の同期は、電波が戻ったら自動で追いつきます。発音チェックは、端末によっては電波が必要です	△ Your record syncs automatically once the signal is back. The pronunciation check needs a signal on some devices
+iPhoneでは、ホーム画面に追加して使うと、保存したデータが消されにくくなります。	On iPhone, saved data is less likely to be cleared if you add the site to your home screen.
+保存したデータを消す	Delete saved data
+本当に消す？(もう一度押す)	Really delete? (Tap again)
+月	Mon
+月曜日	Monday
+月曜日 まだ	Monday: not yet
+月曜日 できた	Monday: done
+TODAY ・ 月曜日	TODAY · Monday
+今日(月)のぶん	Today (Mon)
+火	Tue
+火曜日	Tuesday
+火曜日 まだ	Tuesday: not yet
+火曜日 できた	Tuesday: done
+TODAY ・ 火曜日	TODAY · Tuesday
+今日(火)のぶん	Today (Tue)
+水	Wed
+水曜日	Wednesday
+水曜日 まだ	Wednesday: not yet
+水曜日 できた	Wednesday: done
+TODAY ・ 水曜日	TODAY · Wednesday
+今日(水)のぶん	Today (Wed)
+木	Thu
+木曜日	Thursday
+木曜日 まだ	Thursday: not yet
+木曜日 できた	Thursday: done
+TODAY ・ 木曜日	TODAY · Thursday
+今日(木)のぶん	Today (Thu)
+金	Fri
+金曜日	Friday
+金曜日 まだ	Friday: not yet
+金曜日 できた	Friday: done
+TODAY ・ 金曜日	TODAY · Friday
+今日(金)のぶん	Today (Fri)
+土	Sat
+土曜日	Saturday
+土曜日 まだ	Saturday: not yet
+土曜日 できた	Saturday: done
+TODAY ・ 土曜日	TODAY · Saturday
+今日(土)のぶん	Today (Sat)
+日	Sun
+日曜日	Sunday
+日曜日 まだ	Sunday: not yet
+日曜日 できた	Sunday: done
+TODAY ・ 日曜日	TODAY · Sunday
+今日(日)のぶん	Today (Sun)
+次のレッスン	Next lesson
+📍 次のレッスン	📍 Next lesson
+🔁 復習	🔁 Review
+🎯 弱点コース	🎯 Weak points
+🏅 検定	🏅 Exams
+AIロールプレイ	AI role-play
+💬 AIロールプレイ	💬 AI role-play
+🎲 自由練習	🎲 Free practice
+AI日記	AI diary
+📓 AI日記	📓 AI diary
+路線シミュレーション	Route simulation
+🛫 路線シミュレーション	🛫 Route simulation
+おやすみ	Rest day
+☕ おやすみ	☕ Rest day
+1A シートホルダー	Seat 1A Holder
+🔒 1A シートホルダー	🔒 Seat 1A Holder
+ロングホール・フライヤー	Long-Haul Flyer
+🔒 ロングホール・フライヤー	🔒 Long-Haul Flyer
+フライトログ・キーパー	Flight Log Keeper
+🔒 フライトログ・キーパー	🔒 Flight Log Keeper
+フライトプラン・マスター	Flight Plan Master
+🔒 フライトプラン・マスター	🔒 Flight Plan Master
+グローバル・ナビゲーター	Global Navigator
+🔒 グローバル・ナビゲーター	🔒 Global Navigator
+ハイマイラー	High Miler
+🔒 ハイマイラー	🔒 High Miler
+専属AIコーチ	Your AI coach
+専属AIコーチ ・ 今週のプラン	Your AI coach · This week's plan
+AIコーチ	AI coach
+TODAY ・ AIコーチ	TODAY · AI coach
+今週のプランを作る	Make this week's plan
+今週のプランを作っています…	Making this week's plan…
+あなたのデータから、月〜日の{0}日分	From your data: {0} days, Mon to Sun
+ファーストクラス ラウンジ	First Class lounge
+今週のプラン	This week's plan
+今週 {0}日できた	This week: {0} days done
+{0}分	{0} min
+今週のテーマ:	This week's theme:
+今週のテーマ	This week's theme
+✓ 今日のぶんはできた	✓ Today's part is done
+{0}をはじめる	Start {0}
+{0} / {1}日 できた	{0} / {1} days done
+コーチから	From your coach
+作り直したプランです ・ {0}月{1}日 {2}	Rebuilt plan · {0}/{1} {2}
+週のはじめに自動で作りました ・ {0}月{1}日 {2}	Made automatically at the start of the week · {0}/{1} {2}
+プランを立て直す	Rebuild the plan
+プランとチェックはこの端末に保存されます。AIが作るので、合わないと思ったら立て直してね。	The plan and your checks are saved on this device. The AI makes it, so rebuild it if it doesn't suit you.
+あなたの学習データ(正答率・苦手なフレーズ・目標)から、AIが月曜〜日曜の1週間のプランを作ります。毎週はじめて開いた時に自動で作り、いつでも立て直せます。	From your learning data (accuracy, weak phrases, goals), the AI makes a one-week plan from Monday to Sunday. It is made automatically the first time you open it each week, and you can rebuild it any time.
+AIコーチはファーストクラスの機能です。	The AI coach is a First Class feature.
+AIコーチがプランを考え中…	Your AI coach is working on the plan…
+今日のプラン作りはここまで(1日3回)。また明日ね！	That's all the plans for today (3 a day). See you tomorrow!
+{0}、{1} 様	{0}, {1}
+称号	Titles
+✓ 今日は書いた	✓ Written today
+今日のことを{0}で	Your day, in {0}
+先行公開	Early access
+今日は何があった？	What happened today?
+今日の日記	Today's diary
+これまで	Past entries
+お知らせ	Reminder
+日記	Diary
+{0}で、今日のことを短く書いてみよう。わからない単語は日本語のままでOK。AIが自然な言い方に直して、{1}も教えてくれます。	Write a little about your day in {0}. Words you don't know can stay in English. The AI rewrites it naturally and also tells you {1}.
+なぜそう直すのか	why it was changed
+迷ったら	If you're stuck
+今日いちばん楽しかったこと	The most fun thing today
+今日食べたもの	What you ate today
+学校や部活であったこと	Something from school or your club
+明日やりたいこと	What you want to do tomorrow
+最近ハマっていること	Something you're into lately
+今日がんばったこと	Something you worked hard on today
+今日の天気と気分	Today's weather and your mood
+友達や家族と話したこと	Something you talked about with friends or family
+行ってみたい国や場所	A country or place you want to visit
+最近見た動画や音楽	A video or song you enjoyed lately
+1日2回まで(書いて直す1回 ＋ 書き直し1回)	Up to 2 a day (1 check + 1 rewrite)
+AIに添削してもらう	Have the AI correct it
+AIが読んでいます…	The AI is reading…
+もう少し書いてみよう(1文でもOK)。	Write a little more (even one sentence is OK).
+あなたが書いた日記	What you wrote
+今日の日記の添削はここまで(1日2回)。また明日書こう！	That's all the diary checks for today (2 a day). Write again tomorrow!
+書き直して、もう一度見てもらう	Rewrite it and get another check
+AI日記はファーストクラスの機能です。	The AI diary is a First Class feature.
+まだ日記はありません。今日の1ページ目を書いてみよう。	No diary entries yet. Write your first page today.
+{0}日分 ・ この端末に保存されています	{0} days · saved on this device
+{0}か所 直した	{0} fixes
+お知らせの時間	Reminder time
+毎日この時間を過ぎると、ラウンジで「今日は何があった？」と聞きます。	Every day after this time, the lounge asks “What happened today?”
+時間	Time
+オン	On
+オフ	Off
+この端末の通知もオンにする	Turn on this device's notifications too
+✓ この端末の通知がオンです。アプリを開いている間(ホーム画面に追加したアプリを含む)は、その時間に通知が出ます。	✓ Notifications are on for this device. While the app is open (including the app on your home screen), a notification appears at that time.
+この端末の通知はオフになっています。ブラウザの設定から変えられます。	Notifications are off on this device. You can change this in your browser settings.
+サイトを完全に閉じている時の通知は、まだ届きません(準備中です)。	Notifications don't arrive yet while the site is fully closed (coming soon).
+👏 よかったところ	👏 What was good
+添削したあと	After correction
+直したところと、その理由	What was fixed, and why
+✨ 直すところはありませんでした	✨ Nothing to fix
+ネイティブならこう書く	How a native speaker would write it
+日本語の意味	Meaning
+明日の日記で使ってみよう	Try it in tomorrow's diary
+AIの添削です。正しくないこともあるので、気になったら「AIに質問」でも確かめてね。	This is the AI's correction. It can be wrong, so if something seems off, check it with “Ask the AI” too.
+読み上げ	Read aloud
+{0}で日記を書いてみよう ・ Babel Flight	Try writing your diary in {0} · Babel Flight
+ファーストクラスに搭乗する	Board First Class
+7日連続で学習する	Study 7 days in a row
+AI日記を7日分書く	Write 7 days of AI diary
+AIコーチのプランを1週間で5日できた	Complete 5 days of the AI coach's plan in one week
+3つの言語でレッスンを受ける	Take lessons in 3 languages
+マイルを合計25,000ためる	Earn 25,000 miles in total
+称号を選ぶ	Choose a title
+IDカードに金色で表示されます。ファーストクラスの間だけ使えます。	Shown in gold on your ID card. Available only while you fly First Class.
+{0} {1} {2} ・ {3} / {4}	{0} {1} {2} · {3} / {4}
+{0} {1} {2} ・ {3}	{0} {1} {2} · {3}
+DUTY FREE ・ 機内販売	DUTY FREE · In-flight shop
+テスト用だけ	Test only
+機体の色、搭乗券、カチカチ音などを、1つ80〜160円で着せかえられます。マイルで交換できるものもあります。	Restyle your plane's colours, boarding pass, the clicking sound and more for 80–160 yen each. Some can also be exchanged for miles.
+持っているもの	Owned
+交換に使えるマイル	Miles you can exchange
+{0}円	¥{0}
+{0}マイル	{0} miles
+1か月の上限	Monthly limit
+ショップを開く	Open the shop
+テスト購入なので、お金はかかりません	Test purchases, so nothing costs money
+ショップ	Shop
+🧪 テスト購入	🧪 Test purchase
+まだ本物の支払いは始まっていないので、お金はかかりません。	Real payments haven't started yet, so nothing costs money.
+リバリー	Livery
+サウンド	Sound
+アイコン枠	Icon frame
+機体のデザインが変わります。	Changes the plane's design.
+ホームの搭乗券が変わります。	Changes the boarding pass on the home screen.
+カチカチ音が変わります。	Changes the clicking sound.
+IDカードの写真が変わります。	Changes the photo on your ID card.
+IDカードの肩書きが変わります。	Changes the title on your ID card.
+ミッドナイトネイビー	Midnight Navy
+ミントジェット	Mint Jet
+オーロラ	Aurora
+レトロペーパー	Retro Paper
+ナイトフライト	Night Flight
+ホログラム	Hologram
+ウッド	Wood
+メタル	Metal
+ASMRソフト	ASMR Soft
+ゴールドリング	Gold Ring
+滑走路ライト	Runway Lights
+ナビゲーター	Navigator
+ジェットセッター	Jet Setter
+レッドアイの常連	Red-Eye Regular
+夕焼けのオレンジから、ピンクへのグラデーション。	A gradient from sunset orange to pink.
+深い紺に、金色のライン。夜の国際線のイメージです。	Deep navy with a gold line, like an international flight at night.
+やわらかい桜色。春のフライトに。	Soft cherry-blossom pink, for spring flights.
+さわやかなミントグリーン。	Fresh mint green.
+北極圏の空の色。グリーンからむらさきへ。	The colours of the Arctic sky, from green to purple.
+昔の紙の航空券のような、あたたかい色。	Warm colours, like an old paper ticket.
+夜空の紺に、金色の文字。	Night-sky navy with gold letters.
+角度で色が変わる、虹色の搭乗券。	A rainbow boarding pass that changes colour with the angle.
+木の札がめくれるような、低くてやわらかい音。	A low, soft sound, like wooden tiles flipping.
+金属のフラップが当たる、高くて澄んだ音。	A high, clear sound of metal flaps.
+小さく、まるい音。ずっと聞いていられる心地よさに。	A small, round sound, so pleasant you could listen all day.
+写真のまわりに、金色のふち。	A gold border around your photo.
+夜の滑走路のライトのような点線のふち。	A dotted border like runway lights at night.
+IDカードに「ナビゲーター」の肩書き。	The title “Navigator” on your ID card.
+世界中を飛び回る人の肩書き。	A title for someone who flies all over the world.
+夜おそくまで飛ぶ人の肩書き(深夜便のこと)。	A title for someone who flies late at night (a red-eye is an overnight flight).
+限定	Limited
+リバリー ・ 限定	Livery · Limited
+搭乗券 ・ 限定	Boarding pass · Limited
+タップで試聴	Tap to listen
+使用中	In use
+持っています	Owned
+または {0}マイル	or {0} miles
+標準のデザインにもどす	Back to the standard design
+今月の購入	This month's purchases
+/ 上限 {0}円	/ limit ¥{0}
+/ 上限 なし	/ no limit
+上限と履歴	Limit and history
+🔊 試しに聞く	🔊 Listen
+はずす	Take off
+使う	Use
+{0}円で購入	Buy for ¥{0}
+テスト購入 ・ お金はかかりません	Test purchase · nothing is charged
+「購入しない」に設定されています。	It's set to “Don't buy”.
+今月の上限({0}円)をこえてしまうので、購入できません。	This would go over this month's limit (¥{0}), so you can't buy it.
+上限を確認する	Check the limit
+{0}マイルで交換	Exchange for {0} miles
+交換に使えるマイル：{0}(ステータスは下がりません)	Miles you can exchange: {0} (your status won't drop)
+購入の確認	Confirm purchase
+最終確認	Final check
+{0}円で購入しますか❓	Buy for ¥{0}❓
+{0}マイルで交換しますか❓	Exchange for {0} miles❓
+本物のお金は動きません。	No real money moves.
+商品	Item
+DUTY FREE「{0}」({1})	DUTY FREE “{0}” ({1})
+価格	Price
+{0}円(税込)	¥{0} (tax included)
+・ {0}回だけの支払い	· {0}-time payment
+{0}円 → {1}円(上限 {2}円)	¥{0} → ¥{1} (limit ¥{2})
+{0}円 → {1}円(上限 なし)	¥{0} → ¥{1} (no limit)
+使える時期	Available
+すぐ。ずっと使えます	Right away, and forever
+返品	Returns
+デジタルの商品なので、購入後の返品・返金はできません	It's a digital item, so it can't be returned or refunded after purchase
+購入する	Buy
+使うマイル	Miles used
+(残り {0}マイル)	({0} miles left)
+ステータス	Status
+下がりません(ステータスは、ためたマイルで決まります)	Won't drop (your status is based on the miles you've earned)
+交換する	Exchange
+「{0}」を購入しました。さっそく使っています。	You bought “{0}”. It's in use now.
+「{0}」を交換しました。さっそく使っています。	You got “{0}” with miles. It's in use now.
+1か月に使える金額の上限です。上げるときは、保護者の方と相談してから変えてね。マイルでの交換は上限に入りません。	The most you can spend in a month. Talk with a parent or guardian before raising it. Exchanges with miles don't count toward the limit.
+購入しない	Don't buy
+上限なし	No limit
+今月の購入：	This month's purchases:
+購入の履歴	Purchase history
+{0}円(テスト)	¥{0} (test)
+ショップにもどる	Back to the shop
+上限を{0}円に上げます。	Raising the limit to ¥{0}.
+上限をなしに上げます。	Removing the limit.
+保護者の方と相談しましたか❓	Did you talk with a parent or guardian❓
+保護者の方の同意をもらいました	I have my parent or guardian's OK
+上限を変える	Change the limit
+まだありません。	Nothing yet.
+友達	Friend
+台北	Taipei

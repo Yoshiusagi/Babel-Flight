@@ -121,8 +121,8 @@ function famJoin(){
   });
 }
 function famSend(code,btn){
-  var url=famLink(code),txt='Babel Flight のファーストクラスを一緒に使おう！ 招待コード: '+code;
-  if(navigator.share){navigator.share({title:'Babel Flight 家族シェア',text:txt,url:url}).catch(function(){});return;}
+  var url=famLink(code),txt=uiF('Babel Flight のファーストクラスを一緒に使おう！ 招待コード: {0}',[code]);
+  if(navigator.share){navigator.share({title:T('Babel Flight 家族シェア'),text:txt,url:url}).catch(function(){});return;}
   var t=txt+' '+url;
   function done(ok){if(btn){btn.textContent=ok?'コピーしました ✓':'コピーできませんでした';setTimeout(function(){if(btn.isConnected)btn.textContent='送る';},1800);}}
   try{navigator.clipboard.writeText(t).then(function(){done(true);},function(){done(false);});}catch(e){done(false);}
