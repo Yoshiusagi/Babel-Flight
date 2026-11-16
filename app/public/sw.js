@@ -3,11 +3,14 @@
    Icons and fonts: cache first. APIs, sign-in and /stats: never cached.
    オフライン完全版 (ファースト, babel-flight/parts/f36_offline.js): the page downloads the mock tests, interview
    cards, display-language dictionaries and recorded voices into caches named bf-off-*. Those are kept here, the
-   JSON files are then network first (fresh when online, the downloaded copy offline) and the recordings cache first. */
+   JSON files are then network first (fresh when online, the downloaded copy offline) and the recordings cache first.
+   英和辞典 (/dict/en/, babel-flight/parts/f45_dict.js): network first, and every file fetched is kept in bf-off-dict, so a
+   word looked up once also works offline (オフライン完全版 can download the whole dictionary into the same cache). */
 const CORE_CACHE = 'bf-core-v2';
 const FONT_CACHE = 'bf-fonts-v1';
 const OFF_PREFIX = 'bf-off-';
 const OFF_JSON = /^\/(?:mx|iv|i18n)\/[a-z0-9-]+\.json$/;
+const DICT_JSON = /^\/dict\/en\/(?:(?:w|j)\/[a-z0-9_]+|m|meta)\.json$/;
 const CORE = ['/', '/favicon.svg', '/manifest.webmanifest', '/icons/app-192.png', '/icons/app-512.png', '/icons/app-touch-180.png'];
 
 self.addEventListener('install', (event) => {
@@ -50,6 +53,20 @@ self.addEventListener('fetch', (event) => {
               // a downloaded copy is kept fresh
               const copy = res.clone();
               caches.open(OFF_PREFIX + 'base').then((c) => c.match(url.pathname).then((had) => had && c.put(url.pathname, copy)));
+            }
+            return res;
+          })
+          .catch(() => caches.match(url.pathname).then((hit) => hit || Response.error())),
+      );
+      return;
+    }
+    if (DICT_JSON.test(url.pathname)) {
+      event.respondWith(
+        fetch(req)
+          .then((res) => {
+            if (res.ok) {
+              const copy = res.clone();
+              caches.open(OFF_PREFIX + 'dict').then((c) => c.put(url.pathname, copy));
             }
             return res;
           })

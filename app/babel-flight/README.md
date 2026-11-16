@@ -251,7 +251,8 @@ Only for ファースト (`cabinLv()` 3; `fcOn()`), never in the iPhone app.
   meaning and the word that tells them apart; for build/type the first difference (missing/extra word, a/an/the,
   s, -ed, -ing, spelling, word order).
 - **単語帳** (`save.wb`, per language, ☆ on the answer sheet and in search; missed phrases are added by themselves)
-  and **単語をさがす** (all phrases of the learning language, by the phrase, its reading or its Japanese meaning):
+  and **単語をさがす** (all phrases of the learning language, by the phrase, its reading or its Japanese meaning; for
+  English with the 日本語 display, the 英和辞典 below):
   view `words`, from 復習. 「この単語帳で練習する」 is a 10-question flight (mode `wb`).
 - **復習の間隔の自動調整** (`srsNext`, called from `land`): per phrase ease `e` (1.3–3.0) and interval `iv` (days, up to
   180, ±8% spread): fast answers stretch it, slow or hinted ones shorten it, overdue time counts, a miss comes back
@@ -264,6 +265,30 @@ Only for ファースト (`cabinLv()` 3; `fcOn()`), never in the iPhone app.
   only each other's name and icon (sent by the page to `bf_rank`). The weekly ranking (Monday to Sunday, Japan
   time) is OFF at first: only while on are the miles of each lesson sent (400 a post, 3,000 a day, one post every
   20 seconds), and only friends who also turned it on are ranked. Turning it off deletes this week's miles.
+
+## 英和辞典 (単語をさがす, English with the Japanese display, every class, free) — `parts/f45_dict.js` + `f45_css.html`
+
+- 単語をさがす for English with the 日本語 display is a real English-Japanese dictionary (other languages and display
+  languages keep the phrase search). It shows, per word: いまの英語 (labels, example, note), the dictionary's meanings
+  (『』 bold, 《話》《米》… as labels, 〈C〉〈U〉 as 数えられる / 数えられない, `=word` as a link), the app's phrases with the
+  word, ☆ (`d:<word>` in `save.wb.en`, listed under 「辞書で保存した単語」 in the 単語帳) and 「AIにくわしくきく」
+  (`/api/ai/ask`, the AIに質問 count; inside Claude, `claude.use('sample')`).
+- Search: English by the start of the word (exact first, then いまの英語, then common words), a few inflection rules
+  (studied → studied + study, planes → plane), spelling suggestions (1–2 edits, a swap counts as one); 日本語 by the
+  meaning (hiragana and katakana alike): いまの英語 whose meaning matches, then the dictionary's words for that meaning.
+- Data `public/dict/en/` (about 8MB, 615 files, fetched only when needed): `meta.json`; `m.json` いまの英語
+  `[[word, [[品詞, 意味, tags, 例文, 訳, メモ]…]]…]`; `w/<first 2 letters>.json` ejdict-hand rows `[word, meaning, rank]`
+  (rank 3/2/1 = the 100/850/2000 basic words); `j/<n>.json` 日本語 → 英語 `{h:[words], g:{gloss in hiragana:[index]}}`
+  with n = the gloss's first character code % 64. `public/sw.js` keeps every dictionary file fetched (`bf-off-dict`),
+  so looked-up words work offline; オフライン完全版 (日本語の表示) can save the whole dictionary.
+- Sources: **ejdict-hand** (くじらはんど, https://github.com/kujirahand/EJDict, Public Domain / CC0), about 47,000 entries;
+  **いまの英語**, written for this app (slang, SNS and chat, new words and meanings, aviation English, K-POP, …; tags
+  `new mean slang sns avi tech kpop game biz eco rude fit beauty sport school travel food money music talk feel bike
+  idiom`). Clearly sexual words are left out; rude ones carry ⚠ 注意 and no example. The generator (Python) reads
+  the ejdict `src/*.txt` and `frequency/`, the いまの英語 lists and the app's own English phrases (for ranking 日本語
+  results) and writes the files above; rebuild after changing the lists. Generator and lists: `dict/gen_dict.py`,
+  `dict/mod_*.py` (one tuple per sense: word, 品詞, 意味, tags, 例文, 訳, メモ), `dict/en_corpus.txt`; ejdict-hand is
+  cloned into `dict/ejdict/` (ignored by git) or given with `EJDICT=`.
 
 ## 他のアプリにない練習 — `parts/e3g_special.js`, `f39_special.js` … `f42_noise.js` (CSS in `f39_css.html`, `f40_css.html`)
 

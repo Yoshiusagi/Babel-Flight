@@ -1,0 +1,52 @@
+<style>
+/* ---- 英和辞典 (f45_dict.js) ---- */
+.dict-open{display:block;min-width:0;padding:0;border:0;background:none;color:var(--ink);text-align:left;font:inherit}
+.dict-open b{display:inline;font-size:16.5px;line-height:1.4;word-break:break-word}
+.dict-open .wb-jp{color:var(--ink);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.dict-open .wb-jp.dim{color:var(--ink2)}
+.dict-tags{display:inline-flex;flex-wrap:wrap;gap:4px;margin-left:6px;vertical-align:2px}
+.dict-sheet .dict-tags,.dict-now .dict-tags{margin:4px 0 0}
+.dict-tag{font-style:normal;font-size:10.5px;font-weight:700;line-height:1;padding:4px 6px;border-radius:6px;background:color-mix(in srgb,var(--signal) 18%,var(--surface));color:var(--ink);white-space:nowrap}
+.dict-tag.t-rude{background:color-mix(in srgb,var(--bad) 18%,var(--surface));color:var(--bad)}
+.dict-tag.t-avi{background:color-mix(in srgb,#3d7bff 18%,var(--surface))}
+.dict-tag.t-new,.dict-tag.t-mean,.dict-tag.t-now{background:var(--surface2);color:var(--ink2)}
+.dict-intro{margin:14px 2px;padding:14px;border-radius:16px;border:1px solid var(--line);background:var(--surface)}
+.dict-what{margin:0 0 8px;font-size:13px;color:var(--ink2)}
+.dict-what b{display:block;font-size:17px;color:var(--ink)}
+.dict-intro ul{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:13.5px;line-height:1.5}
+.dict-intro li{display:flex;gap:8px}
+.dict-try,.dict-sugg{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:12px 0 0}
+.dict-try>span,.dict-sugg>span{font-size:12px;color:var(--ink2);margin-right:2px}
+.dict-try .chip,.dict-sugg .chip{min-height:36px;color:var(--ink)}
+.dict-sugg{justify-content:center;margin:-6px 0 14px}
+.dict-base{margin:10px 2px 4px;padding:8px 12px;border-radius:12px;background:var(--surface2);font-size:13.5px}
+.dict-h{margin:18px 2px 0;font-size:13px;color:var(--ink2);font-weight:700}
+.dict-credit{margin:18px 4px 0;font-size:10.5px;color:var(--ink2);line-height:1.5;text-align:center}
+.dict-ai{margin:16px 0 0}
+.dict-ai .ghost{width:100%}
+.dict-ai .aiout{margin-top:8px}
+.dict-hd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 0 6px}
+.dict-hd h3{margin:0;font-size:26px;line-height:1.2;word-break:break-word}
+.dict-sheet .wb-b .mini{position:static;width:40px;height:40px;display:grid;place-items:center}
+.dict-sheet .wb-b .mini svg{width:20px;height:20px;color:var(--ink)}
+.dict-sheet .wb-star{font-size:19px}.dict-sheet .wb-star[aria-pressed="true"]{color:#d79b00}
+.dict-now,.dict-ej{margin:12px 0 0;text-align:left}
+.dict-now{padding:12px;border-radius:14px;background:color-mix(in srgb,var(--signal) 8%,var(--surface));border:1px solid color-mix(in srgb,var(--signal) 35%,var(--line))}
+.dict-senses{margin:6px 0 0;padding-left:22px;display:grid;gap:10px;font-size:14.5px;line-height:1.6}
+.dict-senses.ej{gap:6px;font-size:14px}
+.dict-senses.ej b{font-weight:700;background:linear-gradient(transparent 62%,color-mix(in srgb,var(--signal) 35%,transparent) 0)}
+.dict-m{margin:0;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px}
+.dict-m b{font-size:15.5px}
+.dict-pos{font-size:11px;color:var(--ink2);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+.dict-ex{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin:6px 0 0;padding:8px 10px;border-radius:10px;background:var(--surface)}
+.dict-ex p{margin:0;font-size:14px;line-height:1.5}
+.dict-ex p.dim{font-size:12.5px;color:var(--ink2)}
+.dict-ex .mini{position:static;width:36px;height:36px;display:grid;place-items:center}
+.dict-ex .mini svg{width:18px;height:18px;color:var(--ink)}
+.dict-note{margin:6px 0 0;display:flex;gap:6px;font-size:12.5px;line-height:1.55;color:var(--ink2)}
+.dict-lb,.dict-gr{display:inline-block;font-size:10.5px;line-height:1.3;padding:1px 5px;margin:0 3px;border-radius:5px;background:var(--surface2);color:var(--ink2);vertical-align:1px}
+.dict-gr{background:none;border:1px dashed var(--line)}
+.dict-more{margin:8px 0 0}
+.dict-more summary{cursor:pointer;font-size:13px;color:var(--ink2);min-height:36px;display:flex;align-items:center}
+.dict-go{font:inherit;font-weight:700}
+</style>

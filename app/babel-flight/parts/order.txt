@@ -28,6 +28,7 @@ f39_css.html
 f40_css.html
 f43_css.html
 f44_css.html
+f45_css.html
 @HEADEND
 e2_body.html
 a0_env.js
@@ -120,5 +121,6 @@ f41_jobday.js
 f42_noise.js
 f43_accent.js
 f44_duty.js
+f45_dict.js
 f7_boot.js
 @END

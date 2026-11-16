@@ -1,0 +1,3138 @@
+I'd like to check in.
+Here is my passport.
+Could I have a window seat?
+I have one bag to check.
+How much is the excess baggage fee?
+Which gate should I go to?
+What time does boarding start?
+Is my flight on time?
+Could I have some water, please?
+Do you have any Japanese newspapers?
+I'd like the chicken, please.
+Could you bring me a blanket?
+Excuse me, may I get through?
+Where is the restroom?
+My screen isn't working.
+How long until we land?
+What is the purpose of your visit?
+I'm here for sightseeing.
+How long will you stay?
+I'll stay for five days.
+Where are you staying?
+I'm staying at a hotel downtown.
+I have nothing to declare.
+Do you have a return ticket?
+I have a reservation under Sato.
+Could I have a late checkout?
+Is breakfast included?
+What's the Wi-Fi password?
+Could you call a taxi for me?
+The air conditioner doesn't work.
+Could I get an extra towel?
+Could you keep my luggage until evening?
+A table for two, please.
+Could I see the menu?
+What do you recommend?
+I'm allergic to nuts.
+Could we have the check, please?
+Is service included?
+This is delicious!
+Can I pay by card?
+How do I get to the station?
+Could you take a picture of us?
+I'm lost.
+Where is the nearest pharmacy?
+I lost my wallet.
+Please call the police.
+I need a doctor.
+Could you speak more slowly?
+Say again.
+Roger.
+Wilco.
+Affirm.
+Negative.
+Stand by.
+Cleared for takeoff.
+Hold short of the runway.
+Request taxi.
+Line up and wait.
+Cleared to land.
+Go around.
+Unable.
+Readback correct.
+Contact tower.
+Mayday, mayday, mayday.
+Ladies and gentlemen, this is your captain speaking.
+We will be taking off shortly.
+We are now cruising at thirty-five thousand feet.
+We expect some turbulence. Please fasten your seat belts.
+Our estimated arrival time is 3 p.m.
+The weather at our destination is sunny, and the temperature is 20 degrees.
+We have started our descent.
+Thank you for flying with us.
+Welcome aboard.
+May I see your boarding pass?
+What would you like to drink?
+Please fasten your seat belt.
+Please return your seat to the upright position.
+The emergency exits are located here.
+Please put your bag in the overhead bin.
+Please call me if you need anything.
+What brings you in today?
+Where does it hurt?
+Do you have a fever?
+How long have you had this?
+Take a deep breath.
+Do you have any allergies?
+I'm going to check your blood pressure.
+Take care of yourself.
+Do you have a prescription?
+Take this three times a day after meals.
+This may cause drowsiness.
+Are you taking any other medicine?
+Don't take this on an empty stomach.
+Please contact us if you have any side effects.
+This is a painkiller.
+Keep it in the refrigerator.
+Let me review the contract.
+You have the right to remain silent.
+Do you have any evidence?
+Everything you tell me is confidential.
+We propose a settlement.
+You can file a lawsuit.
+The deadline is next Friday.
+Please sign here.
+I found a bug.
+Can you share the steps to reproduce it?
+I'll deploy it to production.
+Could you review my code?
+The server is down.
+We're on track to meet the deadline.
+All the tests passed.
+Let me share my screen.
+Nice to meet you.
+Here is my business card.
+Let's get started.
+I'll send you the materials.
+Let me think it over.
+Does next Tuesday work for you?
+We have a deal.
+I look forward to working with you.
+What would you like today?
+How much should I cut?
+I'll trim your bangs a little.
+What color would you like?
+Let me wash your hair.
+Is the water temperature okay?
+I'll just tidy up the ends.
+It looks great on you.
+Chop the onions finely.
+Stir-fry it over high heat.
+Add a pinch of salt.
+Taste it, please.
+Let it simmer for five minutes.
+Table two is ready!
+Wash your hands before you start.
+This dish contains nuts.
+Please open your textbooks to page ten.
+Does anyone have any questions?
+Well done!
+Please discuss it in pairs.
+Please hand in your homework.
+Let me explain that again.
+Quiet, please.
+There will be a test next week.
+Welcome! How may I help you?
+May I have the name on the reservation?
+Your room is on the fifth floor.
+Breakfast is served from seven.
+Let me take your luggage.
+Here is a sightseeing brochure.
+It's a ten-minute walk to the station.
+Enjoy your stay!
+I'd like to share our experimental results.
+We formed a hypothesis.
+I'm analyzing the data.
+I submitted the paper.
+We need to check reproducibility.
+Please take a look at this graph.
+Thank you for your question.
+Would you be interested in collaborating?
+Pass me the ball!
+What time is practice today?
+I hurt my ankle.
+Coach, I want to play!
+Let's tighten up our defense in the first half.
+Nice play!
+Let's stretch.
+Let's win the next game for sure!
+Yes.
+No.
+Thank you.
+I'm sorry.
+Hello.
+Bye!
+Please.
+It's OK.
+Good morning.
+Good evening.
+Nice to meet you.
+How are you?
+I'm good, thanks. And you?
+Long time no see!
+See you later.
+Have a nice day.
+I'm from Japan.
+I live in Tokyo.
+I'm a student.
+I love music.
+I'm learning English.
+What's your name?
+Where are you from?
+Let's be friends!
+How much is this?
+It's ten dollars.
+That's too expensive.
+Do you have a cheaper one?
+Two of these, please.
+How much is it in total?
+Keep the change.
+Can I get a receipt?
+What time is it now?
+It's half past three.
+What day is it today?
+See you tomorrow.
+I'm free this weekend.
+What time shall we meet?
+I'll be a little late.
+Sorry I'm late.
+I'm so happy!
+I'm tired.
+I'm hungry.
+I have a headache.
+I'm okay.
+I'm sorry.
+That was fun!
+Don't worry.
+What are your hobbies?
+I like K-pop.
+What do you do on weekends?
+Do you want to see a movie?
+Sounds good!
+Let's exchange numbers.
+Really?
+That's amazing!
+addition
+subtraction
+multiplication
+division
+fraction
+equation
+triangle
+Two plus three equals five.
+experiment
+photosynthesis
+cell
+oxygen
+carbon dioxide
+gravity
+electricity
+chemical reaction
+history
+geography
+politics
+economy
+constitution
+election
+population
+capital
+Let's take the lift.
+I live in a flat.
+Let's take the Underground.
+Could I have some chips?
+I'm on holiday.
+Please join the queue.
+My mobile is dead.
+What's your favourite colour?
+I live in an apartment.
+I brought my laptop.
+Where's the outlet?
+Is there a gas station near here?
+Can I borrow your stapler?
+I forgot my mechanical pencil.
+I want to ride the roller coaster.
+I'm pushing a stroller.
+It's a studio apartment.
+I have a license, but I rarely drive.
+I'd like to make a complaint.
+Can I have your autograph?
+Please sign here.
+I want to improve my skills.
+I'd like to make an appointment.
+Could I have a wake-up call at seven?
+I left my key at the front desk.
+Is breakfast a buffet?
+He's very sensitive.
+I'm not working overtime today.
+Can I borrow your pen?
+Would it be possible to borrow your pen?
+Can you help me?
+Could you possibly help me with this?
+Would you mind opening the window?
+Could I have some water, please?
+I'm afraid I don't quite understand.
+I'm sorry, but that won't be possible.
+Thank you so much. I really appreciate it.
+Do you have a minute?
+New Year's is our most important holiday, and we spend it with family.
+In Japan, we take off our shoes when we enter a house.
+Hanami means having a picnic under the cherry blossoms.
+Otoshidama is money that children get at New Year's.
+In summer, there are fireworks festivals all over the country.
+An onsen is a bath with natural hot water from the ground.
+We say itadakimasu before eating to thank the people who made the food.
+In Japan, we don't usually tip.
+During Obon, many people go back to their hometowns.
+At school, students clean their classrooms themselves.
+Trains almost always come on time.
+The Japanese school year starts in April.
+It takes about two and a half hours from Tokyo to Osaka by Shinkansen.
+Earthquakes happen often in Japan.
+Convenience stores are open twenty-four hours and sell almost everything.
+In Japan, cars drive on the left.
+If you like Japanese food, I'd recommend ramen.
+We also use sumimasen to say thank you.
+Summer in Japan is very hot and humid.
+There are vending machines everywhere.
+class schedule
+grades
+club activities
+recess
+school lunch
+locker
+How many classes do we have today?
+When is the homework due?
+grammar
+noun
+verb
+adjective
+essay
+paragraph
+poem
+What is the subject of this sentence?
+century
+ancient times
+revolution
+continent
+the equator
+climate
+Please look at the map.
+Japan is an island country.
+musical instrument
+sheet music
+rhythm
+choir
+paint
+paintbrush
+artwork
+I can play the piano.
+P.E.
+gym
+warm-up
+team
+Run!
+Please line up.
+Stop when you hear the whistle.
+Let's take a water break.
+computer
+password
+save a file
+programming
+the internet
+screen
+Please log in.
+Please send this file to the teacher.
+We have beef or fish.
+Would you like tea or coffee?
+Did you order a special meal?
+We will now begin our duty-free sales.
+May I take your tray?
+Would you like a refill?
+Shall I bring you a blanket?
+Are you feeling all right?
+Oxygen masks will drop from above.
+Pull the mask firmly toward you.
+Put on your own mask before helping others.
+Your life vest is under your seat.
+Do not inflate it inside the aircraft.
+Brace! Heads down!
+Leave your bags behind!
+Please check where the nearest exit is.
+Let's do a blood test.
+We'll take an X-ray.
+The results will be ready next week.
+You need to stay in the hospital.
+There's nothing to worry about.
+Take this medicine for a week.
+Do you have any questions?
+Come back right away if the pain gets worse.
+I'm going to start an IV.
+On a scale of 1 to 10, how bad is the pain?
+Press the call button if you need anything.
+Let me take your temperature.
+Did you sleep well?
+Were you able to finish your meal?
+Let's try walking a little.
+Would you like me to call your family?
+What are your symptoms?
+How long have you had the cough?
+Do you have something for a fever?
+Have you ever had a reaction to a medicine?
+This medicine is safe for children.
+We also have a non-drowsy one.
+If it doesn't get better in three days, please see a doctor.
+Take two tablets, up to three times a day.
+Take this before meals.
+Take one tablet before bed.
+Don't take this with alcohol.
+Keep it out of reach of children.
+Take this with water.
+Apply this cream twice a day.
+Use one drop at a time.
+Here's a one-week supply.
+What would you like to discuss today?
+When did this happen?
+Do you have a copy of the contract?
+The first consultation is free.
+Please collect anything that could be evidence.
+Let's try to settle this through negotiation first.
+We will protect your rights.
+Please read this document carefully.
+Court is now in session.
+Please call the witness.
+Do you swear to tell the truth?
+Objection!
+Sustained.
+Overruled.
+I will now announce the verdict.
+The defendant is not guilty.
+Here's what I did yesterday.
+Today, I'll work on this task.
+I don't have any blockers.
+This will take about three days.
+Let's set the priorities.
+I'll take care of it.
+Let me check the specs.
+The release is planned for next week.
+There's an error message.
+I'll check the logs.
+I found the cause.
+I'll roll it back for now.
+I've deployed the fix.
+The service is back up.
+Sorry for the trouble.
+Let's make sure this doesn't happen again.
+Thank you for calling.
+I'll put you through to the person in charge.
+She's not at her desk right now.
+I'll call you back.
+I've attached the document.
+Could you please take a look?
+Sorry for the late reply.
+Best regards,
+Thank you for your time today.
+I'd like to propose a new project.
+Sales grew by 20% compared to last year.
+I'd like to discuss the price.
+Could you give us a bit more of a discount?
+We can agree to those terms.
+I'll check internally and get back to you.
+Let's go over the next steps.
+Do you have a photo of the style you want?
+You have a lot of hair.
+Is your hair naturally curly?
+How much length would you like to keep?
+Shall we go for shoulder length?
+Have you ever had a perm?
+I'll thin it out so it looks lighter.
+Do you style your hair every morning?
+I'll blow-dry your hair now.
+Is it okay if I put some wax in?
+Here's how the back looks.
+Is there anything you'd like me to change?
+The trick is to use just a little of this wax.
+Would you like to book your next appointment?
+I'd recommend coming back in about a month.
+Thank you. We hope to see you again.
+Are you ready to order?
+How would you like your steak cooked?
+Are there any ingredients you're allergic to?
+Today's special is a fish dish.
+Your food will take a little while.
+May I clear your plates?
+Would you like some dessert?
+How was everything?
+Let's start prepping the vegetables.
+Check the fridge temperature.
+Use separate cutting boards for meat and vegetables.
+Check the expiration dates.
+We're running low on stock.
+Please order what we need for tomorrow.
+Be careful how you hold the knife.
+Clean as you go.
+Where would you like to go?
+It's about 20 minutes by bus.
+I'll mark it on this map for you.
+You can buy tickets at the entrance.
+It's closed on Mondays.
+The night view is beautiful.
+You can also walk there.
+We also have guided tours.
+I'm very sorry for the inconvenience.
+I'll look into it right away.
+We'll prepare another room for you.
+I'll send someone up right away.
+We found the item you left behind.
+Shall I call a taxi for you?
+Breakfast is on us today.
+Is there anything else I can help you with?
+Please make groups of four.
+Please look at the board.
+Please come to the front and present.
+Five more minutes.
+Check your answers with your partner.
+Raise your hand, please.
+There are three key points today.
+It's okay to make mistakes.
+You've been working really hard lately.
+Is anything bothering you?
+You can come and talk to me anytime.
+Try not to forget your homework.
+He's very active in class.
+She seems to find math a little difficult.
+Please encourage him at home, too.
+Let's work on it together.
+Put on your lab coat and safety glasses.
+Store the samples at this temperature.
+Let's repeat the measurement three times.
+Make sure you record the data.
+Handle this chemical with care.
+Let's compare it with the control group.
+The results are different from what we expected.
+Write in your lab notebook every day.
+Today, I'd like to present our research.
+First, let me explain the background.
+These results suggest the following.
+Our results differ from previous studies.
+There are two challenges for future work.
+Thank you for your attention.
+Could I make sure I understand your question?
+We plan to look into that in the future.
+Stay on your player!
+Keep talking!
+We're making a substitution.
+Let's get one more point!
+Stay calm.
+We're calling a timeout.
+Nice shot!
+Don't give up till the end!
+Thank you for your support.
+It was a team effort.
+We'll get ready for the next game.
+Today's result was disappointing.
+How's your injury?
+I need some rehab for a while.
+Let's put some ice on it.
+Rest is part of training too.
+I'm a junior high school student.
+What time is it now?
+This is my bag.
+Do you like music?
+I play tennis every Sunday.
+Can you swim?
+My sister is ten years old.
+How many books do you have?
+I went to the library yesterday.
+What are you going to do this weekend?
+It was rainy last Saturday.
+I have to finish my homework.
+Which season do you like the best?
+My father usually gets up at six.
+Shall we have lunch together?
+I was watching TV when you called.
+I have lived in Tokyo for five years.
+This book is more interesting than that one.
+I want to be a pilot in the future.
+Have you ever been to Kyoto?
+The dog was found by a little boy.
+Do you know where the station is?
+It is important to study every day.
+I'm looking forward to seeing you.
+I'm thinking of studying abroad next year.
+If I had more time, I would travel around the world.
+The festival was canceled because of the typhoon.
+It took me two hours to get there.
+I'm used to getting up early.
+Recycling is one way to protect the environment.
+Could you tell me how to get to the museum?
+She suggested that we take a taxi.
+More and more people are working from home.
+Some people argue that school uniforms should be abolished.
+The number of tourists has increased dramatically.
+In my opinion, students should learn about money at school.
+We need to reduce the amount of plastic waste.
+Volunteering gives young people valuable experience.
+This policy may have a negative impact on small businesses.
+For these two reasons, I agree with the idea.
+I get up at seven every morning.
+She doesn't eat breakfast.
+Where do you live?
+I'm reading a comic book now.
+Please open the window.
+Whose pencil is this?
+My mother is a nurse.
+Let's play soccer after school.
+I like cats very much.
+He can play the piano well.
+What sport do you like?
+My favorite subject is English.
+I don't have any pets.
+Can I use your eraser?
+Who is that tall boy?
+How do you go to school?
+What day is it today?
+It's sunny today.
+My birthday is June fifth.
+How old is your grandfather?
+We have English on Monday and Friday.
+It's very cold here in winter.
+How much is this T-shirt?
+It's ten thirty now.
+Nice to meet you.
+Thank you for your help.
+Excuse me. Where is the library?
+See you tomorrow.
+Here you are.
+That's a good idea.
+I'm sorry I'm late.
+How about you?
+I'm from Osaka.
+Where are you from?
+Are you a new student?
+He is my best friend.
+We are in the same class.
+Is this your umbrella? Yes, it is.
+They aren't at home now.
+My name is Kenta. Please call me Ken.
+My father drives to work.
+Does your brother play baseball? Yes, he does.
+She watches TV after dinner.
+Ken studies English every day.
+My mother doesn't drink coffee.
+Do you have any brothers or sisters?
+I usually walk to school.
+What do you do on Sundays?
+When is your birthday?
+Which bag is yours?
+Why do you like summer? Because I can swim in the sea.
+How many students are in your class?
+How is the weather in Sapporo? It's snowy.
+Who makes breakfast in your family?
+How long is the movie?
+What time does the shop open?
+Can you help me? Sure.
+I can't ride a unicycle.
+Don't eat in the library.
+Be quiet, please.
+Let's go to the zoo this Saturday. Yes, let's.
+Can I have some water?
+Look at that bird!
+Come here, Taro.
+What are you doing now? I'm making a cake.
+My brother is swimming in the pool.
+Is it raining outside? No, it isn't.
+They are playing basketball in the gym.
+Look! The baby is sleeping.
+We aren't watching TV now.
+Who is singing in the music room?
+She is talking on the phone.
+My piano lesson is at four on Tuesday.
+In Japan, school starts in April.
+I go to bed at ten.
+We don't have school on Saturdays.
+What's the date today? It's May tenth.
+My favorite season is spring.
+See you on Friday.
+It's hot in August.
+This is my aunt. She lives in Okinawa.
+My uncle is a cook at a hotel.
+These are my new shoes.
+Whose cap is that? It's Tom's.
+I have two cats and a dog.
+My sister has long hair.
+Our teacher is from Canada.
+Those boys are my classmates.
+What do you want for lunch?
+Two hamburgers, please.
+Do you want some cookies? Yes, please.
+I don't like tomatoes.
+My mother makes curry and rice on Sundays.
+How much are these apples? They're 200 yen.
+This soup is very good.
+I'm hungry. Me, too.
+I'm in the art club.
+We have P.E. today.
+Mr. Sato teaches math.
+Science is difficult but interesting.
+Open your textbooks to page ten.
+How do you say “neko” in English?
+Can I go to the bathroom?
+Let's study together in the library.
+Good morning, Ms. Green.
+How are you? I'm fine, thank you.
+You're welcome.
+Good luck!
+Sorry, I don't know.
+Happy birthday! This is for you.
+Let me see.
+Just a minute, please.
+I visited my grandmother last Sunday.
+Did you see the movie?
+We didn't go out because it was snowing.
+I bought a new bike last month.
+What did you do during the summer vacation?
+She came home at five.
+There were many people at the station.
+I lost my key on the way to school.
+It will be sunny tomorrow.
+I'm going to visit Osaka next month.
+Will you help me with my homework?
+I'll call you later.
+When are you going to leave?
+My brother wants to be a doctor.
+The concert starts at seven.
+I hope you like it.
+Tom is taller than his father.
+This is the biggest park in our city.
+Math is as difficult as science for me.
+Which do you like better, summer or winter?
+There is a big tree in front of our school.
+I enjoyed talking with my friends.
+I went to the park to play tennis.
+My uncle gave me a watch.
+You must not run in the hallway.
+May I speak to Ken, please?
+Could you say that again?
+How was your trip?
+You don't have to bring your lunch.
+Would you like some more cake?
+What's wrong?
+I'm glad to hear that.
+I studied for the test last night.
+We had a good time at the party.
+She didn't come to school yesterday.
+Where did you go last weekend?
+I saw a famous singer at the airport.
+He wrote a letter to his grandmother.
+How did you get there? By train.
+I left my umbrella on the bus.
+What were you doing at nine last night?
+I was taking a bath then.
+It was very hot yesterday.
+The students were cleaning the classroom.
+Were you at home last Sunday? No, I wasn't.
+When I got up, it was snowing.
+My mother was busy this morning.
+There was a big festival in our town.
+I'm going to stay with my uncle in Kobe.
+It's going to rain this afternoon.
+Will it be cold tomorrow? Yes, it will.
+I won't be late again.
+What are you going to buy at the mall?
+My sister is going to get married next year.
+I think it'll be a nice day.
+We'll have a test next Monday.
+There are thirty students in my class.
+Is there a convenience store near your house?
+Your bag is under the desk.
+The cat is sleeping between the two chairs.
+There aren't any eggs in the fridge.
+The bank is next to the post office.
+My house is near the river.
+We waited for her in front of the station.
+I want to visit Hokkaido someday.
+My dream is to be a pilot.
+I need something to drink.
+I'm interested in making robots.
+She likes to read books in bed.
+It started to snow in the evening.
+Playing the guitar is fun.
+I called Mike to ask about the homework.
+My bike is newer than yours.
+Who is the youngest in your family?
+Baseball is more exciting than golf for me.
+Soccer is the most popular sport in our school.
+Please show me your notebook.
+Can you tell me the way to the museum?
+My friend sent me a birthday card.
+I'll give you this pen.
+I like dogs, but my brother likes cats.
+If you're tired, you can go home.
+Do you want tea or coffee?
+I must go now.
+We have to wear uniforms at school.
+You should take an umbrella.
+Could you open the door for me?
+May I come in?
+We stayed at a hotel near the beach.
+I took a lot of pictures in Kyoto.
+My family went camping in the mountains.
+The flight to Hawaii was seven hours long.
+I bought some souvenirs for my friends.
+It was my first time riding a horse.
+We visited many old temples.
+I'm looking forward to the trip.
+Thanks for your letter.
+How are you doing?
+I'm writing to tell you about my new school.
+Please write back soon.
+Tickets are 500 yen for children.
+Please come to the gym by 9:00 a.m.
+Don't forget to bring a towel.
+Say hello to your family.
+Sounds good to me.
+Sorry, I can't. I have a piano lesson.
+No problem.
+Really? I didn't know that.
+Hurry up! We're late.
+What's the matter?
+I have a headache.
+Take care.
+I have just finished my homework.
+Have you had lunch yet?
+I haven't decided yet.
+She has been sick since last Monday.
+How long have you known him?
+I have read this book three times.
+My father has never been abroad.
+We have been friends for ten years.
+English is spoken in many countries.
+This temple was built a long time ago.
+The letter was written in French.
+I'm interested in Japanese history.
+The boy playing soccer is my brother.
+This is a picture taken in Hawaii.
+I have a friend who lives in Canada.
+This is the cake that my mother made.
+My dream is to travel around the world.
+I don't know what to say.
+Could you show me how to use this machine?
+My mother told me to clean my room.
+This song makes me happy.
+Playing video games is fun.
+We call this dog Pochi.
+Thank you for inviting me to the party.
+What do you think about this plan?
+I think so, too.
+Why don't we go shopping this weekend?
+How about meeting at the station at ten?
+Sure, I'd be happy to.
+That sounds like fun.
+I'm afraid I can't come.
+Have a nice weekend!
+She went to Canada to study English.
+I was very sad to say goodbye to my friends.
+She got up early to catch the first train.
+We were surprised to see so many people.
+He saved money to buy a new bike.
+I'm happy to help you.
+Why did you go to the store? To buy some milk.
+I have something to tell you.
+We enjoyed playing volleyball at the beach.
+It stopped raining in the afternoon.
+Have you finished writing the report?
+I decided to join the tennis club.
+My sister hopes to study abroad someday.
+I'm good at drawing pictures.
+Remember to bring your lunch tomorrow.
+I like listening to music before going to bed.
+My bag is as big as yours.
+Tokyo Skytree is the tallest tower in Japan.
+He is one of the most famous singers in Japan.
+Which is more popular in your class, soccer or baseball?
+Ken runs faster than any other student in his class.
+This question is not as easy as it looks.
+Mt. Fuji is the highest mountain in Japan.
+Please speak more slowly.
+When I got home, my sister was cooking dinner.
+If it is sunny tomorrow, let's go cycling.
+I stayed home because I had a fever.
+I was tired, so I went to bed early.
+I'm sure that you will pass the test.
+Though it was cold, we played outside.
+Wash your hands before you eat.
+I'll call you after I finish my homework.
+You must not take pictures in this museum.
+You don't have to come early tomorrow.
+You should see a doctor.
+May I ask you a question?
+It may rain this evening.
+Will you pass me the salt, please?
+Shall I help you with your bags?
+We had to wait for an hour.
+May I help you?
+I'm just looking, thank you.
+Can I try this on?
+Do you have this in a smaller size?
+Can I pay by credit card?
+I'll take it.
+What would you like to drink?
+For here or to go?
+Excuse me, is there a post office near here?
+Go straight and turn left at the second corner.
+You'll see it on your right.
+It takes about ten minutes on foot.
+Hello, this is Yuki. Is Emma at home?
+Hold on, please.
+He's out right now. Can I take a message?
+I think you have the wrong number.
+Our school trip is next month.
+I belong to the brass band.
+The school festival will be held in October.
+We practice hard every day after school.
+I'm going to take part in the speech contest.
+My homeroom teacher is kind to everyone.
+I did volunteer work at a nursing home.
+The entrance ceremony starts at nine.
+I think it is better to live in the city.
+I like summer better than winter.
+First, there are many shops and restaurants.
+Second, it is easy to go to other places by train.
+Also, I can enjoy swimming in the sea.
+For these reasons, I want to live in the city.
+I went there with my family by car.
+I hope to hear from you soon.
+At first, I couldn't swim at all.
+A few days later, I got a letter from her.
+In the end, our team won the game.
+By the way, do you have any plans for tomorrow?
+One day, a strange man came to the village.
+Since then, she has practiced the piano every day.
+Because of the snow, the train was late.
+Finally, she found her lost key under the sofa.
+I've been learning the guitar for two years.
+I wish I could speak English fluently.
+The bus was so crowded that I couldn't sit down.
+Not only students but also teachers enjoyed the event.
+I'm too tired to do my homework tonight.
+This is the town where I was born.
+You'd better take an umbrella with you.
+I forgot to bring my textbook.
+Many young people use smartphones to get news.
+It is said that this lake is the deepest in the area.
+Online shopping has become more and more popular.
+We should use public transportation to save energy.
+Some people think that students have too much homework.
+Eating breakfast helps students concentrate in class.
+The town is famous for its hot springs.
+Volunteers cleaned the beach after the storm.
+I think it is a good idea for students to learn cooking.
+I have two reasons.
+First, it is good for our health.
+Second, we can make new friends.
+For example, many people enjoy reading e-books.
+On the other hand, it can be expensive.
+However, not everyone agrees with this idea.
+That's why I support this idea.
+Thank you for your email.
+I'm sorry to hear that you caught a cold.
+Do you mind if I open the window?
+I'm looking for a present for my sister.
+Would you like me to carry your bag?
+It depends on the weather.
+Let me know if you have any questions.
+I'm planning to join the drama club.
+What I want now is a new laptop.
+I have a friend whose father is a pilot.
+That's the reason why I was late.
+I still remember the day when we first met.
+This is not what I ordered.
+The man who I talked to at the station was very kind.
+Kyoto, which has many old temples, attracts a lot of tourists.
+You can do whatever you like.
+If I were you, I would apologize to her.
+If I had a car, I could drive to the beach.
+I wish I had a little more time.
+He talks as if he knew everything.
+If I had studied harder, I would have passed the exam.
+What would you do if you won the lottery?
+I would be happy if you could join us.
+If only I could fly like a bird!
+My sister let me use her camera.
+The teacher made us rewrite the essay.
+I had my hair cut yesterday.
+I'll have the shop deliver the sofa.
+I saw a cat crossing the street.
+I heard someone call my name.
+I need to get my bike repaired.
+Could you help me move this desk?
+When we arrived, the bus had already left.
+The elevator is being repaired now.
+Next year, I will have lived here for ten years.
+The new library has just been completed.
+This bridge is said to be the oldest in Japan.
+I had never seen snow until I moved to Hokkaido.
+The meeting will be held online.
+My bag was stolen while I was sleeping on the train.
+Could you look after my dog while I'm away?
+We had to put off the game because of the rain.
+She came up with a great idea.
+Don't give up until the end.
+We ran out of milk, so I went to the store.
+I get along well with my classmates.
+Make sure you lock the door.
+Please fill out this form.
+He practiced every day in order to win the contest.
+Please call me as soon as you arrive.
+Let's walk instead of taking a taxi.
+By the time we got there, the store was closed.
+You can stay here as long as you like.
+According to the weather report, it will snow tomorrow.
+Thanks to your help, I finished the work on time.
+Even if it rains, the event will take place.
+The number of elderly people is increasing in Japan.
+Many people bring their own bags when they go shopping.
+Smartphones make it easy to keep in touch with friends.
+Many young people are moving from rural areas to big cities.
+Some tourist spots are too crowded with visitors.
+It is important to eat a balanced diet.
+Many families are putting solar panels on their roofs.
+Reading books helps children learn new words.
+Would you mind closing the door?
+Not at all.
+I'd rather stay home today.
+It's up to you.
+I'm not sure, but I think it's on Friday.
+Can I get back to you later?
+You look pale. Are you all right?
+That's too bad. I hope you feel better soon.
+In my opinion, students should join club activities.
+This is because they can learn many things from it.
+In addition, it is a good chance to meet new people.
+It is true that it takes time, but it is worth it.
+Therefore, I think schools should introduce this system.
+Many people agree that reading is important.
+As a result, they can save time and money.
+Some people may say that it is too expensive.
+Although the test was difficult, most students passed it.
+In fact, more than half of the students walk to school.
+Unless you hurry, you'll miss the bus.
+While some people like cities, others prefer the countryside.
+She enjoys sports such as soccer and basketball.
+The survey shows that about 60 percent of students have a smartphone.
+Instead, he decided to study abroad.
+Because of this, the town became famous all over the world.
+Our school started a program to reduce food waste.
+I used to be shy, but now I enjoy speaking in front of people.
+It was not until I lived abroad that I realized how convenient Japan is.
+The more you practice, the better you will become.
+I'm not sure whether I should join the club.
+She asked me if I could help her with the event.
+Having finished my homework, I went out to play.
+It's worth visiting the museum at least once.
+Many shops have stopped giving out free plastic bags.
+Working part-time can teach students about responsibility.
+The number of foreign visitors to Japan has been rising.
+Some schools allow students to use tablets in class.
+Communities are working together to prepare for natural disasters.
+Eating local food helps support farmers in the area.
+People are spending more time on their phones than before.
+Recycled materials are used to make new products.
+I agree that students should do volunteer work.
+I disagree with the idea for two reasons.
+To begin with, it would cost too much money.
+In addition, it could cause problems for local people.
+This is because people can learn from each other.
+For these reasons, I believe this plan is a good idea.
+Some people say it is a waste of time, but I don't think so.
+It is important for us to think about the future.
+Thank you for telling me about your new school.
+I'm glad to hear that you're enjoying your new life.
+By the way, have you decided what to do this summer?
+I'd like to know more about the event.
+Could you tell me what time it starts?
+I'm looking forward to hearing from you.
+Unfortunately, I won't be able to attend the meeting.
+Please let me know if the schedule changes.
+The graph shows how much water each family uses.
+Compared with ten years ago, more people shop online.
+As a result of the new rule, fewer students were late.
+The main reason is that the price went up.
+Instead of driving, more people are riding bicycles.
+According to the survey, most students sleep less than seven hours.
+Thanks to the internet, we can learn almost anything.
+Even though it was raining, the festival was held.
+The boy standing by the gate is my cousin.
+This is a bridge built more than a hundred years ago.
+Walking along the beach, I found a beautiful shell.
+Seen from the sky, the island looks like a heart.
+Feeling nervous, he took a deep breath.
+The news was surprising to everyone.
+I was excited to hear the result.
+There is a lot of work left to do.
+This is the town where my grandfather grew up.
+The hotel at which we stayed had a great view.
+She is the only student that solved the problem.
+I lost the watch, which made me very sad.
+Everything that he said turned out to be true.
+The day will come when everyone can travel to space.
+That is how I learned to speak English.
+People who exercise regularly tend to sleep better.
+It was in Kyoto that I first met her.
+The museum is popular not only with children but also with adults.
+Both my parents and my sister love cooking.
+Either you or he has to clean the room.
+Neither of the answers was correct.
+I didn't go out at all last weekend.
+It was so cold that the lake froze.
+The box was too heavy for me to carry.
+My doctor advised me to get more sleep.
+The heavy rain prevented us from going out.
+This song reminds me of my school days.
+The app allows users to share photos easily.
+The teacher encouraged us to try new things.
+Could you explain the rules to me?
+I'm getting used to living alone.
+She spent the whole day cleaning her room.
+The concert was called off because of the storm.
+Could you drop me off at the next corner?
+Please hand in your report by Friday.
+We have to deal with this problem right away.
+He finally caught up with the other runners.
+I'm looking for a part-time job that suits me.
+She takes after her mother.
+Don't hesitate to ask for help.
+Every family should keep an emergency kit at home.
+The town holds an evacuation drill every September.
+Many shopping streets in small towns are losing customers.
+Some young people are moving back to their hometowns.
+Local festivals help keep traditions alive.
+Volunteers helped clean up the town after the flood.
+More signs are written in several languages for tourists.
+Public transportation is limited in rural areas.
+Skipping breakfast can make it hard to concentrate.
+Many people check their health using smartwatches.
+Getting enough sleep is just as important as eating well.
+Sports can teach children the value of teamwork.
+The number of vegetarian restaurants is growing.
+Some schools serve lunches made with local vegetables.
+Watching sports on TV is not the same as playing them.
+Too much sugar is bad for your teeth.
+There are two reasons why I think so.
+First of all, it saves a lot of time.
+Another reason is that it is good for the environment.
+For example, people can walk instead of driving.
+On the other hand, some people may find it difficult.
+Because of these two points, I think the idea is useful.
+I'm happy to answer your questions.
+I hope this information is helpful.
+The purpose of this article is to explain how bees make honey.
+The writer suggests that schools should start later.
+This is one of the reasons why the plan failed.
+At the same time, the price of food went up.
+However, not everyone was happy with the change.
+On the contrary, sales went down.
+For this reason, the company changed its plan.
+In the end, the town decided to build a new park.
+I'm afraid that's not possible.
+Do you happen to have a pen I could borrow?
+I didn't mean to hurt your feelings.
+Let's take turns using the computer.
+Can you give me a hand with this box?
+I'll think about it and let you know.
+Why don't you ask the teacher?
+That's a relief.
+Artificial intelligence is changing the way we work.
+Many companies have introduced flexible working hours.
+Cashless payments are becoming common in Japan.
+Online classes allow students to study anywhere.
+There are concerns about the safety of personal data.
+Some people spend too much time on social media.
+Technology has made our lives more convenient.
+It is hard to predict how robots will be used in the future.
+Global warming is causing more extreme weather.
+Many cities are trying to reduce traffic jams.
+The population of rural areas is decreasing.
+Local governments should support elderly people living alone.
+Food waste is a serious problem in many countries.
+Electric cars produce less pollution than gasoline cars.
+Tourism brings money to local communities.
+Protecting endangered animals is everyone's responsibility.
+I believe that companies should let employees work from home.
+One reason is that it saves commuting time.
+Another reason is that it reduces stress.
+As a result, workers can be more productive.
+Some people may disagree, but I think the benefits are greater.
+It is true that this system costs a lot of money.
+This is especially important for young people.
+In conclusion, I strongly support this idea.
+According to the article, sales have dropped by half.
+The main point of the passage is that sleep affects learning.
+In other words, we need to change our habits.
+I'm writing to ask about your summer program.
+I'd appreciate it if you could reply soon.
+Could you let me know the details?
+I'm afraid I have to cancel my reservation.
+Unless we act now, the situation will get worse.
+Without your advice, I would have made a big mistake.
+If it were not for the internet, our lives would be very different.
+I wish I had listened to my parents.
+It's time we started thinking about our future.
+If I had taken that flight, I would be in Paris now.
+Should you have any questions, please contact us.
+He acted as though nothing had happened.
+Suppose you could live anywhere, where would you live?
+Generally speaking, Japanese trains are very punctual.
+Judging from his accent, he must be from Australia.
+Having lived in Canada, she speaks English fluently.
+Compared with last year, sales have improved.
+The weather permitting, we will go hiking tomorrow.
+Not knowing what to say, I just smiled.
+She sat on the bench with her eyes closed.
+Considering his age, he did a great job.
+He is what is called a walking dictionary.
+Whoever comes first will get a free ticket.
+The way in which people shop has changed.
+Whether we win or lose doesn't matter.
+The fact that she won surprised everyone.
+It is said that the castle was built in the 16th century.
+I have no idea what he is talking about.
+Whatever happens, I will support you.
+She is no longer a beginner.
+The older we get, the wiser we become.
+Please reply as soon as possible.
+He is not so much a teacher as a friend to us.
+Nothing is more important than health.
+This year's sales were twice as high as last year's.
+I would rather walk than take a crowded bus.
+The new model is far better than the old one.
+The new manager will take over the project next month.
+The scientists carried out an experiment.
+I worked overtime to make up for the lost time.
+The police are looking into the accident.
+We need to figure out a better solution.
+Prices have gone up sharply this year.
+She turned down the job offer.
+The plan fell through at the last minute.
+In spite of the rain, many people came to the event.
+I'm writing on behalf of my class.
+In terms of price, this phone is the best choice.
+Anyone can join, regardless of age.
+As for me, I prefer staying at home.
+Due to heavy snow, the flight was canceled.
+In addition to English, she speaks Chinese.
+The shop is open every day except for Monday.
+Hospitals in some areas are short of doctors.
+Online medical checkups are becoming more common.
+Caring for elderly parents can be a heavy burden.
+Some people think homework should be banned in elementary schools.
+Students today need skills to use technology wisely.
+Learning a foreign language opens up many opportunities.
+Many children feel pressure to get good grades.
+Mental health is just as important as physical health.
+Self-driving cars may reduce traffic accidents.
+Drones are being used to deliver packages.
+Scientists are developing new ways to store energy.
+Space travel may become possible for ordinary people.
+Wind power does not produce carbon dioxide.
+Some jobs may be replaced by robots in the future.
+Smartphones have changed the way we get news.
+It is important to protect our personal information online.
+The passage explains why some cities are losing population.
+Some people think that the plan is helpful.
+Others, however, are worried about the cost.
+In short, the new system has both merits and demerits.
+The writer points out that cooperation is necessary.
+While online shopping is convenient, it can lead to waste.
+As a result, more people are choosing to rent instead of buying.
+Use your own words instead of copying sentences from the passage.
+I was wondering if you could help me.
+Would it be possible to change my reservation?
+That makes sense.
+I couldn't agree more.
+It's not a big deal.
+I'll keep you posted.
+Something came up, so I can't make it tonight.
+Let me check my schedule first.
+The government should invest more in renewable energy.
+Automation could lead to a decline in certain jobs.
+This approach has both advantages and drawbacks.
+It is essential to strike a balance between work and life.
+The new law is expected to come into effect next year.
+Critics claim that the plan is unrealistic.
+Public awareness of the issue has grown considerably.
+Measures must be taken to tackle the declining birth rate.
+Social media has transformed the way people communicate.
+Personal data must be handled with great care.
+Remote work has become increasingly common since the pandemic.
+Artificial intelligence raises a number of ethical concerns.
+Cashless payments are convenient, but they pose security risks.
+Online learning allows students to study at their own pace.
+Excessive screen time may harm children's development.
+Many companies are investing heavily in cybersecurity.
+Deforestation is accelerating the loss of biodiversity.
+Rising sea levels threaten coastal communities.
+Plastic waste poses a serious threat to marine life.
+Solar power has become far more affordable in recent years.
+Carbon emissions must be cut drastically by 2050.
+Some argue that nuclear power is a necessary evil.
+Recycling alone cannot solve the waste problem.
+Consumers are becoming more conscious of environmental issues.
+An aging population places a heavy burden on the healthcare system.
+Regular exercise reduces the risk of heart disease.
+Schools should place more emphasis on critical thinking.
+Bullying can have long-lasting effects on victims.
+Volunteering helps young people develop a sense of responsibility.
+Long working hours can lead to serious health problems.
+Access to education varies greatly between regions.
+The government introduced measures to support working parents.
+Tourism brings economic benefits to rural areas.
+Globalization has made the world more interconnected.
+Small businesses are struggling with rising costs.
+International cooperation is vital to solving global problems.
+I see your point, but I have a different opinion.
+There are pros and cons to this idea.
+From my perspective, the benefits are greater.
+That is why I support this policy.
+The scandal undermined public confidence in the company.
+Regular feedback can enhance students' motivation.
+The program aims to foster a sense of community.
+A lack of funding hindered the research.
+The city plans to implement the new policy next spring.
+More money should be allocated to education.
+All factories must comply with the safety rules.
+His health deteriorated rapidly after the accident.
+The plan is not financially feasible.
+Some degree of change is inevitable.
+The project requires a substantial investment.
+Elderly people are especially vulnerable to heatstroke.
+Smartphone addiction is becoming increasingly prevalent.
+The report provides a comprehensive overview of the problem.
+The decision to close the hospital was highly controversial.
+There is growing evidence that the drug is effective.
+The company will phase out plastic straws by next year.
+The police are cracking down on illegal parking.
+The movie did not live up to my expectations.
+The results fell short of the target.
+Young people account for 30 percent of the users.
+We cannot rule out the possibility of an earthquake.
+The new technology brought about major changes in society.
+The team came up against many difficulties.
+Voter turnout among young people remains low.
+The two countries signed a trade agreement.
+Developed countries should provide more aid to poorer nations.
+The government is under pressure to cut taxes.
+Many refugees have fled the conflict.
+Lowering the voting age could increase political interest.
+The summit focused on climate change and security.
+Citizens have the right to express their opinions freely.
+Labor shortages are forcing companies to raise wages.
+More companies are hiring foreign workers.
+The yen has weakened against the dollar.
+Consumers are cutting back on spending.
+Side jobs are becoming more popular among office workers.
+The startup attracted investors from around the world.
+Rising housing costs are a major concern in big cities.
+Job security is no longer guaranteed.
+Vaccines have saved millions of lives.
+Antibiotics are losing their effectiveness against some bacteria.
+Researchers conducted a large-scale study on sleep.
+AI can help doctors detect diseases at an early stage.
+The results of the experiment were inconclusive.
+Genetic factors play a role in many diseases.
+The new treatment has few side effects.
+Scientists are still debating the cause of the phenomenon.
+I firmly believe that the government should take action.
+The first reason is related to cost.
+From an economic perspective, the plan makes sense.
+This would allow people to make better use of their time.
+A good example of this is the system used in Finland.
+Furthermore, it would help reduce inequality.
+Although some people oppose the idea, its benefits are clear.
+For the reasons stated above, I support the proposal.
+The passage discusses the advantages and disadvantages of remote learning.
+Supporters argue that it gives students more flexibility.
+Critics, on the other hand, point out that it can lead to isolation.
+The author concludes that a balanced approach is needed.
+Overall, the change has had mixed results.
+The main factor behind this trend is the falling birth rate.
+In contrast, rural areas face a different problem.
+Avoid including your own opinion in a summary.
+Whereas cities have many jobs, rural areas offer a slower pace of life.
+The plan was expensive; nonetheless, it was approved.
+Consequently, many small shops were forced to close.
+By contrast, the younger generation prefers renting.
+The theory was eventually proved wrong.
+Moreover, the new system is easier to use.
+The data suggest that the trend will continue.
+This is not to say that technology is harmful.
+That's a difficult question, but I'll do my best to answer.
+I would say that the benefits outweigh the costs.
+I think it varies from person to person.
+To be more specific, I mean public schools.
+I hadn't thought about it that way.
+Could you rephrase the question, please?
+In my experience, small classes work better.
+Having said that, there are some exceptions.
+The proposal was met with fierce opposition.
+Economic disparity has become increasingly pronounced.
+The findings corroborate earlier research.
+Such measures would merely alleviate the symptoms.
+The treaty is widely regarded as a diplomatic milestone.
+Unchecked surveillance could erode civil liberties.
+The scheme proved to be financially unsustainable.
+We must not underestimate the ramifications of this decision.
+The policy has been criticized for widening inequality.
+Public trust in politicians has eroded over the years.
+The referendum sparked a heated debate across the country.
+Freedom of the press is a cornerstone of democracy.
+The government must be held accountable for its decisions.
+Stricter regulations could stifle innovation.
+The reform was implemented despite strong resistance.
+Misinformation spreads rapidly on social media.
+Gene editing holds great promise for treating hereditary diseases.
+The long-term consequences of the technology remain uncertain.
+Overfishing has depleted fish stocks in many regions.
+Researchers are trying to mitigate the effects of global warming.
+The discovery could revolutionize the way we produce energy.
+Such experiments raise profound ethical questions.
+The species is on the verge of extinction.
+Space exploration requires an enormous financial commitment.
+Automation is likely to exacerbate unemployment in some sectors.
+The central bank raised interest rates to curb inflation.
+Many workers feel their wages have stagnated.
+The company was forced to lay off hundreds of employees.
+A universal basic income could provide a safety net.
+Economic growth does not necessarily improve well-being.
+The gig economy offers flexibility but little security.
+Trade disputes have disrupted global supply chains.
+Preserving cultural heritage should be a national priority.
+Cultural diversity enriches society as a whole.
+The debate over animal testing remains contentious.
+Privacy should not be sacrificed for convenience.
+Let me begin by outlining the main issue.
+I would like to argue that this policy is counterproductive.
+Admittedly, there are some valid counterarguments.
+Taking all this into account, the benefits clearly outweigh the risks.
+The new evidence vindicated the scientist's theory.
+The government sought to placate angry farmers.
+The company was accused of trying to circumvent the regulations.
+Years of conflict have decimated the region's economy.
+The minister tried to downplay the seriousness of the crisis.
+Rising prices have exacerbated poverty in urban areas.
+The leaders reiterated their commitment to peace.
+The museum aims to perpetuate traditional crafts.
+The negotiations reached an impasse.
+His remarks were seen as condescending.
+The region has a precarious water supply.
+Her argument was both cogent and concise.
+The problem is ubiquitous in modern cities.
+The policy had a detrimental effect on small farms.
+There is a dearth of reliable data on the issue.
+The novel offers a poignant portrait of wartime life.
+The scandal threatens to derail the peace talks.
+The rumor turned out to be unfounded.
+The government is trying to stave off a recession.
+Critics were quick to seize on the minister's mistake.
+The issue was swept under the carpet for years.
+The negotiations are still up in the air.
+The company had to write off its losses.
+The new rules have been watered down.
+The court ruled that the law was unconstitutional.
+Facial recognition raises serious privacy concerns.
+Who should be held liable when a self-driving car crashes?
+The death penalty remains a deeply divisive issue.
+Companies have an ethical obligation to protect user data.
+Freedom of speech is not absolute.
+The bill was passed by a narrow margin.
+Whistleblowers need stronger legal protection.
+Water scarcity could trigger conflicts between nations.
+Coral reefs are highly sensitive to rising ocean temperatures.
+The transition to renewable energy must be accelerated.
+Microplastics have been found even in the deep sea.
+Overconsumption is depleting the planet's resources.
+Carbon pricing gives companies an incentive to cut emissions.
+Urban sprawl threatens natural habitats.
+Sustainable fishing practices are essential for future generations.
+The pandemic exposed weaknesses in healthcare systems.
+Life expectancy has risen steadily over the past century.
+The drug is still in the early stages of clinical trials.
+Organ donation remains rare in some countries.
+Misuse of antibiotics contributes to drug-resistant bacteria.
+Preventive care can reduce long-term medical costs.
+The ethics of human cloning are hotly debated.
+Mental illness still carries a social stigma.
+The two nations restored diplomatic relations.
+Economic sanctions have had limited impact.
+Cyberattacks pose a growing threat to national security.
+The alliance was formed to deter aggression.
+Humanitarian aid failed to reach the affected areas.
+The treaty prohibits the testing of nuclear weapons.
+Soft power plays an increasingly important role in diplomacy.
+Tensions in the region have eased somewhat.
+This essay will argue that the policy should be abolished.
+First and foremost, the policy has failed to achieve its goals.
+This is evidenced by the steady rise in unemployment.
+Proponents of the policy contend that it creates jobs.
+However, this argument does not hold up to scrutiny.
+A more effective alternative would be to invest in training.
+In light of these points, the policy cannot be justified.
+In conclusion, the drawbacks far outweigh the benefits.
+The passage examines the causes of declining trust in the media.
+According to the author, the rise of social media is partly to blame.
+The author also acknowledges some positive effects.
+Nevertheless, the overall tone of the passage is critical.
+The passage ends by calling for stricter regulation.
+Two contrasting views are presented.
+Specific numbers can usually be left out of a summary.
+Combine similar points into a single sentence.
+The topic I have chosen is whether nuclear power should be expanded.
+I will support my position with three key points.
+Let me illustrate this with an example.
+To sum up, I am convinced that the risks are too great.
+That's an interesting point, but I respectfully disagree.
+I admit that my argument has some limitations.
+Allow me to clarify what I meant.
+It's a complex issue with no easy answers.
+The meeting has been postponed until Thursday.
+Please submit the report by the end of the day.
+Our sales increased by 15 percent this quarter.
+The shipment is expected to arrive next week.
+Could you send me the invoice again?
+All employees are required to attend the training session.
+The position requires at least three years of experience.
+We apologize for any inconvenience this may cause.
+I'm writing to follow up on our conversation yesterday.
+Please find the attached file.
+I'll be out of the office until Monday.
+Could you let me know your availability next week?
+The printer on the third floor is out of order.
+Mr. Tanaka is in charge of the new project.
+I'd appreciate it if you could reply by Friday.
+Let's go over the budget before the meeting.
+The conference room is booked for the whole afternoon.
+Can we move the meeting to a later date?
+Ms. Lee will give a presentation on the sales figures.
+The deadline has been extended by two days.
+Who is responsible for taking the minutes?
+I'm afraid I have a scheduling conflict.
+We need to reach an agreement by the end of the month.
+Let me summarize the main points of today's discussion.
+Your flight has been delayed due to bad weather.
+I'd like to book a hotel near the convention center.
+Travel expenses will be reimbursed after the trip.
+Please keep your receipts for accounting.
+The shuttle bus leaves every fifteen minutes.
+I'll pick you up at the airport.
+Our business trip to Singapore was a success.
+Check-in begins two hours before departure.
+Attention, shoppers. The store will close in thirty minutes.
+This offer is valid until the end of the month.
+Customers can return items within thirty days of purchase.
+We are currently out of stock.
+Thank you for your patience.
+The renovation work will be completed next month.
+Please fill out this form and hand it to the receptionist.
+Free parking is available for all visitors.
+Let's reschedule the meeting for next Tuesday afternoon.
+I'm afraid I have a scheduling conflict at that time.
+The conference room on the fifth floor has been reserved.
+Could you take notes during the meeting?
+Shall we go over the main points from last week first?
+The minutes will be sent to everyone by email.
+Ms. Lopez will be joining us by video call.
+We ran out of time, so we'll continue tomorrow.
+The new software will be installed on all computers this weekend.
+Please restart your computer to complete the update.
+The network will be down for maintenance tonight.
+I can't log in to my account.
+Contact the IT department if the problem continues.
+The photocopier is running low on paper.
+Remember to back up your files regularly.
+The password must be at least eight characters long.
+We are currently seeking an experienced sales manager.
+Applicants should send a résumé and a cover letter.
+The deadline for applications is March 31.
+Candidates will be contacted for an interview.
+She was promoted to department manager last year.
+New employees must complete a two-week orientation.
+He is responsible for training new staff.
+The company offers competitive salaries and benefits.
+I need to book a flight to Singapore for the trade show.
+My flight has been delayed by two hours.
+Please keep your receipts for reimbursement.
+The hotel is within walking distance of the convention center.
+I'd like to check in, please. I have a reservation under the name Sato.
+Is breakfast included in the room rate?
+A shuttle bus runs between the airport and the hotel every 20 minutes.
+The business trip has been extended by two days.
+Would you like to pay by cash or credit card?
+This model comes with a two-year warranty.
+I'm sorry, but that item has been discontinued.
+We can deliver it to your home free of charge.
+Could I exchange this for a larger size?
+The customer service desk is located near the main entrance.
+Members receive a ten percent discount on all purchases.
+Your order has been shipped and should arrive within three days.
+The budget for next year has been approved.
+We need to reduce our operating costs.
+The invoice must be paid within thirty days.
+Profits were lower than expected this year.
+The accounting department is reviewing the figures.
+Please attach the receipt to your expense report.
+The company plans to expand into overseas markets.
+Our quarterly sales report is due on Friday.
+The factory produces over 5,000 units a day.
+All workers must wear safety helmets in this area.
+The shipment was delayed due to bad weather.
+We will need to order more raw materials.
+The products are inspected before they leave the factory.
+The warehouse is running out of storage space.
+Please confirm the delivery date with the supplier.
+The assembly line will be shut down for repairs.
+Our new advertising campaign starts next month.
+We conducted a survey to find out what customers want.
+The product launch was a great success.
+Sales have increased since we lowered the price.
+Our target customers are people in their twenties.
+We should promote the product on social media.
+Our main competitor has just released a similar product.
+Free samples will be handed out at the event.
+I'd like to reserve a table for six at seven o'clock.
+The restaurant can accommodate up to 80 guests.
+The annual company banquet will be held at the Grand Hotel.
+Please let us know if you have any dietary restrictions.
+Tickets for the charity concert are now on sale.
+The keynote speech will begin at 9 a.m.
+Registration is required to attend the workshop.
+Refreshments will be served after the presentation.
+The elevator in Building B is out of service until Friday.
+The parking lot will be repaved next week.
+Tenants are asked to keep the hallways clear.
+Rent is due on the first day of each month.
+A plumber will come to fix the leak this afternoon.
+Please note that the water will be turned off from 10 a.m. to noon.
+The lobby is being painted, so please use the side entrance.
+Thank you for your cooperation.
+The graph shows the number of international students from 2010 to 2020.
+There was a gradual increase over the period.
+Overall, the figures rose steadily.
+On the one hand, technology makes life easier.
+On the other hand, it can make people less active.
+I'd like to talk about a teacher who inspired me.
+To sum up, I believe the benefits outweigh the drawbacks.
+That's an interesting question. Let me think.
+The bar chart compares the energy use of four countries.
+The figure peaked at 80 percent in 2015.
+Sales fell sharply in the following year.
+The number of visitors remained stable.
+By contrast, the cost of housing doubled.
+The proportion of women in the workforce has risen.
+The diagram illustrates how paper is recycled.
+Most noticeably, the youngest group spent the least.
+Some people argue that university education should be free.
+In my view, the advantages outweigh the disadvantages.
+One reason for this is that cities are becoming more crowded.
+For instance, many young people cannot afford to buy a home.
+This is largely due to rising living costs.
+Governments should take steps to address this problem.
+It could be argued that the responsibility lies with parents.
+In conclusion, both individuals and society have a role to play.
+I'm currently a high school student in Japan.
+In my free time, I enjoy going for a run.
+I'd say my hometown is quite peaceful.
+I'm going to describe a trip that I really enjoyed.
+It was around three years ago, during the summer holidays.
+What made it special was the people I met there.
+Looking back, I think it changed the way I see the world.
+I've never really thought about that before.
+It depends on the situation.
+Generally speaking, older people are less comfortable with technology.
+There are a number of factors to consider.
+I suppose one possible solution would be to raise taxes.
+That's partly because people are busier these days.
+In the long run, it will benefit the whole community.
+I'm not entirely sure, but I think it will become more common.
+To put it another way, we need to change our habits.
+The pie chart illustrates how households spent their income in 2020.
+Housing accounted for the largest proportion of spending.
+Spending on entertainment was roughly half that on food.
+The figure peaked at 45 percent in 2015.
+It then declined sharply to just 10 percent.
+In contrast, the number of cyclists remained stable.
+The two lines crossed in the middle of the period.
+Overall, there was a clear shift from print to digital media.
+The diagram shows how recycled glass is processed.
+At the first stage, the bottles are collected and sorted by colour.
+Next, they are crushed into small pieces.
+The mixture is then heated to a very high temperature.
+Once it has cooled, the glass is shaped into new products.
+Finally, the finished products are delivered to shops.
+The process consists of six main stages.
+The map shows how the town centre changed between 1990 and today.
+Some people believe that university education should be free.
+This essay will discuss both views before giving my opinion.
+On the one hand, free tuition would give everyone an equal chance.
+On the other hand, it would place a heavy burden on taxpayers.
+A good example of this is the healthcare system in Scandinavia.
+As a result, more young people would be able to afford higher education.
+It could be argued that individuals should pay for their own education.
+In conclusion, I believe the benefits outweigh the drawbacks.
+Governments should invest more in public transport.
+This would not only reduce traffic but also cut air pollution.
+There are several reasons why this trend has emerged.
+One possible solution would be to introduce stricter laws.
+Without such measures, the problem is likely to get worse.
+This is particularly true in developing countries.
+Admittedly, this approach has some disadvantages.
+Nevertheless, the advantages are far greater.
+I'm currently studying at a high school in Tokyo.
+I live in a quiet residential area on the outskirts of the city.
+What I like most about my hometown is the friendly atmosphere.
+To be honest, I'm not really a morning person.
+I tend to listen to music when I'm studying.
+It depends on my mood, but I usually prefer staying in.
+I used to play the piano when I was younger.
+I'd love to visit Iceland one day to see the northern lights.
+I'd like to talk about a trip I took with my family last summer.
+It all started when my father suggested going camping.
+What made it so memorable was the view from the mountain top.
+I'll never forget the moment when the sun rose over the clouds.
+Looking back, it taught me to appreciate nature.
+The person I admire most is my grandmother.
+She always puts other people's needs before her own.
+That's pretty much everything I wanted to say about it.
+That's an interesting question. I've never really thought about it.
+I'd say that technology has changed the way people communicate.
+Compared to the past, young people today have far more choices.
+One reason might be that people are busier than ever.
+I suppose it varies from person to person.
+In the long run, I think this will benefit society.
+There's a lot to be said for living in the countryside.
+Having said that, cities offer better job opportunities.
+Could you spell your surname for me, please?
+The tour departs from the main gate at half past nine.
+The library is open until eight on weekdays.
+You'll need to bring some form of identification.
+The deposit is non-refundable.
+Turn left at the roundabout and the car park is on your right.
+The lecture will focus on the causes of coastal erosion.
+The researchers were surprised by the results of the experiment.
+The writer suggests that bees are under threat.
+The passage does not give any information about this.
+This statement contradicts what the author says.
+The second paragraph describes the history of the canal.
+According to the text, the population has doubled since 1950.
+The scientists disagree about the cause of the decline.
+The word "it" in line 12 refers to the new policy.
+Skim the passage first to get the general idea.
+A growing number of people are working from home.
+This trend is likely to continue in the coming years.
+It is widely accepted that exercise improves mental health.
+There is no doubt that climate change is a serious issue.
+Many experts argue that the risks have been exaggerated.
+This raises the question of who should be responsible.
+Steps must be taken to protect endangered species.
+To sum up, both individuals and governments have a role to play.
+The professor will hold office hours on Wednesday.
+Photosynthesis converts sunlight into chemical energy.
+According to the lecture, the theory has been challenged.
+I need to register for one more course this semester.
+The reading passage claims that the plan would be effective.
+The student is worried about missing the deadline.
+Glaciers shape the landscape over thousands of years.
+The main point of the lecture is that the evidence is unclear.
+I was wondering if I could get an extension on my paper.
+The library will be closed for renovations next week.
+You need to declare your major by the end of your second year.
+I'm thinking of dropping my chemistry class.
+Is there a fee for using the fitness center?
+You should talk to your academic advisor.
+The housing office handles room changes.
+I'll email the professor and ask about the assignment.
+Volcanic eruptions can affect the global climate.
+Bees play a crucial role in pollinating crops.
+The experiment was repeated to confirm the results.
+Some animals hibernate to survive the winter.
+Erosion gradually wears away the rock.
+Scientists have proposed several hypotheses.
+This species adapted to life in the desert.
+The data suggest that the population is declining.
+The invention of printing changed how knowledge spread.
+Early settlers relied on trade with local tribes.
+The painter was influenced by Japanese woodblock prints.
+Urban populations grew rapidly during the Industrial Revolution.
+Historians disagree about the causes of the collapse.
+The term was first used in the nineteenth century.
+Advertising aims to influence consumer behavior.
+This theory was later rejected by most economists.
+I prefer studying alone for two reasons.
+First of all, I can concentrate better.
+The woman disagrees with the university's plan.
+She gives two reasons to support her opinion.
+The lecturer casts doubt on the claims made in the reading.
+This contradicts the point made in the passage.
+For these reasons, I believe it is a good idea.
+Personally, I would choose to live in a big city.
+The professor is mainly discussing how glaciers shape the landscape.
+The lecture is about the migration patterns of monarch butterflies.
+The professor mentions the pyramids to illustrate a point.
+What does the professor imply about the theory?
+The student goes to the office to ask about a scholarship.
+According to the professor, the experiment had a major flaw.
+The professor's attitude toward the idea is skeptical.
+Listen again to part of the lecture.
+The word "abundant" in the passage is closest in meaning to "plentiful."
+The author mentions coral reefs in order to provide an example.
+Which of the following can be inferred from paragraph 3?
+The highlighted sentence best expresses the essential information.
+According to paragraph 2, early farmers relied on seasonal floods.
+Look at the four squares that indicate where the sentence could be added.
+An introductory sentence for a brief summary of the passage is provided below.
+The passage mainly discusses the decline of ancient trade routes.
+The reading passage claims that the plan would save money.
+However, the lecturer casts doubt on this claim.
+The lecturer argues that the costs have been underestimated.
+This contradicts the reading's point about public support.
+She explains that the evidence is not reliable.
+Furthermore, the lecturer points out a problem the author ignores.
+In short, the lecturer refutes all three points made in the reading.
+The example of the old bridge supports her argument.
+I see where Professor Kim is coming from, but I have a different view.
+Building on Maria's point, I'd like to add another reason.
+While Ken makes a fair point, he overlooks the cost.
+In my view, schools should teach financial skills.
+For instance, many young people struggle to manage their money.
+This would help students make better decisions in the future.
+That is why I believe this policy should be adopted.
+I'm convinced that the benefits would be long-lasting.
+The university is planning to close the library on weekends.
+The man is opposed to the plan for two reasons.
+First, he says that many students study there on Saturdays.
+Second, he thinks the savings would be very small.
+The woman's problem is that she has two exams on the same day.
+The man suggests that she talk to her professor.
+If I were her, I would choose the second option.
+The professor uses two examples to explain the concept.
+Plants absorb carbon dioxide and release oxygen.
+The species adapted to the harsh desert environment.
+Predators play an important role in balancing the ecosystem.
+The theory was later supported by fossil evidence.
+Volcanic eruptions can affect the global climate for years.
+The cells divide rapidly during the early stages of growth.
+The temperature of the ocean varies with depth.
+Scientists are still debating the cause of the extinction.
+The Industrial Revolution transformed the way goods were produced.
+Trade between the two regions flourished in the 15th century.
+Many historians attribute the empire's collapse to economic problems.
+The invention of printing made books far more affordable.
+Early settlers depended on the river for transportation.
+The architecture reflects the influence of Greek culture.
+Artists of the period rejected traditional styles.
+The economy gradually shifted from farming to manufacturing.
+Excuse me, Professor. Do you have a minute to talk about my paper?
+I was wondering if I could get an extension on the assignment.
+I'm having trouble narrowing down my research topic.
+You might want to look at some recent journal articles.
+The registration deadline for next semester is approaching.
+I need to drop a course because of a scheduling conflict.
+The dormitory will be closed during winter break.
+You can find the form on the student services website.
+Listen to the sentence and repeat it exactly as you hear it.
+Welcome to the campus tour. Please stay with the group.
+The science building is next to the main library.
+Students can borrow up to ten books at a time.
+The cafeteria serves breakfast from seven to ten.
+If you have any questions, ask a member of staff.
+Tell me about a skill you would like to learn and why.
+What do you think is the most important quality of a good teacher?
+Dear Professor Lee, I am writing to ask about the field trip.
+I would appreciate it if you could send me the details.
+Unfortunately, I will not be able to attend the meeting on Monday.
+Would it be possible to meet later in the week?
+I have attached a copy of my schedule for your reference.
+Thank you in advance for your help.
+Please let me know if there is anything else I should prepare.
+I look forward to hearing from you.
+We have a sick passenger on board.
+Say again.
+Request vectors to avoid the weather.
+We are experiencing severe turbulence.
+Unable to comply due to traffic.
+We had a bird strike on the left engine.
+Request priority landing.
+Confirm runway in use.
+positive number
+negative number
+absolute value
+integer
+numerator
+denominator
+decimal
+reciprocal
+square root
+expression
+variable
+coefficient
+solve for x
+expand
+factor
+simultaneous equations
+angle
+right angle
+parallel
+perpendicular
+vertex
+isosceles triangle
+area
+perimeter
+radius
+diameter
+circumference
+volume
+congruent
+similar
+prove
+Pythagorean theorem
+function
+directly proportional
+inversely proportional
+origin
+x-axis
+coordinates
+plot
+substitute
+linear function
+slope
+y-intercept
+rate of change
+table of values
+quadratic function
+parabola
+increase
+probability
+outcome
+equally likely
+roll a die
+flip a coin
+tree diagram
+mean
+median
+mode
+range
+frequency
+relative frequency
+histogram
+box plot
+sample
+population
+force
+friction
+pressure
+speed
+acceleration
+inertia
+kinetic energy
+potential energy
+electric current
+voltage
+resistance
+series circuit
+parallel circuit
+magnetic field
+reflection
+refraction
+element
+atom
+molecule
+compound
+mixture
+combustion
+oxidation
+reduction
+acid
+alkali
+neutralization
+solution
+dissolve
+ion
+electrolysis
+density
+nucleus
+cell membrane
+chloroplast
+respiration
+digestion
+blood vessel
+gene
+evolution
+chromosome
+cell division
+fertilization
+heredity
+food chain
+producer
+consumer
+decomposer
+earthquake
+epicenter
+volcano
+magma
+fossil
+layer
+erosion
+sedimentary rock
+air pressure
+weather front
+humidity
+condensation
+rotation
+revolution
+solar system
+eclipse
+latitude
+longitude
+hemisphere
+time zone
+peninsula
+plateau
+basin
+delta
+population density
+urbanization
+natural resources
+export
+import
+agriculture
+manufacturing
+tourism
+prehistoric
+civilization
+empire
+dynasty
+the Middle Ages
+feudalism
+the Renaissance
+colony
+the Industrial Revolution
+independence
+treaty
+World War II
+the Cold War
+civil rights
+primary source
+timeline
+democracy
+parliament
+prime minister
+president
+political party
+vote
+majority
+citizen
+human rights
+separation of powers
+legislative branch
+executive branch
+judicial branch
+local government
+the United Nations
+freedom of speech
+supply
+demand
+market price
+competition
+profit
+corporation
+stock
+tax
+inflation
+deflation
+interest rate
+exchange rate
+budget
+trade
+tariff
+globalization
+pronoun
+adverb
+preposition
+conjunction
+article
+tense
+plural
+subject-verb agreement
+clause
+phrase
+punctuation
+apostrophe
+run-on sentence
+passive voice
+direct object
+synonym
+main idea
+summarize
+infer
+context clues
+author's purpose
+fact and opinion
+cite evidence
+annotate
+plot (story)
+character
+setting
+theme
+narrator
+conflict
+climax
+metaphor
+thesis statement
+topic sentence
+introduction
+body paragraph
+conclusion
+rough draft
+revise
+proofread
+outline
+brainstorm
+transition word
+persuasive essay
+narrative
+bibliography
+plagiarism
+word count
+presentation
+eye contact
+audience
+visual aid
+pace
+rehearse
+body language
+Q&A session
+debate
+argument
+counterargument
+rebuttal
+affirmative side
+negative side
+moderator
+persuade
+hardware
+software
+processor
+memory
+storage
+operating system
+input device
+output device
+binary
+bit
+byte
+pixel
+resolution
+compress
+file format
+cloud storage
+algorithm
+flowchart
+sequence
+loop
+if statement
+debug
+syntax error
+command
+data type
+string
+array
+Boolean
+random number
+simulation
+source code
+code comment
+network
+router
+IP address
+server
+web browser
+URL
+search engine
+bandwidth
+strong password
+two-factor authentication
+phishing
+malware
+encryption
+personal information
+copyright
+digital footprint
+database
+spreadsheet
+row
+column
+sort
+filter
+bar graph
+pie chart
+line graph
+survey
+trend
+correlation
+artificial intelligence
+machine learning
+privacy
+big data
+muscle
+bone
+joint
+skeleton
+tendon
+heart rate
+lungs
+nervous system
+puberty
+growth spurt
+hormone
+immune system
+metabolism
+calorie
+nutrient
+protein
+balanced diet
+hydration
+mental health
+stress
+hygiene
+infection
+vaccine
+peer pressure
+first aid
+CPR
+AED
+sprain
+bruise
+bleeding
+heatstroke
+RICE
+endurance
+flexibility
+agility
+cool-down
+sprint
+relay
+long jump
+high jump
+referee
+foul
+penalty
+offense
+defense
+sportsmanship
+tie
+tournament
+dribble
+rebound
+free throw
+serve
+spike
+goalkeeper
+header
+rally
+freestyle
+breaststroke
+backstroke
+butterfly
+forward roll
+handstand
+vaulting box
+balance beam
+staff
+treble clef
+bass clef
+quarter note
+half note
+rest (music)
+sharp
+time signature
+flat
+measure (bar)
+beat
+tempo
+scale
+major key
+minor key
+chord
+string instrument
+woodwind instrument
+brass instrument
+percussion instrument
+keyboard instrument
+recorder
+conductor
+orchestra
+tune
+bow
+string (instrument)
+mouthpiece
+reed
+valve
+pedal
+mallet
+dynamics
+forte
+crescendo
+decrescendo
+staccato
+legato
+accent
+repeat sign
+soprano
+alto
+tenor
+bass (voice)
+pitch
+in unison
+lyrics
+breath control
+classical music
+composer
+symphony
+opera
+Baroque
+folk music
+jazz
+improvise
+compose
+arrange
+melody
+harmony
+verse
+chorus (song)
+bridge
+music appreciation
+sketch
+shading
+contour line
+proportion
+perspective
+vanishing point
+still life
+portrait
+primary colors
+secondary colors
+complementary colors
+warm colors
+cool colors
+color wheel
+tint
+contrast
+composition
+symmetry
+texture
+pattern
+foreground
+background
+focal point
+negative space
+watercolor
+acrylic paint
+canvas
+easel
+palette
+charcoal
+clay
+collage
+blend
+printmaking
+carve
+sculpture
+ceramics
+pottery wheel
+stencil
+mosaic
+graphic design
+logo
+font
+layout
+illustration
+storyboard
+color scheme
+prototype
+Impressionism
+Cubism
+abstract art
+ukiyo-e
+fresco
+masterpiece
+exhibition
+art museum
+critique
+interpret
+mood
+symbolism
+medium
+self-portrait
+artist statement
+constructive feedback
+We are diverting to Osaka due to a medical emergency.
+Our hydraulic pressure is dropping.
+We need to hold for about ten minutes to check the problem.
+There is smoke in the cabin.
+Could you give us the latest weather at the destination?
+We will need fire trucks standing by on landing.
+A passenger is refusing to follow the crew's instructions.
+We have lost contact with our company on the radio.
+We are unable to start engine number two.
+Request to return to the stand.
+There is a vehicle blocking the taxiway.
+We need a few more minutes to complete our checks.
+Our departure is delayed due to a technical problem.
+We have a passenger who needs to disembark.
+Ready for departure in two minutes.
+We are rejecting takeoff.
+We would like to climb to avoid the turbulence.
+Moderate icing reported at flight level one two zero.
+We are deviating twenty miles left of track due to weather.
+Thunderstorms are building ahead of us.
+Visibility at the airport has dropped to five hundred meters.
+Request descent due to a pressurization problem.
+We are low on fuel and need to land soon.
+Is there any report of volcanic ash in the area?
+We are going around.
+The runway is not in sight.
+We have a problem with our landing gear.
+Mayday, mayday, mayday, engine fire.
+Pan-pan, pan-pan, pan-pan, a crew member is injured.
+We will need medical assistance on arrival.
+We are evacuating the aircraft on the runway.
+Request the full length of the runway.
+Tokyo Ground, Japan Air 123, request taxi.
+Taxi to holding point runway three four right.
+Line up and wait.
+Cleared for takeoff.
+Climb and maintain flight level two four zero.
+Contact Tokyo Control on one two four decimal one.
+Roger.
+Wilco.
+Request start-up.
+Start-up approved.
+Push back approved, facing south.
+Hold short of runway three four left.
+Cross runway three four left.
+Ready for departure.
+Wind three one zero degrees, eight knots.
+After departure, turn right heading zero nine zero.
+Report passing flight level one five zero.
+Maintain flight level three five zero.
+Request direct to Osaka.
+Squawk two three four five.
+Radar contact.
+Say again your callsign.
+Descend and maintain flight level two zero zero.
+Expect further climb in ten minutes.
+Information Bravo received.
+Cleared ILS approach runway three four right.
+Reduce speed to one eight zero knots.
+Turn left heading two seven zero.
+Descend to three thousand feet, QNH one zero one three.
+Established on the localizer.
+Contact Tower one one eight decimal one.
+Continue approach, number two.
+Cleared to land runway three four right.
+Vacate the runway via taxiway Charlie.
+Go around, I say again, go around.
+Read back correct.
+Negative.
+Affirm.
+Standby.
+Monitor Ground on one two one decimal seven.
+What brings you in today?
+Can you describe the pain for me?
+On a scale of one to ten, how would you rate the pain?
+Are you currently taking any medication?
+Do you have any allergies?
+I'm going to listen to your chest.
+I understand this must be worrying for you.
+Is there anything else you'd like to ask me?
+I am writing to refer Mr. Smith for further assessment.
+He presented with a two-week history of chest pain.
+His blood pressure was elevated at 160 over 95.
+She has a past history of asthma.
+He was commenced on antibiotics.
+Her symptoms have improved since admission.
+I would appreciate your opinion on further management.
+Please do not hesitate to contact me if you require further information.
+I'm the nurse looking after you today.
+I need to take your temperature and blood pressure.
+Can you tell me your full name and date of birth?
+Press this button if you need any help.
+You shouldn't eat or drink anything before the operation.
+The doctor will see you during the ward round.
+Let me help you sit up.
+How is your pain compared to yesterday?
+I'd like to explain the procedure before we start.
+There is a small risk of infection.
+Most patients recover within a week.
+Do you understand what I've explained so far?
+You can change your mind at any time.
+We'll need your written consent.
+It's completely normal to feel anxious.
+Would you like a family member to be present?
+Can you hear me? Open your eyes.
+When did the symptoms start?
+Does the pain spread to your arm or jaw?
+We're going to give you some oxygen.
+Have you had any recent surgery?
+Try to stay still for me.
+We need to run some blood tests.
+Your results are back, and they look normal.
+Take one tablet twice a day with food.
+This medicine may make you feel drowsy.
+Please avoid alcohol while taking this medication.
+Have you taken this medicine before?
+It's important to finish the whole course of antibiotics.
+Let me check for any interactions with your other medicines.
+If you miss a dose, take it as soon as you remember.
+Do you have any questions about using your inhaler?
+Can I take your prescription, please?
+It'll be ready in about fifteen minutes.
+Is this medicine for you or someone else?
+Do you have any other medical conditions?
+Are you pregnant or breastfeeding?
+This is a generic version of your usual medicine.
+The active ingredient is the same.
+Please keep it out of the reach of children.
+Take it on an empty stomach.
+Swallow the tablet whole; don't crush it.
+Store it in the fridge.
+A common side effect is an upset stomach.
+Stop taking it and see a doctor if you get a rash.
+Don't drive if it makes you sleepy.
+Avoid grapefruit juice with this medicine.
+Space the doses evenly throughout the day.
+The patient is allergic to penicillin.
+I'd like to clarify the dose on this prescription.
+The dose seems too high for a child of this weight.
+Could we switch to a liquid form?
+This drug interacts with warfarin.
+Kidney function should be monitored.
+The medication was discontinued yesterday.
+Please update the patient's medication chart.
+How long have you had these symptoms?
+This cough syrup is suitable for adults.
+I'd recommend seeing your doctor if it doesn't improve.
+This cream should be applied twice a day.
+Drink plenty of fluids and get some rest.
+Don't take more than eight tablets in twenty-four hours.
+This one doesn't cause drowsiness.
+Is there anything else I can help you with?
+The contract shall be governed by the laws of England.
+Either party may terminate this agreement with thirty days' notice.
+The seller warrants that the goods are free from defects.
+This clause shall survive the termination of the agreement.
+The parties agree to keep this information confidential.
+The claimant is seeking damages for breach of contract.
+Any dispute shall be referred to arbitration.
+We look forward to receiving your instructions.
+This agreement shall commence on the date of signing.
+Payment shall be made within thirty days of the invoice date.
+The supplier shall not be liable for indirect losses.
+Neither party may assign this agreement without consent.
+Time is of the essence in this contract.
+This agreement constitutes the entire agreement between the parties.
+Any amendment must be made in writing.
+Notices shall be sent to the addresses set out above.
+Thank you for instructing us in this matter.
+I'd like to go through the facts of the case.
+Do you have a copy of the contract with you?
+Our fees are charged on an hourly basis.
+Everything you tell me is confidential.
+I would advise you not to sign anything yet.
+We will send you a letter setting out our advice.
+Please let us know if your circumstances change.
+The defendant denies all the allegations.
+We intend to file a claim in the High Court.
+The case was settled out of court.
+The burden of proof lies with the claimant.
+The court awarded damages of fifty thousand pounds.
+We are considering an appeal.
+The limitation period is six years.
+Mediation could save both time and money.
+The board of directors approved the merger.
+Shareholders have the right to vote at general meetings.
+The company must file its accounts every year.
+The director owes a duty of care to the company.
+Please find enclosed a draft of the agreement.
+We would be grateful for your comments by Friday.
+We look forward to hearing from you.
+Yours sincerely,
+Let's move on to the next item on the agenda.
+Could you give us an update on the project?
+Sales rose by ten percent in the third quarter.
+I'm afraid we need to postpone the meeting.
+Please find attached the report you requested.
+We should consider the costs before making a decision.
+I'd like to propose a different approach.
+Thank you for your prompt reply.
+Could I speak to someone in the sales department?
+I'm afraid she's on another line at the moment.
+Would you like to leave a message?
+Could you spell your surname, please?
+I'll put you through now.
+Sorry, the line is breaking up.
+I'm calling to confirm our appointment.
+Thanks for calling. Goodbye.
+What kind of discount could you offer?
+That's slightly more than we expected to pay.
+If you order in bulk, we can reduce the price.
+We need delivery by the end of next month.
+Let me check with my manager and get back to you.
+I think we can meet you halfway.
+Could you put that in writing?
+It's a deal.
+Profits have remained flat this year.
+Our market share has grown steadily.
+Costs rose sharply due to higher fuel prices.
+We exceeded our sales target by five percent.
+The new product was launched in April.
+Customer feedback has been very positive.
+We are behind schedule on the project.
+The figures are broken down by region.
+We are looking for someone with strong leadership skills.
+The successful candidate will start in June.
+Staff training is essential for good customer service.
+She was promoted to sales manager.
+We offer flexible working hours.
+The company is expanding into Asian markets.
+Please submit your expense claims by Friday.
+I'll circulate the minutes after the meeting.
+Wash your hands for at least twenty seconds.
+Keep cold food at 41 degrees Fahrenheit or lower.
+Keep hot food at 135 degrees Fahrenheit or higher.
+Store raw meat below ready-to-eat food.
+Use a separate cutting board for raw chicken.
+Cook chicken to an internal temperature of 165 degrees Fahrenheit.
+Tell your manager if you have a fever or are vomiting.
+Label food with the date it was prepared.
+Check the temperature of the fridge every morning.
+Use a food thermometer to check that it is cooked.
+Thaw frozen food in the refrigerator, not on the counter.
+Cool cooked food quickly before storing it.
+Reheat leftovers to 165 degrees Fahrenheit.
+Throw away food that has been left out for over four hours.
+The danger zone is between 41 and 135 degrees Fahrenheit.
+Record the temperatures in the log.
+Wear gloves when handling ready-to-eat food.
+Change your gloves after touching raw meat.
+Tie back long hair and wear a hair net.
+Clean and sanitize all work surfaces.
+Don't wear jewelry in the kitchen.
+Cover any cuts with a waterproof bandage.
+Keep cleaning chemicals away from food.
+Empty the bins at the end of every shift.
+Reject deliveries that arrive at the wrong temperature.
+Check the use-by date before using any product.
+Follow the first in, first out rule.
+Store food at least six inches off the floor.
+Keep dry goods in sealed containers.
+Never refreeze food that has been thawed.
+Damaged cans should be thrown away.
+Keep pests out by sealing gaps in the walls.
+Does this dish contain any nuts?
+I have a severe peanut allergy.
+Use clean utensils to avoid cross-contact.
+Let me check with the chef about the ingredients.
+This dish can be made gluten-free.
+Raw or undercooked eggs may increase the risk of illness.
+Report any food poisoning complaints to the manager.
+When in doubt, throw it out.
+Work in pairs and compare your answers.
+Can anyone tell me what this word means?
+Let's check the answers together.
+Listen and repeat after me.
+You have five minutes to finish this task.
+The aim of this lesson is to practise the past tense.
+Raise your hand when you've finished.
+Good! Can you say it in a different way?
+Good morning, everyone. Let's get started.
+Please open your books to page twenty.
+Can everyone see the board?
+Put your phones away, please.
+Look at the picture and guess what happened.
+Don't worry about mistakes. Just try.
+Who would like to read the first sentence?
+Let's do a quick warm-up activity.
+Are you all clear on what to do?
+So, do you write or do you speak in this activity?
+This word is a noun, not a verb.
+Notice the stress is on the second syllable.
+We use the present perfect for experiences.
+Can you give me an example sentence?
+That's almost right. Try again.
+Let me write that on the board.
+Change partners and ask the same questions.
+You have two more minutes.
+Mingle and find someone who has been abroad.
+Turn to the person next to you.
+Please speak in English as much as possible.
+Let's hear from this group first.
+Swap your papers and check each other's work.
+Okay, time's up. Please stop writing.
+What did you learn today?
+Which part was the most difficult?
+For homework, please write a short paragraph.
+Remember to review the new vocabulary.
+You all did a great job today.
+I'll give you feedback on your writing next week.
+If you have any questions, come and see me after class.
+See you on Thursday!
+Your flight departs from Terminal 2.
+May I see your passport and boarding pass?
+The tour includes lunch and admission fees.
+Breakfast is served from seven to ten.
+Please keep your valuables with you at all times.
+The bus will leave the hotel at eight sharp.
+Would you like a window seat or an aisle seat?
+This temple is a World Heritage Site.
+Please proceed to gate twelve.
+Boarding will begin in ten minutes.
+Your baggage is overweight.
+Liquids must be in containers of 100 milliliters or less.
+Please fasten your seat belt while the sign is on.
+What is the purpose of your visit?
+I'm here for sightseeing.
+The baggage claim is on the ground floor.
+I'd like to check in, please. I have a reservation.
+Your room is on the fifth floor.
+Check-out is at eleven a.m.
+Could you keep my luggage until this evening?
+The air conditioner in my room isn't working.
+Would you like a wake-up call?
+Wi-Fi is free in all rooms.
+Is breakfast included in the rate?
+This museum is closed on Mondays.
+Admission is free for children under six.
+The guided tour takes about ninety minutes.
+Photography is not allowed inside the building.
+The festival is held every August.
+You can get there by bus in twenty minutes.
+I recommend visiting early in the morning to avoid the crowds.
+This area is famous for its hot springs.
+I've lost my passport.
+Where is the nearest police station?
+Please call an ambulance.
+You can claim a tax refund at the counter.
+Could you wrap it as a gift?
+Do you accept credit cards?
+I'd like to exchange yen for dollars.
+Have a wonderful trip!
+Please bow once before you walk through the torii gate.
+This castle was built in the early seventeenth century.
+Sumo wrestlers throw salt to purify the ring.
+Please take off your shoes before entering the room.
+Real wasabi comes from a plant that grows in clean mountain streams.
+The tea ceremony values hospitality and respect.
+You can write your wish on a wooden plaque.
+Tipping is not customary in Japan.
+Please rinse your hands and mouth at the purification fountain.
+Bow twice, clap twice, and then bow once more.
+This shrine is dedicated to the god of learning.
+Shinto is Japan's native religion.
+Many Japanese people visit both shrines and temples.
+You can buy a charm for good luck here.
+Draw a fortune slip to see your luck for the year.
+If it's bad luck, tie it to this rope and leave it behind.
+This is a traditional Japanese breakfast.
+Miso is made from fermented soybeans.
+It is polite to say itadakimasu before eating.
+Slurping noodles is perfectly fine in Japan.
+Please don't stick your chopsticks upright in the rice.
+Kaiseki is a traditional multi-course meal.
+The dishes change with the seasons.
+Do you have any dietary restrictions?
+The samurai were the warrior class of Japan.
+Kyoto was the capital of Japan for over a thousand years.
+The Edo period lasted about two hundred and sixty years.
+Geisha are professional entertainers trained in traditional arts.
+Please don't take photos of maiko without permission.
+Kabuki actors are all men.
+This garden is designed to be viewed from the veranda.
+Zen Buddhism had a great influence on Japanese culture.
+Let's meet here again in thirty minutes.
+Please stay close to the group in the crowd.
+The train is crowded, so please hold on to the strap.
+Please speak quietly on the train.
+Unfortunately, the garden is closed today due to the typhoon.
+Instead, I'd like to suggest a visit to the museum.
+Are you feeling all right? Shall we take a break?
+I hope you enjoyed today's tour.
+Today I'd like to present the results of our latest study.
+This slide shows how the data were collected.
+As you can see in this graph, the effect increases with temperature.
+Our findings suggest that further research is needed.
+That's a very good question.
+Could you repeat the question, please?
+I'm afraid we haven't tested that yet.
+Thank you for your attention.
+The aim of this study is to examine the effect of sleep on memory.
+Previous studies have shown similar results.
+The results were statistically significant.
+One limitation of this study is the small sample size.
+Could you take a look at my draft before I submit it?
+The reviewers asked us to add more data.
+I'll run the experiment again tomorrow.
+Is the equipment free this afternoon?
+I'm applying for the master's program in aerospace engineering.
+My research interest is in renewable energy.
+I'd like to work under the supervision of Professor Brown.
+I have attached my CV and a writing sample.
+Could you tell me whether you are accepting new students?
+Are there any scholarships available for international students?
+What made you interested in this field?
+I want to use what I learn to solve real-world problems.
+Could you clarify what you mean by that term?
+I see your point, but I have a slightly different view.
+To build on what Anna said, I think the data support this.
+When is the deadline for the term paper?
+I'll send you the reading list after the seminar.
+This article is cited in many later studies.
+Could we meet during your office hours?
+I'm not sure I follow the second step of the proof.
+Could you show me how to use this microscope?
+Please record every measurement in the lab notebook.
+The samples must be kept at minus eighty degrees.
+We need approval from the ethics committee first.
+Let's divide the work and share our progress every week.
+I'll upload the data to the shared folder.
+Who should be listed as the first author?
+We plan to submit the paper to an international journal.
+Why do you want to become a flight attendant?
+I enjoy helping people and working as part of a team.
+Tell me about a time you dealt with a difficult customer.
+I stayed calm, listened carefully and offered a solution.
+What would you do if a passenger felt sick during the flight?
+I would make sure the passenger is comfortable and inform the senior crew.
+Why did you choose our airline?
+Do you have any questions for us?
+Good morning, ladies and gentlemen. Welcome aboard.
+Please make sure your seat belt is securely fastened.
+Please return your seat to the upright position.
+We will be serving drinks shortly.
+We are now experiencing some turbulence.
+Smoking is not permitted at any time during the flight.
+We will be landing in about twenty minutes.
+Thank you for flying with us today.
+Would you like chicken or beef?
+I'm sorry, we've run out of the chicken.
+Can I get you anything else to drink?
+Please lower your window shade.
+Would you mind switching seats with this passenger?
+Your bag needs to go in the overhead bin.
+Please keep your seat belt fastened while seated.
+Duty-free sales will begin shortly.
+I'm very sorry for the inconvenience.
+Let me see what I can do for you.
+I'll bring you a blanket right away.
+Is this your first time flying with us?
+Are you travelling for business or pleasure?
+Is there a doctor on board?
+Please breathe slowly. You're going to be fine.
+I'll let the captain know right away.
+The emergency exits are located here, here and here.
+Your life vest is under your seat.
+Put on your own mask before helping others.
+Leave everything behind!
+Release your seat belt and get out!
+Jump and slide!
+Brace! Brace! Heads down, stay down!
+Cabin crew, prepare for landing.
+Yesterday I fixed the login bug, and today I'm working on the search feature.
+I'm blocked until the API is ready.
+Could you review my pull request when you have a moment?
+I left a few comments on your code.
+This function is a bit hard to read. Could we split it?
+Let's pair on this after lunch.
+The tests are passing now.
+I'll push the fix by the end of the day.
+The website is down for some users.
+We rolled back the last release.
+The root cause was a missing database index.
+We'll add monitoring so this doesn't happen again.
+Can you walk me through your last project?
+I designed the backend and set up the deployment pipeline.
+If I were to do it again, I would write more tests.
+What does your team's code review process look like?
+Let's break this feature down into smaller tasks.
+What are the requirements for this feature?
+I'd go with option B because it's easier to maintain.
+That might cause performance issues at scale.
+Can we agree on the API design before we start coding?
+How long do you think this will take?
+I think we're overcomplicating this.
+Let's revisit this in the next sprint.
+I can't reproduce the bug on my machine.
+Can you share the error message and the steps?
+It works on staging but not in production.
+I added a test that covers this edge case.
+The build is failing because of a missing dependency.
+We're planning to release on Thursday.
+Let's put this behind a feature flag.
+I'll write up the release notes.
+Sorry, you're breaking up. Could you say that again?
+Can everyone see my screen?
+I'm going to be offline for an hour.
+Let's continue this discussion in the chat.
+I'm a backend engineer with three years of experience.
+I'm comfortable with Python and Go.
+I'd like to grow into a tech lead role.
+What does a typical day look like for this team?
+What would you like to have done today?
+How much would you like me to take off?
+Do you have a photo of the style you want?
+Would you like to keep the length?
+Shall I thin it out a little?
+Do you usually part your hair on the left?
+Have you had a color in the last few months?
+Please let me know if the water is too hot.
+I'm going to apply the color now.
+We need to leave it on for about thirty minutes.
+Let me know if your scalp feels itchy.
+How does it look from the back?
+Use a color-safe shampoo to keep the color longer.
+Try not to wash your hair until tomorrow.
+Would you like to book your next appointment?
+Thank you. I hope you enjoy your new look!
+Do you have an appointment?
+We have an opening at three o'clock.
+It takes about an hour and a half.
+The price depends on the length of your hair.
+Please have a seat. I'll be with you shortly.
+May I take your coat?
+Would you like something to drink while you wait?
+Please fill out this form about your hair and scalp.
+I'm going to trim the ends.
+Would you like your bangs shorter?
+Is the temperature of the dryer all right?
+Please tilt your head forward a little.
+Your hair is quite damaged at the ends.
+I'd recommend a treatment to add moisture.
+Let me know if anything feels uncomfortable.
+I'm going to blow-dry and style it now.
+Here's a mirror so you can see the back.
+Would you like any changes?
+Use a small amount of wax and work it through with your fingers.
+Dry your hair from the roots first.
+A wide-tooth comb is gentler on wet hair.
+We recommend coming back in about six weeks.
+That comes to sixty dollars in total.
+Thank you for coming. See you next time!
+I'm happy to join the team.
+Where should I stand in this drill?
+Could you show me that move again?
+I'm open! Pass the ball!
+Man on!
+What time is training tomorrow?
+I need to work on my first touch.
+Good game, everyone!
+I felt something in my hamstring.
+It hurts when I put weight on it.
+How long will I be out?
+I'm feeling much better and ready to play.
+It was a tough match, but we never gave up.
+The fans gave us a lot of energy today.
+We need to focus on the next game.
+I want to keep improving and help the team win.
+Keep your shape!
+Mark number ten!
+Switch the play!
+Take your time, you've got space.
+Push up! Everyone, move up!
+Unlucky! Keep going!
+Last five minutes. Stay focused!
+Well played! That was a great assist.
+What do you want me to work on this week?
+Could you give me some feedback on my performance?
+I'll do extra training after practice.
+We're doing interval runs today.
+Let's warm up properly to avoid injuries.
+I need to improve my stamina.
+How much rest should I take between sets?
+What's the game plan for Saturday?
+I'm excited to start a new chapter here.
+My agent is handling the negotiations.
+I signed a two-year contract with the club.
+I'm still getting used to the food and the weather.
+My teammates have helped me settle in.
+I'm taking English lessons twice a week.
+I want to give back to the local community.
+Thank you for your support all season.
+In this picture, I can see a busy street.
+In the foreground, two people are talking.
+In the background, there are some tall buildings.
+It looks like they are waiting for a bus.
+I usually go shopping about twice a month.
+The main reason is that it saves time.
+For example, I can order food on my phone.
+That's why I prefer shopping online.
+I'm calling about the problem you mentioned in your message.
+I understand that you are worried about the schedule.
+I'd like to suggest a couple of solutions.
+First, we could move the meeting to Friday.
+If that doesn't work, please let me know.
+I agree with the statement for two reasons.
+On top of that, it helps people stay healthy.
+For these reasons, I think it's a good idea.
+Welcome to today's tour of the city museum.
+Please make sure your mobile phones are switched off.
+On the left side of the picture, a woman is holding an umbrella.
+A man is sitting at a table, reading a newspaper.
+It seems to be a sunny day.
+There are several bicycles parked along the street.
+The people in the picture look busy.
+That's all I can see in this picture.
+I usually go shopping on weekends because I'm busy on weekdays.
+I'd prefer to buy clothes online because it's cheaper.
+The last time I went to a concert was about a month ago.
+According to the schedule, the workshop starts at 10 a.m.
+It will be held in Conference Room B.
+Unfortunately, the lunch session has been canceled.
+There are two presentations in the afternoon.
+The registration fee is fifty dollars.
+In my opinion, working from home is more productive.
+The main reason is that I don't have to commute.
+This saves me about two hours every day.
+For example, I can use that time to exercise.
+Some people might disagree, but I still think so.
+Another advantage is that it reduces stress.
+Of course, it also has some disadvantages.
+Overall, I believe the benefits are greater.
+Let me introduce myself.
+I'm a university student majoring in business.
+I live in an apartment with my family.
+My favorite place in my home is my room.
+In my free time, I like to go to the park.
+I usually go there on weekends.
+There is a big lake and a walking trail.
+It makes me feel relaxed.
+I remember a trip I took last summer.
+Something unexpected happened.
+At first, I didn't know what to do.
+In the end, everything worked out.
+Hi, I'd like to ask a few questions.
+What time do you open on weekends?
+Is there a discount for students?
+Thank you. That's very helpful.
+I usually wake up at seven and have a quick breakfast.
+I've been into cooking lately.
+I listen to music whenever I have time.
+My favorite singer is someone who writes her own songs.
+I first got interested in it when I was in middle school.
+It's a great way to relieve stress.
+My neighborhood is quiet and has a lot of trees.
+There's a convenience store right around the corner.
+Compared to ten years ago, people use their phones much more.
+Back then, we used to meet our friends in person.
+The most memorable experience was when I got lost abroad.
+I was really nervous, but a stranger helped me.
+Since then, I always carry a paper map.
+It taught me to stay calm in difficult situations.
+These days, more people prefer to travel alone.
+I think the biggest change is the use of technology.
+Hello, I'm calling because there's a problem with my order.
+I received the wrong item.
+Would it be possible to exchange it?
+If not, I'd like a full refund.
+I'm sorry, but I can't make it to our dinner tonight.
+Something urgent came up at work.
+How about meeting this Saturday instead?
+Thanks for understanding.
+Nowadays, more and more students are taking part-time jobs.
+There are several reasons for this phenomenon.
+First of all, it helps them gain work experience.
+What's more, they can earn some pocket money.
+However, it may take time away from their studies.
+As far as I'm concerned, the advantages outweigh the disadvantages.
+Therefore, students should balance work and study.
+Only in this way can we make the most of our college life.
+The Spring Festival is the most important traditional festival in China.
+Family members get together to have a reunion dinner.
+Tea has a history of thousands of years.
+The high-speed railway has made travel much more convenient.
+The library is open until ten o'clock in the evening.
+The lecture has been moved to Room 302.
+I'm afraid I can't make it to the club meeting.
+The woman suggests that the man join a study group.
+With the development of technology, online shopping has become popular.
+It not only saves time but also offers more choices.
+Nevertheless, there are some problems that cannot be ignored.
+For one thing, the quality of products is sometimes poor.
+For another, personal information may be leaked.
+It is high time that we took measures to solve this problem.
+Only by working together can we build a better society.
+In a word, we should make good use of the Internet.
+Chinese calligraphy is an important part of traditional culture.
+The Great Wall attracts millions of tourists every year.
+Dumplings are a must on the eve of the Spring Festival.
+Shared bicycles have made short trips more convenient.
+Kung fu has become popular all over the world.
+The Dragon Boat Festival is held to honor an ancient poet.
+The giant panda is regarded as a national treasure of China.
+More and more young people choose to start their own businesses.
+What is the speaker mainly talking about?
+What does the man mean?
+The woman is probably a librarian.
+Which of the following is true according to the passage?
+The author mentions the example in order to show a trend.
+The word in the third paragraph most probably means 'useful'.
+The passage is most likely taken from a newspaper.
+The best title for the passage would be 'Saving Water at Home'.
+It is widely acknowledged that education plays a vital role in society.
+With the rapid development of technology, our lifestyles have changed dramatically.
+This trend has aroused widespread concern.
+Admittedly, there are some drawbacks.
+Nevertheless, the benefits far outweigh the costs.
+It is high time that we took action.
+Not only does it save energy, but it also reduces pollution.
+In a word, we should strike a balance between development and protection.
+The passage mainly discusses the impact of artificial intelligence on employment.
+The author's attitude towards the new policy is cautious.
+Urbanization has brought both opportunities and challenges.
+The government has taken measures to protect the environment.
+Traditional Chinese medicine has attracted attention worldwide.
+Mobile payment has become part of daily life in China.
+The speaker implies that the experiment was not successful.
+Volunteers play an indispensable role in the community.
+It is generally believed that reading broadens our horizons.
+However, opinions vary as to how it should be reformed.
+Those in favor argue that competition motivates students.
+Those against it, however, believe it causes excessive pressure.
+Personally, I side with the latter view.
+Admittedly, a certain amount of pressure can be beneficial.
+Nonetheless, students' mental health should come first.
+To conclude, a balanced approach is the key.
+Rapid urbanization has lifted millions of people out of poverty.
+E-commerce has reshaped the retail industry.
+The aging population poses new challenges to society.
+Green development has become a national priority.
+Ancient Chinese inventions had a profound influence on the world.
+Traditional villages are being restored to attract tourists.
+The high-speed rail network now connects most major cities.
+Online education narrows the gap between urban and rural schools.
+The lecture focuses on the effects of sleep on memory.
+Researchers found a strong correlation between the two factors.
+The study was conducted over a period of five years.
+The findings challenge the conventional wisdom.
+The author is skeptical about the proposed solution.
+This paragraph serves as a transition to the next topic.
+It can be inferred that the policy will be revised.
+The speaker concludes by calling for further research.
