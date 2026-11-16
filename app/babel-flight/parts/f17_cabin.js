@@ -260,8 +260,10 @@ function studyMoreHTML(L){
   var lv=cabinLv(),list=studyMoreList(L);
   if(lv<0||!list)return '';
   var h='<section class="card exam-card study-more"><span class="lbl">STUDY ・ '+CABINS[lv][2]+'</span><h2 class="jh">授業の用語(くわしく)</h2>';
-  if(lv<1)return h+'<p class="dim" style="font-size:13.5px;margin-top:4px">'+(L==='en'?'数学・理科・社会・国語・情報・保健体育・音楽・美術の用語512語を、意味と授業での使われ方つきで。':'8教科の大事な用語128語を、意味と授業での使われ方つきで。')+'</p><p class="dim hint">🔒 「プレミアムエコノミー」から</p></section>';
-  h+='<p class="dim" style="font-size:13.5px;margin-top:4px">'+(L==='en'?'数学・理科・社会・国語・情報・保健体育・音楽・美術の用語を、意味と授業での使われ方つきで。答えたあとの説明に、先生が授業で言いそうな英文がのっています。':'8教科の大事な用語を16語ずつ、意味と授業での使われ方つきで。答えたあとの説明に、先生が授業で言いそうな文がのっています。')+'</p>';
+  /* full: the 8 subjects x 64 terms of the English course (every language once its 512 terms are written) */
+  var full=L==='en'||list.length>=8;
+  if(lv<1)return h+'<p class="dim" style="font-size:13.5px;margin-top:4px">'+(full?'数学・理科・社会・国語・情報・保健体育・音楽・美術の用語512語を、意味と授業での使われ方つきで。':'8教科の大事な用語128語を、意味と授業での使われ方つきで。')+'</p><p class="dim hint">🔒 「プレミアムエコノミー」から</p></section>';
+  h+='<p class="dim" style="font-size:13.5px;margin-top:4px">'+(L==='en'?'数学・理科・社会・国語・情報・保健体育・音楽・美術の用語を、意味と授業での使われ方つきで。答えたあとの説明に、先生が授業で言いそうな英文がのっています。':full?'数学・理科・社会・国語・情報・保健体育・音楽・美術の用語を、意味と授業での使われ方つきで。答えたあとの説明に、先生が授業で言いそうな文がのっています。':'8教科の大事な用語を16語ずつ、意味と授業での使われ方つきで。答えたあとの説明に、先生が授業で言いそうな文がのっています。')+'</p>';
   var started=list.filter(function(x){return bankMeter(XBANK[x.bank]).seen>0;});
   list.forEach(function(x,i){
     var open=x.bank in SM_OPEN?SM_OPEN[x.bank]:started.length?started.indexOf(x)>=0:i===0;
