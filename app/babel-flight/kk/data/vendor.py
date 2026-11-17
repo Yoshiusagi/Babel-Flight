@@ -18,11 +18,12 @@ for ch, l in lv.items():
     x = kd.get(ch, {})
     K[ch] = {'l': l, 's': x.get('strokes') or 0}
     if ch in grade: K[ch]['g'] = grade[ch]
-    if ch in joyo: K[ch]['y'] = joyo[ch]
-    else:
-        on = [k2h(r) for r in (x.get('readings_on') or [])]
-        kun = [r.replace('-', '') for r in (x.get('readings_kun') or [])]
-        if on or kun: K[ch]['x'] = on + kun
+    on = [k2h(r) for r in (x.get('readings_on') or [])]
+    kun = [r.replace('-', '') for r in (x.get('readings_kun') or [])]
+    if ch in joyo:
+        K[ch]['y'] = joyo[ch]
+        if on or kun: K[ch]['xo'] = on + kun     # 表外の読み too, only for the 準1級・1級 checks
+    elif on or kun: K[ch]['x'] = on + kun
     if x.get('readings_kun'): K[ch]['ok'] = sorted(set(r.replace('-', '') for r in x['readings_kun'] if '.' in r))
 json.dump({'_src': 'mimneko/kanji-data (CC0): 漢検級・教育漢字の学年・常用漢字表の音訓と例・付表; davidluzgouveia/kanji-data (MIT, from KANJIDIC): 画数・表外の読み・送りがなの区切り',
            'k': K, 'fuhyo': fuhyo}, open(OUT, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))

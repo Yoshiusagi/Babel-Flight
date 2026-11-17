@@ -35,11 +35,14 @@ def k2h(s): return ''.join(chr(ord(c) - 0x60) if 'ァ' <= c <= 'ヶ' else c for 
 VOICE = dict(zip('かきくけこさしすせそたちつてとはひふへほ', 'がぎぐげござじずぜぞだぢづでどばびぶべぼ'))
 HALF = dict(zip('はひふへほ', 'ぱぴぷぺぽ'))
 
-def stems(c):
-    """readings a kanji can take inside a word (hiragana), from the 常用漢字表 (and the 表外 list for 準1級・1級)"""
+def stems(c, wide=False):
+    """readings a kanji can take inside a word (hiragana): the 常用漢字表, plus KANJIDIC for kanji outside it
+    (and, with wide, the 表外 readings of 常用漢字 too, for 準1級・1級)"""
     e = K.get(c)
     if not e: return set()
     out = set()
+    if wide:
+        for r in e.get('xo', []): out.add(k2h(r.replace('.', '')))
     for r, ex in e.get('y', []):
         r = k2h(r); out.add(r)
         for ok in e.get('ok', []):
@@ -58,7 +61,7 @@ def variants(s, first, last):
     if not last and len(s) >= 2 and s[-1] in 'つちくきう': v.add(s[:-1] + 'っ')
     return v
 
-def reads_as(word, kana):
+def reads_as(word, kana, wide=False):
     """can `word` (kanji and kana) be read as `kana`? A rough check for the reading questions
     (連濁・半濁音・促音 and the 付表 words are allowed)."""
     kana = k2h(kana)
@@ -72,7 +75,7 @@ def reads_as(word, kana):
             h = k2h(c)
             ok = kana.startswith(h, j) and go(i + 1, j + len(h))
         else:
-            cand = stems(word[i - 1]) if c == '々' and i > 0 else stems(c)
+            cand = stems(word[i - 1], wide) if c == '々' and i > 0 else stems(c, wide)
             for s in cand:
                 for v in variants(s, i == 0, i == len(word) - 1):
                     if kana.startswith(v, j) and go(i + 1, j + len(v)): ok = True; break
@@ -124,10 +127,11 @@ def check(key, name, fam, upto, steps, errs, warns, seen):
                     targets += 1
                     if any(K[c]['l'] == upto for c in tk): own += 1
             # readings
-            if fam == 'kj' and upto not in ('p1', '1') and m:
-                if kind in READ_KINDS and not reads_as(m.group(1), ans):
+            if fam == 'kj' and m:
+                wide = upto in ('p1', '1')
+                if kind in READ_KINDS and not reads_as(m.group(1), ans, wide):
                     warns.append(where + ': reading? %s = %s' % (m.group(1), ans))
-                if kind in WRITE_KINDS and re.fullmatch(r'[ぁ-んァ-ヶー]+', m.group(1)) and not reads_as(ans, m.group(1)):
+                if kind in WRITE_KINDS and re.fullmatch(r'[ぁ-んァ-ヶー]+', m.group(1)) and not reads_as(ans, m.group(1), wide):
                     warns.append(where + ': writing? %s = %s' % (m.group(1), ans))
             if kind == 'kakusu':
                 ch = m.group(1) if m else ''
