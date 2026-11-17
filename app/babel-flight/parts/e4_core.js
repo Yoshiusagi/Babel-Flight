@@ -124,7 +124,7 @@ function kkClean(x){
     Object.keys(s).slice(0,40).forEach(function(k){
       var v=s[k];if(!key.test(k)||!Array.isArray(v))return;
       if(f==='b')o.b[k]=v.slice(0,40).map(function(n){return n==null?null:Math.max(0,Math.min(40,Math.floor(+n||0)));});
-      else if(f==='w')o.w[k]=v.filter(function(q){return typeof q==='string'&&/^\d{1,2}\.\d{1,2}$/.test(q);}).slice(-300);
+      else if(f==='w')o.w[k]=v.filter(function(q){return typeof q==='string'&&/^m?\d{1,2}\.\d{1,3}$/.test(q);}).slice(-300);
       else o.m[k]=v.slice(0,10).filter(function(r){return r&&typeof r==='object';}).map(function(r){return {d:+r.d||0,s:Math.floor(+r.s||0),t:Math.floor(+r.t||0),v:Math.floor(+r.v||1)};});
     });
   });

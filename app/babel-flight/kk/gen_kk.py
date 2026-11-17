@@ -3,6 +3,8 @@
 #   python3 gen_kk.py --write    also write public/kk/<key>.json and parts/f46_kkidx.js
 # A level is kk/src/<key>.py with STEPS = [(title, kind, [question, ...]), ...]; a question is
 # (stem, answer, wrong1, wrong2, wrong3, explanation). The part of the stem the question is about is in [ ].
+# A level may also have MOCK = [(section, kind, points, [question, ...]), ...]: a dedicated 本番形式の模試 in the order of
+# the real test, with each section's points (the questions must be new, not the drills').
 # Every question is original practice material for Babel Flight (nothing from real papers).
 import os, sys, json, re, importlib.util
 
@@ -96,13 +98,13 @@ def load(key):
     if not os.path.exists(p): return None
     spec = importlib.util.spec_from_file_location('kk_' + key, p)
     m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
-    return m.STEPS
+    return m.STEPS, getattr(m, 'MOCK', None)
 
-def check(key, name, fam, upto, steps, errs, warns, seen):
+def check(key, name, fam, upto, steps, errs, warns, seen, mock=False):
     own = 0; targets = 0
     for si, (title, kind, qs) in enumerate(steps):
         if kind not in KINDS: errs.append('%s step %d: kind %s' % (key, si + 1, kind))
-        if len(qs) != 10: warns.append('%s step %d (%s): %d questions' % (key, si + 1, title, len(qs)))
+        if len(qs) != 10 and not mock: warns.append('%s step %d (%s): %d questions' % (key, si + 1, title, len(qs)))
         for qi, q in enumerate(qs):
             where = '%s %d-%d' % (key, si + 1, qi + 1)
             if len(q) != 6: errs.append(where + ': needs 6 fields'); continue
@@ -142,15 +144,29 @@ def check(key, name, fam, upto, steps, errs, warns, seen):
 def main(write):
     errs, warns, idx, seen, stats = [], [], {}, {}, []
     for key, name, fam, upto, pas in LEVELS:
-        steps = load(key)
-        if steps is None: continue
+        got = load(key)
+        if got is None: continue
+        steps, mock = got
         own, targets = check(key, name, fam, upto, steps, errs, warns, seen)
         nq = sum(len(s[2]) for s in steps)
         stats.append('%s %d steps %d questions%s' % (name, len(steps), nq, (' ・ the level\'s own kanji in %d/%d' % (own, targets)) if targets else ''))
         idx[key] = [name, pas, [[t, k, len(q)] for t, k, q in steps]]
+        if mock:
+            # the dedicated mock: sections in the real order with their points; every question new (not a drill's)
+            drill = {q[0] for t, k, qs in steps for q in qs}
+            seen_m = {}
+            o2, t2 = check(key + '-mock', name, fam, upto, [(t, k, qs) for t, k, pt, qs in mock], errs, warns, seen_m, True)
+            for t, k, pt, qs in mock:
+                for q in qs:
+                    if q[0] in drill: errs.append('%s mock (%s): same stem as a drill: %s' % (key, t, q[0]))
+            mq = sum(len(x[3]) for x in mock); full = sum(x[2] * len(x[3]) for x in mock)
+            stats.append('  mock %d sections %d questions %d points%s' % (len(mock), mq, full, (' ・ own kanji %d/%d' % (o2, t2)) if t2 else ''))
+            idx[key] += [mq, full]
         if write:
             os.makedirs(OUT_JSON, exist_ok=True)
-            json.dump({'v': 1, 'k': key, 'n': name, 'p': pas, 's': [[t, k, [[q[0], list(q[1:5]), q[5]] for q in qs]] for t, k, qs in steps]},
+            out = {'v': 1, 'k': key, 'n': name, 'p': pas, 's': [[t, k, [[q[0], list(q[1:5]), q[5]] for q in qs]] for t, k, qs in steps]}
+            if mock: out['mk'] = [[t, k, pt, [[q[0], list(q[1:5]), q[5]] for q in qs]] for t, k, pt, qs in mock]
+            json.dump(out,
                       open(OUT_JSON + '/' + key + '.json', 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
     for s in stats: print(s)
     for w in warns: print('warn', w)

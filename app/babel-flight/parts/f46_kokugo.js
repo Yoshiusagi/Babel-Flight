@@ -135,7 +135,10 @@ function kkStart(k,mode,si){
   kkGet(k).then(function(d){
     var qs=[],title='';
     if(mode==='step'){if(!d.s[si])return;d.s[si][2].forEach(function(q,qi){qs.push(kkQ(d,si,qi));});qs=kkShuffle(qs);title=d.s[si][0];}
-    else if(mode==='weak'){kkWeak(k).slice(0,10).forEach(function(id){var p=id.split('.'),a=+p[0]-1,b=+p[1]-1;if(d.s[a]&&d.s[a][2][b])qs.push(kkQ(d,a,b));});title='苦手の復習';}
+    else if(mode==='weak'){kkWeak(k).slice(0,10).forEach(function(id){
+      var mk=id.charAt(0)==='m',p=id.replace('m','').split('.'),a=+p[0]-1,b=+p[1]-1;
+      if(mk){var st=d.mk&&d.mk[a],q=st&&st[3][b];if(q)qs.push({id:id,kind:st[1],stem:q[0],ans:q[1][0],opts:kkShuffle(q[1]),ex:q[2],step:st[0]});}
+      else if(d.s[a]&&d.s[a][2][b])qs.push(kkQ(d,a,b));});title='苦手の復習';}
     else{var all=[];d.s.forEach(function(st,a){st[2].forEach(function(q,b){all.push([a,b]);});});kkShuffle(all).slice(0,10).forEach(function(p){qs.push(kkQ(d,p[0],p[1]));});title='ランダム10問';}
     if(!qs.length)return;
     KK.run={k:k,mode:mode,si:si,title:title,q:qs,i:0,corr:0,mist:0,ans:-1,wrong:[],retry:{}};
@@ -199,13 +202,13 @@ function kkFinish(){
 /* ---- 本番形式の模試 (ファースト) ----
    Every question of the level, in the order of the real test's sections (shuffled inside a section), with the
    real test's time limit, no answers shown until the end, then the score out of the real full mark (漢検: 150 /
-   200 点; 日本語検定: %) against the pass line. The questions are the drills' for now (dedicated mock questions
-   come later, level by level). History in save.kk.m[level] (newest first, 10 kept); wrong answers join 苦手の復習. */
+   200 点; 日本語検定: %) against the pass line. A level with its own mock questions ("mk" in its file: the sections,
+   points and questions of the real test) uses them; the others use the drills' questions. History in save.kk.m[level] (newest first, 10 kept); wrong answers join 苦手の復習. */
 function kkMockSpec(k){
   var L=kkLv(k),x=kkIdx(k);if(!L||!x)return null;
   var n=0;x[2].forEach(function(st){n+=st[2];});
-  var kj=L[2]==='kj',small=kj&&/^kj(10|9|8)$/.test(k);
-  return {n:n,min:small?40:60,full:kj?(small?150:200):100,unit:kj?'点':'%',pass:x[1]};
+  var kj=L[2]==='kj',small=kj&&/^kj(10|9|8)$/.test(k),own=x[3]>0;
+  return {n:own?x[3]:n,own:own,min:small?40:60,full:kj?(own?x[4]:small?150:200):100,unit:kj?'点':'%',pass:x[1]};
 }
 function kkMockOK(){return cabinLv()>=3;}
 function kkMockHist(k){var m=kkS().m[k];return Array.isArray(m)?m:[];}
@@ -213,7 +216,7 @@ function kkMockCardHTML(k){
   var sp=kkMockSpec(k);if(!sp)return '';
   if(!kkMockOK())return '<p class="dim hint">🔒 本番形式の模試(時間制限つき)は「'+CABINS[3][1]+'」から</p>';
   var last=kkMockHist(k)[0];
-  return '<button class="ghost" type="button" data-kk-mock="'+k+'">本番形式の模試に挑戦<small>'+sp.n+'問 ・ '+sp.min+'分 ・ 合格ライン '+Math.ceil(sp.full*sp.pass/100)+sp.unit+
+  return '<button class="ghost" type="button" data-kk-mock="'+k+'">本番形式の模試に挑戦'+(sp.own?'(専用問題)':'')+'<small>'+sp.n+'問 ・ '+sp.min+'分 ・ 合格ライン '+Math.ceil(sp.full*sp.pass/100)+sp.unit+
     (last?' ・ 前回 '+last.s+sp.unit+(last.s>=Math.ceil(sp.full*sp.pass/100)?' 合格圏':''):'')+'</small></button>';
 }
 function kkMockStart(k){
@@ -221,7 +224,9 @@ function kkMockStart(k){
   closeSheet();
   kkGet(k).then(function(d){
     var sp=kkMockSpec(k),qs=[];
-    d.s.forEach(function(st,si){kkShuffle(st[2].map(function(q,qi){return qi;})).forEach(function(qi){var q=kkQ(d,si,qi);q.sec=st[0];q.si=si;qs.push(q);});});
+    if(d.mk&&d.mk.length){   /* the dedicated mock: sections and points of the real test, questions in order */
+      d.mk.forEach(function(st,si){st[3].forEach(function(q,qi){qs.push({id:'m'+(si+1)+'.'+(qi+1),kind:st[1],stem:q[0],ans:q[1][0],opts:kkShuffle(q[1]),ex:q[2],sec:st[0],si:si,pt:st[2]});});});
+    }else d.s.forEach(function(st,si){kkShuffle(st[2].map(function(q,qi){return qi;})).forEach(function(qi){var q=kkQ(d,si,qi);q.sec=st[0];q.si=si;q.pt=1;qs.push(q);});});
     KK.mock={k:k,q:qs,a:qs.map(function(){return -1;}),i:0,end:Date.now()+sp.min*60000,t0:Date.now(),sp:sp,res:null};
     kkMockTick();view='kkm';render();window.scrollTo(0,0);
   },function(){$('sheetHost').innerHTML='<div class="sheet plain" role="alertdialog"><div class="sheet-in"><h3>問題を読みこめませんでした</h3><button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';});
@@ -258,12 +263,12 @@ function kkMockList(){
 function kkMockSubmit(timeUp){
   var M=KK.mock;if(!M||M.res)return;
   clearInterval(KK.tick);closeSheet();
-  var secs={},order=[],corr=0,wrong=[];
+  var secs={},order=[],corr=0,wrong=[],got=0,all=0;
   M.q.forEach(function(q,i){
-    if(!secs[q.sec]){secs[q.sec]={n:0,c:0};order.push(q.sec);}
-    var ok=M.a[i]>=0&&q.opts[M.a[i]]===q.ans;secs[q.sec].n++;if(ok){secs[q.sec].c++;corr++;}else wrong.push({q:q,pick:M.a[i]});
+    if(!secs[q.sec]){secs[q.sec]={n:0,c:0,pt:q.pt||1};order.push(q.sec);}
+    var ok=M.a[i]>=0&&q.opts[M.a[i]]===q.ans;secs[q.sec].n++;all+=q.pt||1;if(ok){secs[q.sec].c++;corr++;got+=q.pt||1;}else wrong.push({q:q,pick:M.a[i]});
   });
-  var sp=M.sp,score=Math.round(corr/M.q.length*sp.full),line=Math.ceil(sp.full*sp.pass/100),used=Math.min(sp.min*60,Math.round((Date.now()-M.t0)/1000));
+  var sp=M.sp,score=Math.round(got/all*sp.full),line=Math.ceil(sp.full*sp.pass/100),used=Math.min(sp.min*60,Math.round((Date.now()-M.t0)/1000));
   M.res={corr:corr,score:score,line:line,secs:secs,order:order,wrong:wrong,used:used,timeUp:!!timeUp};
   var S=kkS(),h=kkMockHist(M.k).slice();h.unshift({d:Date.now(),s:score,t:used,v:1});S.m[M.k]=h.slice(0,10);
   var w=kkWeak(M.k).slice();wrong.forEach(function(x){if(w.indexOf(x.q.id)<0)w.push(x.q.id);});S.w[M.k]=w.slice(-300);
@@ -275,16 +280,16 @@ function kkMockResultHTML(){
   var M=KK.mock,R=M.res,sp=M.sp,pass=R.score>=R.line;
   var h='<div class="land kk-mres"><span class="lbl">本番形式の模試 ・ '+esc(kkName(M.k))+'</span>'+
     '<div class="grade">'+(pass?'合格圏！':'あと少し')+'</div><div class="lbl" style="margin-top:4px">'+(pass?'PASSED':'KEEP GOING')+'</div>'+
-    '<div class="kk-score"><b class="mono">'+R.score+'</b><span>/ '+sp.full+(sp.unit==='点'?'点':'')+'</span></div>'+
+    '<div class="kk-score"><b class="mono">'+R.score+'</b><span>'+(sp.unit==='点'?'/ '+sp.full+'点':'%')+'</span></div>'+
     '<p class="dim" style="font-size:13.5px">合格ライン(目安) '+R.line+sp.unit+' ・ 正解 '+R.corr+'/'+M.q.length+'問 ・ '+Math.floor(R.used/60)+'分'+('0'+R.used%60).slice(-2)+'秒'+(R.timeUp?' ・ 時間切れ':'')+'</p>'+
     '<div class="card kk-secs" style="text-align:left"><div class="card-h"><h2 class="jh">大問ごとの結果</h2></div>'+
-    R.order.map(function(t){var x=R.secs[t],p=Math.round(x.c/x.n*100);return '<div class="kk-sec"><span>'+esc(t)+'</span><i><b style="width:'+p+'%"></b></i><span class="mono">'+x.c+'/'+x.n+'</span></div>';}).join('')+'</div>';
+    R.order.map(function(t){var x=R.secs[t],p=Math.round(x.c/x.n*100);return '<div class="kk-sec"><span>'+esc(t)+(sp.own&&sp.unit==='点'?' <small class="dim">('+x.pt+'点×'+x.n+')</small>':'')+'</span><i><b style="width:'+p+'%"></b></i><span class="mono">'+x.c+'/'+x.n+'</span></div>';}).join('')+'</div>';
   if(R.wrong.length){
     h+='<div class="card" style="text-align:left"><div class="card-h"><h2 class="jh">まちがえた問題</h2><span class="lbl">苦手の復習に入りました</span></div>'+
       R.wrong.slice(0,40).map(function(x){var q=x.q;return '<div class="kk-wq"><p lang="ja">'+esc(kkPlain(q.stem))+'</p><p><b>正解: '+esc(q.ans)+'</b>'+(x.pick>=0?' <span class="dim">(あなた: '+esc(q.opts[x.pick])+')</span>':' <span class="dim">(未解答)</span>')+'</p>'+(q.ex?'<p class="dim">'+esc(q.ex)+'</p>':'')+'</div>';}).join('')+
       (R.wrong.length>40?'<p class="dim">ほか '+(R.wrong.length-40)+'問は「苦手の復習」で練習できます。</p>':'')+'</div>';
   }
-  return h+'<p class="dim hint">いまの模試の問題は、ドリルと共通です。模試専用の問題は級ごとに追加していきます。</p>'+
+  return h+'<p class="dim hint">'+(sp.own?'この模試は専用の問題です(ドリルとは別の問題)。'+(sp.unit==='点'?'大問の順・問題数・配点は本番と同じです。':'領域ごとに同じ数ずつ出ます。'):'いまの模試の問題は、ドリルと共通です。模試専用の問題は級ごとに追加していきます。')+'</p>'+
     '<div class="acts"><button class="go" type="button" data-kk-mock="'+M.k+'">もう一度挑戦する</button><button class="ghost" type="button" data-kk-mdone>ホームに戻る</button></div></div>';
 }
 
