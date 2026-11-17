@@ -36,6 +36,8 @@ var KK_DIR={
  kotowaza:'――線のカタカナにあてはまる漢字を選びなさい。',
  keigo:'敬語の使い方として最も適切なものを選びなさい。',bunpo:'最も適切なものを選びなさい。',goi:'最も適切なものを選びなさい。',
  imi:'言葉の意味として最も適切なものを選びなさい。',hyoki:'表記として最も適切なものを選びなさい。',kanji:'最も適切なものを選びなさい。',sogo:'最も適切なものを選びなさい。'};
+/* the youngest levels (小学1・2年) get a direction in kana */
+var KK_KID='ただしい ものを えらびましょう。';
 var KK={data:{},load:{},run:null};
 function kkVisible(){return typeof UI!=='undefined'&&UI==='ja'&&cabinOn()&&cabinTester();}
 function kkHere(){return typeof UI!=='undefined'&&UI==='ja'&&save.lang==='ja';}
@@ -147,7 +149,7 @@ function kkRunHTML(){
     '<div class="fl-id"><span class="lbl">'+esc(kkName(R.k))+'</span><b>'+esc(f+R.title)+'</b></div><div class="turb">ミス '+R.mist+'</div></div>'+
     '<div class="kk-prog" role="progressbar" aria-valuemin="0" aria-valuemax="'+n+'" aria-valuenow="'+R.i+'"><i style="width:'+pct+'%"></i></div>'+
     '<div class="phase"><span>'+esc(KK_KIND[q.kind]||'')+(q.retry?' ・ もう一度':'')+'</span><span>'+(R.i+1)+'/'+n+'問</span></div>'+
-    '<div class="q kk-q"><span class="qh">'+esc(KK_DIR[q.kind]||'最も適切なものを選びなさい。')+'</span>'+kkStem(q.stem,q.kind)+
+    '<div class="q kk-q"><span class="qh">'+esc(/^(kj10|kj9|nk7)$/.test(R.k)?KK_KID:KK_DIR[q.kind]||'最も適切なものを選びなさい。')+'</span>'+kkStem(q.stem,q.kind)+
     '<div class="opts">'+q.opts.map(function(o,i){
       var c=R.ans<0?'':(o===q.ans?' ok':i===R.ans?' no':' off');
       return '<button class="opt kk-opt'+c+'" type="button" data-kk-opt="'+i+'"'+(R.ans>=0?' disabled':'')+'><span class="on">'+(i+1)+'</span><span lang="ja">'+esc(o)+'</span></button>';
