@@ -290,6 +290,29 @@ Only for ファースト (`cabinLv()` 3; `fcOn()`), never in the iPhone app.
   `dict/mod_*.py` (one tuple per sense: word, 品詞, 意味, tags, 例文, 訳, メモ), `dict/en_corpus.txt`; ejdict-hand is
   cloned into `dict/ejdict/` (ignored by git) or given with `EJDICT=`.
 
+## 国語の検定: 漢検・日本語検定 (the 日本語 course with the Japanese display) — `parts/f46_kokugo.js` + `f46_css.html`
+
+- The 日本語 course used to be only for the other display languages (JLPT). With the Japanese display it now shows
+  too, without the スターター lessons (no はじめの一歩 / 旅行フレーズ, no level sheet, `pathSections('ja')` is empty):
+  its home is the two tests only, 漢検 10級〜1級 and 日本語検定 7級〜1級 (`KK_LV`). ビジネスから (`kkLocked`), the
+  本番形式の模試 ファーストから (planned). Only the test account sees the course until paid plans open (`kkVisible`),
+  never in the iPhone app. Other display languages keep the usual 日本語 course.
+- A level is steps of 10 original 4-choice questions with an explanation, in the order of the real test's sections
+  (読み・書き取り・同音異字・漢字識別・熟語の構成・部首・対義語類義語・送りがな・四字熟語・誤字訂正 …). Written in
+  `kk/src/<key>.py` as `(stem, answer, wrong ×3, explanation)`, the part asked about in `[ ]`, and built by
+
+      python3 babel-flight/kk/gen_kk.py --write
+
+  into `public/kk/<key>.json` (fetched when a level is opened, kept offline in `bf-off-kk` by `sw.js`) and `KK_IDX`
+  (`parts/f46_kkidx.js`). The script stops on a kanji above the level (漢検: every kanji of the question and the
+  options must be in that level's range of 配当漢字; 日本語検定・準1級・1級: a warning), on repeated questions and on
+  wrong stroke counts, and warns when a reading / writing doesn't match the 常用漢字表 (連濁・促音・付表 allowed).
+  The kanji data is `kk/data/kanji.json` (sources and licences in `kk/data/README.md`, rebuilt by `vendor.py`).
+- Progress in `save.kk` (`kkClean` in `e4_core.js`): the level chosen, the best score of each step, the questions
+  answered wrong (「苦手の復習」, they leave once answered right). A wrong answer comes back once at the end of the
+  step. The 合格圏メーター is the best scores over all questions, the line is the test's pass mark (70% / 80%). A
+  finished step lands like a lesson (`completeLesson` mode `kk`, miles and streak; `o.acts` adds 次のステップ・苦手の復習).
+
 ## 他のアプリにない練習 — `parts/e3g_special.js`, `f39_special.js` … `f42_noise.js` (CSS in `f39_css.html`, `f40_css.html`)
 
 All free to run (no AI). 日本語 display only unless noted.

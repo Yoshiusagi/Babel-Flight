@@ -118,6 +118,7 @@ function completeLesson(o){
   h+=aiDrillBtnHTML();
   if(typeof shareLandBtnHTML==='function')h+=shareLandBtnHTML({L:L,mode:o.mode,uid:o.uid,unit:unitMode,flight:unitMode?flightNo(L,o.uid):'',city:c[0],cityJp:c[1],stars:o.stars,miles:miles,grade:o.grade,rank:rankAfter,rankUp:rankAfter>rankBefore,cap:!!firstCap});
   if(unitMode){var nu=nextPathUnit(L,o.uid);if(nu)h+='<button class="go" type="button" data-next-lesson="'+esc(nu)+'">次のレッスンへ<small>'+esc(unitTitle(nu))+' ・ 地図で飛行機が進みます</small></button>';}
+  if(o.acts)h+=o.acts;  /* extra buttons from the caller (国語の検定: 次のステップ・苦手の復習) */
   h+='<button class="ghost" type="button" data-home>ホームに戻る(地図を見る)</button></div></div>';
   view='land';F=null;board=null;closeSheet();$('tabs').hidden=true;
   try{speechSynthesis.cancel();}catch(e){}

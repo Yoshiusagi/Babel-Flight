@@ -42,7 +42,7 @@ var KEY='babelflight.save.v1';
 var OLD_ORDER=['checkin','inflight','immigration','hotel','restaurant','city','atc1','atc2'];
 function blankProg(){var p={};ORDER.forEach(function(k){p[k]={items:{},units:{}};});return p;}
 function defaults(){return {v:2,t:0,name:'PASSENGER',icon:'',rz:0,lang:'ko',prof:'',level:'mid',lv:{},nw:'',why:'',weak:[],why0:0,seen:'',goal:2,onboarded:false,theme:'auto',sound:true,mode:'daily',amb:false,tap:true,pos:{},
-  miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,dly:[],wb:{},trip:null,daily:{d:'',n:0},mh:null,st:null,cap:0,tq:0,enVar:'us',acc:{},rem:{},stMax:0,accent:'',atcApt:{},atcAcc:1,df:null,prog:blankProg()};}
+  miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,dly:[],wb:{},trip:null,daily:{d:'',n:0},mh:null,st:null,cap:0,tq:0,enVar:'us',acc:{},rem:{},stMax:0,accent:'',atcApt:{},atcAcc:1,df:null,kk:null,prog:blankProg()};}
 function mergeSave(raw){
   var d=defaults();
   if(!raw||typeof raw!=='object')return d;
@@ -112,7 +112,23 @@ function mergeSave(raw){
   d.cap=+d.cap>0?+d.cap:0;d.tq=+d.tq>0?Math.floor(+d.tq):0;
   /* DUTY FREE (f44_duty.js): items, what is worn, miles exchanged, yen per month, the monthly limit */
   d.df=raw.df&&typeof raw.df==='object'?(typeof DF_MAP==='object'&&DF_MAP?dfClean(raw.df):raw.df):null;
+  d.kk=kkClean(raw.kk);
   return d;
+}
+/* 国語の検定 (f46_kokugo.js): the level chosen, the best score of each step, the questions answered wrong */
+function kkClean(x){
+  if(!x||typeof x!=='object')return null;
+  var key=/^[a-z0-9]{2,6}$/,o={sel:typeof x.sel==='string'&&key.test(x.sel)?x.sel:'',b:{},w:{},m:{}};
+  ['b','w','m'].forEach(function(f){
+    var s=x[f];if(!s||typeof s!=='object')return;
+    Object.keys(s).slice(0,40).forEach(function(k){
+      var v=s[k];if(!key.test(k)||!Array.isArray(v))return;
+      if(f==='b')o.b[k]=v.slice(0,40).map(function(n){return n==null?null:Math.max(0,Math.min(40,Math.floor(+n||0)));});
+      else if(f==='w')o.w[k]=v.filter(function(q){return typeof q==='string'&&/^\d{1,2}\.\d{1,2}$/.test(q);}).slice(-300);
+      else o.m[k]=v.slice(0,10).filter(function(r){return r&&typeof r==='object';}).map(function(r){return {d:+r.d||0,s:Math.floor(+r.s||0),t:Math.floor(+r.t||0),v:Math.floor(+r.v||1)};});
+    });
+  });
+  return o;
 }
 function loadLocal(){try{return mergeSave(JSON.parse(localStorage.getItem(KEY)||'null'));}catch(e){return defaults();}}
 var save=loadLocal();

@@ -29,6 +29,7 @@ f40_css.html
 f43_css.html
 f44_css.html
 f45_css.html
+f46_css.html
 @HEADEND
 e2_body.html
 a0_env.js
@@ -122,5 +123,7 @@ f42_noise.js
 f43_accent.js
 f44_duty.js
 f45_dict.js
+f46_kkidx.js
+f46_kokugo.js
 f7_boot.js
 @END

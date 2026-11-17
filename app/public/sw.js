@@ -5,12 +5,14 @@
    cards, display-language dictionaries and recorded voices into caches named bf-off-*. Those are kept here, the
    JSON files are then network first (fresh when online, the downloaded copy offline) and the recordings cache first.
    英和辞典 (/dict/en/, babel-flight/parts/f45_dict.js): network first, and every file fetched is kept in bf-off-dict, so a
-   word looked up once also works offline (オフライン完全版 can download the whole dictionary into the same cache). */
+   word looked up once also works offline (オフライン完全版 can download the whole dictionary into the same cache).
+   国語の検定 (/kk/, babel-flight/parts/f46_kokugo.js): the same, kept in bf-off-kk. */
 const CORE_CACHE = 'bf-core-v2';
 const FONT_CACHE = 'bf-fonts-v1';
 const OFF_PREFIX = 'bf-off-';
 const OFF_JSON = /^\/(?:mx|iv|i18n)\/[a-z0-9-]+\.json$/;
 const DICT_JSON = /^\/dict\/en\/(?:(?:w|j)\/[a-z0-9_]+|m|meta)\.json$/;
+const KK_JSON = /^\/kk\/[a-z0-9-]+\.json$/;
 const CORE = ['/', '/favicon.svg', '/manifest.webmanifest', '/icons/app-192.png', '/icons/app-512.png', '/icons/app-touch-180.png'];
 
 self.addEventListener('install', (event) => {
@@ -60,13 +62,14 @@ self.addEventListener('fetch', (event) => {
       );
       return;
     }
-    if (DICT_JSON.test(url.pathname)) {
+    if (DICT_JSON.test(url.pathname) || KK_JSON.test(url.pathname)) {
+      const store = OFF_PREFIX + (KK_JSON.test(url.pathname) ? 'kk' : 'dict');
       event.respondWith(
         fetch(req)
           .then((res) => {
             if (res.ok) {
               const copy = res.clone();
-              caches.open(OFF_PREFIX + 'dict').then((c) => c.put(url.pathname, copy));
+              caches.open(store).then((c) => c.put(url.pathname, copy));
             }
             return res;
           })
