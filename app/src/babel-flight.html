@@ -2369,6 +2369,24 @@ html[data-fr="fr-runway"] .id-card .photo{outline:3px dotted #ffd34d;outline-off
 .kk-big{display:inline-block;min-width:1.4em;font-size:44px;line-height:1.25;font-weight:700;letter-spacing:.06em}
 .kk-u{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px;text-decoration-color:var(--c-ja);font-weight:700}
 .kk-opt span[lang]{font-size:17px}
+.kk-opt.pick{border-color:var(--c-ja);background:color-mix(in srgb,var(--c-ja) 16%,var(--surface))}
+.kk-clock{font-variant-numeric:tabular-nums;min-width:62px;text-align:center}
+.kk-clock.low{color:var(--bad)}
+.kk-mnav{margin-top:14px;gap:8px}
+.kk-mnav>*{flex:1;width:auto;margin:0}
+.kk-mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:6px;margin:10px 0 14px;max-height:46vh;overflow:auto}
+.kk-mgrid button{min-height:40px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink2);font:inherit;font-size:13px}
+.kk-mgrid button.on{background:color-mix(in srgb,var(--c-ja) 22%,var(--surface));color:var(--ink);border-color:transparent}
+.kk-mgrid button.cur{outline:2px solid var(--c-ja)}
+.kk-score{display:flex;align-items:baseline;justify-content:center;gap:6px;margin:10px 0 4px}
+.kk-score b{font-size:54px;line-height:1}
+.kk-score span{font-size:16px;color:var(--ink2)}
+.kk-sec{display:grid;grid-template-columns:minmax(0,1fr) 90px 52px;align-items:center;gap:8px;font-size:13px;margin-top:8px}
+.kk-sec i{display:block;height:6px;border-radius:99px;background:var(--surface2);overflow:hidden}
+.kk-sec i b{display:block;height:100%;background:var(--c-ja)}
+.kk-sec .mono{text-align:right}
+.kk-wq{padding:10px 0;border-top:1px solid var(--line);font-size:13.5px}
+.kk-wq p{margin:2px 0}
 @media (max-width:380px){.kk-stem{font-size:17.5px}.kk-big{font-size:38px}}
 </style>
 </head>
@@ -27636,7 +27654,8 @@ var KK_IDX={"kj10":["漢検10級",80,[["よみ ①","yomi",10],["よみ ②","yo
    The drills are original 4-choice questions with an explanation, written in babel-flight/kk/src/<key>.py and
    checked by kk/gen_kk.py (the kanji of each 漢検 level against its 配当漢字, the readings against the 常用漢字表),
    which writes public/kk/<key>.json (loaded when a level is opened) and KK_IDX (f46_kkidx.js).
-   Progress: save.kk = {sel: level, b: {level: [best per step]}, w: {level: ['step.question' answered wrong]}}. */
+   Progress: save.kk = {sel: level, b: {level: [best per step]}, w: {level: ['step.question' answered wrong]},
+   m: {level: [mock results {d, s, t}]}}. */
 var KK_LV=[
  ['kj10','10級','kj','小学1年'],['kj9','9級','kj','小学2年'],['kj8','8級','kj','小学3年'],['kj7','7級','kj','小学4年'],
  ['kj6','6級','kj','小学5年'],['kj5','5級','kj','小学6年'],['kj4','4級','kj','中学在学'],['kj3','3級','kj','中学卒業'],
@@ -27728,7 +27747,7 @@ function kkHomeHTML(){
                   :'<button class="go" type="button" data-kk-mix="'+k+'">ランダム10問<small>全部のステップから</small></button>')+
          (wk?'<button class="ghost" type="button" data-kk-weak="'+k+'">苦手の復習<small>まちがえた問題 '+wk+'問</small></button>':'');
   }
-  h+=(cabinLv()>=3?'<p class="dim hint">📝 本番形式の模試(時間制限つき)は準備中です</p>':'<p class="dim hint">🔒 本番形式の模試(時間制限つき)は「'+CABINS[3][1]+'」から(準備中)</p>');
+  h+=kkMockCardHTML(k);
   h+='<button class="xg-chg kk-chg" type="button" data-kk-pick>級を変える</button></section>';
   if(x){
     var b=kkBest(k),nx2=kkNextStep(k);
@@ -27826,6 +27845,98 @@ function kkFinish(){
     wrong:R.wrong.slice(0,5).map(function(q){return {t:q.ans,jp:kkPlain(q.stem)};}),wrongTitle:'まちがえた問題',wrongNote:'苦手の復習に入りました'});
 }
 
+/* ---- 本番形式の模試 (ファースト) ----
+   Every question of the level, in the order of the real test's sections (shuffled inside a section), with the
+   real test's time limit, no answers shown until the end, then the score out of the real full mark (漢検: 150 /
+   200 点; 日本語検定: %) against the pass line. The questions are the drills' for now (dedicated mock questions
+   come later, level by level). History in save.kk.m[level] (newest first, 10 kept); wrong answers join 苦手の復習. */
+function kkMockSpec(k){
+  var L=kkLv(k),x=kkIdx(k);if(!L||!x)return null;
+  var n=0;x[2].forEach(function(st){n+=st[2];});
+  var kj=L[2]==='kj',small=kj&&/^kj(10|9|8)$/.test(k);
+  return {n:n,min:small?40:60,full:kj?(small?150:200):100,unit:kj?'点':'%',pass:x[1]};
+}
+function kkMockOK(){return cabinLv()>=3;}
+function kkMockHist(k){var m=kkS().m[k];return Array.isArray(m)?m:[];}
+function kkMockCardHTML(k){
+  var sp=kkMockSpec(k);if(!sp)return '';
+  if(!kkMockOK())return '<p class="dim hint">🔒 本番形式の模試(時間制限つき)は「'+CABINS[3][1]+'」から</p>';
+  var last=kkMockHist(k)[0];
+  return '<button class="ghost" type="button" data-kk-mock="'+k+'">本番形式の模試に挑戦<small>'+sp.n+'問 ・ '+sp.min+'分 ・ 合格ライン '+Math.ceil(sp.full*sp.pass/100)+sp.unit+
+    (last?' ・ 前回 '+last.s+sp.unit+(last.s>=Math.ceil(sp.full*sp.pass/100)?' 合格圏':''):'')+'</small></button>';
+}
+function kkMockStart(k){
+  if(!kkMockOK()){$('sheetHost').innerHTML=lockSheetHTML(kkName(k)+' 模試',3);return;}
+  closeSheet();
+  kkGet(k).then(function(d){
+    var sp=kkMockSpec(k),qs=[];
+    d.s.forEach(function(st,si){kkShuffle(st[2].map(function(q,qi){return qi;})).forEach(function(qi){var q=kkQ(d,si,qi);q.sec=st[0];q.si=si;qs.push(q);});});
+    KK.mock={k:k,q:qs,a:qs.map(function(){return -1;}),i:0,end:Date.now()+sp.min*60000,t0:Date.now(),sp:sp,res:null};
+    kkMockTick();view='kkm';render();window.scrollTo(0,0);
+  },function(){$('sheetHost').innerHTML='<div class="sheet plain" role="alertdialog"><div class="sheet-in"><h3>問題を読みこめませんでした</h3><button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';});
+}
+function kkMockLeft(){var M=KK.mock;return M?Math.max(0,Math.round((M.end-Date.now())/1000)):0;}
+function kkMockClock(){var s=kkMockLeft();return Math.floor(s/60)+':'+('0'+s%60).slice(-2);}
+function kkMockTick(){
+  clearInterval(KK.tick);
+  KK.tick=setInterval(function(){
+    var M=KK.mock;if(!M||M.res){clearInterval(KK.tick);return;}
+    var el=$('kkClock');if(el){el.textContent=kkMockClock();el.classList.toggle('low',kkMockLeft()<300);}
+    if(kkMockLeft()<=0){clearInterval(KK.tick);kkMockSubmit(true);}
+  },1000);
+}
+function kkMockHTML(){
+  var M=KK.mock,q=M.q[M.i],n=M.q.length,done=M.a.filter(function(v){return v>=0;}).length;
+  var kid=/^(kj10|kj9|nk7)$/.test(M.k);
+  return '<div class="kk-run kk-mock"><div class="fl-top"><button class="x" type="button" data-kk-mquit aria-label="やめる">'+closeIcon()+'</button>'+
+    '<div class="fl-id"><span class="lbl">本番形式の模試</span><b>'+esc(kkName(M.k))+'</b></div><div class="turb kk-clock" id="kkClock" aria-label="残り時間">'+kkMockClock()+'</div></div>'+
+    '<div class="kk-prog"><i style="width:'+Math.round(done/n*100)+'%"></i></div>'+
+    '<div class="phase"><span>'+esc(q.sec)+'</span><span>'+(M.i+1)+'/'+n+'問 ・ 解答ずみ '+done+'</span></div>'+
+    '<div class="q kk-q"><span class="qh">'+esc(kid?KK_KID:KK_DIR[q.kind]||'最も適切なものを選びなさい。')+'</span>'+kkStem(q.stem,q.kind)+
+    '<div class="opts">'+q.opts.map(function(o,i){return '<button class="opt kk-opt'+(M.a[M.i]===i?' pick':'')+'" type="button" data-kk-mpick="'+i+'" aria-pressed="'+(M.a[M.i]===i)+'"><span class="on">'+(i+1)+'</span><span lang="ja">'+esc(o)+'</span></button>';}).join('')+'</div>'+
+    '<div class="row2 kk-mnav"><button class="ghost" type="button" data-kk-mgo="-1"'+(M.i?'':' disabled')+'>← 前へ</button><button class="ghost" type="button" data-kk-mlist>問題一覧</button>'+
+    (M.i+1<n?'<button class="ghost" type="button" data-kk-mgo="1">次へ →</button>':'<button class="go" type="button" data-kk-msubmit style="margin:0">提出する</button>')+'</div>'+
+    '</div><div class="pad-b"></div></div>';
+}
+function kkMockList(){
+  var M=KK.mock;
+  $('sheetHost').innerHTML='<div class="sheet plain" role="dialog" aria-label="問題一覧"><div class="sheet-in"><h3>問題一覧</h3><p class="dim" style="font-size:13px">番号を押すと、その問題に移動します。</p><div class="kk-mgrid">'+
+    M.q.map(function(q,i){return '<button type="button" class="'+(M.a[i]>=0?'on':'')+(i===M.i?' cur':'')+'" data-kk-mjump="'+i+'">'+(i+1)+'</button>';}).join('')+'</div>'+
+    '<button class="go" type="button" data-kk-msubmit>提出する<small>未解答 '+M.a.filter(function(v){return v<0;}).length+'問</small></button><button class="ghost" type="button" data-close-sheet>問題にもどる</button></div></div>';
+}
+function kkMockSubmit(timeUp){
+  var M=KK.mock;if(!M||M.res)return;
+  clearInterval(KK.tick);closeSheet();
+  var secs={},order=[],corr=0,wrong=[];
+  M.q.forEach(function(q,i){
+    if(!secs[q.sec]){secs[q.sec]={n:0,c:0};order.push(q.sec);}
+    var ok=M.a[i]>=0&&q.opts[M.a[i]]===q.ans;secs[q.sec].n++;if(ok){secs[q.sec].c++;corr++;}else wrong.push({q:q,pick:M.a[i]});
+  });
+  var sp=M.sp,score=Math.round(corr/M.q.length*sp.full),line=Math.ceil(sp.full*sp.pass/100),used=Math.min(sp.min*60,Math.round((Date.now()-M.t0)/1000));
+  M.res={corr:corr,score:score,line:line,secs:secs,order:order,wrong:wrong,used:used,timeUp:!!timeUp};
+  var S=kkS(),h=kkMockHist(M.k).slice();h.unshift({d:Date.now(),s:score,t:used,v:1});S.m[M.k]=h.slice(0,10);
+  var w=kkWeak(M.k).slice();wrong.forEach(function(x){if(w.indexOf(x.q.id)<0)w.push(x.q.id);});S.w[M.k]=w.slice(-300);
+  store();
+  view='kkr';render();window.scrollTo(0,0);
+  if(score>=line&&typeof confetti==='function')confetti();
+}
+function kkMockResultHTML(){
+  var M=KK.mock,R=M.res,sp=M.sp,pass=R.score>=R.line;
+  var h='<div class="land kk-mres"><span class="lbl">本番形式の模試 ・ '+esc(kkName(M.k))+'</span>'+
+    '<div class="grade">'+(pass?'合格圏！':'あと少し')+'</div><div class="lbl" style="margin-top:4px">'+(pass?'PASSED':'KEEP GOING')+'</div>'+
+    '<div class="kk-score"><b class="mono">'+R.score+'</b><span>/ '+sp.full+(sp.unit==='点'?'点':'')+'</span></div>'+
+    '<p class="dim" style="font-size:13.5px">合格ライン(目安) '+R.line+sp.unit+' ・ 正解 '+R.corr+'/'+M.q.length+'問 ・ '+Math.floor(R.used/60)+'分'+('0'+R.used%60).slice(-2)+'秒'+(R.timeUp?' ・ 時間切れ':'')+'</p>'+
+    '<div class="card kk-secs" style="text-align:left"><div class="card-h"><h2 class="jh">大問ごとの結果</h2></div>'+
+    R.order.map(function(t){var x=R.secs[t],p=Math.round(x.c/x.n*100);return '<div class="kk-sec"><span>'+esc(t)+'</span><i><b style="width:'+p+'%"></b></i><span class="mono">'+x.c+'/'+x.n+'</span></div>';}).join('')+'</div>';
+  if(R.wrong.length){
+    h+='<div class="card" style="text-align:left"><div class="card-h"><h2 class="jh">まちがえた問題</h2><span class="lbl">苦手の復習に入りました</span></div>'+
+      R.wrong.slice(0,40).map(function(x){var q=x.q;return '<div class="kk-wq"><p lang="ja">'+esc(kkPlain(q.stem))+'</p><p><b>正解: '+esc(q.ans)+'</b>'+(x.pick>=0?' <span class="dim">(あなた: '+esc(q.opts[x.pick])+')</span>':' <span class="dim">(未解答)</span>')+'</p>'+(q.ex?'<p class="dim">'+esc(q.ex)+'</p>':'')+'</div>';}).join('')+
+      (R.wrong.length>40?'<p class="dim">ほか '+(R.wrong.length-40)+'問は「苦手の復習」で練習できます。</p>':'')+'</div>';
+  }
+  return h+'<p class="dim hint">いまの模試の問題は、ドリルと共通です。模試専用の問題は級ごとに追加していきます。</p>'+
+    '<div class="acts"><button class="go" type="button" data-kk-mock="'+M.k+'">もう一度挑戦する</button><button class="ghost" type="button" data-kk-mdone>ホームに戻る</button></div></div>';
+}
+
 /* ---- hooks ---- */
 if(typeof MODE_TITLE==='object')MODE_TITLE.kk='国語の検定';
 (function(){
@@ -27844,6 +27955,12 @@ if(typeof MODE_TITLE==='object')MODE_TITLE.kk='国語の検定';
   mapMount=function(){if(kkHere()&&view==='home'){MODEPREV=save.mode;return;}return mm.apply(this,arguments);};
   var r0=render;
   render=function(){
+    if(view==='kkm'||view==='kkr'){
+      if(!KK.mock){view='home';return r0.apply(this,arguments);}
+      $('tabs').hidden=true;var mm=$('main');mm.innerHTML=view==='kkm'?kkMockHTML():kkMockResultHTML();
+      mm.classList.remove('enter','enter-l','enter-r');void mm.offsetWidth;mm.classList.add('enter');
+      document.body.classList.remove('dark-ui');PREVVIEW=view;return;
+    }
     if(view==='kk'){
       if(!KK.run){view='home';return r0.apply(this,arguments);}
       $('tabs').hidden=true;var main=$('main'),R=KK.run;main.innerHTML=kkRunHTML();
@@ -27870,6 +27987,17 @@ document.addEventListener('click',function(e){
   if(t.hasAttribute('data-kk-weak')){kkStart(g('data-kk-weak'),'weak',0);return;}
   if(t.hasAttribute('data-kk-mix')){kkStart(g('data-kk-mix'),'mix',0);return;}
   if(t.hasAttribute('data-kk-pick')){kkPickSheet();return;}
+  if(t.hasAttribute('data-kk-mock')){kkMockStart(g('data-kk-mock'));return;}
+  if(t.hasAttribute('data-kk-mpick')){var M=KK.mock;if(M&&!M.res){var v=+g('data-kk-mpick');M.a[M.i]=M.a[M.i]===v?-1:v;render();}return;}
+  if(t.hasAttribute('data-kk-mgo')){var M2=KK.mock;if(M2){M2.i=Math.max(0,Math.min(M2.q.length-1,M2.i+(+g('data-kk-mgo'))));render();window.scrollTo(0,0);}return;}
+  if(t.hasAttribute('data-kk-mjump')){var M3=KK.mock;if(M3){M3.i=+g('data-kk-mjump');closeSheet();render();window.scrollTo(0,0);}return;}
+  if(t.hasAttribute('data-kk-mlist')){kkMockList();return;}
+  if(t.hasAttribute('data-kk-msubmit')){
+    var un=KK.mock?KK.mock.a.filter(function(v){return v<0;}).length:0;
+    if(un&&!t.closest('.kk-confirm')){$('sheetHost').innerHTML='<div class="sheet plain kk-confirm" role="alertdialog"><div class="sheet-in"><h3>提出しますか？</h3><p class="dim" style="font-size:14px">未解答の問題が '+un+'問あります。</p><div class="row2"><button class="ghost" type="button" data-close-sheet style="flex:1">続ける</button><button class="go" type="button" data-kk-msubmit style="flex:1;margin:0">提出する</button></div></div></div>';return;}
+    kkMockSubmit(false);return;}
+  if(t.hasAttribute('data-kk-mquit')){$('sheetHost').innerHTML='<div class="sheet bad" role="alertdialog"><div class="sheet-in"><h3>模試をやめますか？</h3><p class="dim" style="font-size:14px">ここまでの解答は保存されません。</p><div class="row2"><button class="ghost" type="button" data-close-sheet style="flex:1">続ける</button><button class="ghost danger" type="button" data-kk-mdone style="flex:1">やめる</button></div></div></div>';return;}
+  if(t.hasAttribute('data-kk-mdone')){clearInterval(KK.tick);KK.mock=null;closeSheet();view='home';render();window.scrollTo(0,0);return;}
   if(t.hasAttribute('data-kk-sel')){kkS().sel=g('data-kk-sel');store();closeSheet();render();return;}
   if(t.hasAttribute('data-kk-abort')){
     $('sheetHost').innerHTML='<div class="sheet bad" role="alertdialog" aria-label="終了の確認"><div class="sheet-in"><h3>このステップをやめますか？</h3><p class="dim" style="font-size:14px">ここまでの記録は保存されません。</p>'+
@@ -27878,6 +28006,12 @@ document.addEventListener('click',function(e){
   if(t.hasAttribute('data-kk-quit')){KK.run=null;closeSheet();view='home';render();window.scrollTo(0,0);return;}
 });
 document.addEventListener('keydown',function(e){
+  if(view==='kkm'&&KK.mock&&!e.metaKey&&!e.ctrlKey&&!e.altKey){
+    var M=KK.mock;if(/^[1-4]$/.test(e.key)){M.a[M.i]=+e.key-1;render();e.preventDefault();}
+    else if(e.key==='ArrowRight'&&M.i+1<M.q.length){M.i++;render();e.preventDefault();}
+    else if(e.key==='ArrowLeft'&&M.i>0){M.i--;render();e.preventDefault();}
+    return;
+  }
   if(view!=='kk'||!KK.run||e.metaKey||e.ctrlKey||e.altKey)return;
   if(KK.run.ans<0&&/^[1-4]$/.test(e.key)){kkAnswer(+e.key-1);e.preventDefault();}
   else if(KK.run.ans>=0&&(e.key==='Enter'||e.key===' ')){kkNext();e.preventDefault();}

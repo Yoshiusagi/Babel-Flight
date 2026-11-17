@@ -295,7 +295,7 @@ Only for ファースト (`cabinLv()` 3; `fcOn()`), never in the iPhone app.
 - The 日本語 course used to be only for the other display languages (JLPT). With the Japanese display it now shows
   too, without the スターター lessons (no はじめの一歩 / 旅行フレーズ, no level sheet, `pathSections('ja')` is empty):
   its home is the two tests only, 漢検 10級〜1級 and 日本語検定 7級〜1級 (`KK_LV`). ビジネスから (`kkLocked`), the
-  本番形式の模試 ファーストから (planned). Only the test account sees the course until paid plans open (`kkVisible`),
+  本番形式の模試 ファーストから. Only the test account sees the course until paid plans open (`kkVisible`),
   never in the iPhone app. Other display languages keep the usual 日本語 course.
 - A level is steps of 10 original 4-choice questions with an explanation, in the order of the real test's sections
   (読み・書き取り・同音異字・漢字識別・熟語の構成・部首・対義語類義語・送りがな・四字熟語・誤字訂正 …). Written in
@@ -312,6 +312,14 @@ Only for ファースト (`cabinLv()` 3; `fcOn()`), never in the iPhone app.
   answered wrong (「苦手の復習」, they leave once answered right). A wrong answer comes back once at the end of the
   step. The 合格圏メーター is the best scores over all questions, the line is the test's pass mark (70% / 80%). A
   finished step lands like a lesson (`completeLesson` mode `kk`, miles and streak; `o.acts` adds 次のステップ・苦手の復習).
+- 本番形式の模試 (ファースト, `kkMockStart`, views `kkm` / `kkr`): every question of the level in the order of the
+  real test's sections (shuffled inside a section), the real time limit (漢検10〜8級 40分, ほか 60分), answers hidden
+  until 提出 (問題一覧 to jump, auto 提出 when time is up), then the score out of the real full mark (漢検 150 / 200点,
+  日本語検定 %) against the pass line, a table per section and the wrong answers with explanations (they join
+  苦手の復習). History in `save.kk.m` (10 kept). The questions are the drills' for now; dedicated mock questions are
+  to be added level by level.
+- 10級・9級・日本語検定7級 show the direction in kana (`KK_KID`). Levels: 漢検 10級〜1級 (60〜130 questions each,
+  1,200 in all) and 日本語検定 7級〜1級 (敬語・文法・語彙・言葉の意味・表記・漢字, 60 each).
 
 ## 他のアプリにない練習 — `parts/e3g_special.js`, `f39_special.js` … `f42_noise.js` (CSS in `f39_css.html`, `f40_css.html`)
 
