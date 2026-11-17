@@ -13,13 +13,14 @@ var KK_LV=[
  ['nk7','7級','nk','小学2年'],['nk6','6級','nk','小学4年'],['nk5','5級','nk','小学6年'],['nk4','4級','nk','中学卒業'],
  ['nk3','3級','nk','高校卒業'],['nk2','2級','nk','大学卒業・社会人'],['nk1','1級','nk','社会人上級']];
 var KK_FAM={kj:{name:'漢字検定(漢検)',pre:'漢検',sub:'読み・書き取り・部首・四字熟語など'},nk:{name:'日本語検定',pre:'日本語検定',sub:'敬語・文法・語彙・言葉の意味・表記・漢字'}};
-var KK_KIND={yomi:'読み',hyogai:'表外の読み',kaki:'書き取り',doon:'同音・同訓異字',okuri:'送りがな',bushu:'部首',kousei:'熟語の構成',yoji:'四字熟語',yojii:'四字熟語の意味',
+var KK_KIND={hitsujun:'筆順',yomi:'読み',hyogai:'表外の読み',kaki:'書き取り',doon:'同音・同訓異字',okuri:'送りがな',bushu:'部首',kousei:'熟語の構成',yoji:'四字熟語',yojii:'四字熟語の意味',
  taigi:'対義語・類義語',ruigi:'類義語',goji:'誤字訂正',shiki:'漢字識別',kakusu:'画数',onkun:'音と訓',kotowaza:'故事・ことわざ',
  keigo:'敬語',bunpo:'文法',goi:'語彙',imi:'言葉の意味',hyoki:'表記',kanji:'漢字',sogo:'総合問題'};
 var KK_DIR={
  yomi:'――線の漢字の読みとして正しいものを選びなさい。',
  hyogai:'――線の漢字の読みとして正しいものを選びなさい(常用漢字表にない読みもふくむ)。',
- kaki:'――線のカタカナにあてはまる漢字を選びなさい。',
+ kaki:'――線のところを漢字で書いたものとして、正しいものを選びなさい。',
+ hitsujun:'筆順(書く順番)として正しいものを選びなさい。',
  doon:'――線のカタカナにあてはまる漢字を選びなさい。同じ読みの漢字に注意。',
  okuri:'――線のカタカナを、漢字と送りがなで正しく書いたものを選びなさい。',
  bushu:'漢字の部首として正しいものを選びなさい。',
@@ -64,7 +65,7 @@ function kkGet(k){
 }
 /* the stem: [ ] marks the part the question is about */
 function kkStem(s,kind){
-  var big=kind==='bushu'||kind==='kousei'||kind==='shiki'||kind==='kakusu';
+  var big=kind==='bushu'||kind==='kousei'||kind==='shiki'||kind==='kakusu'||kind==='hitsujun';
   var h=esc(s).replace(/\[([^\]]+)\]/g,big?'<b class="kk-big">$1</b>':'<u class="kk-u">$1</u>');
   return '<div class="kk-stem'+(big?' kk-c':'')+'" lang="ja">'+h+'</div>';
 }

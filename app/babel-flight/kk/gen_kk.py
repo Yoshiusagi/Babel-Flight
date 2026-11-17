@@ -25,7 +25,7 @@ LEVELS = [
     ('nk4', '日本語検定4級', 'nk', '3', 70), ('nk3', '日本語検定3級', 'nk', '2', 70), ('nk2', '日本語検定2級', 'nk', '2', 70),
     ('nk1', '日本語検定1級', 'nk', '1', 70),
 ]
-KINDS = {'yomi', 'kaki', 'bushu', 'kousei', 'yoji', 'yojii', 'taigi', 'ruigi', 'doon', 'goji', 'okuri', 'shiki', 'kakusu',
+KINDS = {'hitsujun', 'yomi', 'kaki', 'bushu', 'kousei', 'yoji', 'yojii', 'taigi', 'ruigi', 'doon', 'goji', 'okuri', 'shiki', 'kakusu',
          'onkun', 'hyogai', 'kotowaza', 'keigo', 'bunpo', 'goi', 'imi', 'hyoki', 'kanji', 'sogo'}
 READ_KINDS = {'yomi', 'hyogai'}            # [kanji] -> the answer is the reading
 WRITE_KINDS = {'kaki', 'doon', 'okuri'}     # [カタカナ] -> the answer is the kanji (with okurigana)
@@ -112,7 +112,7 @@ def check(key, name, fam, upto, steps, errs, warns, seen):
             m = re.search(r'\[([^\]]+)\]', stem)
             if kind in READ_KINDS | WRITE_KINDS and not m: errs.append(where + ': no [target]')
             # the kanji of the question and of the options stay within the level (日本語検定 and 準1級・1級: a warning)
-            txt = stem.replace('[', '').replace(']', '') + ('' if kind == 'bushu' else ''.join(opts))
+            txt = stem.replace('[', '').replace(']', '') + ('' if kind in ('bushu', 'hitsujun') else ''.join(opts))
             bad = sorted({c for c in txt if is_kanji(c) and c != '々' and not level_ok(c, upto)})
             if bad:
                 (errs if fam == 'kj' and upto not in ('p1', '1') else warns).append(where + ': kanji above the level ' + ''.join(bad))
@@ -127,7 +127,7 @@ def check(key, name, fam, upto, steps, errs, warns, seen):
             if fam == 'kj' and upto not in ('p1', '1') and m:
                 if kind in READ_KINDS and not reads_as(m.group(1), ans):
                     warns.append(where + ': reading? %s = %s' % (m.group(1), ans))
-                if kind in WRITE_KINDS and re.fullmatch(r'[ァ-ヶー]+', m.group(1)) and not reads_as(ans, m.group(1)):
+                if kind in WRITE_KINDS and re.fullmatch(r'[ぁ-んァ-ヶー]+', m.group(1)) and not reads_as(ans, m.group(1)):
                     warns.append(where + ': writing? %s = %s' % (m.group(1), ans))
             if kind == 'kakusu':
                 ch = m.group(1) if m else ''
