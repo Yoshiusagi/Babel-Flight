@@ -107,8 +107,8 @@ def check(key, name, fam, upto, steps, errs, warns, seen):
             opts = [ans, w1, w2, w3]
             if len(set(opts)) != 4 or not all(o.strip() for o in opts): errs.append(where + ': 4 different options needed ' + repr(opts))
             if not ex.strip(): errs.append(where + ': no explanation')
-            if (key, stem) in seen: errs.append(where + ': same question as ' + seen[(key, stem)])
-            seen[(key, stem)] = where
+            if (key, kind, stem) in seen: errs.append(where + ': same question as ' + seen[(key, kind, stem)])
+            seen[(key, kind, stem)] = where
             m = re.search(r'\[([^\]]+)\]', stem)
             if kind in READ_KINDS | WRITE_KINDS and not m: errs.append(where + ': no [target]')
             # the kanji of the question and of the options stay within the level (日本語検定 and 準1級・1級: a warning)
