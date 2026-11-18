@@ -318,7 +318,11 @@ Only for ファースト (`cabinLv()` 3; `fcOn()`), never in the iPhone app.
   ほか 60分), answers hidden until 提出 (問題一覧 to jump, auto 提出 when time is up), then the score by points out of
   the full mark (日本語検定 %) against the pass line, a table per section (points × questions) and the wrong answers with
   explanations (they join 苦手の復習 as `m<section>.<n>`). History in `save.kk.m` (10 kept). A level without `MOCK`
-  falls back to its drills' questions. The real tests' fields, full marks and times are official; the number of
+  falls back to its drills' questions. An unfinished mock is kept on the device (`babelflight.kkMock` in localStorage,
+  not the synced save: level, question ids with their option order, answers, position, time left; the account's uid so
+  another account on the device doesn't see it): 中断する or closing the app stops the clock, 「模試の続きから再開」 on the
+  card goes on from there. Starting a new one over it asks first; 提出 / やめる remove it; 7 days old or questions that
+  changed are dropped. The real tests' fields, full marks and times are official; the number of
   questions per section below 準2級 is our estimate.
 - 10級・9級・日本語検定7級 show the direction in kana (`KK_KID`). Levels: 漢検 10級〜1級 (60〜130 questions each,
   1,200 in all) and 日本語検定 7級〜1級 (敬語・文法・語彙・言葉の意味・表記・漢字, 60 each).

@@ -203,7 +203,8 @@ function kkFinish(){
    Every question of the level, in the order of the real test's sections (shuffled inside a section), with the
    real test's time limit, no answers shown until the end, then the score out of the real full mark (漢検: 150 /
    200 点; 日本語検定: %) against the pass line. A level with its own mock questions ("mk" in its file: the sections,
-   points and questions of the real test) uses them; the others use the drills' questions. History in save.kk.m[level] (newest first, 10 kept); wrong answers join 苦手の復習. */
+   points and questions of the real test) uses them; the others use the drills' questions. History in save.kk.m[level] (newest first, 10 kept); wrong answers join 苦手の復習.
+   An unfinished one can be resumed (below the result screen: kkMockKeep / kkMockResume). */
 function kkMockSpec(k){
   var L=kkLv(k),x=kkIdx(k);if(!L||!x)return null;
   var n=0;x[2].forEach(function(st){n+=st[2];});
@@ -216,7 +217,7 @@ function kkMockCardHTML(k){
   var sp=kkMockSpec(k);if(!sp)return '';
   if(!kkMockOK())return '<p class="dim hint">🔒 本番形式の模試(時間制限つき)は「'+CABINS[3][1]+'」から</p>';
   var last=kkMockHist(k)[0];
-  return '<button class="ghost" type="button" data-kk-mock="'+k+'">本番形式の模試に挑戦'+(sp.own?'(専用問題)':'')+'<small>'+sp.n+'問 ・ '+sp.min+'分 ・ 合格ライン '+Math.ceil(sp.full*sp.pass/100)+sp.unit+
+  return kkMockResumeHTML(k)+'<button class="ghost" type="button" data-kk-mock="'+k+'">本番形式の模試に挑戦'+(sp.own?'(専用問題)':'')+'<small>'+sp.n+'問 ・ '+sp.min+'分 ・ 合格ライン '+Math.ceil(sp.full*sp.pass/100)+sp.unit+
     (last?' ・ 前回 '+last.s+sp.unit+(last.s>=Math.ceil(sp.full*sp.pass/100)?' 合格圏':''):'')+'</small></button>';
 }
 function kkMockStart(k){
@@ -227,16 +228,18 @@ function kkMockStart(k){
     if(d.mk&&d.mk.length){   /* the dedicated mock: sections and points of the real test, questions in order */
       d.mk.forEach(function(st,si){st[3].forEach(function(q,qi){qs.push({id:'m'+(si+1)+'.'+(qi+1),kind:st[1],stem:q[0],ans:q[1][0],opts:kkShuffle(q[1]),ex:q[2],sec:st[0],si:si,pt:st[2]});});});
     }else d.s.forEach(function(st,si){kkShuffle(st[2].map(function(q,qi){return qi;})).forEach(function(qi){var q=kkQ(d,si,qi);q.sec=st[0];q.si=si;q.pt=1;qs.push(q);});});
-    KK.mock={k:k,q:qs,a:qs.map(function(){return -1;}),i:0,end:Date.now()+sp.min*60000,t0:Date.now(),sp:sp,res:null};
-    kkMockTick();view='kkm';render();window.scrollTo(0,0);
+    KK.mock={k:k,q:qs,a:qs.map(function(){return -1;}),i:0,end:Date.now()+sp.min*60000,t0:Date.now(),sp:sp,res:null,hid:0};
+    kkMockKeep();kkMockTick();view='kkm';render();window.scrollTo(0,0);
   },function(){$('sheetHost').innerHTML='<div class="sheet plain" role="alertdialog"><div class="sheet-in"><h3>問題を読みこめませんでした</h3><button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';});
 }
-function kkMockLeft(){var M=KK.mock;return M?Math.max(0,Math.round((M.end-Date.now())/1000)):0;}
+function kkMockLeft(){var M=KK.mock;return M?Math.max(0,Math.round((M.end-(M.hid||Date.now()))/1000)):0;}
 function kkMockClock(){var s=kkMockLeft();return Math.floor(s/60)+':'+('0'+s%60).slice(-2);}
 function kkMockTick(){
   clearInterval(KK.tick);
   KK.tick=setInterval(function(){
     var M=KK.mock;if(!M||M.res){clearInterval(KK.tick);return;}
+    if(M.hid)return;
+    if(++KK.tk%5===0)kkMockKeep();
     var el=$('kkClock');if(el){el.textContent=kkMockClock();el.classList.toggle('low',kkMockLeft()<300);}
     if(kkMockLeft()<=0){clearInterval(KK.tick);kkMockSubmit(true);}
   },1000);
@@ -262,7 +265,7 @@ function kkMockList(){
 }
 function kkMockSubmit(timeUp){
   var M=KK.mock;if(!M||M.res)return;
-  clearInterval(KK.tick);closeSheet();
+  clearInterval(KK.tick);closeSheet();kkMockForget();
   var secs={},order=[],corr=0,wrong=[],got=0,all=0;
   M.q.forEach(function(q,i){
     if(!secs[q.sec]){secs[q.sec]={n:0,c:0,pt:q.pt||1};order.push(q.sec);}
@@ -291,6 +294,68 @@ function kkMockResultHTML(){
   }
   return h+'<p class="dim hint">'+(sp.own?'この模試は専用の問題です(ドリルとは別の問題)。'+(sp.unit==='点'?'本番の出題分野・満点・時間に合わせた構成です。':'領域ごとに同じ数ずつ出ます。'):'いまの模試の問題は、ドリルと共通です。模試専用の問題は級ごとに追加していきます。')+'</p>'+
     '<div class="acts"><button class="go" type="button" data-kk-mock="'+M.k+'">もう一度挑戦する</button><button class="ghost" type="button" data-kk-mdone>ホームに戻る</button></div></div>';
+}
+
+/* ---- an unfinished mock is kept on this device (localStorage, not the synced save) ----
+   The level, each question's id and option order, the answers, where you were and the time left. The clock stops
+   while the mock is closed or the app is in the background, and goes on from there. One at a time, kept 7 days;
+   gone once submitted or quit with やめる. If the level's questions have changed since, it can't be resumed. */
+var KK_MKEY='babelflight.kkMock';
+KK.tk=0;
+function kkWho(){return (typeof ACCT==='object'&&ACCT&&ACCT.me&&ACCT.me.uid)||'';}
+function kkMockForget(){try{localStorage.removeItem(KK_MKEY);}catch(e){}}
+function kkMockKeep(){
+  var M=KK.mock;if(!M||M.res)return;
+  try{localStorage.setItem(KK_MKEY,JSON.stringify({v:1,u:kkWho(),k:M.k,d:Date.now(),i:M.i,a:M.a,
+    left:Math.max(0,M.end-(M.hid||Date.now())),q:M.q.map(function(q){return [q.id,q.opts];})}));}catch(e){}
+}
+function kkMockSaved(){
+  var v=null;try{v=JSON.parse(localStorage.getItem(KK_MKEY)||'null');}catch(e){v=null;}
+  if(!v)return null;
+  if(v.v!==1||typeof v.k!=='string'||!kkLv(v.k)||!Array.isArray(v.q)||!Array.isArray(v.a)||v.q.length!==v.a.length||!v.q.length||
+     !(Date.now()-(+v.d||0)<7*864e5)||!(+v.left>0)){kkMockForget();return null;}
+  return v.u===kkWho()?v:null;   /* another account on this device doesn't see it (and doesn't remove it) */
+}
+function kkMockFind(d,id){   /* 'm<section>.<n>' = the mock's own question, '<step>.<n>' = a drill's */
+  var mk=id.charAt(0)==='m',p=id.replace('m','').split('.'),a=+p[0]-1,b=+p[1]-1;
+  if(mk){var st=d.mk&&d.mk[a],q=st&&st[3][b];return q?{id:id,kind:st[1],stem:q[0],src:q[1],ex:q[2],sec:st[0],si:a,pt:st[2]}:null;}
+  var s2=d.s&&d.s[a],q2=s2&&s2[2][b];return q2?{id:id,kind:s2[1],stem:q2[0],src:q2[1],ex:q2[2],sec:s2[0],si:a,pt:1}:null;
+}
+function kkMockResume(){
+  var v=kkMockSaved();if(!v){closeSheet();render();return;}
+  if(!kkMockOK()){$('sheetHost').innerHTML=lockSheetHTML(kkName(v.k)+' 模試',3);return;}
+  closeSheet();
+  kkGet(v.k).then(function(d){
+    var sp=kkMockSpec(v.k),qs=[],ok=!!sp;
+    v.q.forEach(function(x){
+      if(!ok)return;
+      var f=Array.isArray(x)&&kkMockFind(d,String(x[0])),o=f&&Array.isArray(x[1])?x[1]:null;
+      if(!o||o.length!==f.src.length||f.src.some(function(t){return o.indexOf(t)<0;})){ok=false;return;}
+      qs.push({id:f.id,kind:f.kind,stem:f.stem,ans:f.src[0],opts:o.slice(),ex:f.ex,sec:f.sec,si:f.si,pt:f.pt});
+    });
+    if(!ok){kkMockForget();render();
+      $('sheetHost').innerHTML='<div class="sheet plain" role="alertdialog"><div class="sheet-in"><h3>続きから再開できませんでした</h3><p class="dim" style="font-size:14px">問題が更新されたため、途中の模試は消しました。新しく始めてください。</p><button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';return;}
+    var left=Math.min(+v.left,sp.min*60000);
+    KK.mock={k:v.k,q:qs,a:v.a.map(function(n,i){n=+n;return n>=0&&n<qs[i].opts.length?n:-1;}),i:Math.max(0,Math.min(qs.length-1,+v.i||0)),
+      end:Date.now()+left,t0:Date.now()-(sp.min*60000-left),sp:sp,res:null,hid:0};
+    kkMockKeep();kkMockTick();view='kkm';render();window.scrollTo(0,0);
+  },function(){$('sheetHost').innerHTML='<div class="sheet plain" role="alertdialog"><div class="sheet-in"><h3>問題を読みこめませんでした</h3><p class="dim" style="font-size:14px">通信できるところで、もう一度ためしてください。途中の模試はそのまま残っています。</p><button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';});
+}
+function kkMockPause(){kkMockKeep();clearInterval(KK.tick);KK.mock=null;closeSheet();view='home';render();window.scrollTo(0,0);}
+/* the background: stop the clock, keep the mock; back: go on from there */
+function kkMockVis(hidden){
+  var M=KK.mock;if(!M||M.res)return;
+  if(hidden){if(!M.hid){M.hid=Date.now();kkMockKeep();}}
+  else if(M.hid){var p=Date.now()-M.hid;M.end+=p;M.t0+=p;M.hid=0;kkMockKeep();var el=$('kkClock');if(el)el.textContent=kkMockClock();}
+}
+document.addEventListener('visibilitychange',function(){kkMockVis(document.visibilityState==='hidden');});
+window.addEventListener('pagehide',function(){kkMockKeep();});
+function kkMockLeftText(ms){var s=Math.round(ms/1000);return Math.floor(s/60)+':'+('0'+s%60).slice(-2);}
+function kkMockResumeHTML(k){
+  var v=kkMockSaved();if(!v)return '';
+  var done=v.a.filter(function(n){return n>=0;}).length;
+  return '<button class="go" type="button" data-kk-mresume>模試の続きから再開'+(v.k!==k?'('+esc(kkName(v.k))+')':'')+
+    '<small>⏸ 残り '+kkMockLeftText(v.left)+' ・ 解答ずみ '+done+'/'+v.q.length+'問</small></button>';
 }
 
 /* ---- hooks ---- */
@@ -343,17 +408,25 @@ document.addEventListener('click',function(e){
   if(t.hasAttribute('data-kk-weak')){kkStart(g('data-kk-weak'),'weak',0);return;}
   if(t.hasAttribute('data-kk-mix')){kkStart(g('data-kk-mix'),'mix',0);return;}
   if(t.hasAttribute('data-kk-pick')){kkPickSheet();return;}
-  if(t.hasAttribute('data-kk-mock')){kkMockStart(g('data-kk-mock'));return;}
-  if(t.hasAttribute('data-kk-mpick')){var M=KK.mock;if(M&&!M.res){var v=+g('data-kk-mpick');M.a[M.i]=M.a[M.i]===v?-1:v;render();}return;}
-  if(t.hasAttribute('data-kk-mgo')){var M2=KK.mock;if(M2){M2.i=Math.max(0,Math.min(M2.q.length-1,M2.i+(+g('data-kk-mgo'))));render();window.scrollTo(0,0);}return;}
-  if(t.hasAttribute('data-kk-mjump')){var M3=KK.mock;if(M3){M3.i=+g('data-kk-mjump');closeSheet();render();window.scrollTo(0,0);}return;}
+  if(t.hasAttribute('data-kk-mock')){
+    var kv=!KK.mock&&kkMockSaved();
+    if(kv){$('sheetHost').innerHTML='<div class="sheet plain" role="alertdialog"><div class="sheet-in"><h3>途中の模試があります</h3><p class="dim" style="font-size:14px">'+esc(kkName(kv.k))+'(解答ずみ '+kv.a.filter(function(n){return n>=0;}).length+'/'+kv.q.length+'問)。新しく始めると、途中の解答は消えます。</p>'+
+      '<button class="go" type="button" data-kk-mresume>続きから再開する</button><button class="ghost danger" type="button" data-kk-mnew="'+g('data-kk-mock')+'">新しく始める</button><button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';return;}
+    kkMockStart(g('data-kk-mock'));return;}
+  if(t.hasAttribute('data-kk-mnew')){kkMockForget();kkMockStart(g('data-kk-mnew'));return;}
+  if(t.hasAttribute('data-kk-mresume')){kkMockResume();return;}
+  if(t.hasAttribute('data-kk-mpause')){kkMockPause();return;}
+  if(t.hasAttribute('data-kk-mpick')){var M=KK.mock;if(M&&!M.res){var v=+g('data-kk-mpick');M.a[M.i]=M.a[M.i]===v?-1:v;kkMockKeep();render();}return;}
+  if(t.hasAttribute('data-kk-mgo')){var M2=KK.mock;if(M2){M2.i=Math.max(0,Math.min(M2.q.length-1,M2.i+(+g('data-kk-mgo'))));kkMockKeep();render();window.scrollTo(0,0);}return;}
+  if(t.hasAttribute('data-kk-mjump')){var M3=KK.mock;if(M3){M3.i=+g('data-kk-mjump');kkMockKeep();closeSheet();render();window.scrollTo(0,0);}return;}
   if(t.hasAttribute('data-kk-mlist')){kkMockList();return;}
   if(t.hasAttribute('data-kk-msubmit')){
     var un=KK.mock?KK.mock.a.filter(function(v){return v<0;}).length:0;
     if(un&&!t.closest('.kk-confirm')){$('sheetHost').innerHTML='<div class="sheet plain kk-confirm" role="alertdialog"><div class="sheet-in"><h3>提出しますか？</h3><p class="dim" style="font-size:14px">未解答の問題が '+un+'問あります。</p><div class="row2"><button class="ghost" type="button" data-close-sheet style="flex:1">続ける</button><button class="go" type="button" data-kk-msubmit style="flex:1;margin:0">提出する</button></div></div></div>';return;}
     kkMockSubmit(false);return;}
-  if(t.hasAttribute('data-kk-mquit')){$('sheetHost').innerHTML='<div class="sheet bad" role="alertdialog"><div class="sheet-in"><h3>模試をやめますか？</h3><p class="dim" style="font-size:14px">ここまでの解答は保存されません。</p><div class="row2"><button class="ghost" type="button" data-close-sheet style="flex:1">続ける</button><button class="ghost danger" type="button" data-kk-mdone style="flex:1">やめる</button></div></div></div>';return;}
-  if(t.hasAttribute('data-kk-mdone')){clearInterval(KK.tick);KK.mock=null;closeSheet();view='home';render();window.scrollTo(0,0);return;}
+  if(t.hasAttribute('data-kk-mquit')){$('sheetHost').innerHTML='<div class="sheet bad" role="alertdialog"><div class="sheet-in"><h3>模試を中断しますか？</h3><p class="dim" style="font-size:14px">「中断する」なら時計を止めて、あとで続きから再開できます。「やめる」と、ここまでの解答は消えます。</p>'+
+    '<button class="go" type="button" data-kk-mpause>中断する(あとで再開)</button><div class="row2"><button class="ghost" type="button" data-close-sheet style="flex:1">続ける</button><button class="ghost danger" type="button" data-kk-mdone style="flex:1">やめる</button></div></div></div>';return;}
+  if(t.hasAttribute('data-kk-mdone')){if(KK.mock&&!KK.mock.res)kkMockForget();clearInterval(KK.tick);KK.mock=null;closeSheet();view='home';render();window.scrollTo(0,0);return;}
   if(t.hasAttribute('data-kk-sel')){kkS().sel=g('data-kk-sel');store();closeSheet();render();return;}
   if(t.hasAttribute('data-kk-abort')){
     $('sheetHost').innerHTML='<div class="sheet bad" role="alertdialog" aria-label="終了の確認"><div class="sheet-in"><h3>このステップをやめますか？</h3><p class="dim" style="font-size:14px">ここまでの記録は保存されません。</p>'+
@@ -363,9 +436,9 @@ document.addEventListener('click',function(e){
 });
 document.addEventListener('keydown',function(e){
   if(view==='kkm'&&KK.mock&&!e.metaKey&&!e.ctrlKey&&!e.altKey){
-    var M=KK.mock;if(/^[1-4]$/.test(e.key)){M.a[M.i]=+e.key-1;render();e.preventDefault();}
-    else if(e.key==='ArrowRight'&&M.i+1<M.q.length){M.i++;render();e.preventDefault();}
-    else if(e.key==='ArrowLeft'&&M.i>0){M.i--;render();e.preventDefault();}
+    var M=KK.mock;if(/^[1-4]$/.test(e.key)){M.a[M.i]=+e.key-1;kkMockKeep();render();e.preventDefault();}
+    else if(e.key==='ArrowRight'&&M.i+1<M.q.length){M.i++;kkMockKeep();render();e.preventDefault();}
+    else if(e.key==='ArrowLeft'&&M.i>0){M.i--;kkMockKeep();render();e.preventDefault();}
     return;
   }
   if(view!=='kk'||!KK.run||e.metaKey||e.ctrlKey||e.altKey)return;
