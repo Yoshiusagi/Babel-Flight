@@ -289,7 +289,7 @@ function kkMockResultHTML(){
       R.wrong.slice(0,40).map(function(x){var q=x.q;return '<div class="kk-wq"><p lang="ja">'+esc(kkPlain(q.stem))+'</p><p><b>正解: '+esc(q.ans)+'</b>'+(x.pick>=0?' <span class="dim">(あなた: '+esc(q.opts[x.pick])+')</span>':' <span class="dim">(未解答)</span>')+'</p>'+(q.ex?'<p class="dim">'+esc(q.ex)+'</p>':'')+'</div>';}).join('')+
       (R.wrong.length>40?'<p class="dim">ほか '+(R.wrong.length-40)+'問は「苦手の復習」で練習できます。</p>':'')+'</div>';
   }
-  return h+'<p class="dim hint">'+(sp.own?'この模試は専用の問題です(ドリルとは別の問題)。'+(sp.unit==='点'?'大問の順・問題数・配点は本番と同じです。':'領域ごとに同じ数ずつ出ます。'):'いまの模試の問題は、ドリルと共通です。模試専用の問題は級ごとに追加していきます。')+'</p>'+
+  return h+'<p class="dim hint">'+(sp.own?'この模試は専用の問題です(ドリルとは別の問題)。'+(sp.unit==='点'?'本番の出題分野・満点・時間に合わせた構成です。':'領域ごとに同じ数ずつ出ます。'):'いまの模試の問題は、ドリルと共通です。模試専用の問題は級ごとに追加していきます。')+'</p>'+
     '<div class="acts"><button class="go" type="button" data-kk-mock="'+M.k+'">もう一度挑戦する</button><button class="ghost" type="button" data-kk-mdone>ホームに戻る</button></div></div>';
 }
 

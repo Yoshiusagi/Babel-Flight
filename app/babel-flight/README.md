@@ -312,12 +312,14 @@ Only for ファースト (`cabinLv()` 3; `fcOn()`), never in the iPhone app.
   answered wrong (「苦手の復習」, they leave once answered right). A wrong answer comes back once at the end of the
   step. The 合格圏メーター is the best scores over all questions, the line is the test's pass mark (70% / 80%). A
   finished step lands like a lesson (`completeLesson` mode `kk`, miles and streak; `o.acts` adds 次のステップ・苦手の復習).
-- 本番形式の模試 (ファースト, `kkMockStart`, views `kkm` / `kkr`): every question of the level in the order of the
-  real test's sections (shuffled inside a section), the real time limit (漢検10〜8級 40分, ほか 60分), answers hidden
-  until 提出 (問題一覧 to jump, auto 提出 when time is up), then the score out of the real full mark (漢検 150 / 200点,
-  日本語検定 %) against the pass line, a table per section and the wrong answers with explanations (they join
-  苦手の復習). History in `save.kk.m` (10 kept). The questions are the drills' for now; dedicated mock questions are
-  to be added level by level.
+- 本番形式の模試 (ファースト, `kkMockStart`, views `kkm` / `kkr`): every level has its own mock questions (`MOCK` in
+  `kk/src/<key>.py` → `"mk"` in the json: sections in the real test's order with their points, questions not in the
+  drills; 漢検 120 questions / 200点, 10〜8級 75〜95 / 150点, 日本語検定 60). The real time limit (漢検10〜8級 40分,
+  ほか 60分), answers hidden until 提出 (問題一覧 to jump, auto 提出 when time is up), then the score by points out of
+  the full mark (日本語検定 %) against the pass line, a table per section (points × questions) and the wrong answers with
+  explanations (they join 苦手の復習 as `m<section>.<n>`). History in `save.kk.m` (10 kept). A level without `MOCK`
+  falls back to its drills' questions. The real tests' fields, full marks and times are official; the number of
+  questions per section below 準2級 is our estimate.
 - 10級・9級・日本語検定7級 show the direction in kana (`KK_KID`). Levels: 漢検 10級〜1級 (60〜130 questions each,
   1,200 in all) and 日本語検定 7級〜1級 (敬語・文法・語彙・言葉の意味・表記・漢字, 60 each).
 
