@@ -3,7 +3,7 @@
 //  2. point canonical / og URLs at the website
 //  3. bundle the Google Fonts so the app looks right offline (skipped if there's no network)
 import { execFileSync } from "node:child_process";
-import { mkdirSync, readFileSync, rmSync, writeFileSync, copyFileSync } from "node:fs";
+import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync, copyFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
@@ -65,4 +65,12 @@ try {
 
 writeFileSync(page, html);
 copyFileSync(join(repo, "app/public/favicon.svg"), join(www, "favicon.svg"));
+
+// the display-language dictionaries (en / ko / zh) go into the app too, so switching language works
+// without a connection and without calling the website (see uiFetch in f27_i18n.js)
+mkdirSync(join(www, "i18n"), { recursive: true });
+for (const f of readdirSync(join(repo, "app/public/i18n"))) {
+  if (f.endsWith(".json")) copyFileSync(join(repo, "app/public/i18n", f), join(www, "i18n", f));
+}
+console.log("i18n:", readdirSync(join(www, "i18n")).join(", "));
 console.log("www/index.html", (Buffer.byteLength(html) / 1024).toFixed(0), "KB");

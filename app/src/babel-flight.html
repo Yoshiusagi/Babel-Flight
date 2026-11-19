@@ -23299,8 +23299,11 @@ function uiObserve(){
 /* the dictionary is kept on the device (bf.i18n.<ui>) so the page opens straight in that language;
    it is fetched again when the page's I18N_V (f27_i18nv.js, written by build.py) differs */
 function uiCached(l){try{var d=JSON.parse(localStorage.getItem(UI_DKEY+l)||'null');return d&&d.d&&d.v?d:null;}catch(e){return null;}}
+/* the app ships its own copy of the dictionaries (ios-app/scripts/build-www.mjs), so a language switch
+   never calls the website: from the app (capacitor://) that request is cross-origin, and the website's
+   static files send no CORS header. */
 function uiFetch(l,done){
-  fetch(bfSiteUrl('/i18n/'+l+'.json'),{cache:'no-cache'}).then(function(r){if(!r.ok)throw new Error('http');return r.json();}).then(function(d){
+  fetch(BF_APP?'i18n/'+l+'.json':bfSiteUrl('/i18n/'+l+'.json'),{cache:'no-cache'}).then(function(r){if(!r.ok)throw new Error('http');return r.json();}).then(function(d){
     if(!d||!d.d)throw new Error('bad');
     try{localStorage.setItem(UI_DKEY+l,JSON.stringify(d));}catch(e){}
     done(d);
