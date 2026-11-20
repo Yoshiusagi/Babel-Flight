@@ -305,3 +305,33 @@ document.addEventListener('change',function(e){
     var d=devSet();d.remT=v;devPut(d);remSchedule();
   }
 });
+
+/* ---- the three tabs as the system's tab bar (iOS 26: Liquid Glass), in the app only.
+   The web tab bar (#tabs) is hidden by body.native-tabs; a tap goes through go() like a web tap. ---- */
+var NTAB={on:false,last:'',listening:false};
+var NTAB_SYM={home:'house',review:'arrow.left.arrow.right',record:'doc.text'};
+function natTabsSync(show,view){
+  if(!BF_APP||!nat('NativeTabs'))return;
+  document.body.classList.add('native-tabs');
+  natTabsListen();
+  if(!show){if(NTAB.on){NTAB.on=false;NTAB.last='';natCall('NativeTabs','hide',{}).catch(function(){});}return;}
+  try{
+    var items=[].map.call(document.querySelectorAll('#tabs .tab'),function(el){
+      var t=[].filter.call(el.childNodes,function(n){return n.nodeType===3;}).map(function(n){return n.nodeValue;}).join('').trim();
+      var id=el.getAttribute('data-tab');
+      return {id:id,title:t,symbol:NTAB_SYM[id]||'circle'};});
+    var key=JSON.stringify(items);
+    if(NTAB.on&&key===NTAB.last){natCall('NativeTabs','select',{id:view}).catch(function(){});return;}
+    NTAB.on=true;NTAB.last=key;
+    natCall('NativeTabs','show',{items:items,selected:view}).catch(function(){});
+  }catch(e){}
+}
+function natTabsListen(){
+  var p=nat('NativeTabs');if(!p||NTAB.listening||typeof p.addListener!=='function')return;
+  NTAB.listening=true;
+  p.addListener('tab',function(d){
+    var id=d&&d.id;if(!id)return;
+    if(id==='home'&&view!=='home')HOME_ANIM='tab';
+    go(id);
+  });
+}

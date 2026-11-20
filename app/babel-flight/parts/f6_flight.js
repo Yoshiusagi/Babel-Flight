@@ -63,6 +63,7 @@ function startFlight(opts){
   var id=(opts.mode==='unit'||opts.mode==='skip'||opts.mode==='rem')?flightNo(F.lang,opts.uid):'BF'+(ORDER.indexOf(F.lang)+1)+'XX';
   rootEl.style.setProperty('--lc','var(--c-'+F.lang+')');
   $('tabs').hidden=true;
+  if(typeof natTabsSync==='function')natTabsSync(false,'flight');
   $('main').innerHTML=
     '<div class="fl-top"><button class="x" type="button" data-abort aria-label="やめる">'+closeIcon()+'</button>'+
     '<div class="fl-id"><span class="lbl">'+id+' → '+LG.code+' ・ '+esc(LG.name)+'</span><b>'+esc(title)+'</b></div><div class="turb" id="turb">ミス 0</div></div>'+

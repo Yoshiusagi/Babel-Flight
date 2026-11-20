@@ -10,4 +10,6 @@
 /* 透明度を下げる設定・古い端末: ふつうの面にもどす */
 @media (prefers-reduced-transparency:reduce){.tabs,.sheet{background:var(--surface);-webkit-backdrop-filter:none;backdrop-filter:none}}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.tabs,.sheet{background:var(--surface)}}
+/* the iOS app shows the system tab bar instead (f20_native.js natTabsSync) */
+body.native-tabs #tabs{display:none !important}
 </style>
