@@ -101,7 +101,9 @@ function remSchedule(){
       var at=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i,+hm[0],+hm[1],0,0);
       if(at.getTime()<=now.getTime()+60000)continue;
       if(i===0&&todayCount()>=save.goal)continue;   /* today's goal is done: no reminder today */
-      list.push({id:REM_BASE+i,title:T('✈️ 搭乗のご案内'),body:T(REM_LINES[(at.getDate()+i)%REM_LINES.length](i)),
+      /* today's notice names the reviews waiting (復習の時期): the one notice a day stays, only its words change */
+      var dn=i===0?dueList(save.lang).length:0;
+      list.push({id:REM_BASE+i,title:T('✈️ 搭乗のご案内'),body:T(dn>0?'復習の時期のフレーズが'+dn+'個たまっています。搭乗前にひと回しして、記憶を新しくしよう。':REM_LINES[(at.getDate()+i)%REM_LINES.length](i)),
         schedule:{at:at,allowWhileIdle:true},extra:{kind:'daily'}});
     }
     if(list.length)return natCall('LocalNotifications','schedule',{notifications:list});
