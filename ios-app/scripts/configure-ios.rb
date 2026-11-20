@@ -91,6 +91,19 @@ schemes << { "CFBundleURLName" => "google-sign-in", "CFBundleURLSchemes" => [goo
 info["CFBundleURLTypes"] = schemes
 Xcodeproj::Plist.write_to_path(info, info_path)
 
+# ---------- Home-screen widget (WidgetKit extension) ----------
+WIDGET = "BabelWidget"
+WIDGET_DIR = File.join(ROOT, "ios/App", WIDGET)
+WIDGET_RES = File.join(RES, "widget")
+widget_bid = "#{cap["appId"]}.widget"
+FileUtils.mkdir_p(WIDGET_DIR)
+%w[BabelWidget.swift WidgetShared.swift Info.plist BabelWidget.entitlements].each do |f|
+  FileUtils.cp(File.join(WIDGET_RES, f), File.join(WIDGET_DIR, f))
+end
+%w[WidgetShared.swift WidgetBridgePlugin.swift ViewController.swift].each do |f|
+  FileUtils.cp(File.join(WIDGET_RES, f), File.join(APP_DIR, f))
+end
+
 # ---------- Xcode project ----------
 project = Xcodeproj::Project.open(File.join(ROOT, "ios/App/App.xcodeproj"))
 target = project.targets.find { |t| t.name == "App" } or abort "App target not found"
@@ -160,19 +173,6 @@ target.build_configurations.each do |c|
 end
 project.build_configurations.each { |c| c.build_settings["IPHONEOS_DEPLOYMENT_TARGET"] = "15.0" }
 project.save
-
-# ---------- Home-screen widget (WidgetKit extension) ----------
-WIDGET = "BabelWidget"
-WIDGET_DIR = File.join(ROOT, "ios/App", WIDGET)
-WIDGET_RES = File.join(RES, "widget")
-widget_bid = "#{cap["appId"]}.widget"
-FileUtils.mkdir_p(WIDGET_DIR)
-%w[BabelWidget.swift WidgetShared.swift Info.plist BabelWidget.entitlements].each do |f|
-  FileUtils.cp(File.join(WIDGET_RES, f), File.join(WIDGET_DIR, f))
-end
-%w[WidgetShared.swift WidgetBridgePlugin.swift ViewController.swift].each do |f|
-  FileUtils.cp(File.join(WIDGET_RES, f), File.join(APP_DIR, f))
-end
 
 # ---------- Podfile: Google sign-in needs the plugin's Google subspec; Firebase needs iOS 15 ----------
 podfile_path = File.join(ROOT, "ios/App/Podfile")
