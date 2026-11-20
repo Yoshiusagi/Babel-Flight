@@ -192,6 +192,7 @@ Only for ファースト (`cabinLv()` 3; `fcOn()`), never in the iPhone app.
 - **Lounge**: a card under the mode switch on the home screen (its own page, the 2nd, in the スイート design; the
   「All flights」 button then jumps to page 5): greeting, seat 1A, the chosen title, today's task of the coach's plan,
   and tiles for AI日記 / AIコーチ / 称号. 復習 gets the coach card above the 弱点レポート.
+  弱点レポート (ビジネス以上の詳しい版): この14日の正答率、形式ごとの正答率、場面（テーマ）ごとの正答率(3問以上の場面、いちばん苦手に印)、苦手フレーズTOP5。場面の正答率は、解答のたびに単元の名前(UM)のあるものだけ記録(f17_cabin.js repNote の unit 引数、f6_flight.js と f33_route.js から渡す)。
 - **専属AIコーチ**: `POST /api/ai/coach` (`src/lib/ai.server.ts`, ファースト only, 3 a day) makes a plan for the week
   (Monday to Sunday: focus, why, 7 days of `{task, kind, min}`, tip) from `coachStats()` (level, reason, weak points,
   job, exam goal, 14-day answers and accuracy, kinds, weak phrases, due count, the next lesson, last week's result).

@@ -230,7 +230,7 @@ function judge(ok){
   var hinted=ok&&F.hl>0&&!q.retry&&pushRetry(q);
   if(ok){F.corr++;chimeOK();fxGood();F.combo=(F.combo||0)+1;if(typeof fxCombo==='function'&&COMBO_AT.indexOf(F.combo)>=0)fxCombo(F.combo);}
   else{F.combo=0;F.mist++;fxBad();F.wrong[key]=(F.wrong[key]||0)+1;chimeBad();buzz(40);pushRetry(q);}
-  if(typeof repNote==='function')repNote(F.lang,q.k,ok);
+  if(typeof repNote==='function')repNote(F.lang,q.k,ok,F.uid);
   /* 苦手「発音」: hear it once more, slowly */
   if(typeof hasWeak==='function'&&hasWeak('pron')){var LGp=LANGS[F.lang];setTimeout(function(){if(F&&F.cur===q&&F.answered)speak(d.t,LGp.tts,true);},450);}
   board.set(d.t);ledSet(d.jp,d.r);

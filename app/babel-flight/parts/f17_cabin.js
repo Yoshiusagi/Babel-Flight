@@ -440,11 +440,13 @@ document.addEventListener('click',function(e){var t=e.target&&e.target.closest&&
 var REP_KEY='babelflight.report.v1';
 var KIND_JP={t2j:'意味を選ぶ',j2t:'言い方を選ぶ',listen:'聞き取り',listenjp:'聞いて意味を選ぶ',build:'並べ替え',type:'入力',cloze:'穴埋め',aiq:'AIの例文'};
 function repLoad(){try{var o=JSON.parse(lsGet(REP_KEY)||'{}');return o&&typeof o==='object'?o:{};}catch(e){return {};}}
-function repNote(L,k,ok){
+function repNote(L,k,ok,unit){
   if(cabinLv()<0||!LANGS[L])return;
   var o=repLoad(),r=o[L]||(o[L]={d:{},k:{}}),day=dayStr();
   var d=r.d[day]||(r.d[day]=[0,0]);d[0]++;if(ok)d[1]++;
   var kk=r.k[k]||(r.k[k]=[0,0]);kk[0]++;if(ok)kk[1]++;
+  /* the 場面・テーマ (unit) the answer came from, for 場面ごとの正答率 (only units with a title) */
+  if(unit&&UM[unit]){var uu=r.u||(r.u={}),ux=uu[unit]||(uu[unit]=[0,0]);ux[0]++;if(ok)ux[1]++;}
   var days=Object.keys(r.d).sort();while(days.length>60)delete r.d[days.shift()];
   lsSet(REP_KEY,JSON.stringify(o));
 }
@@ -461,6 +463,15 @@ function repTrendSVG(r){
   });
   s+='<text x="0" y="'+(H+15)+'" class="rep-ax">'+cells[0].day.slice(5).replace('-','/')+'</text><text x="'+W+'" y="'+(H+15)+'" text-anchor="end" class="rep-ax">今日</text></svg>';
   return s;
+}
+/* 場面(テーマ)ごとの正答率: the weakest first (3問以上の場面) */
+function repUnitsHTML(r){
+  var u=r.u||{},rows=Object.keys(u).filter(function(k){return UM[k]&&u[k][0]>=3;}).map(function(k){return {k:k,n:u[k][0],p:Math.round(u[k][1]/u[k][0]*100)};})
+    .sort(function(a,b){return a.p-b.p;}).slice(0,6);
+  if(!rows.length)return '<p class="dim" style="font-size:13px">それぞれの場面を3問以上解くと、ここに出てきます。</p>';
+  return '<ul class="rep-kinds">'+rows.map(function(x,i){
+    return '<li><span class="rk-n">'+esc(unitTitle(x.k))+(i===0&&rows.length>1&&x.p<rows[rows.length-1].p?'<em>いちばん苦手</em>':'')+'</span>'+
+      '<span class="rk-bar"><i style="width:'+Math.max(2,x.p)+'%"></i></span><b>'+x.p+'%</b><small>'+x.n+'問</small></li>';}).join('')+'</ul>';
 }
 function repKindsHTML(r){
   var rows=Object.keys(r.k).filter(function(k){return KIND_JP[k]&&r.k[k][0]>=3;}).map(function(k){var v=r.k[k];return {k:k,n:v[0],p:Math.round(v[1]/v[0]*100)};})
@@ -484,7 +495,7 @@ function reportCardHTML(L){
         '<button class="go sm" type="button" data-mode="weak">弱点コースで練習する</button>'
       :'<p class="dim" style="font-size:13px">まだ苦手なフレーズはありません。間違えたフレーズがここに出てきます。</p>');
   if(lv>=2){
-    h+='<h3 class="rep-h">この14日の正答率</h3>'+repTrendSVG(r)+'<h3 class="rep-h">問題の形式ごとの正答率</h3>'+repKindsHTML(r);
+    h+='<h3 class="rep-h">この14日の正答率</h3>'+repTrendSVG(r)+'<h3 class="rep-h">問題の形式ごとの正答率</h3>'+repKindsHTML(r)+'<h3 class="rep-h">場面（テーマ）ごとの正答率</h3>'+repUnitsHTML(r);
   }else h+='<p class="dim hint">🔒 正答率の推移と、問題の形式ごとの得意・苦手はビジネスから</p>';
   if(lv>=3)h+='<div class="coach"><button class="ghost" type="button" data-coach>AIコーチにアドバイスをもらう</button><div id="coachOut" class="aiout" aria-live="polite"></div></div>';
   else if(lv===2)h+='<p class="dim hint">🔒 AIコーチのアドバイスはファーストから</p>';

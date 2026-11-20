@@ -306,7 +306,7 @@ function rtDone(){
     var pts=S.grades.reduce(function(a,b){return a+b;},0),max=2*S.u.turns.length,ratio=max?pts/max:0;
     var wrong=[];S.u.turns.forEach(function(t,i){if(S.grades[i]<2)wrong.push({t:t.a,jp:t.aj});});
     RTX.res[RTX.i]={stars:ratio>=0.9?3:ratio>=0.6?2:1,n:S.grades.length,ok:S.grades.filter(function(g){return g===2;}).length,pts:pts,max:max,wrong:wrong};
-    if(typeof repNote==='function')S.grades.forEach(function(g){repNote(S.lang,'scene',g===2);});
+    if(typeof repNote==='function')S.grades.forEach(function(g){repNote(S.lang,'scene',g===2,S.uid);});
     SCX=null;document.body.classList.remove('dark-ui');
     RTX.i++;
     if(RTX.i>=RTX.stages.length){rtDone();return;}
