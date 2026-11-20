@@ -139,11 +139,14 @@ widget.build_configurations.each do |c|
   s["IPHONEOS_DEPLOYMENT_TARGET"] = "15.0"
   s["TARGETED_DEVICE_FAMILY"] = "1"
   s["SKIP_INSTALL"] = "YES"
+  s["PRODUCT_NAME"] = WIDGET
   s["MARKETING_VERSION"] = version
   s["CURRENT_PROJECT_VERSION"] = build
   s["CODE_SIGN_STYLE"] = "Automatic"
   s["DEVELOPMENT_TEAM"] = team unless team.empty?
 end
+widget.product_reference.name = "#{WIDGET}.appex"
+widget.product_reference.path = "#{WIDGET}.appex"
 target.add_dependency(widget) unless target.dependencies.any? { |d| d.target == widget }
 embed = target.copy_files_build_phases.find { |p| p.name == "Embed Foundation Extensions" } || target.new_copy_files_build_phase("Embed Foundation Extensions")
 embed.dst_subfolder_spec = Xcodeproj::Constants::COPY_FILES_BUILD_PHASE_DESTINATIONS[:plug_ins]
