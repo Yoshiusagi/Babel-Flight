@@ -97,7 +97,8 @@ jobs:
           set -eo pipefail
           for v in ASC_KEY_ID ASC_ISSUER_ID ASC_KEY; do [ -n "${!v}" ] || { echo "::error::secret for $v is missing (see ios-app/README.md)"; exit 1; }; done
           S="$RUNNER_TEMP/sign"
-          BUNDLE_ID=$(node -p "require('./capacitor.config.json').appId") ruby scripts/asc-signing.rb setup "$S"
+          APP_ID=$(node -p "require('./capacitor.config.json').appId")
+          BUNDLE_ID="$APP_ID,$APP_ID.widget" ruby scripts/asc-signing.rb setup "$S"
           PW=$(openssl rand -hex 16); KC="$RUNNER_TEMP/sign.keychain-db"
           /usr/bin/openssl pkcs12 -export -inkey "$S/key.pem" -in "$S/cert.pem" -name "Babel Flight CI" -out "$S/dist.p12" -passout "pass:$PW"
           security create-keychain -p "$PW" "$KC"
@@ -109,10 +110,14 @@ jobs:
           security find-identity -v -p codesigning "$KC"
           rm -f "$S/key.pem" "$S/dist.p12"
           # (values written to $GITHUB_ENV only reach later steps, so read the UUID from the profile itself)
-          security cms -D -i "$S/profile.mobileprovision" > "$S/profile.plist"
-          UUID=$(plutil -extract UUID raw -o - "$S/profile.plist")
-          for d in "$HOME/Library/MobileDevice/Provisioning Profiles" "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles"; do
-            mkdir -p "$d"; cp "$S/profile.mobileprovision" "$d/$UUID.mobileprovision"
+          # the app's profile (profile.mobileprovision) and the widget's (profile-1.mobileprovision)
+          for P in "$S"/profile*.mobileprovision; do
+            N=$(basename "$P" .mobileprovision)
+            security cms -D -i "$P" > "$S/$N.plist"
+            UUID=$(plutil -extract UUID raw -o - "$S/$N.plist")
+            for d in "$HOME/Library/MobileDevice/Provisioning Profiles" "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles"; do
+              mkdir -p "$d"; cp "$P" "$d/$UUID.mobileprovision"
+            done
           done
           for k in Name UUID TeamIdentifier.0 Entitlements.application-identifier Entitlements.com\.apple\.developer\.applesignin ExpirationDate; do
             printf '%s: ' "$k"; plutil -extract "$k" raw -o - "$S/profile.plist" 2>/dev/null || plutil -extract "$k" json -o - "$S/profile.plist" 2>/dev/null || echo "(none)"
@@ -196,7 +201,7 @@ jobs:
             <key>teamID</key><string>$TEAM</string>
             <key>signingStyle</key><string>manual</string>
             <key>signingCertificate</key><string>Apple Distribution</string>
-            <key>provisioningProfiles</key><dict><key>$BUNDLE</key><string>$SIGN_PROFILE_UUID</string></dict>
+            <key>provisioningProfiles</key><dict><key>$BUNDLE</key><string>$SIGN_PROFILE_UUID</string><key>$BUNDLE.widget</key><string>$SIGN_WIDGET_PROFILE_UUID</string></dict>
             <key>uploadSymbols</key><true/>
             <key>manageAppVersionAndBuildNumber</key><false/>
           </dict></plist>

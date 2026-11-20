@@ -144,6 +144,14 @@ widget.build_configurations.each do |c|
   s["CURRENT_PROJECT_VERSION"] = build
   s["CODE_SIGN_STYLE"] = "Automatic"
   s["DEVELOPMENT_TEAM"] = team unless team.empty?
+  # App Store upload: the widget is signed with its own profile (made by asc-signing.rb), like the app
+  wprofile = ENV["SIGN_WIDGET_PROFILE_NAME"].to_s
+  if c.name == "Release" && !wprofile.empty?
+    s["CODE_SIGN_STYLE"] = "Manual"
+    s["CODE_SIGN_IDENTITY"] = "Apple Distribution"
+    s["CODE_SIGN_IDENTITY[sdk=iphoneos*]"] = "Apple Distribution"
+    s["PROVISIONING_PROFILE_SPECIFIER"] = ENV["SIGN_WIDGET_PROFILE_UUID"].to_s.empty? ? wprofile : ENV["SIGN_WIDGET_PROFILE_UUID"]
+  end
 end
 widget.product_reference.name = "#{WIDGET}.appex"
 widget.product_reference.path = "#{WIDGET}.appex"

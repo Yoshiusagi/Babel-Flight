@@ -7,7 +7,10 @@
 #   ruby scripts/asc-signing.rb cleanup OUT_DIR   # revokes the certificate and deletes the profile
 #
 # Environment: ASC_KEY (contents of the .p8), ASC_KEY_ID, ASC_ISSUER_ID, BUNDLE_ID.
-# setup also appends SIGN_PROFILE_NAME / SIGN_PROFILE_UUID to $GITHUB_ENV when it is set.
+# BUNDLE_ID may list several App IDs separated by commas: the app first, then its widget (app.widget).
+# Each gets its own profile: profile.mobileprovision (the app) and profile-1.mobileprovision (the widget).
+# setup also appends SIGN_PROFILE_NAME / SIGN_PROFILE_UUID (the app) and SIGN_WIDGET_PROFILE_NAME /
+# SIGN_WIDGET_PROFILE_UUID (the widget) to $GITHUB_ENV when it is set.
 # Builds that were already uploaded stay valid after the certificate is revoked.
 require "openssl"
 require "net/http"
@@ -50,17 +53,20 @@ state_path = File.join(out, "state.json")
 if mode == "cleanup"
   exit 0 unless File.exist?(state_path)
   st = JSON.parse(File.read(state_path))
-  api(:delete, "/v1/profiles/#{st["profile_id"]}") if st["profile_id"]
+  (st["profile_ids"] || [st["profile_id"]].compact).each { |id| api(:delete, "/v1/profiles/#{id}") }
   api(:delete, "/v1/certificates/#{st["cert_id"]}") if st["cert_id"]
   puts "removed the temporary certificate and profile"
   exit 0
 end
 
 FileUtils.mkdir_p(out)
-bundle = ENV.fetch("BUNDLE_ID")
-ids = api(:get, "/v1/bundleIds?filter[identifier]=#{bundle}&limit=50")["data"]
-bid = ids.find { |d| d["attributes"]["identifier"] == bundle && d["attributes"]["platform"] != "MAC_OS" }
-abort "::error::App ID #{bundle} is not registered in the Apple Developer site (Identifiers)" unless bid
+bundles = ENV.fetch("BUNDLE_ID").split(",").map(&:strip).reject(&:empty?)
+bids = bundles.map do |bundle|
+  ids = api(:get, "/v1/bundleIds?filter[identifier]=#{bundle}&limit=50")["data"]
+  bid = ids.find { |d| d["attributes"]["identifier"] == bundle && d["attributes"]["platform"] != "MAC_OS" }
+  abort "::error::App ID #{bundle} is not registered in the Apple Developer site (Identifiers)" unless bid
+  [bundle, bid]
+end
 
 key = OpenSSL::PKey::RSA.new(2048)
 csr = OpenSSL::X509::Request.new
@@ -75,19 +81,26 @@ state = { "cert_id" => cert["id"] }
 File.write(state_path, state.to_json)
 x509 = OpenSSL::X509::Certificate.new(Base64.decode64(cert["attributes"]["certificateContent"]))
 
-name = "Babel Flight CI #{ENV["GITHUB_RUN_NUMBER"] || Time.now.to_i}"
-prof = api(:post, "/v1/profiles", { data: { type: "profiles",
-  attributes: { name: name, profileType: "IOS_APP_STORE" },
-  relationships: { bundleId: { data: { type: "bundleIds", id: bid["id"] } },
-                   certificates: { data: [{ type: "certificates", id: cert["id"] }] } } } })["data"]
-state["profile_id"] = prof["id"]
-File.write(state_path, state.to_json)
-
+run = ENV["GITHUB_RUN_NUMBER"] || Time.now.to_i
 File.write(File.join(out, "key.pem"), key.to_pem)
 File.write(File.join(out, "cert.pem"), x509.to_pem)
-File.binwrite(File.join(out, "profile.mobileprovision"), Base64.decode64(prof["attributes"]["profileContent"]))
-uuid = prof["attributes"]["uuid"]
-if ENV["GITHUB_ENV"]
-  File.open(ENV["GITHUB_ENV"], "a") { |f| f.puts "SIGN_PROFILE_NAME=#{name}", "SIGN_PROFILE_UUID=#{uuid}" }
+state["profile_ids"] = []
+bids.each_with_index do |(bundle, bid), i|
+  name = "Babel Flight CI #{run}#{i.zero? ? "" : " widget"}"
+  prof = api(:post, "/v1/profiles", { data: { type: "profiles",
+    attributes: { name: name, profileType: "IOS_APP_STORE" },
+    relationships: { bundleId: { data: { type: "bundleIds", id: bid["id"] } },
+                     certificates: { data: [{ type: "certificates", id: cert["id"] }] } } } })["data"]
+  state["profile_ids"] << prof["id"]
+  state["profile_id"] ||= prof["id"]
+  File.write(state_path, state.to_json)
+  file = i.zero? ? "profile.mobileprovision" : "profile-#{i}.mobileprovision"
+  File.binwrite(File.join(out, file), Base64.decode64(prof["attributes"]["profileContent"]))
+  uuid = prof["attributes"]["uuid"]
+  prefix = i.zero? ? "SIGN_PROFILE" : "SIGN_WIDGET_PROFILE"
+  if ENV["GITHUB_ENV"]
+    File.open(ENV["GITHUB_ENV"], "a") { |f| f.puts "#{prefix}_NAME=#{name}", "#{prefix}_UUID=#{uuid}" }
+  end
+  puts "made profile \"#{name}\" (#{uuid}) for #{bundle}"
 end
-puts "made certificate #{cert["id"]} and profile \"#{name}\" (#{uuid})"
+puts "made certificate #{cert["id"]}"
