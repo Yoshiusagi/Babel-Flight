@@ -71,8 +71,11 @@ google = Xcodeproj::Plist.read_from_path(gplist)
 
 FileUtils.cp(File.join(RES, "PrivacyInfo.xcprivacy"), File.join(APP_DIR, "PrivacyInfo.xcprivacy"))
 
-# Sign in with Apple
-Xcodeproj::Plist.write_to_path({ "com.apple.developer.applesignin" => ["Default"] }, File.join(APP_DIR, "App.entitlements"))
+# Sign in with Apple, and the App Group the home-screen widget reads from (ホーム画面のウィジェット)
+Xcodeproj::Plist.write_to_path({
+  "com.apple.developer.applesignin" => ["Default"],
+  "com.apple.security.application-groups" => ["group.com.babelflight.app"],
+}, File.join(APP_DIR, "App.entitlements"))
 
 # ---------- Info.plist ----------
 info_path = File.join(APP_DIR, "Info.plist")
@@ -99,6 +102,43 @@ group = project.main_group.children.find { |g| g.respond_to?(:path) && g.path ==
 end
 group.new_reference("App.entitlements") unless group.files.any? { |f| f.path == "App.entitlements" }
 
+# the app's Swift files (the plugin is registered in ViewController.swift)
+%w[WidgetShared.swift WidgetBridgePlugin.swift ViewController.swift].each do |name|
+  ref = group.files.find { |f| f.path == name } || group.new_reference(name)
+  target.source_build_phase.add_file_reference(ref, true) unless target.source_build_phase.files_references.include?(ref)
+end
+
+# the widget target, embedded in the app (PlugIns)
+widget = project.targets.find { |t| t.name == WIDGET } || project.new_target(:app_extension, WIDGET, :ios, "15.0")
+wgroup = project.main_group.children.find { |g| g.respond_to?(:path) && g.path == WIDGET } || project.main_group.new_group(WIDGET, WIDGET)
+%w[BabelWidget.swift WidgetShared.swift].each do |name|
+  ref = wgroup.files.find { |f| f.path == name } || wgroup.new_reference(name)
+  widget.source_build_phase.add_file_reference(ref, true) unless widget.source_build_phase.files_references.include?(ref)
+end
+%w[Info.plist BabelWidget.entitlements].each { |name| wgroup.files.find { |f| f.path == name } || wgroup.new_reference(name) }
+widget.build_configurations.each do |c|
+  s = c.build_settings
+  s["PRODUCT_BUNDLE_IDENTIFIER"] = widget_bid
+  s["INFOPLIST_FILE"] = "#{WIDGET}/Info.plist"
+  s["GENERATE_INFOPLIST_FILE"] = "NO"
+  s["CODE_SIGN_ENTITLEMENTS"] = "#{WIDGET}/BabelWidget.entitlements"
+  s["SWIFT_VERSION"] = "5.0"
+  s["IPHONEOS_DEPLOYMENT_TARGET"] = "15.0"
+  s["TARGETED_DEVICE_FAMILY"] = "1"
+  s["SKIP_INSTALL"] = "YES"
+  s["MARKETING_VERSION"] = version
+  s["CURRENT_PROJECT_VERSION"] = build
+  s["CODE_SIGN_STYLE"] = "Automatic"
+  s["DEVELOPMENT_TEAM"] = team unless team.empty?
+end
+target.add_dependency(widget) unless target.dependencies.any? { |d| d.target == widget }
+embed = target.copy_files_build_phases.find { |p| p.name == "Embed Foundation Extensions" } || target.new_copy_files_build_phase("Embed Foundation Extensions")
+embed.dst_subfolder_spec = Xcodeproj::Constants::COPY_FILES_BUILD_PHASE_DESTINATIONS[:plug_ins]
+unless embed.files_references.include?(widget.product_reference)
+  bf = embed.add_file_reference(widget.product_reference, true)
+  bf.settings = { "ATTRIBUTES" => ["RemoveHeadersOnCopy", "CodeSignOnCopy"] }
+end
+
 target.build_configurations.each do |c|
   s = c.build_settings
   s["CODE_SIGN_ENTITLEMENTS"] = "App/App.entitlements"
@@ -120,6 +160,19 @@ target.build_configurations.each do |c|
 end
 project.build_configurations.each { |c| c.build_settings["IPHONEOS_DEPLOYMENT_TARGET"] = "15.0" }
 project.save
+
+# ---------- Home-screen widget (WidgetKit extension) ----------
+WIDGET = "BabelWidget"
+WIDGET_DIR = File.join(ROOT, "ios/App", WIDGET)
+WIDGET_RES = File.join(RES, "widget")
+widget_bid = "#{cap["appId"]}.widget"
+FileUtils.mkdir_p(WIDGET_DIR)
+%w[BabelWidget.swift WidgetShared.swift Info.plist BabelWidget.entitlements].each do |f|
+  FileUtils.cp(File.join(WIDGET_RES, f), File.join(WIDGET_DIR, f))
+end
+%w[WidgetShared.swift WidgetBridgePlugin.swift ViewController.swift].each do |f|
+  FileUtils.cp(File.join(WIDGET_RES, f), File.join(APP_DIR, f))
+end
 
 # ---------- Podfile: Google sign-in needs the plugin's Google subspec; Firebase needs iOS 15 ----------
 podfile_path = File.join(ROOT, "ios/App/Podfile")

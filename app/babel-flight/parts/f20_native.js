@@ -89,8 +89,21 @@ var REM_LINES=[
 ];
 var REM={busy:false,again:false,timer:0,denied:false};
 function remIds(){var a=[];for(var i=0;i<REM_DAYS;i++)a.push({id:REM_BASE+i});return a;}
+/* ---- ホーム画面のウィジェット (iOS): 3行だけ App Group に置く。表示の言葉は今の表示言語で作る ---- */
+function widgetPush(){
+  if(!BF_APP||!nat('WidgetBridge'))return;
+  try{
+    var s=streakNow(),t=todayCount(),due=dueList(save.lang).length;
+    natCall('WidgetBridge','setSummary',{
+      line1:'Babel Flight',
+      line2:uiF('連続{0}日',[s]),
+      line3:uiF('今日 {0}/{1}レッスン',[t,save.goal])+(due?' ・ '+uiF('復習 {0}フレーズ',[due]):'')
+    }).catch(function(){});
+  }catch(e){}
+}
 function remSchedule(){
   if(!BF_APP||!nat('LocalNotifications'))return Promise.resolve();
+  widgetPush();
   if(REM.busy){REM.again=true;return Promise.resolve();}
   REM.busy=true;
   var d=devSet();
