@@ -110,3 +110,22 @@ function tapTick(){
   }catch(e){}
 }
 function ringTone(){for(var k=0;k<2;k++){tone(784,0.28,'sine',0.05,k*0.85);tone(988,0.3,'sine',0.045,k*0.85+0.16);}}
+
+/* 正解の紙飛行機 (見えるディテール 3/3): 画面を弧を描いて横切る。動きを減らす設定では出さない */
+function fxPaperPlane(){
+  if(reduceMotion||!document.body.animate)return;
+  var el=document.createElement('div');
+  el.setAttribute('aria-hidden','true');
+  el.style.cssText='position:fixed;left:0;top:0;z-index:60;pointer-events:none;color:var(--signal);opacity:0';
+  el.innerHTML='<svg viewBox="0 0 24 24" width="28" height="28"><path d="M2 11L22 3L15 21L11 14Z" fill="currentColor"/><path d="M11 14L22 3" stroke="#fff" stroke-opacity=".6" stroke-width=".8" fill="none"/></svg>';
+  document.body.appendChild(el);
+  var W=innerWidth,H=innerHeight;
+  var a=el.animate([
+    {transform:'translate(-40px,'+(H*0.62)+'px) rotate(-18deg)',opacity:0},
+    {transform:'translate('+(W*0.3)+'px,'+(H*0.36)+'px) rotate(-8deg)',opacity:1,offset:0.35},
+    {transform:'translate('+(W*0.62)+'px,'+(H*0.26)+'px) rotate(6deg)',opacity:1,offset:0.7},
+    {transform:'translate('+(W+40)+'px,'+(H*0.1)+'px) rotate(12deg)',opacity:0}
+  ],{duration:1400,easing:'ease-in-out',fill:'forwards'});
+  a.onfinish=function(){el.remove();};
+  setTimeout(function(){el.remove();},2000);
+}

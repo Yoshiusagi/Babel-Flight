@@ -229,7 +229,7 @@ function judge(ok){
   if(F.answered)return;F.answered=true;
   var q=F.cur,d=dat(q.it),key=ik(q.it.uid,q.it.i);
   var hinted=ok&&F.hl>0&&!q.retry&&pushRetry(q);
-  if(ok){F.corr++;chimeOK();fxGood();F.combo=(F.combo||0)+1;if(typeof fxCombo==='function'&&COMBO_AT.indexOf(F.combo)>=0)fxCombo(F.combo);}
+  if(ok){F.corr++;chimeOK();fxGood();if(typeof fxPaperPlane==='function')fxPaperPlane();F.combo=(F.combo||0)+1;if(typeof fxCombo==='function'&&COMBO_AT.indexOf(F.combo)>=0)fxCombo(F.combo);}
   else{F.combo=0;F.mist++;fxBad();F.wrong[key]=(F.wrong[key]||0)+1;chimeBad();buzz(40);pushRetry(q);}
   if(typeof repNote==='function')repNote(F.lang,q.k,ok,F.uid);
   /* 苦手「発音」: hear it once more, slowly */
