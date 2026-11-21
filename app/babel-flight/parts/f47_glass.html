@@ -19,4 +19,9 @@ body.native-tabs #tabs{display:none !important}
   opacity:.5;filter:blur(28px);animation:liquidCalm 26s ease-in-out infinite alternate}
 @keyframes liquidCalm{from{transform:translate(0,0) scale(1)}to{transform:translate(4%,-3%) scale(1.07)}}
 @media (prefers-reduced-motion:reduce){#sky::before{animation:none}}
+/* 隠しディテール (見た目だけ): 連続7日の星・連続30日の機体名・全場面の計器の報告 */
+.sky.hid-stars{--star:.75}
+.plate{display:block;margin-top:6px;font-size:11px;letter-spacing:.24em;color:#ffcf26}
+.card.report.hid-cockpit{--surface:#0b1424;--surface2:#11203a;--ink:#e8f1ff;--ink2:#a3b9d8;--line:#23395e;background:var(--surface);color:var(--ink)}
+.card.report.hid-cockpit .ac-type{color:#ffcf26;border-color:#ffcf26}
 </style>

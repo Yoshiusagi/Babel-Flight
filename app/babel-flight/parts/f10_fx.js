@@ -5,8 +5,8 @@ function initSky(){
   var h='<div class="skystars"></div>';
   var C=[[8,140,72,.85],[22,220,96,.7],[38,110,130,.6],[54,180,84,.8],[70,260,150,.55],[84,150,110,.7],[92,200,170,.5]];
   C.forEach(function(c,i){h+='<span class="cloud" style="top:'+c[0]+'%;--w:'+c[1]+'px;--d:'+c[2]+'s;--o:'+c[3]+';animation-delay:-'+Math.round(c[2]*((i*37)%100)/100)+'s"></span>';});
-  s.innerHTML=h;s.className='sky '+skyPhase();
-  setInterval(function(){s.className='sky '+skyPhase();},300000);
+  s.innerHTML=h;s.className=skyClass();
+  setInterval(function(){s.className=skyClass();},300000);
 }
 var cineTimer=0,cineDone=null;
 function cineEnd(){
@@ -116,7 +116,7 @@ function fxPaperPlane(){
   if(reduceMotion||!document.body.animate)return;
   var el=document.createElement('div');
   el.setAttribute('aria-hidden','true');
-  el.style.cssText='position:fixed;left:0;top:0;z-index:60;pointer-events:none;color:var(--signal);opacity:0';
+  el.style.cssText='position:fixed;left:0;top:0;z-index:60;pointer-events:none;color:'+(hidOn('dawn')?'#f5c542':'var(--signal)')+';opacity:0';
   el.innerHTML='<svg viewBox="0 0 24 24" width="28" height="28"><path d="M2 11L22 3L15 21L11 14Z" fill="currentColor"/><path d="M11 14L22 3" stroke="#fff" stroke-opacity=".6" stroke-width=".8" fill="none"/></svg>';
   document.body.appendChild(el);
   var W=innerWidth,H=innerHeight;
@@ -129,3 +129,16 @@ function fxPaperPlane(){
   a.onfinish=function(){el.remove();};
   setTimeout(function(){el.remove();},2000);
 }
+
+/* ===== 隠しディテール (見た目だけ・学習には影響しない) =====
+   stars: 連続7日で夜空の星 / plate: 連続30日で機体の名前 / cockpit: 全場面を1回ずつクリアで計器の報告 / dawn: 早朝5時台のレッスンで金の紙飛行機 */
+function hidOn(k){return !!(save.hid&&save.hid[k]);}
+function hidGrant(k){if(!save.hid)save.hid={};if(!save.hid[k])save.hid[k]=dayStr();}
+function hidCheck(){
+  if(save.streak>=7)hidGrant('stars');
+  if(save.streak>=30)hidGrant('plate');
+  var all=true,any=false;
+  ORDER.forEach(function(L){(ALL_IDS[L]||[]).forEach(function(uid){if(isScene(L,uid)){any=true;if(unitRec(L,uid).n<1)all=false;}});});
+  if(any&&all)hidGrant('cockpit');
+}
+function skyClass(){return 'sky '+skyPhase()+(hidOn('stars')?' hid-stars':'');}

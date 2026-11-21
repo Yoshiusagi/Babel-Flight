@@ -86,6 +86,9 @@ function completeLesson(o){
   }
   save.miles+=miles;save.flights++;
   save.tq=(save.tq||0)+(o.answered||0);
+  /* 隠しディテール: 早朝5時台のレッスン・連続日数・全場面 (f10_fx.js) */
+  if(new Date().getHours()===5)hidGrant('dawn');
+  hidCheck();
   if(o.mode!=='ai'){accNote(L,o.corr,o.answered);if(typeof rewardTick==='function')rewardTick(o.corr);}
   /* many mistakes in a lesson: add a remedial flight made of those phrases */
   var remAdded=0;
