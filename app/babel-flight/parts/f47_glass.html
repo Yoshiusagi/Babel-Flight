@@ -31,4 +31,8 @@ body.native-tabs #tabs{display:none !important}
 .sky.win-sunset{--s1:#ffb88c;--s2:#f3d6e6}
 .sky.win-sea .cloud{opacity:min(1,calc(var(--o) * 1.5))}
 .sky.win-sea::after{content:"";position:absolute;left:0;right:0;bottom:0;height:36%;background:linear-gradient(rgba(255,255,255,0),var(--cloud));pointer-events:none}
+/* 白い一瞬を出さない: 画面の下地はテーマの背景色 (透けても白にならない) */
+html{background:var(--bg)}
+/* 上の数字の欄: 幅が狭いと、ラベルの下に数字を置く (文字が長くても隣と重ならない) */
+@media (max-width:440px){.stats-top .pill{flex-direction:column;align-items:flex-start;gap:3px;padding:6px 8px}.stats-top .lbl{letter-spacing:.04em;font-size:10px}.stats-top .v{font-size:15px}}
 </style>
