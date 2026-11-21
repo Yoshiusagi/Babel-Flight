@@ -140,5 +140,6 @@ function hidCheck(){
   var all=true,any=false;
   ORDER.forEach(function(L){(ALL_IDS[L]||[]).forEach(function(uid){if(isScene(L,uid)){any=true;if(unitRec(L,uid).n<1)all=false;}});});
   if(any&&all)hidGrant('cockpit');
+  var sk=$('sky');if(sk)sk.className=skyClass();
 }
-function skyClass(){return 'sky '+skyPhase()+(hidOn('stars')?' hid-stars':'');}
+function skyClass(){var st=streakNow();return 'sky '+skyPhase()+(hidOn('stars')?' hid-stars':'')+(st>=30?' win-sea':st>=7?' win-sunset':'');}

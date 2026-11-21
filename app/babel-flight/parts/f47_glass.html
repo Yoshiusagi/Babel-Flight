@@ -24,4 +24,11 @@ body.native-tabs #tabs{display:none !important}
 .plate{display:block;margin-top:6px;font-size:11px;letter-spacing:.24em;color:#ffcf26}
 .card.report.hid-cockpit{--surface:#0b1424;--surface2:#11203a;--ink:#e8f1ff;--ink2:#a3b9d8;--line:#23395e;background:var(--surface);color:var(--ink)}
 .card.report.hid-cockpit .ac-type{color:#ffcf26;border-color:#ffcf26}
+/* タブのぷるっと反応: 押した瞬間に、アイコンが一度だけ柔らかく跳ねる (動きを減らす設定では出さない) */
+@media (prefers-reduced-motion:no-preference){.tab:active svg{animation:tapHop .45s cubic-bezier(.3,1.6,.5,1)}}
+@keyframes tapHop{0%{transform:none}40%{transform:translateY(-3px) scale(1.14)}100%{transform:none}}
+/* 窓の景色 (連続日数で変わる空): 7日で夕焼けの窓、30日で雲海の窓 (f10_fx.js skyClass) */
+.sky.win-sunset{--s1:#ffb88c;--s2:#f3d6e6}
+.sky.win-sea .cloud{opacity:min(1,calc(var(--o) * 1.5))}
+.sky.win-sea::after{content:"";position:absolute;left:0;right:0;bottom:0;height:36%;background:linear-gradient(rgba(255,255,255,0),var(--cloud));pointer-events:none}
 </style>
