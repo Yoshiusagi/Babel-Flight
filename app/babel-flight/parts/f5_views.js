@@ -9,7 +9,11 @@ function bez(t,a,c,b){var u=1-t;return {x:u*u*a.x+2*u*t*c.x+t*t*b.x,y:u*u*a.y+2*
   dx:2*u*(c.x-a.x)+2*t*(b.x-c.x),dy:2*u*(c.y-a.y)+2*t*(b.y-c.y)};}
 function ringSVG(n,goal){
   var p=clamp(n/goal,0,1);
-  return '<svg class="ring" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15" fill="none" stroke="var(--line)" stroke-width="4"/>'+
+  /* 計器の目盛り: リングの内側に12本(3本ごとに長い目盛り) */
+  var tk='';
+  for(var i=0;i<12;i++){var a=i*Math.PI/6,c=Math.cos(a),s=Math.sin(a),long=i%3===0,r0=long?9.2:10,r1=11;
+    tk+='<line x1="'+(18+r0*c).toFixed(2)+'" y1="'+(18+r0*s).toFixed(2)+'" x2="'+(18+r1*c).toFixed(2)+'" y2="'+(18+r1*s).toFixed(2)+'" stroke="currentColor" stroke-width="'+(long?.7:.45)+'" opacity="'+(long?.7:.4)+'"/>';}
+  return '<svg class="ring" viewBox="0 0 36 36" aria-hidden="true"><g class="ring-ticks" style="color:var(--ink2)">'+tk+'</g><circle cx="18" cy="18" r="15" fill="none" stroke="var(--line)" stroke-width="4"/>'+
     '<circle cx="18" cy="18" r="15" fill="none" stroke="'+(p>=1?'var(--good)':'var(--signal)')+'" stroke-width="4" stroke-linecap="round" pathLength="100" stroke-dasharray="'+(p*100).toFixed(1)+' 100" transform="rotate(-90 18 18)"/></svg>';
 }
 function topBar(title,share){
