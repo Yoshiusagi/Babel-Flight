@@ -16,7 +16,7 @@ body.native-tabs #tabs{display:none !important}
    色は --cloud を使うので、ふつうの空・夜の空の両方でなじむ。動きを減らす設定では止める。 */
 #sky::before{content:"";position:absolute;inset:-18%;pointer-events:none;
   background:radial-gradient(38% 30% at 28% 34%,var(--cloud),transparent 72%),radial-gradient(34% 26% at 74% 62%,var(--cloud),transparent 74%);
-  opacity:.5;filter:blur(28px);animation:liquidCalm 26s ease-in-out infinite alternate}
+  opacity:.5;animation:liquidCalm 26s ease-in-out infinite alternate}
 @keyframes liquidCalm{from{transform:translate(0,0) scale(1)}to{transform:translate(4%,-3%) scale(1.07)}}
 @media (prefers-reduced-motion:reduce){#sky::before{animation:none}}
 /* 隠しディテール (見た目だけ): 連続7日の星・連続30日の機体名・全場面の計器の報告 */
