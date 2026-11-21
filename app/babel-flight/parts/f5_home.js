@@ -86,7 +86,7 @@ function homeHTML(){
   var nc=cityFor(L,ni),cp=curPos(L),from=cp>=0?cityFor(L,cp):TOKYO,dist=Math.round(haversine(from,nc));
   h+='<section class="hero" id="hero"><div class="hero-in" id="heroIn"><canvas id="map" class="mapcv" role="img" aria-label="'+esc(LG.name)+'のルートマップ。次の目的地は'+esc(nc[1])+'"></canvas>'+
      '<div class="hud"><div class="hud-l"><span class="lbl">NEXT STOP ・ '+esc(LG.name)+'</span><b class="mono">'+flapHTML(nc[0],anim)+'</b><small>'+esc(nc[1])+' ・ '+esc(unitTitle(nextId))+'</small></div>'+
-     '<div class="hud-r"><span class="lbl">到着</span><b class="mono">'+done+'<small>/'+total+'</small></b></div></div>'+
+     '<div class="hud-r"><span class="lbl">到着</span><b class="mono">'+done+'<small>/'+total+'</small></b><span class="gate mono">GATE '+esc(gateNo(L,nextId))+' ・ '+esc(flightNo(L,nextId))+'</span></div></div>'+
      '<div class="hud-foot mono"><span>'+fmtCoord(nc)+'</span><span>'+(cp>=0?esc(from[1]):'東京')+'から '+fmt(dist)+' km</span></div>'+
      heroLangs()+'</div></section>';
   h+=modeSwitch();
