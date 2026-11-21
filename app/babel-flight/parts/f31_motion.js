@@ -60,7 +60,7 @@ function motGhost(el,dir,cls){
   var r0=render;
   render=function(){
     var main=$('main'),from=MOT.key||motKey0(),to=motKeyNext(),changed=from!==to,dir=motDir(from,to);
-    if(changed&&motOn()&&main&&main.firstChild&&from)motGhost(main,dir);
+    if(changed&&motOn()&&main&&main.firstChild&&from&&!MOT.noGhost)motGhost(main,dir);
     /* the same screen drawn again (a toggle, a setting): no reveal or count-up all over again */
     MOT.quiet=!changed&&!!from&&!HOME_ANIM;
     var out;try{out=r0.apply(this,arguments);}finally{MOT.quiet=false;}
