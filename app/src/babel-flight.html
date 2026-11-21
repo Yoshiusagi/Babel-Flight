@@ -188,14 +188,14 @@ svg{display:block}
 
 /* passport */
 .id-card{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;background:var(--ink);color:var(--bg);border-radius:14px;padding:16px;margin-top:14px;position:relative;overflow:hidden}
-.id-card::after{content:"";position:absolute;right:-30px;top:-30px;width:140px;height:140px;border-radius:50%;border:18px solid rgba(255,207,38,.14)}
+.id-card::after{content:"";position:absolute;right:-30px;top:-30px;width:140px;height:140px;border-radius:50%;border:18px solid color-mix(in srgb,var(--bg) 14%,transparent)}
 .photo{width:64px;height:78px;border-radius:6px;background:var(--bg);color:var(--ink);display:grid;place-items:center}
 .photo svg{width:38px;height:38px}
 .id-card .lbl{color:var(--bg);opacity:.65}
 .id-card input{width:100%;background:transparent;border:0;border-bottom:1px dashed rgba(255,255,255,.4);color:var(--bg);font:700 26px/1.2 var(--f-disp);letter-spacing:.1em;text-transform:uppercase;padding:2px 0;border-radius:0}
-.id-card .cls{margin-top:8px;font:700 13px var(--f-mono);letter-spacing:.06em;color:var(--signal)}
+.id-card .cls{margin-top:8px;font:700 13px var(--f-mono);letter-spacing:.06em;color:var(--bg)}
 .cls-bar{height:4px;background:rgba(255,255,255,.2);border-radius:2px;margin-top:8px;overflow:hidden}
-.cls-bar i{display:block;height:100%;background:var(--signal)}
+.cls-bar i{display:block;height:100%;background:var(--bg)}
 .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
 .kpi{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0}
 .kpi .v{font:700 20px/1.1 var(--f-mono);margin-top:6px;font-variant-numeric:tabular-nums}
@@ -464,7 +464,7 @@ svg{display:block}
 body.dark-ui{background:#070b18}
 body.dark-ui #sky{display:none}
 #main.enter{animation:enter .4s cubic-bezier(.2,.8,.2,1)}
-@keyframes enter{from{opacity:0;transform:translateY(10px)}}
+@keyframes enter{from{opacity:.55;transform:translateY(10px)}}
 
 /* header audio toggle */
 .ambtn{display:flex;align-items:center;gap:6px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 11px;font-size:12px;font-weight:500}
@@ -495,7 +495,7 @@ body.dark-ui #sky{display:none}
 .map-foot{display:flex;justify-content:space-between;gap:6px 12px;flex-wrap:wrap;padding:8px 14px 11px;font-size:11px;color:#8fa4c8;background:#081125;letter-spacing:.04em}
 
 /* itinerary legs */
-.leg{margin-top:22px;background:color-mix(in srgb,var(--surface) 88%,transparent);border:1px solid var(--line);border-radius:16px;padding:14px 12px 4px;backdrop-filter:blur(6px)}
+.leg{margin-top:22px;background:color-mix(in srgb,var(--surface) 88%,transparent);border:1px solid var(--line);border-radius:16px;padding:14px 12px 4px}
 .leg-h{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:0 4px 10px;border-bottom:2px solid var(--ink)}
 .leg-h p{font-size:12.5px;color:var(--ink2);margin-top:2px}
 .leg-n{font-weight:700;font-size:14px;flex:none;background:var(--ink);color:var(--bg);padding:4px 9px;border-radius:7px}
@@ -670,9 +670,11 @@ body.dark-ui .sheet{--sc:#ff6b79}
 .hud-r{text-align:right;flex:none}
 .hud-r b{display:block;font-size:25px;margin-top:5px}
 .hud-r b small{font-size:13px;color:#9fb3d6}
+/* 搭乗券風の小さな表示 (ゲート・便名): 次の目的地の番号を見せる */
+.gate{display:inline-block;margin-top:8px;padding:3px 8px;border:1px dashed rgba(159,179,214,.55);border-radius:8px;font-size:10.5px;letter-spacing:.1em;color:#c9d6ee;white-space:nowrap}
 .hud-foot{position:absolute;left:0;right:0;bottom:70px;display:flex;justify-content:space-between;gap:8px;padding:0 max(16px,env(safe-area-inset-left,0px));font-size:10.5px;letter-spacing:.04em;color:#9fb3d6;pointer-events:none;opacity:var(--hud);text-shadow:0 1px 6px #071022}
 .hero-langs{position:absolute;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:14px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.hl{position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 4px 8px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(8,18,40,.55);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#fff;overflow:hidden;transition:transform .2s,background .3s,color .3s}
+.hl{position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 4px 8px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(8,18,40,.72);color:#fff;overflow:hidden;transition:transform .2s,background .3s,color .3s}
 .hl:active{transform:scale(.96)}
 .hl b{font-size:15px;letter-spacing:.05em}
 .hl small{font-size:10px;opacity:.85;white-space:nowrap}
@@ -687,8 +689,8 @@ body.dark-ui .sheet{--sc:#ff6b79}
 /* view transitions */
 #main.enter-r{animation:enterR .42s cubic-bezier(.2,.8,.2,1)}
 #main.enter-l{animation:enterL .42s cubic-bezier(.2,.8,.2,1)}
-@keyframes enterR{from{opacity:0;transform:translateX(30px)}}
-@keyframes enterL{from{opacity:0;transform:translateX(-30px)}}
+@keyframes enterR{from{opacity:.55;transform:translateX(30px)}}
+@keyframes enterL{from{opacity:.55;transform:translateX(-30px)}}
 .stop{animation:none}
 .stop.in{animation:rowIn .55s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--k,0) * 45ms)}
 @keyframes rowIn{from{transform:translateX(-18px);opacity:.15}}
@@ -696,7 +698,7 @@ body.dark-ui .sheet{--sc:#ff6b79}
 @keyframes legIn{from{transform:translateY(12px);opacity:.2}}
 #main>.rv{animation:rvIn .55s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i) * 55ms)}
 #main>.rv:nth-child(n+9){animation-delay:.45s}
-@keyframes rvIn{from{transform:translateY(18px);opacity:.1}}
+@keyframes rvIn{from{transform:translateY(12px);opacity:.6}}
 .rv .cls-bar i,.rv .bar i,.rv .gbar i{animation:barGrow 1s cubic-bezier(.2,.8,.2,1) .25s both;transform-origin:left}
 @keyframes barGrow{from{transform:scaleX(0)}}
 .slot.got.pop svg{animation:stampIn .5s cubic-bezier(.2,1.3,.4,1) both;animation-delay:calc(.25s + var(--j) * 70ms)}
@@ -730,7 +732,7 @@ body.dark-ui .sheet{--sc:#ff6b79}
 /* profile icon */
 .id-card .photo{border:0;padding:0;cursor:pointer;position:relative;font:inherit;-webkit-tap-highlight-color:transparent}
 .photo .pfp{font-size:38px;line-height:1}
-.photo-ed{position:absolute;right:-6px;bottom:-6px;width:22px;height:22px;border-radius:50%;background:var(--signal);color:var(--on-signal);display:grid;place-items:center;box-shadow:0 0 0 2px var(--ink)}
+.photo-ed{position:absolute;right:-6px;bottom:-6px;width:22px;height:22px;border-radius:50%;background:var(--bg);color:var(--ink);display:grid;place-items:center;box-shadow:0 0 0 2px var(--ink)}
 .photo-ed svg{width:12px;height:12px}
 .id-card input{text-transform:none}
 .id-card .st-sub{margin-top:3px;opacity:.5;font-size:11px}
@@ -1049,7 +1051,7 @@ body:has(#sheetHost .sheet) #hf-watermark{bottom:calc(12px + env(safe-area-inset
 [data-cabin="window"] .modesw{border-radius:999px}
 [data-cabin="window"] .modesw-ind,[data-cabin="window"] .modesw button{border-radius:999px}
 [data-cabin="window"] .sheet{border-radius:28px 28px 0 0;border-top-width:0;box-shadow:0 -18px 40px -16px var(--shadow)}
-[data-cabin="window"] .tabs{background:color-mix(in srgb,var(--surface) 82%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top-color:transparent}
+[data-cabin="window"] .tabs{background:color-mix(in srgb,var(--surface) 92%,transparent);border-top-color:transparent}
 
 /* ===== ラウンジ (ビジネス) ===== */
 :root[data-cabin="lounge"]{color-scheme:dark;--bg:#0c1524;--bg2:#101c30;--surface:#13203a;--surface2:#1b2b49;--ink:#f3ead7;--ink2:#b9ad93;--line:#2e3d5b;--signal:#d4af62;--on-signal:#1a1204;--good:#63d69f;--bad:#ff7d88;--info:#93b7ff;--shadow:rgba(0,0,0,.6)}
@@ -1075,13 +1077,15 @@ body:has(#sheetHost .sheet) #hf-watermark{bottom:calc(12px + env(safe-area-inset
 [data-cabin="suite"] .go{border-radius:999px;background:linear-gradient(180deg,#f1e2bb,#d9bf86);color:#18130a}
 [data-cabin="suite"] .opt{min-height:66px;font-size:17px;border-radius:16px;border-color:rgba(233,214,168,.22);background:#151518;color:var(--ink)}
 [data-cabin="suite"] .choice,[data-cabin="suite"] .ghost,[data-cabin="suite"] .sq,[data-cabin="suite"] .seg button{border-radius:16px;border-color:rgba(233,214,168,.28);color:var(--ink)}
-[data-cabin="suite"] .tabs{background:rgba(10,10,12,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top-color:rgba(233,214,168,.2)}
+[data-cabin="suite"] .tabs{background:rgba(10,10,12,.94);border-top-color:rgba(233,214,168,.2)}
 [data-cabin="suite"] .id-card{background:linear-gradient(135deg,#221d14,#0e0d0b);color:var(--ink);box-shadow:inset 0 0 0 1px rgba(233,214,168,.5)}
 [data-cabin="suite"] .sheet{background:#121215;border-top-color:#e9d6a8;border-radius:24px 24px 0 0}
 [data-cabin="suite"] .profile{opacity:.5}
 /* swipe hint on the answer card (ラウンジ・スイート) */
 [data-cabin="lounge"] #sheetHost .sheet[role="status"] .sheet-in::after,
 [data-cabin="suite"] #sheetHost .sheet[role="status"] .sheet-in::after{content:'← 左にスワイプしても次へ';display:block;text-align:center;font-size:11.5px;color:var(--ink2);margin-top:-2px}
+/* 機体の型式: 弱点レポートの見出しに小さく (搭乗券・計器と同じ、見えるディテール) */
+.ac-type{margin-left:auto;padding:2px 7px;border:1px solid var(--line);border-radius:6px;font-size:10px;letter-spacing:.1em;color:var(--ink2);white-space:nowrap}
 </style>
 <style>
 /* ===== 窓側の席: home ===== */
@@ -1745,7 +1749,7 @@ html.ui-busy .uipick{opacity:.55;pointer-events:none}
 #main.mot-in{animation:motIn .52s cubic-bezier(.16,1,.3,1) .06s both}
 #main.enter-r{animation:enterR .52s cubic-bezier(.16,1,.3,1) .05s both}
 #main.enter-l{animation:enterL .52s cubic-bezier(.16,1,.3,1) .05s both}
-@keyframes motIn{from{opacity:0;transform:translateY(16px) scale(.99)}}
+@keyframes motIn{from{opacity:.55;transform:translateY(16px) scale(.99)}}
 /* sheets rise with a soft landing and slide away when closed; dialogs dim the screen a little */
 .sheet{animation:sheetUp .44s cubic-bezier(.16,1,.3,1)}
 @keyframes sheetUp{from{transform:translateY(100%)}}
@@ -1780,6 +1784,8 @@ html.ui-busy .uipick{opacity:.55;pointer-events:none}
   .sheet,.sheet-dim,.tap-pop,.opt.ok,.opt.no,.tab[aria-current="page"] svg,.tab[aria-current="page"]::before,#main.mot-in,#main.enter,#main.enter-l,#main.enter-r{animation:none!important}
   .seg-ind{display:none}
 }
+/* 一度に出す切り替え: 入場も中身の遅れた表示もなし */
+#main.snap,#main.snap *{animation:none!important;transition:none!important}
 </style>
 <style>
 /* ---- ファーストクラス: FIRST CLASS LOUNGE / 専属AIコーチ / AI日記 / 称号 (f32_first.js) ---- */
@@ -2389,6 +2395,44 @@ html[data-fr="fr-runway"] .id-card .photo{outline:3px dotted #ffd34d;outline-off
 .kk-wq{padding:10px 0;border-top:1px solid var(--line);font-size:13.5px}
 .kk-wq p{margin:2px 0}
 @media (max-width:380px){.kk-stem{font-size:17.5px}.kk-big{font-size:38px}}
+</style>
+<style>
+/* ---- Liquid Glass (iOS 26 の見た目を Web で近づける): 浮かぶカプセルのタブバーと、すりガラスのシート.
+   客室(data-cabin)の色は今まで通り優先する(その指定は詳細度が高い)。 ---- */
+:root{--glass:rgba(255,255,255,.58);--glass-edge:rgba(255,255,255,.78);--glass-shade:rgba(16,24,40,.16);--glass-blur:saturate(190%) blur(26px);--tabs-bg:rgba(255,255,255,.9)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--glass:rgba(28,34,50,.56);--tabs-bg:rgba(28,34,50,.92);--glass-edge:rgba(255,255,255,.14);--glass-shade:rgba(0,0,0,.45)}}
+:root[data-theme="dark"]{--glass:rgba(28,34,50,.56);--tabs-bg:rgba(28,34,50,.92);--glass-edge:rgba(255,255,255,.14);--glass-shade:rgba(0,0,0,.45)}
+.tabs{left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));padding:6px 8px;border:1px solid var(--glass-edge);border-radius:30px;background:var(--tabs-bg);box-shadow:inset 0 1px 0 var(--glass-edge),0 10px 30px var(--glass-shade)}
+.tabs-in{max-width:520px}
+.sheet{left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom,0px));border:1px solid var(--glass-edge);border-radius:30px;background:var(--glass);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);box-shadow:inset 0 1px 0 var(--glass-edge),0 14px 40px var(--glass-shade)}
+/* 透明度を下げる設定・古い端末: ふつうの面にもどす */
+@media (prefers-reduced-transparency:reduce){.tabs,.sheet{background:var(--surface);-webkit-backdrop-filter:none;backdrop-filter:none}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.tabs,.sheet{background:var(--surface)}}
+/* the iOS app shows the system tab bar instead (f20_native.js natTabsSync) */
+body.native-tabs #tabs{display:none !important}
+/* Liquid Calm (A): 空の上に、ゆっくり呼吸する光の層をかさねて、水面のようななめらかさを出す.
+   色は --cloud を使うので、ふつうの空・夜の空の両方でなじむ。動きを減らす設定では止める。 */
+#sky::before{content:"";position:absolute;inset:-18%;pointer-events:none;
+  background:radial-gradient(38% 30% at 28% 34%,var(--cloud),transparent 72%),radial-gradient(34% 26% at 74% 62%,var(--cloud),transparent 74%);
+  opacity:.5;animation:liquidCalm 26s ease-in-out infinite alternate}
+@keyframes liquidCalm{from{transform:translate(0,0) scale(1)}to{transform:translate(4%,-3%) scale(1.07)}}
+@media (prefers-reduced-motion:reduce){#sky::before{animation:none}}
+/* 隠しディテール (見た目だけ): 連続7日の星・連続30日の機体名・全場面の計器の報告 */
+.sky.hid-stars{--star:.75}
+.plate{display:block;margin-top:6px;font-size:11px;letter-spacing:.24em;color:#ffcf26}
+.card.report.hid-cockpit{--surface:#0b1424;--surface2:#11203a;--ink:#e8f1ff;--ink2:#a3b9d8;--line:#23395e;background:var(--surface);color:var(--ink)}
+.card.report.hid-cockpit .ac-type{color:#ffcf26;border-color:#ffcf26}
+/* タブのぷるっと反応: 押した瞬間に、アイコンが一度だけ柔らかく跳ねる (動きを減らす設定では出さない) */
+@media (prefers-reduced-motion:no-preference){.tab:active svg{animation:tapHop .45s cubic-bezier(.3,1.6,.5,1)}}
+@keyframes tapHop{0%{transform:none}40%{transform:translateY(-3px) scale(1.14)}100%{transform:none}}
+/* 窓の景色 (連続日数で変わる空): 7日で夕焼けの窓、30日で雲海の窓 (f10_fx.js skyClass) */
+.sky.win-sunset{--s1:#ffb88c;--s2:#f3d6e6}
+.sky.win-sea .cloud{opacity:min(1,calc(var(--o) * 1.5))}
+.sky.win-sea::after{content:"";position:absolute;left:0;right:0;bottom:0;height:36%;background:linear-gradient(rgba(255,255,255,0),var(--cloud));pointer-events:none}
+/* 白い一瞬を出さない: 画面の下地はテーマの背景色 (透けても白にならない) */
+html{background:var(--bg)}
+/* 上の数字の欄: 幅が狭いと、ラベルの下に数字を置く (文字が長くても隣と重ならない) */
+@media (max-width:440px){.stats-top .pill{flex-direction:column;align-items:flex-start;gap:3px;padding:6px 8px}.stats-top .lbl{letter-spacing:.04em;font-size:10px}.stats-top .v{font-size:15px}}
 </style>
 </head>
 <body>
@@ -5312,7 +5356,7 @@ var KEY='babelflight.save.v1';
 var OLD_ORDER=['checkin','inflight','immigration','hotel','restaurant','city','atc1','atc2'];
 function blankProg(){var p={};ORDER.forEach(function(k){p[k]={items:{},units:{}};});return p;}
 function defaults(){return {v:2,t:0,name:'PASSENGER',icon:'',rz:0,lang:'ko',prof:'',level:'mid',lv:{},nw:'',why:'',weak:[],why0:0,seen:'',goal:2,onboarded:false,theme:'auto',sound:true,mode:'daily',amb:false,tap:true,pos:{},
-  miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,dly:[],wb:{},trip:null,daily:{d:'',n:0},mh:null,st:null,cap:0,tq:0,enVar:'us',acc:{},rem:{},stMax:0,accent:'',atcApt:{},atcAcc:1,df:null,kk:null,prog:blankProg()};}
+  miles:0,flights:0,streak:0,lastDay:'',bestStreak:0,dly:[],wb:{},trip:null,daily:{d:'',n:0},hid:{},mh:null,st:null,cap:0,tq:0,enVar:'us',acc:{},rem:{},stMax:0,accent:'',atcApt:{},atcAcc:1,df:null,kk:null,prog:blankProg()};}
 function mergeSave(raw){
   var d=defaults();
   if(!raw||typeof raw!=='object')return d;
@@ -5811,7 +5855,11 @@ function bez(t,a,c,b){var u=1-t;return {x:u*u*a.x+2*u*t*c.x+t*t*b.x,y:u*u*a.y+2*
   dx:2*u*(c.x-a.x)+2*t*(b.x-c.x),dy:2*u*(c.y-a.y)+2*t*(b.y-c.y)};}
 function ringSVG(n,goal){
   var p=clamp(n/goal,0,1);
-  return '<svg class="ring" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15" fill="none" stroke="var(--line)" stroke-width="4"/>'+
+  /* 計器の目盛り: リングの内側に12本(3本ごとに長い目盛り) */
+  var tk='';
+  for(var i=0;i<12;i++){var a=i*Math.PI/6,c=Math.cos(a),s=Math.sin(a),long=i%3===0,r0=long?9.2:10,r1=11;
+    tk+='<line x1="'+(18+r0*c).toFixed(2)+'" y1="'+(18+r0*s).toFixed(2)+'" x2="'+(18+r1*c).toFixed(2)+'" y2="'+(18+r1*s).toFixed(2)+'" stroke="currentColor" stroke-width="'+(long?.7:.45)+'" opacity="'+(long?.7:.4)+'"/>';}
+  return '<svg class="ring" viewBox="0 0 36 36" aria-hidden="true"><g class="ring-ticks" style="color:var(--ink2)">'+tk+'</g><circle cx="18" cy="18" r="15" fill="none" stroke="var(--line)" stroke-width="4"/>'+
     '<circle cx="18" cy="18" r="15" fill="none" stroke="'+(p>=1?'var(--good)':'var(--signal)')+'" stroke-width="4" stroke-linecap="round" pathLength="100" stroke-dasharray="'+(p*100).toFixed(1)+' 100" transform="rotate(-90 18 18)"/></svg>';
 }
 function topBar(title,share){
@@ -6060,6 +6108,7 @@ function render(){
   var tabs=document.querySelectorAll('.tab');
   for(var i=0;i<tabs.length;i++){if(tabs[i].getAttribute('data-tab')===view)tabs[i].setAttribute('aria-current','page');else tabs[i].removeAttribute('aria-current');}
   var n=dueList(L).length,b=$('dueBadge');b.textContent=n>99?'99+':n;b.hidden=n===0;
+  if(typeof natTabsSync==='function')natTabsSync(showTabs,view);
 }
 /* ================= HOME: hero route map + itinerary ================= */
 var pendingFly=null,MAP=null,MODEPREV=null,HOME_ANIM='first',DOTC={};
@@ -6149,7 +6198,7 @@ function homeHTML(){
   var nc=cityFor(L,ni),cp=curPos(L),from=cp>=0?cityFor(L,cp):TOKYO,dist=Math.round(haversine(from,nc));
   h+='<section class="hero" id="hero"><div class="hero-in" id="heroIn"><canvas id="map" class="mapcv" role="img" aria-label="'+esc(LG.name)+'のルートマップ。次の目的地は'+esc(nc[1])+'"></canvas>'+
      '<div class="hud"><div class="hud-l"><span class="lbl">NEXT STOP ・ '+esc(LG.name)+'</span><b class="mono">'+flapHTML(nc[0],anim)+'</b><small>'+esc(nc[1])+' ・ '+esc(unitTitle(nextId))+'</small></div>'+
-     '<div class="hud-r"><span class="lbl">到着</span><b class="mono">'+done+'<small>/'+total+'</small></b></div></div>'+
+     '<div class="hud-r"><span class="lbl">到着</span><b class="mono">'+done+'<small>/'+total+'</small></b><span class="gate mono">GATE '+esc(gateNo(L,nextId))+' ・ '+esc(flightNo(L,nextId))+'</span>'+(hidOn('plate')?'<span class="plate mono">SKYLARK</span>':'')+'</div></div>'+
      '<div class="hud-foot mono"><span>'+fmtCoord(nc)+'</span><span>'+(cp>=0?esc(from[1]):'東京')+'から '+fmt(dist)+' km</span></div>'+
      heroLangs()+'</div></section>';
   h+=modeSwitch();
@@ -6400,6 +6449,7 @@ function startFlight(opts){
   var id=(opts.mode==='unit'||opts.mode==='skip'||opts.mode==='rem')?flightNo(F.lang,opts.uid):'BF'+(ORDER.indexOf(F.lang)+1)+'XX';
   rootEl.style.setProperty('--lc','var(--c-'+F.lang+')');
   $('tabs').hidden=true;
+  if(typeof natTabsSync==='function')natTabsSync(false,'flight');
   $('main').innerHTML=
     '<div class="fl-top"><button class="x" type="button" data-abort aria-label="やめる">'+closeIcon()+'</button>'+
     '<div class="fl-id"><span class="lbl">'+id+' → '+LG.code+' ・ '+esc(LG.name)+'</span><b>'+esc(title)+'</b></div><div class="turb" id="turb">ミス 0</div></div>'+
@@ -6565,9 +6615,9 @@ function judge(ok){
   if(F.answered)return;F.answered=true;
   var q=F.cur,d=dat(q.it),key=ik(q.it.uid,q.it.i);
   var hinted=ok&&F.hl>0&&!q.retry&&pushRetry(q);
-  if(ok){F.corr++;chimeOK();fxGood();F.combo=(F.combo||0)+1;if(typeof fxCombo==='function'&&COMBO_AT.indexOf(F.combo)>=0)fxCombo(F.combo);}
+  if(ok){F.corr++;chimeOK();fxGood();if(typeof fxPaperPlane==='function')fxPaperPlane();F.combo=(F.combo||0)+1;if(typeof fxCombo==='function'&&COMBO_AT.indexOf(F.combo)>=0)fxCombo(F.combo);}
   else{F.combo=0;F.mist++;fxBad();F.wrong[key]=(F.wrong[key]||0)+1;chimeBad();buzz(40);pushRetry(q);}
-  if(typeof repNote==='function')repNote(F.lang,q.k,ok);
+  if(typeof repNote==='function')repNote(F.lang,q.k,ok,F.uid);
   /* 苦手「発音」: hear it once more, slowly */
   if(typeof hasWeak==='function'&&hasWeak('pron')){var LGp=LANGS[F.lang];setTimeout(function(){if(F&&F.cur===q&&F.answered)speak(d.t,LGp.tts,true);},450);}
   board.set(d.t);ledSet(d.jp,d.r);
@@ -6741,6 +6791,9 @@ function completeLesson(o){
   }
   save.miles+=miles;save.flights++;
   save.tq=(save.tq||0)+(o.answered||0);
+  /* 隠しディテール: 早朝5時台のレッスン・連続日数・全場面 (f10_fx.js) */
+  if(new Date().getHours()===5)hidGrant('dawn');
+  hidCheck();
   if(o.mode!=='ai'){accNote(L,o.corr,o.answered);if(typeof rewardTick==='function')rewardTick(o.corr);}
   /* many mistakes in a lesson: add a remedial flight made of those phrases */
   var remAdded=0;
@@ -6923,8 +6976,8 @@ function initSky(){
   var h='<div class="skystars"></div>';
   var C=[[8,140,72,.85],[22,220,96,.7],[38,110,130,.6],[54,180,84,.8],[70,260,150,.55],[84,150,110,.7],[92,200,170,.5]];
   C.forEach(function(c,i){h+='<span class="cloud" style="top:'+c[0]+'%;--w:'+c[1]+'px;--d:'+c[2]+'s;--o:'+c[3]+';animation-delay:-'+Math.round(c[2]*((i*37)%100)/100)+'s"></span>';});
-  s.innerHTML=h;s.className='sky '+skyPhase();
-  setInterval(function(){s.className='sky '+skyPhase();},300000);
+  s.innerHTML=h;s.className=skyClass();
+  setInterval(function(){s.className=skyClass();},300000);
 }
 var cineTimer=0,cineDone=null;
 function cineEnd(){
@@ -7028,6 +7081,39 @@ function tapTick(){
   }catch(e){}
 }
 function ringTone(){for(var k=0;k<2;k++){tone(784,0.28,'sine',0.05,k*0.85);tone(988,0.3,'sine',0.045,k*0.85+0.16);}}
+
+/* 正解の紙飛行機 (見えるディテール 3/3): 画面を弧を描いて横切る。動きを減らす設定では出さない */
+function fxPaperPlane(){
+  if(reduceMotion||!document.body.animate)return;
+  var el=document.createElement('div');
+  el.setAttribute('aria-hidden','true');
+  el.style.cssText='position:fixed;left:0;top:0;z-index:60;pointer-events:none;color:'+(hidOn('dawn')?'#f5c542':'var(--signal)')+';opacity:0';
+  el.innerHTML='<svg viewBox="0 0 24 24" width="28" height="28"><path d="M2 11L22 3L15 21L11 14Z" fill="currentColor"/><path d="M11 14L22 3" stroke="#fff" stroke-opacity=".6" stroke-width=".8" fill="none"/></svg>';
+  document.body.appendChild(el);
+  var W=innerWidth,H=innerHeight;
+  var a=el.animate([
+    {transform:'translate(-40px,'+(H*0.62)+'px) rotate(-18deg)',opacity:0},
+    {transform:'translate('+(W*0.3)+'px,'+(H*0.36)+'px) rotate(-8deg)',opacity:1,offset:0.35},
+    {transform:'translate('+(W*0.62)+'px,'+(H*0.26)+'px) rotate(6deg)',opacity:1,offset:0.7},
+    {transform:'translate('+(W+40)+'px,'+(H*0.1)+'px) rotate(12deg)',opacity:0}
+  ],{duration:1400,easing:'ease-in-out',fill:'forwards'});
+  a.onfinish=function(){el.remove();};
+  setTimeout(function(){el.remove();},2000);
+}
+
+/* ===== 隠しディテール (見た目だけ・学習には影響しない) =====
+   stars: 連続7日で夜空の星 / plate: 連続30日で機体の名前 / cockpit: 全場面を1回ずつクリアで計器の報告 / dawn: 早朝5時台のレッスンで金の紙飛行機 */
+function hidOn(k){return !!(save.hid&&save.hid[k]);}
+function hidGrant(k){if(!save.hid)save.hid={};if(!save.hid[k])save.hid[k]=dayStr();}
+function hidCheck(){
+  if(save.streak>=7)hidGrant('stars');
+  if(save.streak>=30)hidGrant('plate');
+  var all=true,any=false;
+  ORDER.forEach(function(L){(ALL_IDS[L]||[]).forEach(function(uid){if(isScene(L,uid)){any=true;if(unitRec(L,uid).n<1)all=false;}});});
+  if(any&&all)hidGrant('cockpit');
+  var sk=$('sky');if(sk)sk.className=skyClass();
+}
+function skyClass(){var st=streakNow();return 'sky '+skyPhase()+(hidOn('stars')?' hid-stars':'')+(st>=30?' win-sea':st>=7?' win-sunset':'');}
 /* ================= VIEW ANIMATIONS ================= */
 var PREVVIEW=null,RVO=null;
 function countUp(el){
@@ -19238,11 +19324,13 @@ document.addEventListener('click',function(e){var t=e.target&&e.target.closest&&
 var REP_KEY='babelflight.report.v1';
 var KIND_JP={t2j:'意味を選ぶ',j2t:'言い方を選ぶ',listen:'聞き取り',listenjp:'聞いて意味を選ぶ',build:'並べ替え',type:'入力',cloze:'穴埋め',aiq:'AIの例文'};
 function repLoad(){try{var o=JSON.parse(lsGet(REP_KEY)||'{}');return o&&typeof o==='object'?o:{};}catch(e){return {};}}
-function repNote(L,k,ok){
+function repNote(L,k,ok,unit){
   if(cabinLv()<0||!LANGS[L])return;
   var o=repLoad(),r=o[L]||(o[L]={d:{},k:{}}),day=dayStr();
   var d=r.d[day]||(r.d[day]=[0,0]);d[0]++;if(ok)d[1]++;
   var kk=r.k[k]||(r.k[k]=[0,0]);kk[0]++;if(ok)kk[1]++;
+  /* the 場面・テーマ (unit) the answer came from, for 場面ごとの正答率 (only units with a title) */
+  if(unit&&UM[unit]){var uu=r.u||(r.u={}),ux=uu[unit]||(uu[unit]=[0,0]);ux[0]++;if(ok)ux[1]++;}
   var days=Object.keys(r.d).sort();while(days.length>60)delete r.d[days.shift()];
   lsSet(REP_KEY,JSON.stringify(o));
 }
@@ -19260,6 +19348,15 @@ function repTrendSVG(r){
   s+='<text x="0" y="'+(H+15)+'" class="rep-ax">'+cells[0].day.slice(5).replace('-','/')+'</text><text x="'+W+'" y="'+(H+15)+'" text-anchor="end" class="rep-ax">今日</text></svg>';
   return s;
 }
+/* 場面(テーマ)ごとの正答率: the weakest first (3問以上の場面) */
+function repUnitsHTML(r){
+  var u=r.u||{},rows=Object.keys(u).filter(function(k){return UM[k]&&u[k][0]>=3;}).map(function(k){return {k:k,n:u[k][0],p:Math.round(u[k][1]/u[k][0]*100)};})
+    .sort(function(a,b){return a.p-b.p;}).slice(0,6);
+  if(!rows.length)return '<p class="dim" style="font-size:13px">それぞれの場面を3問以上解くと、ここに出てきます。</p>';
+  return '<ul class="rep-kinds">'+rows.map(function(x,i){
+    return '<li><span class="rk-n">'+esc(unitTitle(x.k))+(i===0&&rows.length>1&&x.p<rows[rows.length-1].p?'<em>いちばん苦手</em>':'')+'</span>'+
+      '<span class="rk-bar"><i style="width:'+Math.max(2,x.p)+'%"></i></span><b>'+x.p+'%</b><small>'+x.n+'問</small></li>';}).join('')+'</ul>';
+}
 function repKindsHTML(r){
   var rows=Object.keys(r.k).filter(function(k){return KIND_JP[k]&&r.k[k][0]>=3;}).map(function(k){var v=r.k[k];return {k:k,n:v[0],p:Math.round(v[1]/v[0]*100)};})
     .sort(function(a,b){return a.p-b.p;});
@@ -19273,7 +19370,7 @@ function reportCardHTML(L){
   var r=repLoad()[L]||{d:{},k:{}},weak=weakList(L).slice(0,5),now=Date.now(),wk=[0,0],pw=[0,0];
   for(var i=0;i<14;i++){var v=r.d[dayStr(new Date(now-i*864e5))];if(v){var t=i<7?wk:pw;t[0]+=v[0];t[1]+=v[1];}}
   var acc=wk[0]?Math.round(wk[1]/wk[0]*100):null,pacc=pw[0]?Math.round(pw[1]/pw[0]*100):null,diff=acc!==null&&pacc!==null?acc-pacc:null;
-  var h='<section class="card report"><div class="card-h"><h2 class="jh">弱点レポート</h2><span class="lbl">'+esc(LANGS[L].name)+' ・ '+(lv>=2?'詳しい版':'かんたん版')+'</span></div>'+
+  var h='<section class="card report'+(hidOn('cockpit')?' hid-cockpit':'')+'"><div class="card-h"><h2 class="jh">弱点レポート</h2><span class="lbl">'+esc(LANGS[L].name)+' ・ '+(lv>=2?'詳しい版':'かんたん版')+'</span><span class="ac-type mono" aria-hidden="true">TYPE BF-'+esc(LANGS[L].letter)+'-'+(lv+1)+'</span></div>'+
     '<div class="rep-kpis"><div><span class="lbl">この7日の解答</span><b>'+wk[0]+'<small>問</small></b></div>'+
     '<div><span class="lbl">この7日の正答率</span><b>'+(acc===null?'—':acc+'<small>%</small>')+'</b>'+(diff!==null?'<span class="rep-diff '+(diff>=0?'up':'down')+'">先週より '+(diff>=0?'+':'')+diff+'pt</span>':'')+'</div></div>'+
     '<h3 class="rep-h">苦手なフレーズ TOP5</h3>'+
@@ -19282,7 +19379,7 @@ function reportCardHTML(L){
         '<button class="go sm" type="button" data-mode="weak">弱点コースで練習する</button>'
       :'<p class="dim" style="font-size:13px">まだ苦手なフレーズはありません。間違えたフレーズがここに出てきます。</p>');
   if(lv>=2){
-    h+='<h3 class="rep-h">この14日の正答率</h3>'+repTrendSVG(r)+'<h3 class="rep-h">問題の形式ごとの正答率</h3>'+repKindsHTML(r);
+    h+='<h3 class="rep-h">この14日の正答率</h3>'+repTrendSVG(r)+'<h3 class="rep-h">問題の形式ごとの正答率</h3>'+repKindsHTML(r)+'<h3 class="rep-h">場面（テーマ）ごとの正答率</h3>'+repUnitsHTML(r);
   }else h+='<p class="dim hint">🔒 正答率の推移と、問題の形式ごとの得意・苦手はビジネスから</p>';
   if(lv>=3)h+='<div class="coach"><button class="ghost" type="button" data-coach>AIコーチにアドバイスをもらう</button><div id="coachOut" class="aiout" aria-live="polite"></div></div>';
   else if(lv===2)h+='<p class="dim hint">🔒 AIコーチのアドバイスはファーストから</p>';
@@ -19777,8 +19874,21 @@ var REM_LINES=[
 ];
 var REM={busy:false,again:false,timer:0,denied:false};
 function remIds(){var a=[];for(var i=0;i<REM_DAYS;i++)a.push({id:REM_BASE+i});return a;}
+/* ---- ホーム画面のウィジェット (iOS): 3行だけ App Group に置く。表示の言葉は今の表示言語で作る ---- */
+function widgetPush(){
+  if(!BF_APP||!nat('WidgetBridge'))return;
+  try{
+    var s=streakNow(),t=todayCount(),due=dueList(save.lang).length;
+    natCall('WidgetBridge','setSummary',{
+      line1:'Babel Flight',
+      line2:uiF('連続{0}日',[s]),
+      line3:uiF('今日 {0}/{1}レッスン',[t,save.goal])+(due?' ・ '+uiF('復習 {0}フレーズ',[due]):'')
+    }).catch(function(){});
+  }catch(e){}
+}
 function remSchedule(){
   if(!BF_APP||!nat('LocalNotifications'))return Promise.resolve();
+  widgetPush();
   if(REM.busy){REM.again=true;return Promise.resolve();}
   REM.busy=true;
   var d=devSet();
@@ -19789,7 +19899,9 @@ function remSchedule(){
       var at=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i,+hm[0],+hm[1],0,0);
       if(at.getTime()<=now.getTime()+60000)continue;
       if(i===0&&todayCount()>=save.goal)continue;   /* today's goal is done: no reminder today */
-      list.push({id:REM_BASE+i,title:T('✈️ 搭乗のご案内'),body:T(REM_LINES[(at.getDate()+i)%REM_LINES.length](i)),
+      /* today's notice names the reviews waiting (復習の時期): the one notice a day stays, only its words change */
+      var dn=i===0?dueList(save.lang).length:0;
+      list.push({id:REM_BASE+i,title:T('✈️ 搭乗のご案内'),body:T(dn>0?'復習の時期のフレーズが'+dn+'個たまっています。搭乗前にひと回しして、記憶を新しくしよう。':REM_LINES[(at.getDate()+i)%REM_LINES.length](i)),
         schedule:{at:at,allowWhileIdle:true},extra:{kind:'daily'}});
     }
     if(list.length)return natCall('LocalNotifications','schedule',{notifications:list});
@@ -19978,6 +20090,36 @@ document.addEventListener('change',function(e){
     var d=devSet();d.remT=v;devPut(d);remSchedule();
   }
 });
+
+/* ---- the three tabs as the system's tab bar (iOS 26: Liquid Glass), in the app only.
+   The web tab bar (#tabs) is hidden by body.native-tabs; a tap goes through go() like a web tap. ---- */
+var NTAB={on:false,last:'',listening:false};
+var NTAB_SYM={home:'house',review:'arrow.left.arrow.right',record:'doc.text'};
+function natTabsSync(show,view){
+  if(!BF_APP||!nat('NativeTabs'))return;
+  document.body.classList.add('native-tabs');
+  natTabsListen();
+  if(!show){if(NTAB.on){NTAB.on=false;NTAB.last='';natCall('NativeTabs','hide',{}).catch(function(){});}return;}
+  try{
+    var items=[].map.call(document.querySelectorAll('#tabs .tab'),function(el){
+      var t=[].filter.call(el.childNodes,function(n){return n.nodeType===3;}).map(function(n){return n.nodeValue;}).join('').trim();
+      var id=el.getAttribute('data-tab');
+      return {id:id,title:t,symbol:NTAB_SYM[id]||'circle'};});
+    var key=JSON.stringify(items);
+    if(NTAB.on&&key===NTAB.last){natCall('NativeTabs','select',{id:view}).catch(function(){});return;}
+    NTAB.on=true;NTAB.last=key;
+    natCall('NativeTabs','show',{items:items,selected:view}).catch(function(){});
+  }catch(e){}
+}
+function natTabsListen(){
+  var p=nat('NativeTabs');if(!p||NTAB.listening||typeof p.addListener!=='function')return;
+  NTAB.listening=true;
+  p.addListener('tab',function(d){
+    var id=d&&d.id;if(!id)return;
+    if(id==='home'&&view!=='home')HOME_ANIM='tab';
+    go(id);
+  });
+}
 /* ================= PLANS (Stripe, test mode; test account only for now) =================
    The test account sees a 「プランの購入」 card under 搭乗クラス in 記録. Buying goes through a
    final confirmation sheet (特定商取引法 12条の6: what you get, price, when and how you pay, when
@@ -23152,7 +23294,7 @@ function uiSwap(){
 }
 /* 表示言語: the version of public/i18n/*.json and the display languages that have one
    (written by babel-flight/i18n/build.py) */
-var I18N_V='89a21d211d',I18N_UIS=["en", "ko", "zh"];
+var I18N_V='33338e7bff',I18N_UIS=["en", "ko", "zh"];
 /* ================= 表示言語 (display language: 日本語 / English / 한국어 / 简体中文) =================
    The page is written in Japanese. For another display language the dictionary public/i18n/<ui>.json
    (built from babel-flight/i18n/<ui>/*.tsv by i18n/build.py) is loaded, kept on the device, and every
@@ -24174,6 +24316,8 @@ if(typeof jobxApply==='function'&&typeof render==='function'){
    - Small touches: the chosen option pops, a pressed choice bounces, segmented buttons slide their marker.
    Everything is skipped with reduced motion. */
 var MOT={key:'',tap:null,seg:{}};
+/* 前の画面を複製して浮かせて消す処理 (残像・黄色や暗い一瞬の原因になった). 新しい画面の入場アニメーションだけで切り替える */
+var MOT_GHOST=false;
 function motOn(){return !reduceMotion;}
 /* which screen is showing (a step of the first questions counts as its own screen) */
 function motKey(){
@@ -24228,15 +24372,17 @@ function motGhost(el,dir,cls){
   var r0=render;
   render=function(){
     var main=$('main'),from=MOT.key||motKey0(),to=motKeyNext(),changed=from!==to,dir=motDir(from,to);
-    if(changed&&motOn()&&main&&main.firstChild&&from)motGhost(main,dir);
+    if(MOT_GHOST&&changed&&motOn()&&main&&main.firstChild&&from&&!MOT.noGhost)motGhost(main,dir);
     /* the same screen drawn again (a toggle, a setting): no reveal or count-up all over again */
+    /* タブ・モードの切り替えは一度に出す (入場の繰り返しで白く・暗くちらつくのを防ぐ) */
+    var snapNow=changed&&(MOT.noGhost||HOME_ANIM==='mode');
     MOT.quiet=!changed&&!!from&&!HOME_ANIM;
     var out;try{out=r0.apply(this,arguments);}finally{MOT.quiet=false;}
     MOT.key=motKey();
     if(main){
       if(changed&&motOn()){
-        main.classList.remove('enter','enter-l','enter-r','mot-in');void main.offsetWidth;
-        main.classList.add(dir>0?'enter-r':dir<0?'enter-l':'mot-in');
+        main.classList.remove('enter','enter-l','enter-r','mot-in','snap');void main.offsetWidth;
+        main.classList.add(snapNow?'snap':dir>0?'enter-r':dir<0?'enter-l':'mot-in');
       }else if(!changed&&main.classList.contains('enter'))main.classList.remove('enter');  /* a toggle: stay still */
     }
     motAfter();
@@ -25002,7 +25148,7 @@ function rtDone(){
     var pts=S.grades.reduce(function(a,b){return a+b;},0),max=2*S.u.turns.length,ratio=max?pts/max:0;
     var wrong=[];S.u.turns.forEach(function(t,i){if(S.grades[i]<2)wrong.push({t:t.a,jp:t.aj});});
     RTX.res[RTX.i]={stars:ratio>=0.9?3:ratio>=0.6?2:1,n:S.grades.length,ok:S.grades.filter(function(g){return g===2;}).length,pts:pts,max:max,wrong:wrong};
-    if(typeof repNote==='function')S.grades.forEach(function(g){repNote(S.lang,'scene',g===2);});
+    if(typeof repNote==='function')S.grades.forEach(function(g){repNote(S.lang,'scene',g===2,S.uid);});
     SCX=null;document.body.classList.remove('dark-ui');
     RTX.i++;
     if(RTX.i>=RTX.stages.length){rtDone();return;}
@@ -28109,7 +28255,7 @@ document.addEventListener('click',function(e){
   var a=function(n){return t.hasAttribute(n);},g=function(n){return t.getAttribute(n);};
   if(a('data-cine-skip')){cineSkip();return;}
   /* navigation */
-  if(a('data-tab')){if(g('data-tab')==='home'&&view!=='home')HOME_ANIM='tab';go(g('data-tab'));return;}
+  if(a('data-tab')){if(g('data-tab')==='home'&&view!=='home')HOME_ANIM='tab';MOT.noGhost=true;try{go(g('data-tab'));}finally{MOT.noGhost=false;}return;}
   if(a('data-lang-pick')){langPickSheet();return;}
   if(a('data-lang')){if(t.closest('#sheetHost'))closeSheet();if(save.lang!==g('data-lang')){save.lang=g('data-lang');if(save.lv&&save.lv[save.lang])save.level=save.lv[save.lang];HOME_ANIM='lang';store();render();if(lvNeed(save.lang))lvSheet(save.lang);}return;}
   if(a('data-mode-set')){if(save.mode!==g('data-mode-set')){save.mode=g('data-mode-set');HOME_ANIM='mode';store();render();}return;}
