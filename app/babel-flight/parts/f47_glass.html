@@ -12,4 +12,11 @@
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.tabs,.sheet{background:var(--surface)}}
 /* the iOS app shows the system tab bar instead (f20_native.js natTabsSync) */
 body.native-tabs #tabs{display:none !important}
+/* Liquid Calm (A): 空の上に、ゆっくり呼吸する光の層をかさねて、水面のようななめらかさを出す.
+   色は --cloud を使うので、ふつうの空・夜の空の両方でなじむ。動きを減らす設定では止める。 */
+#sky::before{content:"";position:absolute;inset:-18%;pointer-events:none;
+  background:radial-gradient(38% 30% at 28% 34%,var(--cloud),transparent 72%),radial-gradient(34% 26% at 74% 62%,var(--cloud),transparent 74%);
+  opacity:.5;filter:blur(28px);animation:liquidCalm 26s ease-in-out infinite alternate}
+@keyframes liquidCalm{from{transform:translate(0,0) scale(1)}to{transform:translate(4%,-3%) scale(1.07)}}
+@media (prefers-reduced-motion:reduce){#sky::before{animation:none}}
 </style>
