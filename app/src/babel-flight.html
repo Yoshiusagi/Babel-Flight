@@ -778,11 +778,11 @@ body.dark-ui .sheet{--sc:#ff6b79}
 .credits .cr-copy{margin-top:4px;font:400 11.5px var(--f-mono);color:var(--ink2)}
 .icon-grid button.locked{opacity:.4;position:relative;cursor:not-allowed}
 .icon-grid button .lock{position:absolute;right:2px;bottom:0;font-size:12px;font-style:normal}
-.id-card.gold{background:linear-gradient(135deg,#fff1b8 0%,#f2c94c 38%,#d9a520 68%,#f7dc7e 100%);color:#2a1d00}
-.id-card.gold::after{border-color:rgba(255,255,255,.35)}
-.id-card.gold .lbl{color:#2a1d00}.id-card.gold .cls{color:#6b3f00}
-.id-card.gold input{color:#2a1d00;border-bottom-color:rgba(42,29,0,.35)}
-.id-card.gold .cls-bar{background:rgba(42,29,0,.18)}.id-card.gold .cls-bar i{background:#2a1d00}
+.id-card.gold{background:linear-gradient(135deg,#ffffff 0%,#d9dde2 38%,#8d959f 68%,#eef1f4 100%);color:#0b0f14}
+.id-card.gold::after{border-color:rgba(0,0,0,.12)}
+.id-card.gold .lbl{color:#0b0f14}.id-card.gold .cls{color:#3a4048}
+.id-card.gold input{color:#0b0f14;border-bottom-color:rgba(0,0,0,.35)}
+.id-card.gold .cls-bar{background:rgba(0,0,0,.18)}.id-card.gold .cls-bar i{background:#0b0f14}
 .pass.diamond .pass-main{background:linear-gradient(115deg,var(--surface) 0%,color-mix(in srgb,#8fd3ff 24%,var(--surface)) 38%,color-mix(in srgb,#d2b4ff 24%,var(--surface)) 66%,var(--surface) 100%)}
 .pass.diamond .pass-main::before{background:linear-gradient(90deg,#8fd3ff,#d2b4ff,#ffd6e8)}
 .lounge{background:linear-gradient(140deg,var(--surface) 50%,color-mix(in srgb,#9aa8c4 28%,var(--surface)))}
@@ -24394,10 +24394,9 @@ function motGhost(el,dir,cls){
   var r0=render;
   render=function(){
     var main=$('main'),from=MOT.key||motKey0(),to=motKeyNext(),changed=from!==to,dir=motDir(from,to);
-    if(MOT_GHOST&&changed&&motOn()&&main&&main.firstChild&&from&&!MOT.noGhost&&HOME_ANIM!=='mode'&&HOME_ANIM!=='tab'&&HOME_ANIM!=='lang')motGhost(main,dir);
+    if(MOT_GHOST&&changed&&motOn()&&main&&main.firstChild&&from&&!MOT.noGhost)motGhost(main,dir);
     /* the same screen drawn again (a toggle, a setting): no reveal or count-up all over again */
-    /* タブ・モードの切り替えは一度に出す (入場の繰り返しで白く・暗くちらつくのを防ぐ) */
-    var snapNow=changed&&(MOT.noGhost||HOME_ANIM==='mode');
+    var snapNow=false;
     MOT.quiet=!changed&&!!from&&!HOME_ANIM;
     var out;try{out=r0.apply(this,arguments);}finally{MOT.quiet=false;}
     MOT.key=motKey();
@@ -28277,7 +28276,7 @@ document.addEventListener('click',function(e){
   var a=function(n){return t.hasAttribute(n);},g=function(n){return t.getAttribute(n);};
   if(a('data-cine-skip')){cineSkip();return;}
   /* navigation */
-  if(a('data-tab')){if(g('data-tab')==='home'&&view!=='home')HOME_ANIM='tab';MOT.noGhost=true;try{go(g('data-tab'));}finally{MOT.noGhost=false;}return;}
+  if(a('data-tab')){if(g('data-tab')==='home'&&view!=='home')HOME_ANIM='tab';go(g('data-tab'));return;}
   if(a('data-lang-pick')){langPickSheet();return;}
   if(a('data-lang')){if(t.closest('#sheetHost'))closeSheet();if(save.lang!==g('data-lang')){save.lang=g('data-lang');if(save.lv&&save.lv[save.lang])save.level=save.lv[save.lang];HOME_ANIM='lang';store();render();if(lvNeed(save.lang))lvSheet(save.lang);}return;}
   if(a('data-mode-set')){if(save.mode!==g('data-mode-set')){save.mode=g('data-mode-set');HOME_ANIM='mode';store();render();}return;}
