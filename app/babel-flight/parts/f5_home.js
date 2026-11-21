@@ -1,5 +1,5 @@
 /* ================= HOME: hero route map + itinerary ================= */
-var pendingFly=null,MAP=null,MODEPREV=null,HOME_ANIM='first',DOTC={};
+var pendingFly=null,MAP=null,MODEPREV=null,HOME_ANIM='first',DOTC={},MAPVIEW=null; /* MAPVIEW: the camera and the plane as last drawn (map units): a mode switch glides from there */
 function cityFor(L,i){var c=CITIES[L];return c[((i%c.length)+c.length)%c.length];}
 function posKey(L){return L+'-'+save.mode;}
 /* where the plane is on the path (-1: Tokyo). The path can get shorter (another job, an exam goal), so a place past its end is not used */
@@ -183,8 +183,13 @@ function mapMount(){
   var cur=fly?fly.from:curPos(L);
   var cam0=camAt(focusFor(cur)),cam1=camAt(focusFor(fly?fly.to:cur));
   var step=7/s,dots=mapDotsArea(L,step,follow?X0-vw/2:cam0.x-vw/2-step,follow?X1+vw/2:cam0.x+vw/2+step,cam0.y-vh/2-step-(follow?vh/2:0),cam0.y+vh/2+step+(follow?vh/2:0));
+  /* a mode switch glides the plane and the camera from where they were, not a jump: the map's units are the same in every mode */
+  var glide=null,tgtP=cur>=0?pts[cur]:tk;
+  if(MAPVIEW&&MAPVIEW.L===L&&!fly&&!reduceMotion&&anim!=='lang'&&anim!=='first'&&(MAPVIEW.plane.x!==tgtP.x||MAPVIEW.plane.y!==tgtP.y))
+    glide={cam0:{x:MAPVIEW.cam.x,y:MAPVIEW.cam.y},plane0:{x:MAPVIEW.plane.x,y:MAPVIEW.plane.y},t0:performance.now()};
   MAP={cv:cv,ctx:cv.getContext('2d'),dpr:dpr,cw:cw,ch:heroH,s:s,L:L,R:R,ids:ids,pts:pts,tk:tk,next:nextI,dots:dots,cam:cam0,cam0:cam0,cam1:cam1,fly:fly,
        acc:cssVar('--c-'+L),plane:new Path2D(PLANE_D),t0:performance.now(),reveal:(anim==='lang'||anim==='first')&&!reduceMotion,route:(anim&&!reduceMotion)?performance.now()+(anim==='mode'?0:250):0,raf:0,cache:null};
+  MAP.glide=glide;
   cv.onclick=function(ev){
     var r=cv.getBoundingClientRect(),M=MAP,x=(ev.clientX-r.left-M.cw/2)/M.s+M.cam.x,y=(ev.clientY-r.top-M.ch/2)/M.s+M.cam.y,best=-1,bd=18/M.s;
     M.pts.forEach(function(p,i){var dd=Math.hypot(p.x-x,p.y-y);if(dd<bd){bd=dd;best=i;}});
@@ -199,6 +204,9 @@ function mapFrame(){
   /* camera (pans with the plane when the route is wider than the screen) */
   var F2=M.fly,ft=0,fe=0;
   if(F2){ft=reduceMotion?1:clamp((now-F2.t0)/1800,0,1);fe=ft<.5?2*ft*ft:1-Math.pow(-2*ft+2,2)/2;M.cam={x:M.cam0.x+(M.cam1.x-M.cam0.x)*fe,y:M.cam0.y+(M.cam1.y-M.cam0.y)*fe};}
+  /* after a mode switch the camera eases from where it was to the new place (900ms, no lag) */
+  var gl=M.glide,ge=1;
+  if(gl){var gt=clamp((now-gl.t0)/900,0,1);ge=gt<.5?4*gt*gt*gt:1-Math.pow(-2*gt+2,3)/2;if(!F2)M.cam={x:gl.cam0.x+(M.cam0.x-gl.cam0.x)*ge,y:gl.cam0.y+(M.cam0.y-gl.cam0.y)*ge};if(gt>=1)M.glide=null;}
   var cx=M.cam.x,cy=M.cam.y;
   function SX(x){return (x-cx)*s+cw/2;}function SY(y){return (y-cy)*s+ch/2;}
   g.setTransform(M.dpr,0,0,M.dpr,0,0);
@@ -246,17 +254,21 @@ function mapFrame(){
   if(F2){
     var a2=F2.from>=0?pts[F2.from]:M.tk,b2=pts[F2.to],A2={x:SX(a2.x),y:SY(a2.y)},B2={x:SX(b2.x),y:SY(b2.y)};
     if(ft>0){g.strokeStyle='rgba(255,255,255,.6)';g.lineWidth=2;g.beginPath();for(var s2=0;s2<=24;s2++){var q2=segPoint(A2,B2,fe*s2/24);if(s2)g.lineTo(q2.x,q2.y);else g.moveTo(q2.x,q2.y);}g.stroke();}
-    var spp=segPoint(A2,B2,fe);pos=spp;ang=Math.atan2(spp.dy,spp.dx);
+    var spp=segPoint(A2,B2,fe);pos=spp;ang=Math.atan2(spp.dy,spp.dx);M.planeW={x:a2.x+(b2.x-a2.x)*fe,y:a2.y+(b2.y-a2.y)*fe};
     if(ft>=1){M.fly=null;M.cam=M.cam1;}
   }else{
-    var base=curI>=0&&pts[curI]?pts[curI]:M.tk;pos={x:SX(base.x),y:SY(base.y)};
+    var base=curI>=0&&pts[curI]?pts[curI]:M.tk;
+    if(gl)base={x:gl.plane0.x+(base.x-gl.plane0.x)*ge,y:gl.plane0.y+(base.y-gl.plane0.y)*ge};
+    M.planeW=base;pos={x:SX(base.x),y:SY(base.y)};
     var tgt=M.next>=0?pts[M.next]:null;if(tgt)ang=Math.atan2(SY(tgt.y)-pos.y,SX(tgt.x)-pos.x);
   }
-  if(rp>0.3){
+  if(gl&&ge<1){var p0=gl.plane0;g.strokeStyle='rgba(255,255,255,.5)';g.lineWidth=1.6;g.setLineDash([3,5]);g.beginPath();g.moveTo(SX(p0.x),SY(p0.y));g.lineTo(pos.x,pos.y);g.stroke();g.setLineDash([]);}
+  if(rp>0.3||gl){
     var bob=reduceMotion?0:Math.sin(now/600)*1;
     g.save();g.translate(pos.x,pos.y+bob);g.rotate(ang);g.scale(.85,.85);
     g.shadowColor='rgba(255,255,255,.7)';g.shadowBlur=10;g.fillStyle=(typeof dfPlaneFill==='function'&&dfPlaneFill(g))||'#fff';g.fill(M.plane);g.restore();
   }
+  MAPVIEW={L:M.L,cam:{x:M.cam.x,y:M.cam.y},plane:M.planeW||M.cam};
   M.raf=requestAnimationFrame(mapFrame);
 }
 var PAR={on:false,tick:false};

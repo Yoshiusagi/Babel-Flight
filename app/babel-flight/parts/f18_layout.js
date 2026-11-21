@@ -89,7 +89,16 @@ function suiteHomeHTML(){
   h+='</section></div><div class="sp-dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div></div>';
   return h;
 }
+/* the progress bar on the suite's home slides from where it was when the mode changes (no jump) */
+var SPROG={last:null};
+function suiteBarGlide(){
+  var bar=document.querySelector('#main .sp-thin i');if(!bar)return;
+  var to=bar.style.width,from=SPROG.last;SPROG.last=to;
+  if(from==null||from===to||reduceMotion)return;
+  bar.style.transition='none';bar.style.width=from;void bar.offsetWidth;bar.style.transition='';bar.style.width=to;
+}
 function suiteMount(){
+  suiteBarGlide();
   var p=$('suitePages');if(!p)return;
   var dots=document.querySelectorAll('#main .sp-dots i');
   function upd(){var i=Math.round(p.scrollTop/Math.max(1,p.clientHeight));for(var k=0;k<dots.length;k++)dots[k].classList.toggle('on',k===Math.min(i,dots.length-1));}
