@@ -6,6 +6,8 @@
    - Small touches: the chosen option pops, a pressed choice bounces, segmented buttons slide their marker.
    Everything is skipped with reduced motion. */
 var MOT={key:'',tap:null,seg:{}};
+/* 前の画面を複製して浮かせて消す処理 (残像・黄色や暗い一瞬の原因になった). 新しい画面の入場アニメーションだけで切り替える */
+var MOT_GHOST=false;
 function motOn(){return !reduceMotion;}
 /* which screen is showing (a step of the first questions counts as its own screen) */
 function motKey(){
@@ -60,7 +62,7 @@ function motGhost(el,dir,cls){
   var r0=render;
   render=function(){
     var main=$('main'),from=MOT.key||motKey0(),to=motKeyNext(),changed=from!==to,dir=motDir(from,to);
-    if(changed&&motOn()&&main&&main.firstChild&&from&&!MOT.noGhost)motGhost(main,dir);
+    if(MOT_GHOST&&changed&&motOn()&&main&&main.firstChild&&from&&!MOT.noGhost)motGhost(main,dir);
     /* the same screen drawn again (a toggle, a setting): no reveal or count-up all over again */
     MOT.quiet=!changed&&!!from&&!HOME_ANIM;
     var out;try{out=r0.apply(this,arguments);}finally{MOT.quiet=false;}
