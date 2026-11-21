@@ -486,7 +486,7 @@ function reportCardHTML(L){
   var r=repLoad()[L]||{d:{},k:{}},weak=weakList(L).slice(0,5),now=Date.now(),wk=[0,0],pw=[0,0];
   for(var i=0;i<14;i++){var v=r.d[dayStr(new Date(now-i*864e5))];if(v){var t=i<7?wk:pw;t[0]+=v[0];t[1]+=v[1];}}
   var acc=wk[0]?Math.round(wk[1]/wk[0]*100):null,pacc=pw[0]?Math.round(pw[1]/pw[0]*100):null,diff=acc!==null&&pacc!==null?acc-pacc:null;
-  var h='<section class="card report"><div class="card-h"><h2 class="jh">弱点レポート</h2><span class="lbl">'+esc(LANGS[L].name)+' ・ '+(lv>=2?'詳しい版':'かんたん版')+'</span></div>'+
+  var h='<section class="card report"><div class="card-h"><h2 class="jh">弱点レポート</h2><span class="lbl">'+esc(LANGS[L].name)+' ・ '+(lv>=2?'詳しい版':'かんたん版')+'</span><span class="ac-type mono" aria-hidden="true">TYPE BF-'+esc(LANGS[L].letter)+'-'+(lv+1)+'</span></div>'+
     '<div class="rep-kpis"><div><span class="lbl">この7日の解答</span><b>'+wk[0]+'<small>問</small></b></div>'+
     '<div><span class="lbl">この7日の正答率</span><b>'+(acc===null?'—':acc+'<small>%</small>')+'</b>'+(diff!==null?'<span class="rep-diff '+(diff>=0?'up':'down')+'">先週より '+(diff>=0?'+':'')+diff+'pt</span>':'')+'</div></div>'+
     '<h3 class="rep-h">苦手なフレーズ TOP5</h3>'+
