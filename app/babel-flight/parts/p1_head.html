@@ -165,14 +165,14 @@ svg{display:block}
 
 /* passport */
 .id-card{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;background:var(--ink);color:var(--bg);border-radius:14px;padding:16px;margin-top:14px;position:relative;overflow:hidden}
-.id-card::after{content:"";position:absolute;right:-30px;top:-30px;width:140px;height:140px;border-radius:50%;border:18px solid rgba(255,207,38,.14)}
+.id-card::after{content:"";position:absolute;right:-30px;top:-30px;width:140px;height:140px;border-radius:50%;border:18px solid color-mix(in srgb,var(--bg) 14%,transparent)}
 .photo{width:64px;height:78px;border-radius:6px;background:var(--bg);color:var(--ink);display:grid;place-items:center}
 .photo svg{width:38px;height:38px}
 .id-card .lbl{color:var(--bg);opacity:.65}
 .id-card input{width:100%;background:transparent;border:0;border-bottom:1px dashed rgba(255,255,255,.4);color:var(--bg);font:700 26px/1.2 var(--f-disp);letter-spacing:.1em;text-transform:uppercase;padding:2px 0;border-radius:0}
-.id-card .cls{margin-top:8px;font:700 13px var(--f-mono);letter-spacing:.06em;color:var(--signal)}
+.id-card .cls{margin-top:8px;font:700 13px var(--f-mono);letter-spacing:.06em;color:var(--bg)}
 .cls-bar{height:4px;background:rgba(255,255,255,.2);border-radius:2px;margin-top:8px;overflow:hidden}
-.cls-bar i{display:block;height:100%;background:var(--signal)}
+.cls-bar i{display:block;height:100%;background:var(--bg)}
 .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
 .kpi{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0}
 .kpi .v{font:700 20px/1.1 var(--f-mono);margin-top:6px;font-variant-numeric:tabular-nums}
