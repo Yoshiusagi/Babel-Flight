@@ -20384,8 +20384,9 @@ function moveUnpack(t){
   }).then(function(b){return JSON.parse(new TextDecoder().decode(b));});
 }
 function moveHasProgress(s){return !!(s&&(s.flights>0||s.miles>0));}
-/* the old addresses: Higgsfield and the Worker's own *.workers.dev address (the same Worker now answers at babelflight.com) */
-var MOVE_OLD_HOSTS=/(^|\.)higgsfield\.app$|\.workers\.dev$/;
+/* the old addresses: Higgsfield and the Worker's own workers.dev address (the same Worker now answers at babelflight.com).
+   Only these exact two hosts: the simulation room (babel-flight-sim.babel-flight.workers.dev) must open the app, not the note. */
+var MOVE_OLD_HOSTS=/^babel-flight\.higgsfield\.app$|^babel-flight\.babel-flight\.workers\.dev$/;
 function moveOldSite(){try{return !!BF_MOVED_TO&&!BF_APP&&!window.claude&&MOVE_OLD_HOSTS.test(location.hostname)&&location.origin!==BF_MOVED_TO.replace(/\/+$/,'');}catch(e){return false;}}
 
 /* ---- the old address: a note instead of the app ---- */
