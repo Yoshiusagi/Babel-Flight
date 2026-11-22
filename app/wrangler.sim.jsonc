@@ -1,0 +1,33 @@
+{
+  // ── 試作ルーム（シミュレーション）の設定 ──
+  // 本番(babel-flight / babelflight.com)とは別のWorker・別のデータベースを使う。
+  // .github/workflows/sim.yml（branch "sim" への push で動く）だけが使う。
+  // __DB_ID__ は workflow が「babel-flight-sim-db」のidで置き換える（初回は作成する）。
+  //
+  // 秘密情報はここに書かない。sim用のWorkerに Cloudflare の画面で別に設定する:
+  // ANTHROPIC_API_KEY（AI機能を試す場合）、STRIPE_SECRET_KEY / STRIPE_WEBHOOK_SECRET（必ずテスト用キー）。
+  // 本番の秘密情報は絶対にコピーしない。MOVE_* は使わない。
+  "name": "babel-flight-sim",
+  "main": "dist/server/server.js",
+  "compatibility_date": "2025-05-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "workers_dev": true,
+  "assets": {
+    "directory": "./dist/client",
+    "binding": "ASSETS",
+    "not_found_handling": "none"
+  },
+  "vars": {
+    "HOSTING": "cloudflare",
+    "APP_SLUG": "babel-flight-sim"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "babel-flight-sim-db",
+      "database_id": "__DB_ID__",
+      "migrations_dir": "migrations"
+    }
+  ]
+}
