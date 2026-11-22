@@ -259,8 +259,6 @@ function render(){
   if(view==='home'){mapMount();revealRows();}
   if(view==='review'||view==='record'||view==='picker')animateView();
   document.body.classList.toggle('dark-ui',view==='scene');
-  /* the map's dot texture runs on under the whole home screen, down to the menu */
-  document.body.classList.toggle('home-map',view==='home');
   var tabs=document.querySelectorAll('.tab');
   for(var i=0;i<tabs.length;i++){if(tabs[i].getAttribute('data-tab')===view)tabs[i].setAttribute('aria-current','page');else tabs[i].removeAttribute('aria-current');}
   tabIndMove();
