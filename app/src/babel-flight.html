@@ -6110,8 +6110,9 @@ function render(){
   else if(view==='role'&&typeof roleHTML==='function')main.innerHTML=roleHTML();
   var TABS=['home','review','record'],pi=TABS.indexOf(PREVVIEW),nx=TABS.indexOf(view),cls='enter';
   if(pi>=0&&nx>=0&&pi!==nx)cls=nx>pi?'enter-r':'enter-l';
-  else if(HOME_ANIM==='mode'){var MO=['daily','job','study','exam'];cls=MO.indexOf(save.mode)>MO.indexOf(MODEPREV)?'enter-r':'enter-l';}
-  main.classList.remove('enter','enter-l','enter-r');void main.offsetWidth;main.classList.add(cls);
+  /* a mode change on home: the screen itself does not slide or fade (that was the stutter); the mode bar and the map carry the motion */
+  else if(HOME_ANIM==='mode')cls='';
+  main.classList.remove('enter','enter-l','enter-r');void main.offsetWidth;if(cls)main.classList.add(cls);
   PREVVIEW=view;
   if(view==='home'){mapMount();revealRows();}
   if(view==='review'||view==='record'||view==='picker')animateView();
@@ -24416,7 +24417,7 @@ function motGhost(el,dir,cls){
     /* the same screen drawn again (a toggle, a setting): no reveal or count-up all over again */
     /* bottom tabs switch at once with no animation (a temporary choice until a new one is designed) */
     var snapNow=!!MOT.snap;
-    MOT.quiet=!changed&&!!from&&!HOME_ANIM;
+    MOT.quiet=!changed&&!!from&&(!HOME_ANIM||HOME_ANIM==='mode');
     var out;try{out=r0.apply(this,arguments);}finally{MOT.quiet=false;}
     MOT.key=motKey();
     if(main){

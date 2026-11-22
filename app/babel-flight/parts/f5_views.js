@@ -253,8 +253,9 @@ function render(){
   else if(view==='role'&&typeof roleHTML==='function')main.innerHTML=roleHTML();
   var TABS=['home','review','record'],pi=TABS.indexOf(PREVVIEW),nx=TABS.indexOf(view),cls='enter';
   if(pi>=0&&nx>=0&&pi!==nx)cls=nx>pi?'enter-r':'enter-l';
-  else if(HOME_ANIM==='mode'){var MO=['daily','job','study','exam'];cls=MO.indexOf(save.mode)>MO.indexOf(MODEPREV)?'enter-r':'enter-l';}
-  main.classList.remove('enter','enter-l','enter-r');void main.offsetWidth;main.classList.add(cls);
+  /* a mode change on home: the screen itself does not slide or fade (that was the stutter); the mode bar and the map carry the motion */
+  else if(HOME_ANIM==='mode')cls='';
+  main.classList.remove('enter','enter-l','enter-r');void main.offsetWidth;if(cls)main.classList.add(cls);
   PREVVIEW=view;
   if(view==='home'){mapMount();revealRows();}
   if(view==='review'||view==='record'||view==='picker')animateView();

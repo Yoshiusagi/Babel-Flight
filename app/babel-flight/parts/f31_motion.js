@@ -67,7 +67,7 @@ function motGhost(el,dir,cls){
     /* the same screen drawn again (a toggle, a setting): no reveal or count-up all over again */
     /* bottom tabs switch at once with no animation (a temporary choice until a new one is designed) */
     var snapNow=!!MOT.snap;
-    MOT.quiet=!changed&&!!from&&!HOME_ANIM;
+    MOT.quiet=!changed&&!!from&&(!HOME_ANIM||HOME_ANIM==='mode');
     var out;try{out=r0.apply(this,arguments);}finally{MOT.quiet=false;}
     MOT.key=motKey();
     if(main){
