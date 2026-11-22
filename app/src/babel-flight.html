@@ -480,7 +480,7 @@ body.dark-ui #sky{display:none}
 .modesw button[aria-pressed="true"]{color:var(--bg)}
 .modesw-ind{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px) / 3);border-radius:10px;background:var(--ink);transition:transform .5s cubic-bezier(.25,.8,.25,1)}
 /* モードの移動: 目的地へ少し伸びてから、ぴたっと止まる (跳ね返りなし。scale だけを使い、移動は transform のまま) */
-@keyframes modeStretch{0%{scale:1 1}60%{scale:1.2 .92;animation-timing-function:ease-out}100%{scale:1 1}}
+@keyframes modeStretch{0%{scale:1 1}60%{scale:1.14 1;animation-timing-function:ease-out}100%{scale:1 1}}
 .modesw-ind.mv{animation:modeStretch .5s cubic-bezier(.3,0,.2,1)}
 .modesw-ind.job{transform:translateX(100%)}
 .modesw-ind.study{transform:translateX(200%)}
@@ -6287,7 +6287,9 @@ function mapMount(){
   /* the map's height depends on the screen only, not on the route: a short route (職業) used to zoom in and grow the map.
      The route is fitted to that height, and a wide route pans with the plane instead. */
   var heroH=Math.round(Math.min(chMax,Math.max(330,cw*0.92))),s=heroH/bh;
-  hero.style.height=heroH+'px';
+  /* a freshly drawn map starts at its CSS height: set the real height at once, not with the 0.5s height transition
+     (that transition pushed every card above and below up and down on each change) */
+  hero.style.transition='none';hero.style.height=heroH+'px';void hero.offsetHeight;hero.style.transition='';
   var dpr=Math.min(2,window.devicePixelRatio||1);
   cv.width=Math.round(cw*dpr);cv.height=Math.round(heroH*dpr);cv.style.height=heroH+'px';
   var vw=cw/s,vh=heroH/s,follow=vw<bw*0.98;

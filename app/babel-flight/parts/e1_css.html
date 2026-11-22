@@ -30,7 +30,7 @@ body.dark-ui #sky{display:none}
 .modesw button[aria-pressed="true"]{color:var(--bg)}
 .modesw-ind{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px) / 3);border-radius:10px;background:var(--ink);transition:transform .5s cubic-bezier(.25,.8,.25,1)}
 /* モードの移動: 目的地へ少し伸びてから、ぴたっと止まる (跳ね返りなし。scale だけを使い、移動は transform のまま) */
-@keyframes modeStretch{0%{scale:1 1}60%{scale:1.2 .92;animation-timing-function:ease-out}100%{scale:1 1}}
+@keyframes modeStretch{0%{scale:1 1}60%{scale:1.14 1;animation-timing-function:ease-out}100%{scale:1 1}}
 .modesw-ind.mv{animation:modeStretch .5s cubic-bezier(.3,0,.2,1)}
 .modesw-ind.job{transform:translateX(100%)}
 .modesw-ind.study{transform:translateX(200%)}

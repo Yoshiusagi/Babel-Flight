@@ -160,7 +160,9 @@ function mapMount(){
   /* the map's height depends on the screen only, not on the route: a short route (職業) used to zoom in and grow the map.
      The route is fitted to that height, and a wide route pans with the plane instead. */
   var heroH=Math.round(Math.min(chMax,Math.max(330,cw*0.92))),s=heroH/bh;
-  hero.style.height=heroH+'px';
+  /* a freshly drawn map starts at its CSS height: set the real height at once, not with the 0.5s height transition
+     (that transition pushed every card above and below up and down on each change) */
+  hero.style.transition='none';hero.style.height=heroH+'px';void hero.offsetHeight;hero.style.transition='';
   var dpr=Math.min(2,window.devicePixelRatio||1);
   cv.width=Math.round(cw*dpr);cv.height=Math.round(heroH*dpr);cv.style.height=heroH+'px';
   var vw=cw/s,vh=heroH/s,follow=vw<bw*0.98;
