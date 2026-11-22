@@ -259,6 +259,8 @@ function render(){
   if(view==='home'){mapMount();revealRows();}
   if(view==='review'||view==='record'||view==='picker')animateView();
   document.body.classList.toggle('dark-ui',view==='scene');
+  /* on the home screen (dark theme) the sky's lower part takes the map's navy, so the map seems to carry on down */
+  document.body.classList.toggle('home-map',view==='home');
   var tabs=document.querySelectorAll('.tab');
   for(var i=0;i<tabs.length;i++){if(tabs[i].getAttribute('data-tab')===view)tabs[i].setAttribute('aria-current','page');else tabs[i].removeAttribute('aria-current');}
   tabIndMove();

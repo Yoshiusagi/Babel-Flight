@@ -667,6 +667,10 @@ body.dark-ui .sheet{--sc:#ff6b79}
 @media (min-width:560px){.hero{margin-left:0;margin-right:0;border-radius:20px;box-shadow:0 26px 50px -30px rgba(4,10,30,.8)}}
 .hero-in{position:absolute;inset:0;will-change:transform;--hud:1;transform-origin:50% 0}
 .hero .mapcv{position:absolute;left:0;top:0;width:100%;display:block;cursor:pointer;touch-action:manipulation}
+/* ホームの暗い空: 下へいくほど地図と同じ紺色になり、メニューの裏まで地図がつながって見える (ライトのときは出さない) */
+body.home-map #sky::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;background:linear-gradient(180deg,rgba(7,16,34,0) 30%,rgba(7,16,34,.72) 100%)}
+html[data-theme="dark"] body.home-map #sky::after{opacity:1}
+@media (prefers-color-scheme:dark){html:not([data-theme="light"]) body.home-map #sky::after{opacity:1}}
 /* 地図の縁は、どこにも硬い線を作らず、空へ溶けて続いていく見た目にする。
    上端は少しだけ溶かし、下端は通常時でも溶けていて、スクロールすると (--melt は f5_home.js が決める) 下端の溶ける帯が広がる */
 .hero{-webkit-mask-image:linear-gradient(to bottom,transparent,#000 24px,#000 calc(100% - 40px - var(--melt,0) * 120px),transparent 100%);mask-image:linear-gradient(to bottom,transparent,#000 24px,#000 calc(100% - 40px - var(--melt,0) * 120px),transparent 100%)}
@@ -6112,6 +6116,8 @@ function render(){
   if(view==='home'){mapMount();revealRows();}
   if(view==='review'||view==='record'||view==='picker')animateView();
   document.body.classList.toggle('dark-ui',view==='scene');
+  /* on the home screen (dark theme) the sky's lower part takes the map's navy, so the map seems to carry on down */
+  document.body.classList.toggle('home-map',view==='home');
   var tabs=document.querySelectorAll('.tab');
   for(var i=0;i<tabs.length;i++){if(tabs[i].getAttribute('data-tab')===view)tabs[i].setAttribute('aria-current','page');else tabs[i].removeAttribute('aria-current');}
   tabIndMove();
