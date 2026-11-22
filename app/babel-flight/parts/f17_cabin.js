@@ -53,7 +53,8 @@ function cabinDesign(){var lv=cabinLv();if(lv<0)return -1;var d=parseInt(lsGet(C
 function applyCabin(){
   var d=cabinDesign(),name=d>0?CAB_DESIGN[d][0]:'';
   if(name)rootEl.setAttribute('data-cabin',name);else rootEl.removeAttribute('data-cabin');
-  if(name==='window'){var h=new Date().getHours();rootEl.setAttribute('data-sky',h<5||h>=19?'night':h<9?'morning':h<16?'day':'evening');}
+  /* 窓側の席: always the evening sky (the class's design is 夕方の空, not the time of day) */
+  if(name==='window'){rootEl.setAttribute('data-sky','evening');}
   else rootEl.removeAttribute('data-sky');
 }
 (function(){var e0=entSet;entSet=function(){var r=e0.apply(this,arguments);applyCabin();return r;};})();

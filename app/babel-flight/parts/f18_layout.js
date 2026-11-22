@@ -3,6 +3,16 @@
    スイート (ファースト): one big thing per screen, swiped upward; the question is set in large serif type.
    Only the test account can pick these designs, so nobody else sees any of this. */
 function cabinLayout(){var d=cabinDesign();return d>0?CAB_DESIGN[d][0]:'';}
+/* the route map, as the home screen draws it, for the classes that show the map too (窓側の席・ビジネス・スイート).
+   HOME_BASE is the plain home (エコノミー); its map section is cut out and placed in the class's own layout. */
+var HOME_BASE=null,MAP_FULL=false;
+function heroChunk(){
+  if(!HOME_BASE)return '';
+  var s=HOME_BASE(),a=s.indexOf('<section class="hero" id="hero">');
+  if(a<0)return '';
+  var b=s.indexOf('</section>',a);
+  return s.slice(a,b+10);
+}
 var SUITE_FONT=false;
 function suiteFonts(){
   if(SUITE_FONT)return;SUITE_FONT=true;
@@ -33,6 +43,7 @@ function unitSize(L,uid){
 /* ---- 窓側の席: home ---- */
 function winHomeHTML(){
   var L=save.lang,LG=LANGS[L],ids=pathIds(L),h=topBar('','progress');
+  h+=heroChunk();
   h+='<section class="win-hello"><h1 class="jh">'+helloWord()+(save.name?'、'+esc(save.name):'')+'</h1><p>'+esc(LG.name)+' ・ '+esc(modeName(L))+' ・ 窓側の席</p></section>';
   h+=destChips()+modeSwitch()+jobButtonsHTML();
   var nextId=nextPathUnit(L);
@@ -68,7 +79,7 @@ function suiteHomeHTML(){
   var nextId=nextPathUnit(L),title=T(unitTitle(nextId)),sp=title.indexOf(' '),t1=sp>0?title.slice(0,sp):title,t2=sp>0?title.slice(sp+1):'',tn=UI==='ja'?'':' translate="no"';
   var sz=unitSize(L,nextId),due=dueList(L).length,weak=weakList(L).length,done=unitsDone(L,ids);
   h+='<div class="suite-wrap"><div class="suite-pages" id="suitePages">';
-  h+='<section class="suite-pg sp-next" aria-label="次のフライト"><button class="sp-ctx" type="button" data-suite-go="3">'+esc(LG.name)+' ・ '+esc(modeName(L))+'</button>'+
+  h+='<section class="suite-pg sp-next" aria-label="次のフライト"><div class="sp-map">'+heroChunk()+'</div><button class="sp-ctx" type="button" data-suite-go="3">'+esc(LG.name)+' ・ '+esc(modeName(L))+'</button>'+
      '<span class="sp-it">Next flight</span><h1 class="sp-big"'+tn+'>'+esc(t1)+'</h1>'+(t2?'<div class="sp-big2"'+tn+'>'+esc(t2)+'</div>':'')+
      '<svg class="sp-line" viewBox="0 0 322 60" aria-hidden="true" fill="none"><path d="M2 52C90 52 140 12 250 12" stroke="currentColor" stroke-width="1" stroke-dasharray="2 5" opacity=".5"/><path d="M252 12l26-3 4 2-24 6z M262 10l-6-9h4l10 8z M262 13l-6 9h4l10-8z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>'+
      '<div class="sp-meta"><span>'+kindSize(L,nextId)+'</span><span>'+sz.min+'</span></div>'+
@@ -123,7 +134,7 @@ function promptSync(){
 }
 
 (function(){
-  var hh0=homeHTML;
+  var hh0=homeHTML;HOME_BASE=hh0;
   homeHTML=function(){
     var lay=cabinLayout();
     if(lay&&pathIds(save.lang).length){if(lay==='window')return winHomeHTML();if(lay==='suite')return suiteHomeHTML();}
@@ -131,7 +142,8 @@ function promptSync(){
   };
   var mm0=mapMount;
   mapMount=function(){
-    var r=mm0.apply(this,arguments),lay=cabinLayout();
+    var lay=cabinLayout();MAP_FULL=lay==='suite';
+    var r=mm0.apply(this,arguments),lay2=lay;MAP_FULL=false;lay=lay2;
     if(view==='home'&&lay==='window')centerRails();
     if(view==='home'&&lay==='suite')suiteMount();
     return r;

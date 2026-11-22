@@ -1057,6 +1057,8 @@ body:has(#sheetHost .sheet) #hf-watermark{bottom:calc(12px + env(safe-area-inset
 :root[data-cabin="window"] body{background:linear-gradient(180deg,var(--sky1),var(--sky2) 55%,var(--bg)) fixed}
 [data-cabin="window"] .card{border-radius:26px;border-color:transparent;box-shadow:0 14px 34px -22px var(--shadow)}
 [data-cabin="window"] .hero{border-radius:46px}
+/* 窓側の席: 夕方の空 (明るいラベンダーから桃色へ。文字が読めるよう明るめ) */
+:root[data-cabin="window"]{--sky1:#b5a6e6;--sky2:#ffb489;--s1:#b5a6e6;--s2:#ffb489}
 [data-cabin="window"] .id-card{border-radius:30px}
 [data-cabin="window"] .go{border-radius:999px;letter-spacing:.08em}
 [data-cabin="window"] .ghost,[data-cabin="window"] .sq,[data-cabin="window"] .choice,[data-cabin="window"] .opt{border-radius:18px}
@@ -1100,6 +1102,14 @@ body:has(#sheetHost .sheet) #hf-watermark{bottom:calc(12px + env(safe-area-inset
 .ac-type{margin-left:auto;padding:2px 7px;border:1px solid var(--line);border-radius:6px;font-size:10px;letter-spacing:.1em;color:var(--ink2);white-space:nowrap}
 </style>
 <style>
+/* ===== スイート: the route map fills the first screen, the words sit on top of it ===== */
+.sp-next{position:relative;overflow:hidden}
+.sp-next>:not(.sp-map){position:relative;z-index:1}
+.sp-map{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.sp-map .hero{position:absolute;inset:0;height:100%;margin:0;width:100%;border-radius:0;-webkit-mask-image:none;mask-image:none;pointer-events:auto}
+.sp-map .hero-in{height:100%}
+.sp-map .hud,.sp-map .hud-foot,.sp-map .hero-langs{display:none}
+.sp-map::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(5,10,24,.55),rgba(5,10,24,0) 38%,rgba(5,10,24,.25) 70%,rgba(5,10,24,.75))}
 /* ===== 窓側の席: home ===== */
 .win-hello{padding:4px 2px 0}
 .win-hello h1{font-size:24px;line-height:1.3}
@@ -6287,6 +6297,8 @@ function mapMount(){
   /* the map's height depends on the screen only, not on the route: a short route (職業) used to zoom in and grow the map.
      The route is fitted to that height, and a wide route pans with the plane instead. */
   var heroH=Math.round(Math.min(chMax,Math.max(330,cw*0.92))),s=heroH/bh;
+  /* スイート: the map covers the whole first screen, so it is fitted to that screen's height */
+  if(typeof MAP_FULL!=='undefined'&&MAP_FULL){var spEl=hero.closest('.sp-next');if(spEl&&spEl.clientHeight){heroH=spEl.clientHeight;s=heroH/bh;}}
   /* a freshly drawn map starts at its CSS height: set the real height at once, not with the 0.5s height transition
      (that transition pushed every card above and below up and down on each change) */
   hero.style.transition='none';hero.style.height=heroH+'px';void hero.offsetHeight;hero.style.transition='';
@@ -18970,7 +18982,8 @@ function cabinDesign(){var lv=cabinLv();if(lv<0)return -1;var d=parseInt(lsGet(C
 function applyCabin(){
   var d=cabinDesign(),name=d>0?CAB_DESIGN[d][0]:'';
   if(name)rootEl.setAttribute('data-cabin',name);else rootEl.removeAttribute('data-cabin');
-  if(name==='window'){var h=new Date().getHours();rootEl.setAttribute('data-sky',h<5||h>=19?'night':h<9?'morning':h<16?'day':'evening');}
+  /* 窓側の席: always the evening sky (the class's design is 夕方の空, not the time of day) */
+  if(name==='window'){rootEl.setAttribute('data-sky','evening');}
   else rootEl.removeAttribute('data-sky');
 }
 (function(){var e0=entSet;entSet=function(){var r=e0.apply(this,arguments);applyCabin();return r;};})();
@@ -19600,6 +19613,16 @@ applyCabin();
    スイート (ファースト): one big thing per screen, swiped upward; the question is set in large serif type.
    Only the test account can pick these designs, so nobody else sees any of this. */
 function cabinLayout(){var d=cabinDesign();return d>0?CAB_DESIGN[d][0]:'';}
+/* the route map, as the home screen draws it, for the classes that show the map too (窓側の席・ビジネス・スイート).
+   HOME_BASE is the plain home (エコノミー); its map section is cut out and placed in the class's own layout. */
+var HOME_BASE=null,MAP_FULL=false;
+function heroChunk(){
+  if(!HOME_BASE)return '';
+  var s=HOME_BASE(),a=s.indexOf('<section class="hero" id="hero">');
+  if(a<0)return '';
+  var b=s.indexOf('</section>',a);
+  return s.slice(a,b+10);
+}
 var SUITE_FONT=false;
 function suiteFonts(){
   if(SUITE_FONT)return;SUITE_FONT=true;
@@ -19630,6 +19653,7 @@ function unitSize(L,uid){
 /* ---- 窓側の席: home ---- */
 function winHomeHTML(){
   var L=save.lang,LG=LANGS[L],ids=pathIds(L),h=topBar('','progress');
+  h+=heroChunk();
   h+='<section class="win-hello"><h1 class="jh">'+helloWord()+(save.name?'、'+esc(save.name):'')+'</h1><p>'+esc(LG.name)+' ・ '+esc(modeName(L))+' ・ 窓側の席</p></section>';
   h+=destChips()+modeSwitch()+jobButtonsHTML();
   var nextId=nextPathUnit(L);
@@ -19665,7 +19689,7 @@ function suiteHomeHTML(){
   var nextId=nextPathUnit(L),title=T(unitTitle(nextId)),sp=title.indexOf(' '),t1=sp>0?title.slice(0,sp):title,t2=sp>0?title.slice(sp+1):'',tn=UI==='ja'?'':' translate="no"';
   var sz=unitSize(L,nextId),due=dueList(L).length,weak=weakList(L).length,done=unitsDone(L,ids);
   h+='<div class="suite-wrap"><div class="suite-pages" id="suitePages">';
-  h+='<section class="suite-pg sp-next" aria-label="次のフライト"><button class="sp-ctx" type="button" data-suite-go="3">'+esc(LG.name)+' ・ '+esc(modeName(L))+'</button>'+
+  h+='<section class="suite-pg sp-next" aria-label="次のフライト"><div class="sp-map">'+heroChunk()+'</div><button class="sp-ctx" type="button" data-suite-go="3">'+esc(LG.name)+' ・ '+esc(modeName(L))+'</button>'+
      '<span class="sp-it">Next flight</span><h1 class="sp-big"'+tn+'>'+esc(t1)+'</h1>'+(t2?'<div class="sp-big2"'+tn+'>'+esc(t2)+'</div>':'')+
      '<svg class="sp-line" viewBox="0 0 322 60" aria-hidden="true" fill="none"><path d="M2 52C90 52 140 12 250 12" stroke="currentColor" stroke-width="1" stroke-dasharray="2 5" opacity=".5"/><path d="M252 12l26-3 4 2-24 6z M262 10l-6-9h4l10 8z M262 13l-6 9h4l10-8z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>'+
      '<div class="sp-meta"><span>'+kindSize(L,nextId)+'</span><span>'+sz.min+'</span></div>'+
@@ -19720,7 +19744,7 @@ function promptSync(){
 }
 
 (function(){
-  var hh0=homeHTML;
+  var hh0=homeHTML;HOME_BASE=hh0;
   homeHTML=function(){
     var lay=cabinLayout();
     if(lay&&pathIds(save.lang).length){if(lay==='window')return winHomeHTML();if(lay==='suite')return suiteHomeHTML();}
@@ -19728,7 +19752,8 @@ function promptSync(){
   };
   var mm0=mapMount;
   mapMount=function(){
-    var r=mm0.apply(this,arguments),lay=cabinLayout();
+    var lay=cabinLayout();MAP_FULL=lay==='suite';
+    var r=mm0.apply(this,arguments),lay2=lay;MAP_FULL=false;lay=lay2;
     if(view==='home'&&lay==='window')centerRails();
     if(view==='home'&&lay==='suite')suiteMount();
     return r;
@@ -19765,6 +19790,7 @@ function digitsHTML(s){return Array.from(String(s)).map(function(ch){return '<sp
 function boardHomeHTML(){
   var L=save.lang,LG=LANGS[L],ids=pathIds(L),anim=!!HOME_ANIM&&!reduceMotion,h=topBar('','progress');
   var nextId=nextPathUnit(L),sz=unitSize(L,nextId),due=dueList(L).length,done=unitsDone(L,ids);
+  h+=heroChunk();
   h+='<section class="xb-head"><span class="lbl">BUSINESS ・ DEPARTURES</span><h1 class="jh">出発案内'+(save.name?' ・ '+esc(save.name):'')+'</h1><p>'+esc(LG.name)+' ・ '+esc(modeName(L))+'</p></section>';
   h+=destChips()+modeSwitch()+jobButtonsHTML();
   h+='<button class="xb-go" type="button" data-node="'+esc(nextId)+'"><span><b>'+flightNo(L,nextId)+'に搭乗する</b><small>GATE '+esc(gateNo(L,nextId))+' ・ '+esc(unitTitle(nextId))+' ・ '+sz.min+'</small></span>'+

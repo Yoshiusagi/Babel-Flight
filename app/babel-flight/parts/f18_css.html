@@ -1,4 +1,12 @@
 <style>
+/* ===== スイート: the route map fills the first screen, the words sit on top of it ===== */
+.sp-next{position:relative;overflow:hidden}
+.sp-next>:not(.sp-map){position:relative;z-index:1}
+.sp-map{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.sp-map .hero{position:absolute;inset:0;height:100%;margin:0;width:100%;border-radius:0;-webkit-mask-image:none;mask-image:none;pointer-events:auto}
+.sp-map .hero-in{height:100%}
+.sp-map .hud,.sp-map .hud-foot,.sp-map .hero-langs{display:none}
+.sp-map::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(5,10,24,.55),rgba(5,10,24,0) 38%,rgba(5,10,24,.25) 70%,rgba(5,10,24,.75))}
 /* ===== 窓側の席: home ===== */
 .win-hello{padding:4px 2px 0}
 .win-hello h1{font-size:24px;line-height:1.3}

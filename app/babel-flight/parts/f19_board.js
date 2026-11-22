@@ -17,6 +17,7 @@ function digitsHTML(s){return Array.from(String(s)).map(function(ch){return '<sp
 function boardHomeHTML(){
   var L=save.lang,LG=LANGS[L],ids=pathIds(L),anim=!!HOME_ANIM&&!reduceMotion,h=topBar('','progress');
   var nextId=nextPathUnit(L),sz=unitSize(L,nextId),due=dueList(L).length,done=unitsDone(L,ids);
+  h+=heroChunk();
   h+='<section class="xb-head"><span class="lbl">BUSINESS ・ DEPARTURES</span><h1 class="jh">出発案内'+(save.name?' ・ '+esc(save.name):'')+'</h1><p>'+esc(LG.name)+' ・ '+esc(modeName(L))+'</p></section>';
   h+=destChips()+modeSwitch()+jobButtonsHTML();
   h+='<button class="xb-go" type="button" data-node="'+esc(nextId)+'"><span><b>'+flightNo(L,nextId)+'に搭乗する</b><small>GATE '+esc(gateNo(L,nextId))+' ・ '+esc(unitTitle(nextId))+' ・ '+sz.min+'</small></span>'+
