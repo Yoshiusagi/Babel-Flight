@@ -74,6 +74,7 @@ d8_more5.js
 e4_core.js
 f5_views.js
 f5_home.js
+f5x_gimmick.js
 f6_flight.js
 e6_land.js
 e9_scene.js

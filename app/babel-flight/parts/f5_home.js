@@ -216,7 +216,7 @@ function mapFrame(){
   var cx=M.cam.x,cy=M.cam.y;
   function SX(x){return (x-cx)*s+cw/2;}function SY(y){return (y-cy)*s+ch/2;}
   g.setTransform(M.dpr,0,0,M.dpr,0,0);
-  var bg=g.createLinearGradient(0,0,0,ch);bg.addColorStop(0,'#071022');bg.addColorStop(1,'#0f2244');g.fillStyle=bg;g.fillRect(0,0,cw,ch);
+  var bg=g.createLinearGradient(0,0,0,ch);bg.addColorStop(0,'#071022');bg.addColorStop(1,'#0f2244');g.fillStyle=bg;g.fillRect(0,0,cw,ch);gimmickSky(g,cw,ch,now);
   /* land dots, with a ripple reveal after a language switch */
   var d=M.dots,rv=M.reveal?(now-M.t0)/900:2,fx=cw/2,fy=ch*0.55,maxd=Math.hypot(cw,ch);
   g.fillStyle='rgba(124,178,222,.5)';
@@ -271,9 +271,10 @@ function mapFrame(){
   if(gl&&ge<1){var p0=gl.plane0;g.strokeStyle='rgba(255,255,255,.5)';g.lineWidth=1.6;g.setLineDash([3,5]);g.beginPath();g.moveTo(SX(p0.x),SY(p0.y));g.lineTo(pos.x,pos.y);g.stroke();g.setLineDash([]);}
   if(rp>0.3||gl){
     var bob=reduceMotion?0:Math.sin(now/600)*1;
-    g.save();g.translate(pos.x,pos.y+bob);g.rotate(ang);g.scale(.85,.85);
+    g.save();g.translate(pos.x,pos.y+bob+gimmickIntro(now,M,ch));g.rotate(ang);g.scale(.85,.85);
     g.shadowColor='rgba(255,255,255,.7)';g.shadowBlur=10;g.fillStyle=(typeof dfPlaneFill==='function'&&dfPlaneFill(g))||'#fff';g.fill(M.plane);g.restore();
   }
+  gimmickFront(g,cw,ch,now,M);
   MAPVIEW={L:M.L,cam:{x:M.cam.x,y:M.cam.y},plane:M.planeW||M.cam};
   M.raf=requestAnimationFrame(mapFrame);
 }
