@@ -5,6 +5,8 @@
 @media (min-width:560px){.hero{margin-left:0;margin-right:0;border-radius:20px;box-shadow:0 26px 50px -30px rgba(4,10,30,.8)}}
 .hero-in{position:absolute;inset:0;will-change:transform;--hud:1;transform-origin:50% 0}
 .hero .mapcv{position:absolute;left:0;top:0;width:100%;display:block;cursor:pointer;touch-action:manipulation}
+/* 地図の下端が、スクロールに合わせて少しずつ溶けて消える (--melt は f5_home.js が決める。0 のときは何もしない) */
+.hero{-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - var(--melt,0) * 120px),transparent 100%);mask-image:linear-gradient(to bottom,#000 calc(100% - var(--melt,0) * 120px),transparent 100%)}
 .hud{position:absolute;left:0;right:0;top:0;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:14px max(16px,env(safe-area-inset-left,0px)) 34px;background:linear-gradient(rgba(7,16,34,.9),rgba(7,16,34,0));color:#fff;pointer-events:none;opacity:var(--hud)}
 .hud .lbl{color:#9fb3d6}
 .hud-l{min-width:0}

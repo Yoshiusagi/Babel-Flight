@@ -283,6 +283,8 @@ function bindParallax(){
       var y=Math.max(0,window.scrollY),k=Math.min(y,600);
       hi.style.transform='translateY('+(k*0.38).toFixed(1)+'px) scale('+(1+k*0.00025).toFixed(4)+')';
       hi.style.setProperty('--hud',Math.max(0,1-k/380).toFixed(3));
+      /* the bottom of the map melts away as the page scrolls (the band grows from 0 to 120px) */
+      var hr=$('hero');if(hr)hr.style.setProperty('--melt',Math.min(1,Math.max(0,(y-40)/260)).toFixed(3));
     });
   },{passive:true});
 }
