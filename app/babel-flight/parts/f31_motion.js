@@ -125,6 +125,22 @@ function motGhost(el,dir,cls){
     return n0.apply(this,arguments);
   };
 })();
+/* bottom tabs: the glass pill slides under the chosen tab (only the bar moves; the screen itself changes at once).
+   Measured from the tab buttons, so it lines up at any width; the first placement and a resize do not animate. */
+var TIND={tab:null};
+function tabIndMove(){
+  var ind=document.querySelector('#tabs .tab-ind'),cur=document.querySelector('#tabs .tab[aria-current="page"]');
+  if(!ind||!cur)return;
+  var key=cur.getAttribute('data-tab'),moved=TIND.tab!==null&&TIND.tab!==key;
+  TIND.tab=key;
+  var w=cur.offsetWidth;
+  if(!w)return;   /* the bar is hidden (a native tab bar): nothing to place */
+  var still=!moved||!motOn();
+  if(still)ind.style.transition='none';
+  ind.style.width=w+'px';ind.style.transform='translateX('+cur.offsetLeft+'px)';
+  if(still){void ind.offsetWidth;ind.style.transition='';}
+}
+window.addEventListener('resize',function(){tabIndMove();});
 /* small touches after each draw */
 document.addEventListener('click',function(e){
   var t=e.target.closest&&e.target.closest('button');if(!t)return;

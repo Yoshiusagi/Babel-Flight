@@ -28,7 +28,10 @@ body.dark-ui #sky{display:none}
 .modesw button b{font-size:13.5px;white-space:nowrap;letter-spacing:-.01em}
 .modesw button small{font-size:11px;opacity:.75}
 .modesw button[aria-pressed="true"]{color:var(--bg)}
-.modesw-ind{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px) / 3);border-radius:10px;background:var(--ink);transition:transform .45s cubic-bezier(.3,1.35,.5,1)}
+.modesw-ind{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px) / 3);border-radius:10px;background:var(--ink);transition:transform .5s cubic-bezier(.25,.8,.25,1)}
+/* モードの移動: 目的地へ少し伸びてから、ぴたっと止まる (跳ね返りなし。scale だけを使い、移動は transform のまま) */
+@keyframes modeStretch{0%{scale:1 1}60%{scale:1.2 .92;animation-timing-function:ease-out}100%{scale:1 1}}
+.modesw-ind.mv{animation:modeStretch .5s cubic-bezier(.3,0,.2,1)}
 .modesw-ind.job{transform:translateX(100%)}
 .modesw-ind.study{transform:translateX(200%)}
 
@@ -203,6 +206,7 @@ body.dark-ui .sheet{--sc:#ff6b79}
 @media (prefers-reduced-motion:reduce){
   .cloud,.skystars,.stop,.bub,.scpanel,#main.enter,.avatar.ringing,.sheet.print .pass,.sheet.print .scene-card,.board.glow,.board.shake{animation:none!important}
   .modesw-ind{transition:none}
+  .modesw-ind.mv{animation:none}
 }
 @media (max-width:370px){.stop{grid-template-columns:22px minmax(0,1fr) minmax(0,1.2fr)}.stop-st{grid-column:3;justify-self:start}}
 </style>

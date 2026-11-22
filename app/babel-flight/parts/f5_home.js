@@ -145,7 +145,7 @@ function segPoint(a,b,t){
 }
 function mapMount(){
   var ind=document.querySelector('.modesw-ind');
-  if(ind&&MODEPREV&&MODEPREV!==save.mode){requestAnimationFrame(function(){requestAnimationFrame(function(){ind.className='modesw-ind '+save.mode;});});}
+  if(ind&&MODEPREV&&MODEPREV!==save.mode){requestAnimationFrame(function(){requestAnimationFrame(function(){ind.className='modesw-ind '+save.mode+' mv';clearTimeout(ind._mvT);ind._mvT=setTimeout(function(){ind.classList.remove('mv');},520);});});}
   MODEPREV=save.mode;
   var cv=$('map'),hero=$('hero');
   var anim=HOME_ANIM;HOME_ANIM=null;

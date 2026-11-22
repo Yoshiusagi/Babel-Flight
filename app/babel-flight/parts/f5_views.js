@@ -261,6 +261,7 @@ function render(){
   document.body.classList.toggle('dark-ui',view==='scene');
   var tabs=document.querySelectorAll('.tab');
   for(var i=0;i<tabs.length;i++){if(tabs[i].getAttribute('data-tab')===view)tabs[i].setAttribute('aria-current','page');else tabs[i].removeAttribute('aria-current');}
+  tabIndMove();
   var n=dueList(L).length,b=$('dueBadge');b.textContent=n>99?'99+':n;b.hidden=n===0;
   if(typeof natTabsSync==='function')natTabsSync(showTabs,view);
 }

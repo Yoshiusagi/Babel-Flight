@@ -38,13 +38,11 @@
 .seg-ind{position:absolute;left:0;top:0;z-index:0;pointer-events:none;transition:transform .34s cubic-bezier(.3,1.25,.5,1),width .34s ease,height .34s ease}
 /* the tab you move to lifts a little */
 .tab[aria-current="page"] svg{animation:tabPop .42s cubic-bezier(.3,1.6,.5,1)}
-.tab[aria-current="page"]::before{animation:tabBar .36s cubic-bezier(.2,.8,.2,1)}
 @keyframes tabPop{40%{transform:translateY(-3px) scale(1.12)}}
-@keyframes tabBar{from{transform:scaleX(0)}}
 @media (prefers-reduced-motion:reduce){
   .mot-layer,.mot-ghost,.mot-sheet-out{display:none}
-  .sheet,.sheet-dim,.tap-pop,.opt.ok,.opt.no,.tab[aria-current="page"] svg,.tab[aria-current="page"]::before,#main.mot-in,#main.enter,#main.enter-l,#main.enter-r{animation:none!important}
-  .seg-ind{display:none}
+  .sheet,.sheet-dim,.tap-pop,.opt.ok,.opt.no,.tab[aria-current="page"] svg,#main.mot-in,#main.enter,#main.enter-l,#main.enter-r{animation:none!important}
+  .seg-ind,.tab-ind{display:none}
 }
 /* 一度に出す切り替え: 入場も中身の遅れた表示もなし */
 #main.snap,#main.snap *{animation:none!important;transition:none!important}

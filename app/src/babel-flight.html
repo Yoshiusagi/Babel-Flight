@@ -165,11 +165,12 @@ svg{display:block}
 
 /* tab bar */
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);padding:6px max(16px,env(safe-area-inset-left,0px)) calc(6px + env(safe-area-inset-bottom,0px))}
-.tabs-in{max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.tabs-in{position:relative;max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+/* 下のタブの「滑るガラスのピル」: 選んだタブの後ろを、跳ねずになめらかに移動する (transform だけ使う) */
+.tab-ind{position:absolute;top:0;bottom:0;left:0;width:0;border-radius:22px;background:color-mix(in srgb,var(--ink) 10%,transparent);box-shadow:inset 0 1px 0 var(--glass-edge);pointer-events:none;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
 .tab{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px 6px;border:0;background:transparent;color:var(--ink2);font:500 11px/1.2 var(--f-body);border-radius:8px}
 .tab svg{width:24px;height:24px}
 .tab[aria-current="page"]{color:var(--ink)}
-.tab[aria-current="page"]::before{content:"";position:absolute;top:-7px;left:50%;width:22px;height:4px;margin-left:-11px;border-radius:0 0 4px 4px;background:var(--signal);box-shadow:0 0 10px var(--signal)}
 .badge{position:absolute;top:2px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--bad);color:#fff;font:700 10.5px/18px var(--f-mono);text-align:center}
 
 /* connection */
@@ -477,7 +478,10 @@ body.dark-ui #sky{display:none}
 .modesw button b{font-size:13.5px;white-space:nowrap;letter-spacing:-.01em}
 .modesw button small{font-size:11px;opacity:.75}
 .modesw button[aria-pressed="true"]{color:var(--bg)}
-.modesw-ind{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px) / 3);border-radius:10px;background:var(--ink);transition:transform .45s cubic-bezier(.3,1.35,.5,1)}
+.modesw-ind{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px) / 3);border-radius:10px;background:var(--ink);transition:transform .5s cubic-bezier(.25,.8,.25,1)}
+/* モードの移動: 目的地へ少し伸びてから、ぴたっと止まる (跳ね返りなし。scale だけを使い、移動は transform のまま) */
+@keyframes modeStretch{0%{scale:1 1}60%{scale:1.2 .92;animation-timing-function:ease-out}100%{scale:1 1}}
+.modesw-ind.mv{animation:modeStretch .5s cubic-bezier(.3,0,.2,1)}
 .modesw-ind.job{transform:translateX(100%)}
 .modesw-ind.study{transform:translateX(200%)}
 
@@ -652,6 +656,7 @@ body.dark-ui .sheet{--sc:#ff6b79}
 @media (prefers-reduced-motion:reduce){
   .cloud,.skystars,.stop,.bub,.scpanel,#main.enter,.avatar.ringing,.sheet.print .pass,.sheet.print .scene-card,.board.glow,.board.shake{animation:none!important}
   .modesw-ind{transition:none}
+  .modesw-ind.mv{animation:none}
 }
 @media (max-width:370px){.stop{grid-template-columns:22px minmax(0,1fr) minmax(0,1.2fr)}.stop-st{grid-column:3;justify-self:start}}
 </style>
@@ -1776,13 +1781,11 @@ html.ui-busy .uipick{opacity:.55;pointer-events:none}
 .seg-ind{position:absolute;left:0;top:0;z-index:0;pointer-events:none;transition:transform .34s cubic-bezier(.3,1.25,.5,1),width .34s ease,height .34s ease}
 /* the tab you move to lifts a little */
 .tab[aria-current="page"] svg{animation:tabPop .42s cubic-bezier(.3,1.6,.5,1)}
-.tab[aria-current="page"]::before{animation:tabBar .36s cubic-bezier(.2,.8,.2,1)}
 @keyframes tabPop{40%{transform:translateY(-3px) scale(1.12)}}
-@keyframes tabBar{from{transform:scaleX(0)}}
 @media (prefers-reduced-motion:reduce){
   .mot-layer,.mot-ghost,.mot-sheet-out{display:none}
-  .sheet,.sheet-dim,.tap-pop,.opt.ok,.opt.no,.tab[aria-current="page"] svg,.tab[aria-current="page"]::before,#main.mot-in,#main.enter,#main.enter-l,#main.enter-r{animation:none!important}
-  .seg-ind{display:none}
+  .sheet,.sheet-dim,.tap-pop,.opt.ok,.opt.no,.tab[aria-current="page"] svg,#main.mot-in,#main.enter,#main.enter-l,#main.enter-r{animation:none!important}
+  .seg-ind,.tab-ind{display:none}
 }
 /* 一度に出す切り替え: 入場も中身の遅れた表示もなし */
 #main.snap,#main.snap *{animation:none!important;transition:none!important}
@@ -2440,6 +2443,7 @@ html{background:var(--bg)}
 <div id="app"><main id="main" aria-live="polite"></main></div>
 <nav id="tabs" class="tabs" aria-label="メニュー">
   <div class="tabs-in">
+    <span class="tab-ind" aria-hidden="true"></span>
     <button class="tab" type="button" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20V8l9-4 9 4v12M9 20v-6h6v6M3 20h18"/></svg>ホーム</button>
     <button class="tab" type="button" data-tab="review"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h14l-3-3M20 16H6l3 3"/></svg>復習<span class="badge" id="dueBadge" hidden>0</span></button>
     <button class="tab" type="button" data-tab="record"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM12 8a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM9 18h6"/></svg>記録</button>
@@ -6107,6 +6111,7 @@ function render(){
   document.body.classList.toggle('dark-ui',view==='scene');
   var tabs=document.querySelectorAll('.tab');
   for(var i=0;i<tabs.length;i++){if(tabs[i].getAttribute('data-tab')===view)tabs[i].setAttribute('aria-current','page');else tabs[i].removeAttribute('aria-current');}
+  tabIndMove();
   var n=dueList(L).length,b=$('dueBadge');b.textContent=n>99?'99+':n;b.hidden=n===0;
   if(typeof natTabsSync==='function')natTabsSync(showTabs,view);
 }
@@ -6257,7 +6262,7 @@ function segPoint(a,b,t){
 }
 function mapMount(){
   var ind=document.querySelector('.modesw-ind');
-  if(ind&&MODEPREV&&MODEPREV!==save.mode){requestAnimationFrame(function(){requestAnimationFrame(function(){ind.className='modesw-ind '+save.mode;});});}
+  if(ind&&MODEPREV&&MODEPREV!==save.mode){requestAnimationFrame(function(){requestAnimationFrame(function(){ind.className='modesw-ind '+save.mode+' mv';clearTimeout(ind._mvT);ind._mvT=setTimeout(function(){ind.classList.remove('mv');},520);});});}
   MODEPREV=save.mode;
   var cv=$('map'),hero=$('hero');
   var anim=HOME_ANIM;HOME_ANIM=null;
@@ -24456,6 +24461,22 @@ function motGhost(el,dir,cls){
     return n0.apply(this,arguments);
   };
 })();
+/* bottom tabs: the glass pill slides under the chosen tab (only the bar moves; the screen itself changes at once).
+   Measured from the tab buttons, so it lines up at any width; the first placement and a resize do not animate. */
+var TIND={tab:null};
+function tabIndMove(){
+  var ind=document.querySelector('#tabs .tab-ind'),cur=document.querySelector('#tabs .tab[aria-current="page"]');
+  if(!ind||!cur)return;
+  var key=cur.getAttribute('data-tab'),moved=TIND.tab!==null&&TIND.tab!==key;
+  TIND.tab=key;
+  var w=cur.offsetWidth;
+  if(!w)return;   /* the bar is hidden (a native tab bar): nothing to place */
+  var still=!moved||!motOn();
+  if(still)ind.style.transition='none';
+  ind.style.width=w+'px';ind.style.transform='translateX('+cur.offsetLeft+'px)';
+  if(still){void ind.offsetWidth;ind.style.transition='';}
+}
+window.addEventListener('resize',function(){tabIndMove();});
 /* small touches after each draw */
 document.addEventListener('click',function(e){
   var t=e.target.closest&&e.target.closest('button');if(!t)return;
