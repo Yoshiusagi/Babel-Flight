@@ -2293,8 +2293,8 @@ html[data-ps="ps-night"] .pass .pass-main{background:radial-gradient(1px 1px at 
 html[data-ps="ps-holo"] .pass{--surface:#f3f7ff;--ink:#1b2440;--ink2:#56607e;--line:#cfd6ee;color:var(--ink)}
 html[data-ps="ps-holo"] .pass .pass-main,html[data-ps="ps-holo"] .pass .pass-stub{background:linear-gradient(115deg,#e9f6ff,#ffe3f3 35%,#e6ddff 60%,#dffcf1);background-size:220% 100%;animation:dfHolo 6s linear infinite}
 html[data-ps="ps-holo"] .pass .pass-main::before{background:linear-gradient(90deg,#8fd3ff,#d2b4ff,#ffd6e8,#9ff0d0)}
-html[data-fr="fr-gold"] .id-card .photo{box-shadow:0 0 0 2px var(--surface),0 0 0 4.5px #d9b25a}
-html[data-fr="fr-runway"] .id-card .photo{outline:3px dotted #ffd34d;outline-offset:3px}
+html[data-fr="fr-gold"] .id-card .photo{box-shadow:0 0 0 2px var(--surface),0 0 0 4.5px var(--bg)}
+html[data-fr="fr-runway"] .id-card .photo{outline:3px dotted var(--bg);outline-offset:3px}
 @media (prefers-reduced-motion:reduce){.df-item,.df-msg,.df-guard,.df-big .df-plane,.pv-ps.ps-holo .pv-tk,html[data-ps="ps-holo"] .pass .pass-main,html[data-ps="ps-holo"] .pass .pass-stub{animation:none!important}}
 </style>
 <style>
@@ -24396,7 +24396,8 @@ function motGhost(el,dir,cls){
     var main=$('main'),from=MOT.key||motKey0(),to=motKeyNext(),changed=from!==to,dir=motDir(from,to);
     if(MOT_GHOST&&changed&&motOn()&&main&&main.firstChild&&from&&!MOT.noGhost)motGhost(main,dir);
     /* the same screen drawn again (a toggle, a setting): no reveal or count-up all over again */
-    var snapNow=false;
+    /* bottom tabs switch at once with no animation (a temporary choice until a new one is designed) */
+    var snapNow=!!MOT.snap;
     MOT.quiet=!changed&&!!from&&!HOME_ANIM;
     var out;try{out=r0.apply(this,arguments);}finally{MOT.quiet=false;}
     MOT.key=motKey();
@@ -28279,7 +28280,7 @@ document.addEventListener('click',function(e){
   var a=function(n){return t.hasAttribute(n);},g=function(n){return t.getAttribute(n);};
   if(a('data-cine-skip')){cineSkip();return;}
   /* navigation */
-  if(a('data-tab')){if(g('data-tab')==='home'&&view!=='home')HOME_ANIM='tab';go(g('data-tab'));return;}
+  if(a('data-tab')){if(g('data-tab')==='home'&&view!=='home')HOME_ANIM='tab';MOT.noGhost=true;MOT.snap=true;try{go(g('data-tab'));}finally{MOT.noGhost=false;MOT.snap=false;}return;}
   if(a('data-lang-pick')){langPickSheet();return;}
   if(a('data-lang')){if(t.closest('#sheetHost'))closeSheet();if(save.lang!==g('data-lang')){save.lang=g('data-lang');if(save.lv&&save.lv[save.lang])save.level=save.lv[save.lang];HOME_ANIM='lang';store();render();if(lvNeed(save.lang))lvSheet(save.lang);}return;}
   if(a('data-mode-set')){if(save.mode!==g('data-mode-set')){save.mode=g('data-mode-set');HOME_ANIM='mode';store();render();}return;}

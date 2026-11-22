@@ -65,7 +65,8 @@ function motGhost(el,dir,cls){
     var main=$('main'),from=MOT.key||motKey0(),to=motKeyNext(),changed=from!==to,dir=motDir(from,to);
     if(MOT_GHOST&&changed&&motOn()&&main&&main.firstChild&&from&&!MOT.noGhost)motGhost(main,dir);
     /* the same screen drawn again (a toggle, a setting): no reveal or count-up all over again */
-    var snapNow=false;
+    /* bottom tabs switch at once with no animation (a temporary choice until a new one is designed) */
+    var snapNow=!!MOT.snap;
     MOT.quiet=!changed&&!!from&&!HOME_ANIM;
     var out;try{out=r0.apply(this,arguments);}finally{MOT.quiet=false;}
     MOT.key=motKey();

@@ -77,7 +77,7 @@ html[data-ps="ps-night"] .pass .pass-main{background:radial-gradient(1px 1px at 
 html[data-ps="ps-holo"] .pass{--surface:#f3f7ff;--ink:#1b2440;--ink2:#56607e;--line:#cfd6ee;color:var(--ink)}
 html[data-ps="ps-holo"] .pass .pass-main,html[data-ps="ps-holo"] .pass .pass-stub{background:linear-gradient(115deg,#e9f6ff,#ffe3f3 35%,#e6ddff 60%,#dffcf1);background-size:220% 100%;animation:dfHolo 6s linear infinite}
 html[data-ps="ps-holo"] .pass .pass-main::before{background:linear-gradient(90deg,#8fd3ff,#d2b4ff,#ffd6e8,#9ff0d0)}
-html[data-fr="fr-gold"] .id-card .photo{box-shadow:0 0 0 2px var(--surface),0 0 0 4.5px #d9b25a}
-html[data-fr="fr-runway"] .id-card .photo{outline:3px dotted #ffd34d;outline-offset:3px}
+html[data-fr="fr-gold"] .id-card .photo{box-shadow:0 0 0 2px var(--surface),0 0 0 4.5px var(--bg)}
+html[data-fr="fr-runway"] .id-card .photo{outline:3px dotted var(--bg);outline-offset:3px}
 @media (prefers-reduced-motion:reduce){.df-item,.df-msg,.df-guard,.df-big .df-plane,.pv-ps.ps-holo .pv-tk,html[data-ps="ps-holo"] .pass .pass-main,html[data-ps="ps-holo"] .pass .pass-stub{animation:none!important}}
 </style>

@@ -9,7 +9,7 @@ document.addEventListener('click',function(e){
   var a=function(n){return t.hasAttribute(n);},g=function(n){return t.getAttribute(n);};
   if(a('data-cine-skip')){cineSkip();return;}
   /* navigation */
-  if(a('data-tab')){if(g('data-tab')==='home'&&view!=='home')HOME_ANIM='tab';go(g('data-tab'));return;}
+  if(a('data-tab')){if(g('data-tab')==='home'&&view!=='home')HOME_ANIM='tab';MOT.noGhost=true;MOT.snap=true;try{go(g('data-tab'));}finally{MOT.noGhost=false;MOT.snap=false;}return;}
   if(a('data-lang-pick')){langPickSheet();return;}
   if(a('data-lang')){if(t.closest('#sheetHost'))closeSheet();if(save.lang!==g('data-lang')){save.lang=g('data-lang');if(save.lv&&save.lv[save.lang])save.level=save.lv[save.lang];HOME_ANIM='lang';store();render();if(lvNeed(save.lang))lvSheet(save.lang);}return;}
   if(a('data-mode-set')){if(save.mode!==g('data-mode-set')){save.mode=g('data-mode-set');HOME_ANIM='mode';store();render();}return;}
