@@ -28,6 +28,7 @@ function round2Kind(it,n){
 }
 var MODE_TITLE={review:'復習',free:'自由練習',weak:'弱点コース',ann:'リスニング特訓',skip:'飛び級テスト',rem:'補習フライト',ai:'AIの例文練習',lounge:'プラチナラウンジ'};
 function startFlight(opts){
+  if(typeof gimmickOnStart==='function')gimmickOnStart();
   var items=opts.items,q=[];
   F={mode:opts.mode,lang:opts.lang,uid:opts.uid,items:items,queue:q,idx:0,mist:0,corr:0,wrong:{},retry:{},cur:null,answered:false,
      wDone:0,wTotal:0,prog:0,back:(view==='review'?'review':'home'),opts:[],optR:[],ci:-1,build:null,peeked:false};

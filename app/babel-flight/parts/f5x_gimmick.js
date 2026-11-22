@@ -9,13 +9,21 @@ var GIMMICK_DEF=[
   {k:'compass',c:'suite',t:'方位磁石（コンパスローズ）'},
   {k:'dist',c:'suite',t:'次の都市までの残り距離'},
   {k:'night',c:'suite',t:'昼と夜の境目（ゆっくり動く飾り）'},
-  {k:'intro',c:'all',t:'地図が開くとき、飛行機が下から上がってくる'}
+  {k:'intro',c:'all',t:'地図が開くとき、飛行機が下から上がってくる'},
+  {k:'nightwin',c:'window',t:'夜の窓（夜空に星がまたたく）'},
+  {k:'boarding',c:'lounge',t:'搭乗の進み具合（今日の目標まで）のバー'},
+  {k:'ticketfx',c:'lounge',t:'レッスンを始めると、搭乗券が出てくる'},
+  {k:'lounge_in',c:'suite',t:'スイートを開くと、金の光が広がる'},
+  {k:'champagne',c:'suite',t:'レッスンを終えると、金の泡（シャンパン）が上がる'},
+  {k:'arrive',c:'all',t:'レッスンを終えると、着陸の揺れ'},
+  {k:'bigmap',c:'all',t:'【大胆】地図を大きくする（画面の約6割）'}
 ];
-var GIMMICK=(function(){try{return JSON.parse(localStorage.getItem('bf.gimmick')||'{}')||{};}catch(e){return {};}})();
+var GIMMICK=(function(){try{var raw=localStorage.getItem('bf.gimmick');if(raw===null){var all={};GIMMICK_DEF.forEach(function(d){all[d.k]=true;});return all;}return JSON.parse(raw)||{};}catch(e){return {};}})();
 var GMK={flip:'',flipT:0};
 function gimmickOn(k){return !!(BF_SIM&&GIMMICK[k]);}
 function gimmickSave(){try{localStorage.setItem('bf.gimmick',JSON.stringify(GIMMICK));}catch(e){}}
 function gimmickCab(){return rootEl.getAttribute('data-cabin')||'';}
+function gimmickApplyRoot(){if(rootEl)rootEl.classList.toggle('gm-night',!!(BF_SIM&&GIMMICK.nightwin));}
 /* 地図の一番下（描画の土台）: 雲・夜の陰 */
 function gimmickSky(g,cw,ch,now){
   var cab=gimmickCab();
@@ -25,6 +33,11 @@ function gimmickSky(g,cw,ch,now){
       var sp=7+i*3,x=((now/1000*sp+i*cw*0.37)%(cw+160))-80,y=ch*(0.22+0.17*((i*37)%5)/4),r=18+i*5;
       g.beginPath();g.ellipse(x,y,r*1.9,r*0.55,0,0,6.283);g.fill();
     }
+    g.restore();
+  }
+  if(gimmickOn('nightwin')&&cab==='window'){
+    g.save();
+    for(var j=0;j<28;j++){var sx=((j*97)%101)/101*cw,sy=((j*53)%89)/89*ch*0.72,tw=0.3+0.4*Math.abs(Math.sin(now/600+j));g.fillStyle='rgba(255,255,255,'+tw.toFixed(2)+')';g.fillRect(sx,sy,1.6,1.6);}
     g.restore();
   }
   if(gimmickOn('night')&&cab==='suite'){
@@ -53,6 +66,19 @@ function gimmickFront(g,cw,ch,now,M){
     g.translate(bx+bw/2,by+bh/2);g.scale(1,Math.max(.06,sy));
     g.fillStyle='#e7c35a';g.font='700 13px "B612 Mono",monospace';g.textAlign='center';g.textBaseline='middle';
     g.fillText(nm,0,0);g.restore();
+  }
+  if(gimmickOn('boarding')&&cab==='lounge'){
+    var bp=Math.min(1,todayCount()/Math.max(1,save.goal||1)),bwid=cw*0.45;
+    g.save();g.font='700 9px "B612 Mono",monospace';g.textAlign='left';g.fillStyle='rgba(212,175,55,.9)';
+    g.fillText('BOARDING '+Math.round(bp*100)+'%',14,ch-40);
+    g.fillStyle='rgba(255,255,255,.15)';g.fillRect(14,ch-34,bwid,5);
+    g.fillStyle='#e7c35a';g.fillRect(14,ch-34,bwid*bp,5);g.restore();
+  }
+  if(gimmickOn('lounge_in')&&cab==='suite'&&M.t0){
+    var lt=clamp((now-M.t0)/1300,0,1);
+    if(lt<1){g.save();var lg=g.createRadialGradient(cw/2,ch*0.45,0,cw/2,ch*0.45,ch*(0.2+0.9*lt));
+      lg.addColorStop(0,'rgba(255,207,38,'+(0.5*(1-lt)).toFixed(3)+')');lg.addColorStop(1,'rgba(255,207,38,0)');
+      g.fillStyle=lg;g.fillRect(0,0,cw,ch);g.restore();}
   }
   if(gimmickOn('ticket')&&cab==='lounge'){
     var ty=ch-12;
@@ -98,8 +124,49 @@ function gimmickPanel(){
       h+='<label style="display:flex;gap:8px;align-items:flex-start;padding:4px 0;cursor:pointer"><input type="checkbox" data-gm="'+d.k+'"'+(GIMMICK[d.k]?' checked':'')+' style="margin-top:3px"><span>'+d.t+'</span></label>';});
   });
   p.innerHTML=h;
-  p.addEventListener('change',function(e){var k=e.target&&e.target.getAttribute&&e.target.getAttribute('data-gm');if(!k)return;GIMMICK[k]=e.target.checked;gimmickSave();});
+  p.addEventListener('change',function(e){var k=e.target&&e.target.getAttribute&&e.target.getAttribute('data-gm');if(!k)return;GIMMICK[k]=e.target.checked;gimmickSave();gimmickApplyRoot();});
   b.addEventListener('click',function(){p.style.display=p.style.display==='none'?'block':'none';});
-  document.body.appendChild(b);document.body.appendChild(p);
+  document.body.appendChild(b);document.body.appendChild(p);gimmickApplyRoot();
 }
 if(BF_SIM){if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',gimmickPanel);else gimmickPanel();}
+
+/* ---- レッスンの前後の演出（flight開始・レッスン完了から呼ばれる） ---- */
+function gimmickOverlay(){var o=document.createElement('div');o.setAttribute('aria-hidden','true');o.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:2147483500;overflow:hidden';document.body.appendChild(o);return o;}
+/* 搭乗券: レッスンを始めたとき、下から出てきて少し傾く */
+function gimmickTicketFx(){
+  if(reduceMotion||!document.body.animate)return;
+  var o=gimmickOverlay(),t=document.createElement('div');
+  var w=Math.min(300,innerWidth-40);
+  t.style.cssText='position:absolute;left:50%;bottom:18%;width:'+w+'px;margin-left:-'+(w/2)+'px;padding:14px 16px;border-radius:14px;background:linear-gradient(135deg,#f6e7b4,#d4af37);color:#1a1400;font:700 12px/1.5 "B612 Mono",monospace;box-shadow:0 12px 30px rgba(0,0,0,.45)';
+  t.innerHTML='<div style="font-size:10px;letter-spacing:.2em">BOARDING PASS</div><div style="font-size:18px;font-family:system-ui,sans-serif;font-weight:800">'+(LANGS[save.lang]?LANGS[save.lang].name:'')+'</div><div>GATE A1 ・ SEAT 1A</div>';
+  o.appendChild(t);
+  var a=t.animate([{transform:'translateY(60px) rotate(-8deg)',opacity:0},{transform:'translateY(0) rotate(-2deg)',opacity:1,offset:.45},{transform:'translateY(-10px) rotate(0deg)',opacity:1,offset:.7},{transform:'translateY(-40px)',opacity:0}],{duration:1500,easing:'cubic-bezier(.2,.8,.2,1)'});
+  a.onfinish=function(){o.remove();};
+}
+/* シャンパン: 金の泡が下から上がる */
+function gimmickChampagne(){
+  if(reduceMotion||!document.body.animate)return;
+  var o=gimmickOverlay();
+  for(var i=0;i<26;i++){
+    var b=document.createElement('span'),x=8+Math.random()*84,sz=4+Math.random()*7,d=900+Math.random()*900,dl=Math.random()*500;
+    b.style.cssText='position:absolute;bottom:-12px;left:'+x+'%;width:'+sz+'px;height:'+sz+'px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff7cc,#e7c35a 60%,#b8891f);opacity:0';
+    o.appendChild(b);
+    b.animate([{transform:'translate(0,0)',opacity:0},{opacity:.95,offset:.2},{transform:'translate('+((Math.random()-.5)*60)+'px,-'+(innerHeight*(0.5+Math.random()*0.4))+'px)',opacity:0}],{duration:d,delay:dl,easing:'ease-out',fill:'forwards'});
+  }
+  setTimeout(function(){o.remove();},2600);
+}
+/* 着陸の揺れ: 地図が一度ゆれる */
+function gimmickShake(){
+  var h=document.querySelector('.hero');
+  if(!h||reduceMotion||!h.animate)return;
+  h.animate([{transform:'translate(0,0)'},{transform:'translate(-3px,2px)'},{transform:'translate(4px,-2px)'},{transform:'translate(-2px,1px)'},{transform:'translate(0,0)'}],{duration:480,easing:'ease-out'});
+}
+/* レッスン開始（startFlight の最初に呼ぶ） */
+function gimmickOnStart(){
+  if(gimmickOn('ticketfx')&&gimmickCab()==='lounge')gimmickTicketFx();
+}
+/* レッスン完了（completeLesson の最初に呼ぶ） */
+function gimmickOnDone(){
+  if(gimmickOn('champagne')&&gimmickCab()==='suite')gimmickChampagne();
+  if(gimmickOn('arrive'))gimmickShake();
+}

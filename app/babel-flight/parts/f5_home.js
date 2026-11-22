@@ -159,7 +159,9 @@ function mapMount(){
   var chMax=Math.max(320,Math.min(Math.round(window.innerHeight*0.52),450));
   /* the map's height depends on the screen only, not on the route: a short route (職業) used to zoom in and grow the map.
      The route is fitted to that height, and a wide route pans with the plane instead. */
-  var heroH=Math.round(Math.min(chMax,Math.max(330,cw*0.92))),s=heroH/bh;
+  var heroH=Math.round(Math.min(chMax,Math.max(330,cw*0.92)));
+  if(typeof gimmickOn==='function'&&gimmickOn('bigmap'))heroH=Math.round(Math.max(heroH,Math.min(innerHeight*0.6,cw*1.45)));
+  var s=heroH/bh;
   /* スイート: the map covers the whole first screen, so it is fitted to that screen's height */
   if(typeof MAP_FULL!=='undefined'&&MAP_FULL){var spEl=hero.closest('.sp-next');if(spEl&&spEl.clientHeight){heroH=spEl.clientHeight;s=heroH/bh;}}
   /* a freshly drawn map starts at its CSS height: set the real height at once, not with the 0.5s height transition
