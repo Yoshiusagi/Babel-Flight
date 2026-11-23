@@ -16,14 +16,18 @@ var GIMMICK_DEF=[
   {k:'lounge_in',c:'suite',t:'スイートを開くと、金の光が広がる'},
   {k:'champagne',c:'suite',t:'レッスンを終えると、金の泡（シャンパン）が上がる'},
   {k:'arrive',c:'all',t:'レッスンを終えると、着陸の揺れ'},
-  {k:'bigmap',c:'all',t:'【大胆】地図を大きくする（画面の約6割）'}
+  {k:'bigmap',c:'all',t:'【大胆】地図を大きくする（画面の約6割）'},
+  {k:'pagemap',c:'all',t:'【大胆】地図を画面いっぱいに広げ、スクロールすると薄くなる'}
 ];
 var GIMMICK=(function(){try{var raw=localStorage.getItem('bf.gimmick');if(raw===null){var all={};GIMMICK_DEF.forEach(function(d){all[d.k]=true;});return all;}return JSON.parse(raw)||{};}catch(e){return {};}})();
 var GMK={flip:'',flipT:0};
 function gimmickOn(k){return !!(BF_SIM&&GIMMICK[k]);}
 function gimmickSave(){try{localStorage.setItem('bf.gimmick',JSON.stringify(GIMMICK));}catch(e){}}
 function gimmickCab(){return rootEl.getAttribute('data-cabin')||'';}
-function gimmickApplyRoot(){if(rootEl)rootEl.classList.toggle('gm-night',!!(BF_SIM&&GIMMICK.nightwin));}
+function gimmickApplyRoot(){if(rootEl)rootEl.classList.toggle('gm-night',!!(BF_SIM&&GIMMICK.nightwin));document.body.classList.toggle('gm-pagemap',!!(BF_SIM&&GIMMICK.pagemap));gimmickFade();}
+/* 試作「ページ全体の地図」: スクロールするほど地図が薄くなる */
+function gimmickFade(){var h=document.querySelector('.hero');if(!h)return;if(!gimmickOn('pagemap')){h.style.opacity='';return;}var t=clamp(window.scrollY/(innerHeight*1.1),0,1);h.style.opacity=(1-t*0.8).toFixed(3);}
+window.addEventListener('scroll',function(){if(BF_SIM)gimmickFade();},{passive:true});
 /* 地図の一番下（描画の土台）: 雲・夜の陰 */
 function gimmickSky(g,cw,ch,now){
   var cab=gimmickCab();

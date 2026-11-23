@@ -164,9 +164,14 @@ function mapMount(){
   var s=heroH/bh;
   /* スイート: the map covers the whole first screen, so it is fitted to that screen's height */
   if(typeof MAP_FULL!=='undefined'&&MAP_FULL){var spEl=hero.closest('.sp-next');if(spEl&&spEl.clientHeight){heroH=spEl.clientHeight;s=heroH/bh;}}
+  /* 試作「ページ全体の地図」: the map keeps its scale, but its box grows to the whole screen, so more of the map shows.
+     The cards below still start where they did (a negative margin), and the map stays behind them as they scroll. */
+  var fitH=heroH;
+  if(typeof gimmickOn==='function'&&gimmickOn('pagemap')&&!MAP_FULL)heroH=Math.round(Math.max(heroH,innerHeight));
   /* a freshly drawn map starts at its CSS height: set the real height at once, not with the 0.5s height transition
      (that transition pushed every card above and below up and down on each change) */
   hero.style.transition='none';hero.style.height=heroH+'px';void hero.offsetHeight;hero.style.transition='';
+  hero.style.marginBottom=(heroH>fitH)?(-(heroH-fitH))+'px':'';
   var dpr=Math.min(2,window.devicePixelRatio||1);
   cv.width=Math.round(cw*dpr);cv.height=Math.round(heroH*dpr);cv.style.height=heroH+'px';
   var vw=cw/s,vh=heroH/s,follow=vw<bw*0.98;
