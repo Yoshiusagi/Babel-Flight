@@ -204,9 +204,10 @@ function mapMount(){
        acc:cssVar('--c-'+L),plane:new Path2D(PLANE_D),t0:performance.now(),reveal:(anim==='lang'||anim==='first')&&!reduceMotion,route:(anim&&!reduceMotion)?performance.now()+(anim==='mode'?0:250):0,raf:0,cache:null};
   MAP.glide=glide;
   cv.onclick=function(ev){
-    var r=cv.getBoundingClientRect(),M=MAP,x=(ev.clientX-r.left-M.cw/2)/M.s+M.cam.x,y=(ev.clientY-r.top-M.ch/2)/M.s+M.cam.y,best=-1,bd=18/M.s;
+    var r=cv.getBoundingClientRect(),M=MAP,x=(ev.clientX-r.left-M.cw/2)/M.s+M.cam.x-(M.panX||0)/M.s,y=(ev.clientY-r.top-M.ch/2)/M.s+M.cam.y,best=-1,bd=18/M.s;
+    if(performance.now()-(M.dragT||0)<300)return;
     M.pts.forEach(function(p,i){var dd=Math.hypot(p.x-x,p.y-y);if(dd<bd){bd=dd;best=i;}});
-    if(best>=0)openNodeSheet(M.ids[best]);
+    if(best>=0){if(typeof gimmickOn==='function'&&gimmickOn('citytap'))gimmickCityCard(cityFor(M.L,best),M.L,function(){openNodeSheet(M.ids[best]);});else openNodeSheet(M.ids[best]);}
   };
   bindParallax();
   mapFrame();
@@ -214,16 +215,17 @@ function mapMount(){
 function mapFrame(){
   var M=MAP;if(!M||!document.body.contains(M.cv)){if(M)M.raf=0;return;}
   var g=M.ctx,now=performance.now(),L=M.L,pts=M.pts,ids=M.ids,i,s=M.s,cw=M.cw,ch=M.ch;
+  if(typeof gimmickPanSetup==='function')gimmickPanSetup(M);
   /* camera (pans with the plane when the route is wider than the screen) */
   var F2=M.fly,ft=0,fe=0;
   if(F2){ft=reduceMotion?1:clamp((now-F2.t0)/1800,0,1);fe=ft<.5?2*ft*ft:1-Math.pow(-2*ft+2,2)/2;M.cam={x:M.cam0.x+(M.cam1.x-M.cam0.x)*fe,y:M.cam0.y+(M.cam1.y-M.cam0.y)*fe};}
   /* after a mode switch the camera eases from where it was to the new place (900ms, no lag) */
   var gl=M.glide,ge=1;
   if(gl){var gt=clamp((now-gl.t0)/900,0,1);ge=gt<.5?4*gt*gt*gt:1-Math.pow(-2*gt+2,3)/2;if(!F2)M.cam={x:gl.cam0.x+(M.cam0.x-gl.cam0.x)*ge,y:gl.cam0.y+(M.cam0.y-gl.cam0.y)*ge};if(gt>=1)M.glide=null;}
-  var cx=M.cam.x,cy=M.cam.y;
+  var cx=M.cam.x-(M.panX||0)/s,cy=M.cam.y;
   function SX(x){return (x-cx)*s+cw/2;}function SY(y){return (y-cy)*s+ch/2;}
   g.setTransform(M.dpr,0,0,M.dpr,0,0);
-  var bg=g.createLinearGradient(0,0,0,ch);bg.addColorStop(0,'#071022');bg.addColorStop(1,'#0f2244');g.fillStyle=bg;g.fillRect(0,0,cw,ch);gimmickSky(g,cw,ch,now);
+  var bg=g.createLinearGradient(0,0,0,ch),DT=gimmickDay();bg.addColorStop(0,DT[0]);bg.addColorStop(1,DT[1]);g.fillStyle=bg;g.fillRect(0,0,cw,ch);gimmickSky(g,cw,ch,now);
   /* land dots, with a ripple reveal after a language switch */
   var d=M.dots,rv=M.reveal?(now-M.t0)/900:2,fx=cw/2,fy=ch*0.55,maxd=Math.hypot(cw,ch);
   g.fillStyle='rgba(124,178,222,.5)';
@@ -242,9 +244,9 @@ function mapFrame(){
     var A={x:SX(a.x),y:SY(a.y)},Bp={x:SX(b.x),y:SY(b.y)};
     g.beginPath();g.moveTo(A.x,A.y);
     for(var k=1;k<=16;k++){var sp=segPoint(A,Bp,part*k/16);g.lineTo(sp.x,sp.y);}
-    if(done){g.setLineDash([]);g.strokeStyle=M.acc;g.lineWidth=2.2;g.globalAlpha=.9;}
+    if(done){g.setLineDash([]);gimmickTrail(g,M.acc);}
     else{g.setLineDash([3,5]);g.strokeStyle='rgba(255,255,255,.32)';g.lineWidth=1.2;g.globalAlpha=1;}
-    g.stroke();
+    g.stroke();g.shadowBlur=0;
   }
   g.setLineDash([]);g.globalAlpha=1;
   /* Tokyo marker or edge arrow */

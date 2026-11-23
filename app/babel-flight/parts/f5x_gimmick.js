@@ -17,11 +17,16 @@ var GIMMICK_DEF=[
   {k:'champagne',c:'suite',t:'レッスンを終えると、金の泡（シャンパン）が上がる'},
   {k:'arrive',c:'all',t:'レッスンを終えると、着陸の揺れ'},
   {k:'bigmap',c:'all',t:'【大胆】地図を大きくする（画面の約6割）'},
-  {k:'pagemap',c:'all',t:'【大胆】地図を画面いっぱいに広げ、スクロールすると薄くなる'}
+  {k:'pagemap',c:'all',t:'【大胆】地図を画面いっぱいに広げ、スクロールすると薄くなる'},
+  {k:'trail',c:'all',t:'飛んだ軌跡が金色に光る'},
+  {k:'daytime',c:'all',t:'地図の色が、いまの時間（朝・昼・夕・夜）で変わる'},
+  {k:'citytap',c:'all',t:'都市をタップすると、時差と今の時間を先に出す'},
+  {k:'pan',c:'all',t:'地図を左右になぞって動かせる（指を離すと戻る）'}
 ];
 var GIMMICK=(function(){try{var raw=localStorage.getItem('bf.gimmick');if(raw===null){var all={};GIMMICK_DEF.forEach(function(d){all[d.k]=true;});return all;}return JSON.parse(raw)||{};}catch(e){return {};}})();
 var GMK={flip:'',flipT:0};
-function gimmickOn(k){return !!(BF_SIM&&GIMMICK[k]);}
+/* 保存されていない項目は「オン」（チェックを外したものだけ false になる） */
+function gimmickOn(k){return !!(BF_SIM&&GIMMICK[k]!==false);}
 function gimmickSave(){try{localStorage.setItem('bf.gimmick',JSON.stringify(GIMMICK));}catch(e){}}
 function gimmickCab(){return rootEl.getAttribute('data-cabin')||'';}
 function gimmickApplyRoot(){if(rootEl)rootEl.classList.toggle('gm-night',!!(BF_SIM&&GIMMICK.nightwin));document.body.classList.toggle('gm-pagemap',!!(BF_SIM&&GIMMICK.pagemap));gimmickFade();}
@@ -125,7 +130,7 @@ function gimmickPanel(){
   ['window','lounge','suite','all'].forEach(function(c){
     h+='<div style="margin-top:8px;color:#ffcf26;font-weight:700">'+groups[c]+'</div>';
     GIMMICK_DEF.filter(function(d){return d.c===c;}).forEach(function(d){
-      h+='<label style="display:flex;gap:8px;align-items:flex-start;padding:4px 0;cursor:pointer"><input type="checkbox" data-gm="'+d.k+'"'+(GIMMICK[d.k]?' checked':'')+' style="margin-top:3px"><span>'+d.t+'</span></label>';});
+      h+='<label style="display:flex;gap:8px;align-items:flex-start;padding:4px 0;cursor:pointer"><input type="checkbox" data-gm="'+d.k+'"'+(GIMMICK[d.k]!==false?' checked':'')+' style="margin-top:3px"><span>'+d.t+'</span></label>';});
   });
   p.innerHTML=h;
   p.addEventListener('change',function(e){var k=e.target&&e.target.getAttribute&&e.target.getAttribute('data-gm');if(!k)return;GIMMICK[k]=e.target.checked;gimmickSave();gimmickApplyRoot();});
@@ -173,4 +178,56 @@ function gimmickOnStart(){
 function gimmickOnDone(){
   if(gimmickOn('champagne')&&gimmickCab()==='suite')gimmickChampagne();
   if(gimmickOn('arrive'))gimmickShake();
+}
+
+/* ---- 地図をメインにする試作 ---- */
+/* 軌跡: 飛んだ航路を金色に光らせる */
+function gimmickTrail(g,acc){
+  if(gimmickOn('trail')){g.strokeStyle='#ffcf26';g.lineWidth=2.4;g.globalAlpha=.95;g.shadowColor='rgba(255,207,38,.7)';g.shadowBlur=7;}
+  else{g.strokeStyle=acc;g.lineWidth=2.2;g.globalAlpha=.9;}
+}
+/* 時間帯の空（日本時間）: 朝・昼・夕・夜 */
+function gimmickDay(){
+  if(!gimmickOn('daytime'))return ['#071022','#0f2244'];
+  var h=(new Date().getUTCHours()+9)%24;
+  if(h>=5&&h<9)return ['#1b2a4e','#5a3f72'];
+  if(h>=9&&h<16)return ['#0c2a4f','#1f6291'];
+  if(h>=16&&h<19)return ['#1a1433','#7a3f5e'];
+  return ['#050914','#0b1a33'];
+}
+/* 都市の時差（経度から出す目安。日本との差） */
+function gimmickDiff(c){return Math.round(c[3]/15)-9;}
+function gimmickLocalTime(c){var h=(new Date().getUTCHours()+Math.round(c[3]/15)+24)%24,m=new Date().getUTCMinutes();return (h<10?'0':'')+h+':'+(m<10?'0':'')+m;}
+/* 都市をタップ: 先に小さなカードを出す（レッスンへは「見る」） */
+function gimmickCityCard(c,L,open){
+  var old=document.getElementById('gmCity');if(old)old.remove();
+  var d=gimmickDiff(c),el=document.createElement('div');el.id='gmCity';
+  el.style.cssText='position:fixed;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 112px);max-width:340px;margin:0 auto;z-index:2147483550;padding:14px 16px;border-radius:16px;background:rgba(10,14,26,.96);color:#eef0f6;font:13px/1.6 system-ui,sans-serif;border:1px solid rgba(255,207,38,.45);box-shadow:0 10px 30px rgba(0,0,0,.5)';
+  el.innerHTML='<div style="font:700 16px system-ui">'+esc(c[0])+' <span style="color:#9aa0b4;font-weight:400">'+esc(c[1])+'</span></div>'
+    +'<div style="color:#ffcf26;font:700 12px \'B612 Mono\',monospace">今 '+gimmickLocalTime(c)+' ・ 日本と '+(d>=0?'+':'')+d+'時間（目安）</div>'
+    +'<div style="color:#9aa0b4;font-size:12px">ここで学ぶ言葉：'+esc(LANGS[L]?LANGS[L].name:'')+'</div>'
+    +'<div style="display:flex;gap:8px;margin-top:10px"><button type="button" id="gmCityGo" style="flex:1;padding:9px;border-radius:999px;border:0;background:#ffcf26;color:#1a1400;font:700 13px system-ui;cursor:pointer">レッスンを見る</button><button type="button" id="gmCityX" style="padding:9px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.25);background:transparent;color:#eef0f6;font:13px system-ui;cursor:pointer">とじる</button></div>';
+  document.body.appendChild(el);
+  document.getElementById('gmCityGo').onclick=function(){el.remove();open();};
+  document.getElementById('gmCityX').onclick=function(){el.remove();};
+}
+/* 左右になぞって地図を動かす（指を離すと、もとの位置へ戻る）。上下は今までどおりページのスクロール */
+function gimmickPanSetup(M){
+  if(!M||!M.cv)return;
+  if(!gimmickOn('pan')){M.cv.style.touchAction='';return;}
+  M.cv.style.touchAction='pan-y';
+  if(M.cv.getAttribute('data-gm-pan'))return;
+  M.cv.setAttribute('data-gm-pan','1');
+  var st=null;
+  M.cv.addEventListener('pointerdown',function(e){st={x:e.clientX,p:M.panX||0,mv:false};});
+  M.cv.addEventListener('pointermove',function(e){
+    if(!st)return;var dx=e.clientX-st.x;
+    if(!st.mv&&Math.abs(dx)>10){st.mv=true;M.dragT=performance.now();}
+    if(st.mv){M.panX=clamp(st.p+dx,-M.cw*0.7,M.cw*0.7);M.dragT=performance.now();}
+  });
+  var end=function(){
+    if(!st)return;var from=M.panX||0,t0=performance.now();st=null;
+    (function back(){var t=clamp((performance.now()-t0)/450,0,1),e2=1-Math.pow(1-t,3);M.panX=from*(1-e2);if(t<1&&MAP===M)requestAnimationFrame(back);})();
+  };
+  M.cv.addEventListener('pointerup',end);M.cv.addEventListener('pointercancel',end);
 }
