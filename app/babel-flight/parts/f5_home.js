@@ -4,7 +4,9 @@ function cityFor(L,i){var c=CITIES[L];return c[((i%c.length)+c.length)%c.length]
 function posKey(L){return L+'-'+save.mode;}
 /* where the plane is on the path (-1: Tokyo). The path can get shorter (another job, an exam goal), so a place past its end is not used */
 function curPos(L){var p=save.pos&&save.pos[posKey(L)];return typeof p==='number'&&p<pathIds(L).length?p:-1;}
-function proj(L,lat,lon){var R=REGIONS[L],b=R.b;return {x:(lon-b[0])/(b[1]-b[0])*340,y:(b[3]-lat)/(b[3]-b[2])*R.H};}
+/* 地図は世界全体の座標（経度-180〜180、1度=MAPK）。左右にスクロールすると、経度がまわって世界をぐるっと回れる */
+var MAPK=1000/360,LAND_W=720,LAND_H=280,LAND=null;/* 陸の格子は0.5度ごと */
+function proj(L,lat,lon){return {x:(lon+180)*MAPK,y:(80-lat)*MAPK};}
 function inPoly(x,y,p){var ins=false,n=p.length/2,j=n-1;for(var i=0;i<n;i++){var xi=p[2*i],yi=p[2*i+1],xj=p[2*j],yj=p[2*j+1];if((yi>y)!==(yj>y)&&x<(xj-xi)*(y-yi)/(yj-yi)+xi)ins=!ins;j=i;}return ins;}
 function polyBox(p){var a=[1e9,-1e9,1e9,-1e9];for(var i=0;i<p.length;i+=2){a[0]=Math.min(a[0],p[i]);a[1]=Math.max(a[1],p[i]);a[2]=Math.min(a[2],p[i+1]);a[3]=Math.max(a[3],p[i+1]);}return a;}
 function haversine(a,b){var R=6371,t=Math.PI/180,dl=(b[2]-a[2])*t,dn=(b[3]-a[3])*t,x=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(a[2]*t)*Math.cos(b[2]*t)*Math.sin(dn/2)*Math.sin(dn/2);return 2*R*Math.asin(Math.sqrt(x));}
@@ -127,17 +129,23 @@ function openNodeSheet(uid){
 }
 
 /* ---- map engine ---- */
-function mapDotsArea(L,step,x0,x1,y0,y1){
-  var key=L+'|'+step.toFixed(3)+'|'+Math.round(x0)+'|'+Math.round(x1)+'|'+Math.round(y0)+'|'+Math.round(y1);
-  if(DOTC[key])return DOTC[key];
-  var R=REGIONS[L],b=R.b,out=[];
-  var P=R.polys.map(function(p){return {p:p,bx:polyBox(p)};}),Ho=(R.holes||[]).map(function(p){return {p:p,bx:polyBox(p)};});
-  function hit(list,lon,lat){for(var k=0;k<list.length;k++){var q=list[k],bx=q.bx;if(lon<bx[0]||lon>bx[1]||lat<bx[2]||lat>bx[3])continue;if(inPoly(lon,lat,q.p))return true;}return false;}
-  for(var y=Math.floor(y0/step)*step;y<=y1;y+=step)for(var x=Math.floor(x0/step)*step;x<=x1;x+=step){
-    var lon=b[0]+x/340*(b[1]-b[0]),lat=b[3]-y/R.H*(b[3]-b[2]);
-    if(hit(P,lon,lat)&&!hit(Ho,lon,lat))out.push(x,y);
-  }
-  return (DOTC[key]=out);
+function landGrid(){
+  if(LAND)return LAND;
+  var polys=[];
+  (typeof WORLD_LAND!=='undefined'?WORLD_LAND:[]).forEach(function(p){polys.push({p:p,bx:polyBox(p)});});
+  Object.keys(REGIONS).forEach(function(k){(REGIONS[k].polys||[]).forEach(function(p){polys.push({p:p,bx:polyBox(p)});});});
+  var G=new Uint8Array(LAND_W*LAND_H);
+  for(var r=0;r<LAND_H;r++){var lat=80-(r+0.5)/2;for(var c=0;c<LAND_W;c++){var lon=(c+0.5)/2-180;
+    for(var k=0;k<polys.length;k++){var q=polys[k],bx=q.bx;if(lon<bx[0]||lon>bx[1]||lat<bx[2]||lat>bx[3])continue;if(inPoly(lon,lat,q.p)){G[r*LAND_W+c]=1;break;}}
+  }}
+  return (LAND=G);
+}
+/* 見えている範囲の陸の点（世界は経度がまわるので、どこまで動かしても陸が続く） */
+function mapDotsView(cx,cy,cw,ch,s){
+  var G=landGrid(),step=7/s,out=[],hw=cw/2/s+step,hh=ch/2/s+step;
+  for(var y=Math.floor((cy-hh)/step)*step;y<=cy+hh;y+=step){var r=Math.floor(y/MAPK*2);if(r<0||r>=LAND_H)continue;
+    for(var x=Math.floor((cx-hw)/step)*step;x<=cx+hw;x+=step){var c=Math.floor(x/MAPK*2);c=((c%LAND_W)+LAND_W)%LAND_W;if(G[r*LAND_W+c])out.push(x,y);}}
+  return out;
 }
 function segPoint(a,b,t){
   var mx=(a.x+b.x)/2,my=(a.y+b.y)/2,dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy)||1,c={x:mx-dy*0.18,y:my+dx*0.18-len*0.08};
@@ -195,7 +203,7 @@ function mapMount(){
   if(pendingFly&&pendingFly.key===posKey(L)){fly={from:pendingFly.from,to:pendingFly.to,t0:performance.now()+350};pendingFly=null;}
   var cur=fly?fly.from:curPos(L);
   var cam0=camAt(focusFor(cur)),cam1=camAt(focusFor(fly?fly.to:cur));
-  var step=7/s,dots=mapDotsArea(L,step,follow?X0-vw/2:cam0.x-vw/2-step,follow?X1+vw/2:cam0.x+vw/2+step,cam0.y-vh/2-step-(follow?vh/2:0),cam0.y+vh/2+step+(follow?vh/2:0));
+  var dots=null;
   /* a mode switch glides the plane and the camera from where they were, not a jump: the map's units are the same in every mode */
   var glide=null,tgtP=cur>=0?pts[cur]:tk;
   if(MAPVIEW&&MAPVIEW.L===L&&!fly&&!reduceMotion&&anim!=='lang'&&anim!=='first'&&(MAPVIEW.plane.x!==tgtP.x||MAPVIEW.plane.y!==tgtP.y))
@@ -227,7 +235,7 @@ function mapFrame(){
   g.setTransform(M.dpr,0,0,M.dpr,0,0);
   var bg=g.createLinearGradient(0,0,0,ch),DT=gimmickDay();bg.addColorStop(0,DT[0]);bg.addColorStop(1,DT[1]);g.fillStyle=bg;g.fillRect(0,0,cw,ch);gimmickSky(g,cw,ch,now);
   /* land dots, with a ripple reveal after a language switch */
-  var d=M.dots,rv=M.reveal?(now-M.t0)/900:2,fx=cw/2,fy=ch*0.55,maxd=Math.hypot(cw,ch);
+  var d=mapDotsView(cx,cy,cw,ch,s),rv=M.reveal?(now-M.t0)/900:2,fx=cw/2,fy=ch*0.55,maxd=Math.hypot(cw,ch);
   g.fillStyle='rgba(124,178,222,.5)';
   for(i=0;i<d.length;i+=2){
     var px=SX(d[i]),py=SY(d[i+1]);if(px<-3||py<-3||px>cw+3||py>ch+3)continue;

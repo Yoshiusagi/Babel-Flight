@@ -231,7 +231,7 @@ function gimmickPanSetup(M){
     var X=MAP;if(!st||!X)return false;var dx=x-st.x,dy=y-st.y;
     if(!st.lock){if(Math.abs(dx)<8&&Math.abs(dy)<8)return false;st.lock=Math.abs(dx)>Math.abs(dy)?'x':'y';}
     if(st.lock!=='x')return false;
-    X.panX=clamp(st.p+dx,-X.cw*0.7,X.cw*0.7);X.dragT=performance.now();return true;
+    X.panX=st.p+dx;X.dragT=performance.now();return true;
   }
   M.cv.addEventListener('touchstart',function(e){if(e.touches.length===1)startAt(e.touches[0].clientX,e.touches[0].clientY);else st=null;},{passive:true});
   M.cv.addEventListener('touchmove',function(e){if(!st||e.touches.length!==1)return;if(moveTo(e.touches[0].clientX,e.touches[0].clientY)&&e.cancelable)e.preventDefault();},{passive:false});

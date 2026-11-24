@@ -5448,6 +5448,62 @@ function tripSecs(lang){
   var ids=TRIP_IDS[lang];
   return ids&&ids.length?[{key:'trips',title:'旅の駅',sub:'地図の新しい街。その土地ならではの一言',ids:ids.slice()}]:[];
 }
+/* ================= 世界の陸地（試作）=================
+   大まかな海岸線（経度, 緯度）。細かくはないが、大陸の形と島が分かれば点の地図にはこれで足りる。
+   言語ごとの REGIONS[L].polys（くわしい地域の海岸線）もこれに足して、点を打つ。 */
+var WORLD_LAND=[
+ /* 北アメリカ */
+ [-168,66,-162,70,-156,71.3,-141,69.6,-128,70,-115,68.5,-95,68.5,-88,68.2,-82,66.5,-86,64,-94,60,-94,58.5,-88,56.5,-82,55,-79,52,-78,56,-77,60,-72,61.5,-65,60.3,-61,56,-56,52,-60,50,-66,49,-64,45.5,-70,43.5,-70,41.5,-74,40.5,-76,38,-76,35,-81,31.5,-80,27,-80.2,25.2,-82,26.5,-83.5,29.5,-89,30.3,-94,29.6,-97.4,27.5,-97.5,22,-96,19,-94,18.2,-91,19,-90.5,21,-87,21.5,-88,17,-88.5,15.9,-84,15.9,-83.3,11,-79.5,9.5,-77.5,8.5,-78.5,7.5,-80,7.5,-83,8.3,-86,11,-88,13.2,-92,14.5,-96,15.8,-101,17.5,-105.5,20.5,-106,23,-109.5,23.2,-112,25,-114.8,29,-117,32.5,-118.5,34,-120.6,34.5,-122.5,37.5,-124,40.5,-124.2,46,-124.7,48.4,-127,50.7,-130,54,-134,58,-138,59,-144,60,-150,59.5,-152,58,-156,57,-158,56,-163,55,-158,58.5,-162,58.5,-165,61,-165,64],
+ /* グリーンランド */
+ [-73,78,-60,82,-35,83.5,-20,82,-18,77,-21,71,-24,69,-32,68,-40,65.5,-43,60,-48,61,-52,64,-54,67,-53,70,-58,75.5,-66,76.5],
+ /* バフィン島・エルズミア島・ビクトリア島 */
+ [-62,67,-72,71,-80,73.5,-90,74,-80,70,-79,64,-73,63,-65,62],
+ [-62,82,-75,83,-90,80,-85,76.5,-75,78,-63,80],
+ [-100,73,-118,73.5,-120,70,-105,68.5],
+ /* 南アメリカ */
+ [-77.5,8.5,-72,12,-64,10.5,-60,8.5,-54,6,-51,4,-50,0,-44,-2.5,-35,-5.5,-35,-9,-39,-14,-40,-20,-44,-23,-48.5,-26,-50,-30,-53,-34,-57,-35,-58,-38,-62,-39,-65,-42,-67,-46,-66,-48,-69,-51,-68.5,-52.5,-72,-54,-75,-51,-74,-45,-73.5,-37,-71.5,-30,-70.5,-18,-75,-15,-77,-12,-81,-6,-80,-2,-80,1,-78,2.5,-77.5,6.5],
+ /* アフリカ */
+ [-17,21,-16,25,-13,27.5,-9.8,30,-6,35.8,0,35.8,10,37.3,11,33.5,15,32.3,20,30.5,25,31.6,32,31.3,34,31.3,35,29.5,37,22,38.5,18,43,12.6,51,11.8,51.3,10.4,48,4.5,42.5,-0.5,40,-3,39.2,-7,40.5,-10.5,40.5,-15,35,-20,35.5,-24,32.5,-26,32.8,-28.5,28,-33,20,-34.8,18.5,-34,17.5,-30,15,-27,14.5,-22.5,12,-17,13.5,-12,12,-6,9,-1,9.5,3.5,6,4.5,2,6.2,-2,4.8,-7.5,4.4,-12,7.5,-15,11,-17.5,14.7],
+ /* マダガスカル */
+ [49.3,-12,50.5,-15.5,48,-25,45,-25.5,43.5,-22,44,-17],
+ /* ユーラシア大陸（ヨーロッパ・アジア） */
+ [-9,37,-9.5,43,-2,43.5,-1.2,46,-4.5,48.5,-1.5,49.7,2,51,4.5,52.5,7,53.5,8.5,57,10.5,57.7,10.5,54.5,14,54,19.5,54.5,21,57,24,58,23.5,59.5,30,60,23,60,21.5,61,21,63,25,65,22,65.8,17.5,62.5,19,60,16.5,57,12.8,55.5,11,59,8,58,5.5,61,5,63,10,64,14,67.5,19,70,25,71,31,70,41,67.5,44,68.5,53,68.5,60,69.5,68,68.5,73,72.5,80,73.5,87,75,100,77,113,73.5,128,72.5,140,72.5,150,71.5,160,69.5,170,70,180,68.5,180,65,178,64.6,172,61,163,59.5,163,57,156,51,156,57,160,61.5,155,59.5,142,59,137,54,141,53,140,48,135,43.5,131,42.5,129.5,40.8,129,35,126.5,34.5,126,37,125,39.5,121.5,39,122,40.8,118,39,119,37,122,37,120,35,121,31,122,30,119.5,25.5,117,23.5,113,22,110,21.5,108,21.5,106,19,109,15.5,107,10.5,105,8.6,104.5,10.5,101,12.7,100,13.5,99.2,10,100.5,7,103.5,4,101,2.5,98.5,8,98.3,13.5,97.5,16.5,94.5,16,94,19,92.5,21,90,22,87,21.5,85,19.5,80.3,15.8,80,10,77.5,8,76,10,73,17,72.8,21,70,22.5,68,23.5,66,25.5,61.5,25,57,25.8,56,27,51.5,27.8,50,30,48,30,50,26.5,51.5,24.5,56.3,26,56.5,24.5,59.8,22.5,57.5,19,55,17,52,16,45,13,43,13,39,21,35,28,34.5,29.5,32.5,31,35,33,36,35.8,33,36.2,27,37,26,40,23,40.5,22.5,37,21.5,38,20,40,19.5,42,13.5,45.5,12.5,44.5,16,41.8,18.5,40,16,38,15.5,40.5,12,42,10.5,44,8.5,44.4,3,43.2,3,42.5,0,40.5,-0.5,38.5,-2,36.7,-5.5,36],
+ /* 日本（本州・北海道・九州・四国）*/
+ [130.9,34,132,34.5,135,34,136.8,34.3,139,34.8,140.8,35.7,141,38,142,39.5,141.5,41.2,140,40.8,139.8,39.5,139.5,38,138,37.5,136.5,37.2,133,35.5,131,34.4],
+ [140,41.5,141,42.5,143.3,42,145.5,43.3,144,44,142,45.5,141.5,43.3,140,43.2],
+ [129.7,33.2,131,31.3,131.5,31.5,131.2,33.5,131,34,130,34],
+ [132.5,33.5,134.5,33.8,134.7,34.3,133,33.3],
+ /* イギリス・アイルランド・アイスランド */
+ [-5.7,50,1.5,50.8,1.7,52.8,0,53.5,-0.5,54.5,-2,55.8,-1.5,57.5,-3.5,58.6,-5,58.6,-6,56.8,-5.5,55,-4.8,54.6,-3,53.4,-4.6,52.3,-5.2,51.7,-3.5,51.4],
+ [-10,51.6,-6,52,-6,54,-5.5,55.2,-8,55.3,-10,54.2],
+ [-24,65.5,-22,66.4,-15,66.5,-13.5,65,-18,63.4,-22.5,63.8],
+ /* 地中海の島 */
+ [12.5,38.2,15.6,38.2,15,36.7,12.5,37.8],
+ [8.4,41,9.7,41,9.5,39,8.4,39],
+ [23.5,35.5,26.2,35.4,25,35,23.5,35.2],
+ [32.3,35.1,34.5,35.7,33.9,34.6],
+ /* 東南アジアの島々・台湾・ハイナン・スリランカ・フィリピン */
+ [120.1,23,121.5,25.3,122,24.5,121,22,120.6,22],
+ [108.6,19.2,110.5,20.1,111,19.5,110,18.3,108.7,18.6],
+ [79.7,9.5,81.8,7.5,81.2,6,80,6],
+ [120,18.5,122.2,18.4,122,15.5,124,13,123.5,12.7,121,13.8,120,16],
+ [122,7,125.5,9.8,126.5,7.5,125.5,5.7,124,6.5,122.5,6.9],
+ [109,1.5,111,2.5,114,4.5,116,6,118,5,119.5,5.2,117.8,1,118,-1,116.5,-3.8,114.5,-3.8,111,-3,110,-1.5],
+ [95.5,5.5,98,4,100,2,103.5,-1,106,-3,105.8,-5.8,102,-4,100,-0.8,98.5,1,96,3],
+ [105.2,-6.8,108,-6.3,111,-6.5,114.5,-7.8,114.5,-8.5,110,-8.2,106,-7.6],
+ [119.5,-5.5,120.5,-2.5,119.5,0.5,121.5,1,123,0.5,120.5,-1,122.5,-4.5,121,-5],
+ [131,-1,134,-0.8,138,-1.6,141,-2.6,145,-4,147.5,-6,150.5,-10.5,146.5,-8.5,143,-9,141,-9.3,138,-8.3,137,-5.5,134,-4,132,-2.8],
+ /* オーストラリア・タスマニア・ニュージーランド */
+ [113.5,-22,114,-26,115,-34,118,-35,123.5,-33.9,129,-31.6,131.5,-31.5,135,-34.8,138,-35.5,139.5,-37.5,144,-38.5,147.5,-37.8,150,-37.5,152.5,-32,153.5,-28,153,-25,149,-20.5,146,-18.5,145.5,-15,143.5,-14,142.5,-10.7,141.5,-13,141,-17,138.5,-16.5,136,-15,136.5,-12,132.5,-11.2,130,-12.5,129,-15,126.5,-14,123.5,-17,122,-18,118,-20.5,114,-22],
+ [145,-41,148.3,-41,147.5,-43.5,146,-43.5],
+ [172.7,-34.4,174.5,-36.5,178.5,-37.7,176.5,-40,175,-41.5,174.5,-39.5,173.8,-39.3],
+ [172.7,-40.5,174,-41.5,173,-43.5,171,-44.6,168.5,-46.5,166.5,-45.8,168.5,-43.5,170.5,-42],
+ /* カリブ海・ニューファンドランド・サハリン */
+ [-85,21.9,-80,23.1,-74,20.2,-77.5,19.9],
+ [-74.4,18.4,-68.4,18.6,-68.5,19.8,-72.5,20],
+ [-59.3,47.6,-53,46.7,-52.7,49.5,-55.5,51.6],
+ [142,46,143.5,49,143,54,142.5,53.5]
+];
 /* ================= UTILS ================= */
 var $=function(id){return document.getElementById(id);};
 var clamp=function(v,a,b){return v<a?a:v>b?b:v;};
@@ -6256,7 +6312,9 @@ function cityFor(L,i){var c=CITIES[L];return c[((i%c.length)+c.length)%c.length]
 function posKey(L){return L+'-'+save.mode;}
 /* where the plane is on the path (-1: Tokyo). The path can get shorter (another job, an exam goal), so a place past its end is not used */
 function curPos(L){var p=save.pos&&save.pos[posKey(L)];return typeof p==='number'&&p<pathIds(L).length?p:-1;}
-function proj(L,lat,lon){var R=REGIONS[L],b=R.b;return {x:(lon-b[0])/(b[1]-b[0])*340,y:(b[3]-lat)/(b[3]-b[2])*R.H};}
+/* 地図は世界全体の座標（経度-180〜180、1度=MAPK）。左右にスクロールすると、経度がまわって世界をぐるっと回れる */
+var MAPK=1000/360,LAND_W=720,LAND_H=280,LAND=null;/* 陸の格子は0.5度ごと */
+function proj(L,lat,lon){return {x:(lon+180)*MAPK,y:(80-lat)*MAPK};}
 function inPoly(x,y,p){var ins=false,n=p.length/2,j=n-1;for(var i=0;i<n;i++){var xi=p[2*i],yi=p[2*i+1],xj=p[2*j],yj=p[2*j+1];if((yi>y)!==(yj>y)&&x<(xj-xi)*(y-yi)/(yj-yi)+xi)ins=!ins;j=i;}return ins;}
 function polyBox(p){var a=[1e9,-1e9,1e9,-1e9];for(var i=0;i<p.length;i+=2){a[0]=Math.min(a[0],p[i]);a[1]=Math.max(a[1],p[i]);a[2]=Math.min(a[2],p[i+1]);a[3]=Math.max(a[3],p[i+1]);}return a;}
 function haversine(a,b){var R=6371,t=Math.PI/180,dl=(b[2]-a[2])*t,dn=(b[3]-a[3])*t,x=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(a[2]*t)*Math.cos(b[2]*t)*Math.sin(dn/2)*Math.sin(dn/2);return 2*R*Math.asin(Math.sqrt(x));}
@@ -6379,17 +6437,23 @@ function openNodeSheet(uid){
 }
 
 /* ---- map engine ---- */
-function mapDotsArea(L,step,x0,x1,y0,y1){
-  var key=L+'|'+step.toFixed(3)+'|'+Math.round(x0)+'|'+Math.round(x1)+'|'+Math.round(y0)+'|'+Math.round(y1);
-  if(DOTC[key])return DOTC[key];
-  var R=REGIONS[L],b=R.b,out=[];
-  var P=R.polys.map(function(p){return {p:p,bx:polyBox(p)};}),Ho=(R.holes||[]).map(function(p){return {p:p,bx:polyBox(p)};});
-  function hit(list,lon,lat){for(var k=0;k<list.length;k++){var q=list[k],bx=q.bx;if(lon<bx[0]||lon>bx[1]||lat<bx[2]||lat>bx[3])continue;if(inPoly(lon,lat,q.p))return true;}return false;}
-  for(var y=Math.floor(y0/step)*step;y<=y1;y+=step)for(var x=Math.floor(x0/step)*step;x<=x1;x+=step){
-    var lon=b[0]+x/340*(b[1]-b[0]),lat=b[3]-y/R.H*(b[3]-b[2]);
-    if(hit(P,lon,lat)&&!hit(Ho,lon,lat))out.push(x,y);
-  }
-  return (DOTC[key]=out);
+function landGrid(){
+  if(LAND)return LAND;
+  var polys=[];
+  (typeof WORLD_LAND!=='undefined'?WORLD_LAND:[]).forEach(function(p){polys.push({p:p,bx:polyBox(p)});});
+  Object.keys(REGIONS).forEach(function(k){(REGIONS[k].polys||[]).forEach(function(p){polys.push({p:p,bx:polyBox(p)});});});
+  var G=new Uint8Array(LAND_W*LAND_H);
+  for(var r=0;r<LAND_H;r++){var lat=80-(r+0.5)/2;for(var c=0;c<LAND_W;c++){var lon=(c+0.5)/2-180;
+    for(var k=0;k<polys.length;k++){var q=polys[k],bx=q.bx;if(lon<bx[0]||lon>bx[1]||lat<bx[2]||lat>bx[3])continue;if(inPoly(lon,lat,q.p)){G[r*LAND_W+c]=1;break;}}
+  }}
+  return (LAND=G);
+}
+/* 見えている範囲の陸の点（世界は経度がまわるので、どこまで動かしても陸が続く） */
+function mapDotsView(cx,cy,cw,ch,s){
+  var G=landGrid(),step=7/s,out=[],hw=cw/2/s+step,hh=ch/2/s+step;
+  for(var y=Math.floor((cy-hh)/step)*step;y<=cy+hh;y+=step){var r=Math.floor(y/MAPK*2);if(r<0||r>=LAND_H)continue;
+    for(var x=Math.floor((cx-hw)/step)*step;x<=cx+hw;x+=step){var c=Math.floor(x/MAPK*2);c=((c%LAND_W)+LAND_W)%LAND_W;if(G[r*LAND_W+c])out.push(x,y);}}
+  return out;
 }
 function segPoint(a,b,t){
   var mx=(a.x+b.x)/2,my=(a.y+b.y)/2,dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy)||1,c={x:mx-dy*0.18,y:my+dx*0.18-len*0.08};
@@ -6447,7 +6511,7 @@ function mapMount(){
   if(pendingFly&&pendingFly.key===posKey(L)){fly={from:pendingFly.from,to:pendingFly.to,t0:performance.now()+350};pendingFly=null;}
   var cur=fly?fly.from:curPos(L);
   var cam0=camAt(focusFor(cur)),cam1=camAt(focusFor(fly?fly.to:cur));
-  var step=7/s,dots=mapDotsArea(L,step,follow?X0-vw/2:cam0.x-vw/2-step,follow?X1+vw/2:cam0.x+vw/2+step,cam0.y-vh/2-step-(follow?vh/2:0),cam0.y+vh/2+step+(follow?vh/2:0));
+  var dots=null;
   /* a mode switch glides the plane and the camera from where they were, not a jump: the map's units are the same in every mode */
   var glide=null,tgtP=cur>=0?pts[cur]:tk;
   if(MAPVIEW&&MAPVIEW.L===L&&!fly&&!reduceMotion&&anim!=='lang'&&anim!=='first'&&(MAPVIEW.plane.x!==tgtP.x||MAPVIEW.plane.y!==tgtP.y))
@@ -6479,7 +6543,7 @@ function mapFrame(){
   g.setTransform(M.dpr,0,0,M.dpr,0,0);
   var bg=g.createLinearGradient(0,0,0,ch),DT=gimmickDay();bg.addColorStop(0,DT[0]);bg.addColorStop(1,DT[1]);g.fillStyle=bg;g.fillRect(0,0,cw,ch);gimmickSky(g,cw,ch,now);
   /* land dots, with a ripple reveal after a language switch */
-  var d=M.dots,rv=M.reveal?(now-M.t0)/900:2,fx=cw/2,fy=ch*0.55,maxd=Math.hypot(cw,ch);
+  var d=mapDotsView(cx,cy,cw,ch,s),rv=M.reveal?(now-M.t0)/900:2,fx=cw/2,fy=ch*0.55,maxd=Math.hypot(cw,ch);
   g.fillStyle='rgba(124,178,222,.5)';
   for(i=0;i<d.length;i+=2){
     var px=SX(d[i]),py=SY(d[i+1]);if(px<-3||py<-3||px>cw+3||py>ch+3)continue;
@@ -6787,7 +6851,7 @@ function gimmickPanSetup(M){
     var X=MAP;if(!st||!X)return false;var dx=x-st.x,dy=y-st.y;
     if(!st.lock){if(Math.abs(dx)<8&&Math.abs(dy)<8)return false;st.lock=Math.abs(dx)>Math.abs(dy)?'x':'y';}
     if(st.lock!=='x')return false;
-    X.panX=clamp(st.p+dx,-X.cw*0.7,X.cw*0.7);X.dragT=performance.now();return true;
+    X.panX=st.p+dx;X.dragT=performance.now();return true;
   }
   M.cv.addEventListener('touchstart',function(e){if(e.touches.length===1)startAt(e.touches[0].clientX,e.touches[0].clientY);else st=null;},{passive:true});
   M.cv.addEventListener('touchmove',function(e){if(!st||e.touches.length!==1)return;if(moveTo(e.touches[0].clientX,e.touches[0].clientY)&&e.cancelable)e.preventDefault();},{passive:false});
