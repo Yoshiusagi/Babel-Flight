@@ -73,13 +73,11 @@ Apple・Google・メールアドレスでログインすると、iPhone とパ�
 ## App Review に関する情報(審査メモ・英語)
 
 ```
-Babel Flight is a free language-learning app (Korean, English, Spanish, Italian) with quiz-style lessons
-themed around flights. All lessons work without an account and offline.
+Babel Flight is a free language-learning app (12 languages) with quiz-style lessons themed around flights.
+It runs on iPhone and iPad. All lessons work without an account and offline.
 
-Sign-in is optional (Sign in with Apple, Google, or email). It syncs progress between devices and enables
-the AI features (Ask AI, AI air traffic controller, AI example sentences), which use Anthropic's Claude API
-through our server. Before anything is sent to the AI for the first time, the app shows what will be sent
-and asks for consent. Names, email addresses and user IDs are never sent to the AI.
+Sign-in is optional (Sign in with Apple, Google, or email). Signing in syncs progress between devices.
+This version has no AI features and no in-app purchases.
 
 Demo account (email sign-in): Record tab (記録) > Account > ログイン / 新規登録 > メールアドレスで続ける
   email:    (demo account email)
@@ -87,7 +85,8 @@ Demo account (email sign-in): Record tab (記録) > Account > ログイン / 新
 
 Account deletion: Record tab (記録) > Account > アカウントを削除.
 Daily reminder notifications are optional (Record tab > App) and are scheduled on the device only.
-No ads, no tracking, no in-app purchases.
+The display language can be changed on the first screen; its dictionary is included in the app.
+No ads, no tracking.
 ```
 
 **デモアカウント**:審査の人が使うためのメールアドレスのアカウントを1つ作って、上の欄に入れてください
