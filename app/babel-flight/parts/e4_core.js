@@ -224,7 +224,7 @@ function pathSections(lang){
   /* 学ぶ理由「旅行」: the travel phrases and scenes come first */
   if(save.why==='travel')secs=[secs[1],secs[2],secs[0]].concat(secs.slice(3));
   if(firstOn(lang))secs.unshift({key:'first',title:'はじめの一歩',sub:'はい・いいえ・ありがとう … 短い言葉から',ids:['first']});
-  return secs.concat(lang==='en'&&UNITS.en.usuk?[{key:'usuk',title:'アメリカ英語とイギリス英語',sub:'同じ意味でも、国によって言い方やつづりが変わる',ids:['usuk']}]:[]);
+  return secs.concat(lang==='en'&&UNITS.en.usuk?[{key:'usuk',title:'アメリカ英語とイギリス英語',sub:'同じ意味でも、国によって言い方やつづりが変わる',ids:['usuk']}]:[]).concat(tripSecs(lang));
 }
 function pathIds(lang){var a=[];pathSections(lang).forEach(function(s){a=a.concat(s.ids);});return a;}
 function unitsDone(lang,ids){var n=0;(ids||pathIds(lang)).forEach(function(uid){if(unitRec(lang,uid).n>0)n++;});return n;}
