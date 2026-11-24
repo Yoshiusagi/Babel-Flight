@@ -228,6 +228,7 @@ function mapFrame(){
   var M=MAP;if(!M||!document.body.contains(M.cv)){if(M)M.raf=0;return;}
   var g=M.ctx,now=performance.now(),L=M.L,pts=M.pts,ids=M.ids,i,s=M.s,cw=M.cw,ch=M.ch;
   if(typeof gimmickPanSetup==='function')gimmickPanSetup(M);
+  if(typeof gimmickHoverSetup==='function')gimmickHoverSetup(M);
   /* camera (pans with the plane when the route is wider than the screen) */
   var F2=M.fly,ft=0,fe=0;
   if(F2){ft=reduceMotion?1:clamp((now-F2.t0)/1800,0,1);fe=ft<.5?2*ft*ft:1-Math.pow(-2*ft+2,2)/2;M.cam={x:M.cam0.x+(M.cam1.x-M.cam0.x)*fe,y:M.cam0.y+(M.cam1.y-M.cam0.y)*fe};}
@@ -271,9 +272,10 @@ function mapFrame(){
   for(i=0;i<pts.length;i++){
     if(i>=shown+1)break;
     var P=pts[i],x=SX(P.x),y=SY(P.y),dn=unitRec(L,ids[i]).n>0;if(x<-10||y<-10||x>cw+10||y>ch+10)continue;
-    if(i===M.next){g.strokeStyle='rgba(255,207,38,'+(0.85-0.6*pulse)+')';g.lineWidth=1.6;g.beginPath();g.arc(x,y,5+9*pulse,0,6.283);g.stroke();g.fillStyle='#ffcf26';g.beginPath();g.arc(x,y,4.2,0,6.283);g.fill();}
-    else if(dn){g.fillStyle=M.acc;g.beginPath();g.arc(x,y,3.6,0,6.283);g.fill();g.strokeStyle='rgba(255,255,255,.85)';g.lineWidth=1;g.stroke();}
-    else{g.fillStyle='rgba(255,255,255,.55)';g.beginPath();g.arc(x,y,2.2,0,6.283);g.fill();}
+    var dk=(typeof gimmickOn==='function'&&gimmickOn('bigdot'))?1.5:1;
+    if(i===M.next){g.strokeStyle='rgba(255,207,38,'+(0.85-0.6*pulse)+')';g.lineWidth=1.6;g.beginPath();g.arc(x,y,(5+9*pulse)*dk,0,6.283);g.stroke();g.fillStyle='#ffcf26';g.beginPath();g.arc(x,y,4.2*dk,0,6.283);g.fill();}
+    else if(dn){g.fillStyle=M.acc;g.beginPath();g.arc(x,y,3.6*dk,0,6.283);g.fill();g.strokeStyle='rgba(255,255,255,.85)';g.lineWidth=1;g.stroke();}
+    else{g.fillStyle='rgba(255,255,255,.55)';g.beginPath();g.arc(x,y,2.2*dk,0,6.283);g.fill();}
   }
   if(M.next>=0&&M.next<shown+1){var np=pts[M.next],nc=cityFor(L,M.next);g.fillStyle='#ffcf26';g.textAlign='center';g.font='700 11px "B612 Mono",monospace';g.fillText(nc[0],SX(np.x),SY(np.y)-14);}
   /* plane */

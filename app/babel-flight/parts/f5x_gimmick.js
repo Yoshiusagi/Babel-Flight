@@ -21,7 +21,9 @@ var GIMMICK_DEF=[
   {k:'trail',c:'all',t:'飛んだ軌跡が金色に光る'},
   {k:'daytime',c:'all',t:'地図の色が、いまの時間（朝・昼・夕・夜）で変わる'},
   {k:'citytap',c:'all',t:'都市をタップすると、時差と今の時間を先に出す'},
-  {k:'pan',c:'all',t:'地図を左右になぞって動かせる（指を離すと戻る）'}
+  {k:'pan',c:'all',t:'地図を左右になぞって動かせる（指を離すと戻る）'},
+  {k:'bigdot',c:'all',t:'空港の点を大きくして、押しやすくする'},
+  {k:'hoverpv',c:'all',t:'PCでは、空港にマウスを乗せるとレッスンの内容をプレビュー'}
 ];
 var GIMMICK=(function(){try{var raw=localStorage.getItem('bf.gimmick');if(raw===null){var all={};GIMMICK_DEF.forEach(function(d){all[d.k]=true;});return all;}return JSON.parse(raw)||{};}catch(e){return {};}})();
 var GMK={flip:'',flipT:0};
@@ -220,6 +222,42 @@ function gimmickCityCard(c,L,open){
 /* 世界中の国で公用語になっている言語だけ、地図を世界一周できる（韓国語のように1国だけの言語は動かさない） */
 var WORLD_LANG={en:1,es:1,fr:1,ar:1,pt:1};
 function worldLang(L){return !!WORLD_LANG[L];}
+/* 試作「PCのホバープレビュー」: マウスを空港に乗せると、そのレッスンの内容を小さく出す（指の端末では出ない。指はタップの都市カード） */
+function gimmickHoverAt(M,clientX,clientY){
+  var r=M.cv.getBoundingClientRect(),cx=M.cam.x-(M.panX||0)/M.s,cy=M.cam.y+mapCY(M);
+  var x=(clientX-r.left-M.cw/2)/M.s+cx,y=(clientY-r.top-M.ch/2)/M.s+cy,best=-1,bd=22/M.s;
+  M.pts.forEach(function(p,i){var dd=Math.hypot(p.x-x,p.y-y);if(dd<bd){bd=dd;best=i;}});
+  return best;
+}
+function gimmickHoverHide(){var el=document.getElementById('gmHover');if(el)el.style.display='none';}
+function gimmickHoverShow(M,i,clientX,clientY){
+  var el=document.getElementById('gmHover');
+  if(!el){el=document.createElement('div');el.id='gmHover';el.setAttribute('aria-hidden','true');
+    el.style.cssText='position:fixed;pointer-events:none;z-index:2147483560;max-width:240px;padding:10px 12px;border-radius:12px;background:rgba(10,14,26,.94);color:#eef0f6;font:12px/1.5 system-ui,sans-serif;border:1px solid rgba(255,207,38,.4);box-shadow:0 8px 24px rgba(0,0,0,.45)';
+    document.body.appendChild(el);}
+  var uid=M.ids[i],rec=unitRec(M.L,uid),done=rec&&rec.n>0;
+  el.innerHTML='<div style="font:700 13px system-ui">'+esc(unitTitle(uid))+'</div>'
+    +'<div style="color:#ffcf26;font:700 11px \'B612 Mono\',monospace">'+esc(unitLat(uid))+(done?' ・ クリア済み':'')+'</div>'
+    +'<div style="color:#9aa0b4;font-size:11px">'+esc(LANGS[M.L]?LANGS[M.L].city:'')+'行き ・ クリックで開く</div>';
+  el.style.display='block';
+  var w=el.offsetWidth,h=el.offsetHeight,x=clientX+16,y=clientY+16;
+  if(x+w>innerWidth-8)x=clientX-w-16;if(y+h>innerHeight-8)y=clientY-h-16;
+  el.style.left=Math.max(8,x)+'px';el.style.top=Math.max(8,y)+'px';
+}
+function gimmickHoverSetup(M){
+  if(!M||!M.cv)return;
+  if(!gimmickOn('hoverpv')){gimmickHoverHide();return;}
+  if(M.cv.getAttribute('data-gm-hover'))return;
+  M.cv.setAttribute('data-gm-hover','1');
+  M.cv.addEventListener('pointermove',function(e){
+    var X=MAP;if(!X||e.pointerType!=='mouse'||!gimmickOn('hoverpv'))return gimmickHoverHide();
+    if((X.panX||0)!==0&&X.dragT&&performance.now()-X.dragT<200)return gimmickHoverHide();
+    var i=gimmickHoverAt(X,e.clientX,e.clientY);
+    if(i<0)return gimmickHoverHide();
+    gimmickHoverShow(X,i,e.clientX,e.clientY);
+  });
+  M.cv.addEventListener('pointerleave',gimmickHoverHide);
+}
 function gimmickPanSetup(M){
   if(!M||!M.cv)return;
   if(!gimmickOn('pan')){M.cv.style.touchAction='';return;}
