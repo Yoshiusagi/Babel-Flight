@@ -178,7 +178,7 @@ function diarySheet(){
       '<textarea id="dyText" class="dy-text '+lfc(L)+'" lang="'+LG.tts.slice(0,2)+'" maxlength="'+DIARY_MAX+'" rows="5" spellcheck="false" autocapitalize="sentences" aria-label="日記">'+esc(txt)+'</textarea>'+
       '<div class="dy-row"><small class="dy-n" id="dyN">'+txt.length+' / '+DIARY_MAX+'</small>'+
       (DIARY.left!==null&&DIARY.left<99?'<small>今日はあと'+DIARY.left+'回</small>':'<small>1日2回まで(書いて直す1回 ＋ 書き直し1回)</small>')+'</div>';
-    if(!fcAi())h+='<p class="warn">'+fcAiMsg()+'</p>';
+    if(!fcAi()){if(!BF_APP)h+='<p class="warn">'+fcAiMsg()+'</p>';}
     else h+='<button class="go" type="button" data-diary-send'+(DIARY.busy?' disabled':'')+'>'+(DIARY.busy?'AIが読んでいます…':'AIに添削してもらう')+'</button>';
     if(DIARY.err)h+='<p class="warn">'+esc(DIARY.err)+'</p>';
   }

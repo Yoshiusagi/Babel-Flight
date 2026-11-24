@@ -5932,7 +5932,7 @@ function reviewHTML(){
   if(UNITS[L]['pilot-ann'])h+='<section class="card mode"><span class="lbl">LISTENING</span><h2 class="jh">リスニング特訓</h2><p class="dim">機長アナウンスを'+esc(LG.name)+'で聞いて、内容を当てよう。長い文の聞き取り練習です。</p><div class="mcount mono">'+UNITS[L]['pilot-ann'].items.length+'<small data-tk="問(問題数)"> 問</small></div>'+
      (annOK?'<button class="go sm" type="button" data-mode="ann">はじめる</button>':'<p class="warn">この端末では'+esc(LG.name)+'の音声が使えません</p>')+'</section>';
   if(typeof cursiveCardHTML==='function')h+=cursiveCardHTML(L);
-  h+='<section class="card mode atc-card"><span class="lbl">AI ROLEPLAY ・ 英語</span><h2 class="jh">AI管制官と交信練習</h2><p class="dim">管制官役のAIと英語で無線交信。あなたの返答を採点して、お手本も教えてくれます。</p>'+
+  if(!BF_APP)h+='<section class="card mode atc-card"><span class="lbl">AI ROLEPLAY ・ 英語</span><h2 class="jh">AI管制官と交信練習</h2><p class="dim">管制官役のAIと英語で無線交信。あなたの返答を採点して、お手本も教えてくれます。</p>'+
      (typeof aiAtcEntryHTML==='function'?aiAtcEntryHTML():AI.ok?'<button class="go sm" type="button" data-atc>交信をはじめる</button>':'<p class="warn">'+(AI.checked?'この環境ではAI機能が使えません(Claudeで開くと使えます)':'AI機能を確認中…')+'</p>')+'</section>';
   if(typeof roleCardHTML==='function')h+=roleCardHTML(L);
   h+='<section class="card mode"><span class="lbl">FREE</span><h2 class="jh">自由練習</h2><p class="dim">学習ずみのフレーズからランダムに10問。復習のタイミングに関係なく練習できます。</p><div class="mcount mono">'+learned.length+'<small> フレーズ</small></div><button class="go sm" type="button" data-mode="free"'+(learned.length?'':' disabled')+'>はじめる</button></section>';
@@ -6233,7 +6233,7 @@ function homeHTML(){
   if(typeof examHomeHTML==='function')h+=examHomeHTML(L);
   if(save.mode==='job'){
     h+='<button class="course" type="button" data-picker><span class="ccode">'+p.code+'</span><span class="ctext"><span class="lbl">職業コース</span><b>'+esc(p.jp)+'</b><small>タップして変更 ・ 13職業から選べます</small></span><span class="chev" aria-hidden="true">›</span></button>';
-    if(p.id==='pilot')h+='<button class="course atcbtn" type="button" data-atc><span class="ccode">ATC</span><span class="ctext"><span class="lbl">AIロールプレイ ・ 英語</span><b>AI管制官と交信練習</b><small>'+esc(atcFill('{0}で、管制官役のAIと無線交信',[atcApt().jp]))+'</small></span><span class="chev" aria-hidden="true">›</span></button>';
+    if(p.id==='pilot'&&!BF_APP)h+='<button class="course atcbtn" type="button" data-atc><span class="ccode">ATC</span><span class="ctext"><span class="lbl">AIロールプレイ ・ 英語</span><b>AI管制官と交信練習</b><small>'+esc(atcFill('{0}で、管制官役のAIと無線交信',[atcApt().jp]))+'</small></span><span class="chev" aria-hidden="true">›</span></button>';
   }
   var idx=0;
   secs.forEach(function(sec,si){
@@ -8105,9 +8105,10 @@ document.addEventListener('click',function(e){
    site's own server (/api/ai/*), which asks Claude with the site's API key.
    Signed-in accounts only, with a daily limit per account (the server counts and enforces it). */
 var SAI={on:false,enabled:false,left:null,seen:'',lastView:''};
-try{SAI.on=!!ACCT.on;}catch(e){}
+try{SAI.on=!!ACCT.on&&!BF_APP;}catch(e){}  /* the iPhone/iPad app has no AI features (App Store build) */
 var aiAtcEntryHTML=null,atcNoteText=null;
 function saiPost(path,body,signal){
+  if(BF_APP)return Promise.resolve(new Response(JSON.stringify({ok:false,error:'off'}),{status:404,headers:{'content-type':'application/json'}}));
   if(BF_APP&&!aiConsented())return aiConsentAsk().then(function(ok){
     if(!ok)return new Response(JSON.stringify({ok:false,error:'consent'}),{status:403,headers:{'content-type':'application/json'}});
     return bfFetch(path,{method:'POST',cache:'no-store',headers:{'content-type':'application/json'},body:JSON.stringify(body),signal:signal});
@@ -19643,7 +19644,7 @@ function jobButtonsHTML(){
   if(save.mode!=='job')return '';
   var p=profById(save.prof);if(!p)return '';
   return '<button class="course" type="button" data-picker><span class="ccode">'+p.code+'</span><span class="ctext"><span class="lbl">職業コース</span><b>'+esc(p.jp)+'</b><small>タップして変更 ・ 13職業から選べます</small></span><span class="chev" aria-hidden="true">›</span></button>'+
-    (p.id==='pilot'?'<button class="course atcbtn" type="button" data-atc><span class="ccode">ATC</span><span class="ctext"><span class="lbl">AIロールプレイ ・ 英語</span><b>AI管制官と交信練習</b><small>'+esc(atcFill('{0}で、管制官役のAIと無線交信',[atcApt().jp]))+'</small></span><span class="chev" aria-hidden="true">›</span></button>':'');
+    (p.id==='pilot'&&!BF_APP?'<button class="course atcbtn" type="button" data-atc><span class="ccode">ATC</span><span class="ctext"><span class="lbl">AIロールプレイ ・ 英語</span><b>AI管制官と交信練習</b><small>'+esc(atcFill('{0}で、管制官役のAIと無線交信',[atcApt().jp]))+'</small></span><span class="chev" aria-hidden="true">›</span></button>':'');
 }
 function kindSize(L,uid){var k=unitKind(L,uid),z=unitSize(L,uid);return (k==='フレーズ'?'':k+(z.n?' ・ ':''))+z.n;}
 function unitSize(L,uid){
@@ -20271,6 +20272,7 @@ function billSubHTML(s,st){
   return h;
 }
 function billBodyHTML(){
+  if(BF_APP)return '';
   var st=BILL.st,h='';
   if(!ACCT.me)return '<p class="dim">ログインすると試せます。</p>';
   if(!st){
@@ -24733,7 +24735,7 @@ function diarySheet(){
       '<textarea id="dyText" class="dy-text '+lfc(L)+'" lang="'+LG.tts.slice(0,2)+'" maxlength="'+DIARY_MAX+'" rows="5" spellcheck="false" autocapitalize="sentences" aria-label="日記">'+esc(txt)+'</textarea>'+
       '<div class="dy-row"><small class="dy-n" id="dyN">'+txt.length+' / '+DIARY_MAX+'</small>'+
       (DIARY.left!==null&&DIARY.left<99?'<small>今日はあと'+DIARY.left+'回</small>':'<small>1日2回まで(書いて直す1回 ＋ 書き直し1回)</small>')+'</div>';
-    if(!fcAi())h+='<p class="warn">'+fcAiMsg()+'</p>';
+    if(!fcAi()){if(!BF_APP)h+='<p class="warn">'+fcAiMsg()+'</p>';}
     else h+='<button class="go" type="button" data-diary-send'+(DIARY.busy?' disabled':'')+'>'+(DIARY.busy?'AIが読んでいます…':'AIに添削してもらう')+'</button>';
     if(DIARY.err)h+='<p class="warn">'+esc(DIARY.err)+'</p>';
   }
@@ -27672,6 +27674,7 @@ function dRowHTML(e){
 }
 function dCreditHTML(){return '<p class="dict-credit">英和辞書データ: ejdict-hand(くじらはんど・パブリックドメイン) ・ いまの英語: Babel Flight オリジナル</p>';}
 function dAiHTML(w,mean){
+  if(BF_APP)return '';
   return '<div class="dict-ai" data-w="'+esc(w)+'" data-m="'+esc(mean||'')+'"><button class="ghost sm" type="button" data-dict-ai>🤖 AIにくわしくきく</button>'+
     '<div class="aiout" aria-live="polite"></div></div>';
 }

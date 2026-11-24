@@ -79,6 +79,7 @@ function billSubHTML(s,st){
   return h;
 }
 function billBodyHTML(){
+  if(BF_APP)return '';
   var st=BILL.st,h='';
   if(!ACCT.me)return '<p class="dim">ログインすると試せます。</p>';
   if(!st){
