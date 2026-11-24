@@ -728,6 +728,8 @@ html[data-theme="dark"] body.home-map #sky::after{opacity:1}
 .cine.play .cine-plane{animation:lift 1.15s cubic-bezier(.55,0,.3,1) forwards}
 .cine.takeoff.play .cine-clouds span{animation:cloudRush .6s ease-in forwards;animation-delay:calc(.45s + var(--k) * .05s)}
 .cine.play .cine-flash{animation:flash 1.15s forwards}
+@keyframes quake{0%{transform:translateY(0)}20%{transform:translateY(-6px)}40%{transform:translateY(4px)}60%{transform:translateY(-3px)}80%{transform:translateY(1px)}100%{transform:translateY(0)}}
+.quake{animation:quake .6s ease-out}
 @keyframes flash{0%,78%{opacity:0}100%{opacity:.85}}
 .c-no{animation:fadeUp .3s .05s forwards}
 .c-city span{animation:letterUp .45s cubic-bezier(.2,.9,.2,1) forwards;animation-delay:calc(.08s + var(--d) * 30ms)}
@@ -6301,7 +6303,7 @@ function mapMount(){
   var bx=[1e9,-1e9,1e9,-1e9];pts.forEach(function(p){bx[0]=Math.min(bx[0],p.x);bx[1]=Math.max(bx[1],p.x);bx[2]=Math.min(bx[2],p.y);bx[3]=Math.max(bx[3],p.y);});
   var pw=Math.max(bx[1]-bx[0],40),ph=Math.max(bx[3]-bx[2],40),padx=pw*0.16+8,pady=ph*0.2+14;
   var bw=pw+2*padx,bh=ph+2*pady+40;
-  var chMax=Math.max(320,Math.min(Math.round(window.innerHeight*0.52),450));
+  var chMax=Math.max(320,Math.min(Math.round(window.innerHeight*0.6),560));
   /* the map's height depends on the screen only, not on the route: a short route (職業) used to zoom in and grow the map.
      The route is fitted to that height, and a wide route pans with the plane instead. */
   var heroH=Math.round(Math.min(chMax,Math.max(330,cw*0.92))),s=heroH/bh;
@@ -6341,13 +6343,40 @@ function mapMount(){
   MAP={cv:cv,ctx:cv.getContext('2d'),dpr:dpr,cw:cw,ch:heroH,s:s,L:L,R:R,ids:ids,pts:pts,tk:tk,next:nextI,dots:dots,cam:cam0,cam0:cam0,cam1:cam1,fly:fly,
        acc:cssVar('--c-'+L),plane:new Path2D(PLANE_D),t0:performance.now(),reveal:(anim==='lang'||anim==='first')&&!reduceMotion,route:(anim&&!reduceMotion)?performance.now()+(anim==='mode'?0:250):0,raf:0,cache:null};
   MAP.glide=glide;
+  /* the plane rises up into the map when it opens (not after a language switch) */
+  MAP.riseT=(!reduceMotion&&anim!=='lang')?performance.now():0;
   cv.onclick=function(ev){
     var r=cv.getBoundingClientRect(),M=MAP,x=(ev.clientX-r.left-M.cw/2)/M.s+M.cam.x,y=(ev.clientY-r.top-M.ch/2)/M.s+M.cam.y,best=-1,bd=18/M.s;
     M.pts.forEach(function(p,i){var dd=Math.hypot(p.x-x,p.y-y);if(dd<bd){bd=dd;best=i;}});
-    if(best>=0)openNodeSheet(M.ids[best]);
+    if(M.panMoved){M.panMoved=false;return;}
+    if(best>=0){if(M.tipI===best&&Date.now()-M.tipT<4000){tzTipHide();openNodeSheet(M.ids[best]);}else{M.tipI=best;M.tipT=Date.now();showTzTip(M.L,best,M.pts[best]);}}
   };
+  /* drag the map sideways to look around; it springs back when the finger lifts (only when the route is wider than the screen) */
+  cv.style.touchAction='pan-y';
+  var pdx0=null;
+  cv.onpointerdown=function(ev){if(!follow||!MAP)return;pdx0=ev.clientX;MAP.panX=0;};
+  cv.onpointermove=function(ev){if(pdx0===null||!MAP)return;var dx=ev.clientX-pdx0;if(Math.abs(dx)>6)MAP.panMoved=true;MAP.panX=clamp(dx,-MAP.cw*0.6,MAP.cw*0.6);};
+  var pend=function(){if(pdx0===null)return;pdx0=null;if(MAP)MAP.panX=0;};
+  cv.onpointerup=pend;cv.onpointercancel=pend;cv.onpointerleave=pend;
+  /* the map fades as the page is scrolled, so the lessons under it read clearly */
+  if(!window._heroFade){window._heroFade=1;window.addEventListener('scroll',function(){var h=$('hero');if(!h)return;var p=clamp(window.scrollY/Math.max(200,h.clientHeight*0.8),0,1);h.style.opacity=(1-0.6*p).toFixed(3);},{passive:true});}
   bindParallax();
   mapFrame();
+}
+/* tapping a city shows its local time and the difference from Tokyo first (a second tap opens the lesson).
+   The offset is estimated from the longitude: 15 degrees per hour. */
+function tzTipHide(){var t=document.getElementById('tzTip');if(t)t.remove();}
+function showTzTip(L,i,p){
+  var M=MAP;if(!M||!M.cv)return;var c=cityFor(L,i);
+  tzTipHide();
+  var off=Math.round(c[3]/15),d=off-9,now=new Date(),h=(now.getUTCHours()+off+48)%24,mi=String(now.getUTCMinutes()).padStart(2,'0');
+  var diff=d>0?'東京より'+d+'時間進んでいます':d<0?'東京より'+(-d)+'時間遅れています':'東京と同じ時間です';
+  var r=M.cv.getBoundingClientRect(),x=r.left+(p.x-M.cam.x)*M.s+M.cw/2,y=r.top+(p.y-M.cam.y)*M.s+M.ch/2;
+  var t=document.createElement('div');t.id='tzTip';t.setAttribute('role','status');
+  t.textContent=c[0]+'　今 '+h+':'+mi+'（'+diff+'）';
+  t.style.cssText='position:fixed;z-index:60;transform:translate(-50%,-100%);padding:8px 12px;border-radius:12px;background:rgba(7,16,34,.92);color:#fff;font:600 12px -apple-system,BlinkMacSystemFont,sans-serif;white-space:nowrap;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.35);left:'+Math.round(clamp(x,120,window.innerWidth-120))+'px;top:'+Math.round(y-14)+'px';
+  document.body.appendChild(t);
+  clearTimeout(M.tipT2);M.tipT2=setTimeout(tzTipHide,3500);
 }
 function mapFrame(){
   var M=MAP;if(!M||!document.body.contains(M.cv)){if(M)M.raf=0;return;}
@@ -6358,10 +6387,12 @@ function mapFrame(){
   /* after a mode switch the camera eases from where it was to the new place (900ms, no lag) */
   var gl=M.glide,ge=1;
   if(gl){var gt=clamp((now-gl.t0)/900,0,1);ge=gt<.5?4*gt*gt*gt:1-Math.pow(-2*gt+2,3)/2;if(!F2)M.cam={x:gl.cam0.x+(M.cam0.x-gl.cam0.x)*ge,y:gl.cam0.y+(M.cam0.y-gl.cam0.y)*ge};if(gt>=1)M.glide=null;}
-  var cx=M.cam.x,cy=M.cam.y;
+  var cx=M.cam.x-(M.panX||0)/s,cy=M.cam.y;
   function SX(x){return (x-cx)*s+cw/2;}function SY(y){return (y-cy)*s+ch/2;}
   g.setTransform(M.dpr,0,0,M.dpr,0,0);
-  var bg=g.createLinearGradient(0,0,0,ch);bg.addColorStop(0,'#071022');bg.addColorStop(1,'#0f2244');g.fillStyle=bg;g.fillRect(0,0,cw,ch);
+  /* the map's colour follows the local time: 朝・昼・夕・夜 */
+  var hr=new Date().getHours(),pal=hr>=5&&hr<11?['#16406a','#2f6f9c']:hr>=11&&hr<16?['#0f2f5a','#1f5690']:hr>=16&&hr<19?['#241a3d','#5a2f3c']:['#071022','#0f2244'];
+  var bg=g.createLinearGradient(0,0,0,ch);bg.addColorStop(0,pal[0]);bg.addColorStop(1,pal[1]);g.fillStyle=bg;g.fillRect(0,0,cw,ch);
   /* land dots, with a ripple reveal after a language switch */
   var d=M.dots,rv=M.reveal?(now-M.t0)/900:2,fx=cw/2,fy=ch*0.55,maxd=Math.hypot(cw,ch);
   g.fillStyle='rgba(124,178,222,.5)';
@@ -6380,9 +6411,9 @@ function mapFrame(){
     var A={x:SX(a.x),y:SY(a.y)},Bp={x:SX(b.x),y:SY(b.y)};
     g.beginPath();g.moveTo(A.x,A.y);
     for(var k=1;k<=16;k++){var sp=segPoint(A,Bp,part*k/16);g.lineTo(sp.x,sp.y);}
-    if(done){g.setLineDash([]);g.strokeStyle=M.acc;g.lineWidth=2.2;g.globalAlpha=.9;}
+    if(done){g.setLineDash([]);g.strokeStyle='#ffcf26';g.lineWidth=2.2;g.globalAlpha=.9;g.shadowColor='rgba(255,207,38,.75)';g.shadowBlur=7;}
     else{g.setLineDash([3,5]);g.strokeStyle='rgba(255,255,255,.32)';g.lineWidth=1.2;g.globalAlpha=1;}
-    g.stroke();
+    g.stroke();g.shadowBlur=0;
   }
   g.setLineDash([]);g.globalAlpha=1;
   /* Tokyo marker or edge arrow */
@@ -6416,7 +6447,8 @@ function mapFrame(){
   if(gl&&ge<1){var p0=gl.plane0;g.strokeStyle='rgba(255,255,255,.5)';g.lineWidth=1.6;g.setLineDash([3,5]);g.beginPath();g.moveTo(SX(p0.x),SY(p0.y));g.lineTo(pos.x,pos.y);g.stroke();g.setLineDash([]);}
   if(rp>0.3||gl){
     var bob=reduceMotion?0:Math.sin(now/600)*1;
-    g.save();g.translate(pos.x,pos.y+bob);g.rotate(ang);g.scale(.85,.85);
+    var rise=0;if(M.riseT){var rt=clamp((now-M.riseT)/900,0,1);if(rt>=1)M.riseT=0;rise=(1-rt)*(1-rt)*M.ch*0.5;}
+    g.save();g.translate(pos.x,pos.y+bob+rise);g.rotate(ang);g.scale(.85,.85);
     g.shadowColor='rgba(255,255,255,.7)';g.shadowBlur=10;g.fillStyle=(typeof dfPlaneFill==='function'&&dfPlaneFill(g))||'#fff';g.fill(M.plane);g.restore();
   }
   MAPVIEW={L:M.L,cam:{x:M.cam.x,y:M.cam.y},plane:M.planeW||M.cam};
@@ -23893,6 +23925,8 @@ function fxCombo(n){
 /* ---- small things on the landing screen: the goal bar fills, the streak ticks over ---- */
 function fxLand(goalJust,streakUp){
   var m=$('main');if(!m)return;
+  /* 着陸の揺れ: the landing screen shakes once, as the wheels touch down */
+  if(!fxReduced()){m.classList.remove('quake');void m.offsetWidth;m.classList.add('quake');setTimeout(function(){m.classList.remove('quake');},700);}
   var gb=m.querySelector('.gbar i');
   if(gb&&!fxReduced()){var w=gb.style.width;gb.style.transition='none';gb.style.width=Math.max(0,parseFloat(w)-100/Math.max(1,save.goal))+'%';void gb.offsetWidth;gb.style.transition='width .7s cubic-bezier(.2,.8,.2,1) .35s';gb.style.width=w;}
   if(goalJust){var gd=m.querySelector('.goalbox');if(gd)gd.classList.add('goal-burst');}
