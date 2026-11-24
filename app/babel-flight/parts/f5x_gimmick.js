@@ -31,8 +31,8 @@ function gimmickSave(){try{localStorage.setItem('bf.gimmick',JSON.stringify(GIMM
 function gimmickCab(){return rootEl.getAttribute('data-cabin')||'';}
 function gimmickApplyRoot(){if(rootEl)rootEl.classList.toggle('gm-night',!!(BF_SIM&&GIMMICK.nightwin));document.body.classList.toggle('gm-pagemap',!!(BF_SIM&&GIMMICK.pagemap));document.body.classList.toggle('gm-maptouch',!!(gimmickOn('pan')||gimmickOn('citytap')));gimmickFade();}
 /* 試作「ページ全体の地図」: スクロールするほど地図が薄くなる */
-function gimmickFade(){var h=document.querySelector('.hero');if(!h)return;if(!gimmickOn('pagemap')){h.style.opacity='';return;}/* 地図はしばらく最後まで見えたまま。画面の半分ほどスクロールしてから、だんだん薄くなる（左右になぞるときの邪魔を減らす） */
-var t=clamp((window.scrollY-innerHeight*0.45)/(innerHeight*0.8),0,1);h.style.opacity=(1-t*0.8).toFixed(3);}
+function gimmickFade(){var h=document.querySelector('.hero');if(!h)return;if(!gimmickOn('pagemap')){h.style.opacity='';return;}/* 地図はしばらく最後まで見えたまま。画面の4分の3ほどスクロールしてから、だんだん薄くなる（左右になぞるときの邪魔を減らす） */
+var t=clamp((window.scrollY-innerHeight*0.75)/(innerHeight*0.8),0,1);h.style.opacity=(1-t*0.8).toFixed(3);}
 window.addEventListener('scroll',function(){if(BF_SIM)gimmickFade();},{passive:true});
 /* 地図の一番下（描画の土台）: 雲・夜の陰 */
 function gimmickSky(g,cw,ch,now){
