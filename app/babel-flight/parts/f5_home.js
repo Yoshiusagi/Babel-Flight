@@ -180,6 +180,8 @@ function mapMount(){
      (that transition pushed every card above and below up and down on each change) */
   hero.style.transition='none';hero.style.height=heroH+'px';void hero.offsetHeight;hero.style.transition='';
   hero.style.marginBottom=(heroH>fitH)?(-(heroH-fitH))+'px':'';
+  /* 世界一周できる言語は、世界の横幅が画面に収まるまで引いて見せる（オーストラリアなどが横に出ないように） */
+  if(typeof worldLang==="function"&&worldLang(L)&&typeof gimmickOn==="function"&&gimmickOn("pan")){s=Math.min(s,cw/1000);}
   var dpr=Math.min(2,window.devicePixelRatio||1);
   cv.width=Math.round(cw*dpr);cv.height=Math.round(heroH*dpr);cv.style.height=heroH+'px';
   var vw=cw/s,vh=heroH/s,follow=vw<bw*0.98;
