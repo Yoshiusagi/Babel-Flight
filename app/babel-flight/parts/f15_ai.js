@@ -3,9 +3,10 @@
    site's own server (/api/ai/*), which asks Claude with the site's API key.
    Signed-in accounts only, with a daily limit per account (the server counts and enforces it). */
 var SAI={on:false,enabled:false,left:null,seen:'',lastView:''};
-try{SAI.on=!!ACCT.on;}catch(e){}
+try{SAI.on=!!ACCT.on&&!BF_APP;}catch(e){}  /* the iPhone/iPad app has no AI features (App Store build) */
 var aiAtcEntryHTML=null,atcNoteText=null;
 function saiPost(path,body,signal){
+  if(BF_APP)return Promise.resolve(new Response(JSON.stringify({ok:false,error:'off'}),{status:404,headers:{'content-type':'application/json'}}));
   if(BF_APP&&!aiConsented())return aiConsentAsk().then(function(ok){
     if(!ok)return new Response(JSON.stringify({ok:false,error:'consent'}),{status:403,headers:{'content-type':'application/json'}});
     return bfFetch(path,{method:'POST',cache:'no-store',headers:{'content-type':'application/json'},body:JSON.stringify(body),signal:signal});

@@ -728,6 +728,8 @@ html[data-theme="dark"] body.home-map #sky::after{opacity:1}
 .cine.play .cine-plane{animation:lift 1.15s cubic-bezier(.55,0,.3,1) forwards}
 .cine.takeoff.play .cine-clouds span{animation:cloudRush .6s ease-in forwards;animation-delay:calc(.45s + var(--k) * .05s)}
 .cine.play .cine-flash{animation:flash 1.15s forwards}
+@keyframes quake{0%{transform:translateY(0)}20%{transform:translateY(-6px)}40%{transform:translateY(4px)}60%{transform:translateY(-3px)}80%{transform:translateY(1px)}100%{transform:translateY(0)}}
+.quake{animation:quake .6s ease-out}
 @keyframes flash{0%,78%{opacity:0}100%{opacity:.85}}
 .c-no{animation:fadeUp .3s .05s forwards}
 .c-city span{animation:letterUp .45s cubic-bezier(.2,.9,.2,1) forwards;animation-delay:calc(.08s + var(--d) * 30ms)}
@@ -1309,6 +1311,12 @@ body.gm-maptouch .sp-next>:not(.sp-map) :is(button,a,[data-node],[data-suite-go]
 
 /* the status bar sits over the page in the app */
 html.app #app{padding-top:calc(14px + env(safe-area-inset-top,0px))}
+/* iPad (and any screen wider than an iPhone): the page used a phone-width column of 520px; use more of the screen */
+@media (min-width:700px) and (min-height:600px){
+  html.app #app{max-width:880px}
+  html.app .tabs-in,html.app .sheet-in{max-width:880px}
+  html.app .lang-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
 /* feels like an app: no text selection or long-press menus on controls, no rubber-band at the edges */
 html.app{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 html.app input,html.app textarea,html.app [contenteditable]{-webkit-user-select:text;user-select:text}
@@ -6101,7 +6109,7 @@ function reviewHTML(){
   if(UNITS[L]['pilot-ann'])h+='<section class="card mode"><span class="lbl">LISTENING</span><h2 class="jh">リスニング特訓</h2><p class="dim">機長アナウンスを'+esc(LG.name)+'で聞いて、内容を当てよう。長い文の聞き取り練習です。</p><div class="mcount mono">'+UNITS[L]['pilot-ann'].items.length+'<small data-tk="問(問題数)"> 問</small></div>'+
      (annOK?'<button class="go sm" type="button" data-mode="ann">はじめる</button>':'<p class="warn">この端末では'+esc(LG.name)+'の音声が使えません</p>')+'</section>';
   if(typeof cursiveCardHTML==='function')h+=cursiveCardHTML(L);
-  h+='<section class="card mode atc-card"><span class="lbl">AI ROLEPLAY ・ 英語</span><h2 class="jh">AI管制官と交信練習</h2><p class="dim">管制官役のAIと英語で無線交信。あなたの返答を採点して、お手本も教えてくれます。</p>'+
+  if(!BF_APP)h+='<section class="card mode atc-card"><span class="lbl">AI ROLEPLAY ・ 英語</span><h2 class="jh">AI管制官と交信練習</h2><p class="dim">管制官役のAIと英語で無線交信。あなたの返答を採点して、お手本も教えてくれます。</p>'+
      (typeof aiAtcEntryHTML==='function'?aiAtcEntryHTML():AI.ok?'<button class="go sm" type="button" data-atc>交信をはじめる</button>':'<p class="warn">'+(AI.checked?'この環境ではAI機能が使えません(Claudeで開くと使えます)':'AI機能を確認中…')+'</p>')+'</section>';
   if(typeof roleCardHTML==='function')h+=roleCardHTML(L);
   h+='<section class="card mode"><span class="lbl">FREE</span><h2 class="jh">自由練習</h2><p class="dim">学習ずみのフレーズからランダムに10問。復習のタイミングに関係なく練習できます。</p><div class="mcount mono">'+learned.length+'<small> フレーズ</small></div><button class="go sm" type="button" data-mode="free"'+(learned.length?'':' disabled')+'>はじめる</button></section>';
@@ -6404,7 +6412,7 @@ function homeHTML(){
   if(typeof examHomeHTML==='function')h+=examHomeHTML(L);
   if(save.mode==='job'){
     h+='<button class="course" type="button" data-picker><span class="ccode">'+p.code+'</span><span class="ctext"><span class="lbl">職業コース</span><b>'+esc(p.jp)+'</b><small>タップして変更 ・ 13職業から選べます</small></span><span class="chev" aria-hidden="true">›</span></button>';
-    if(p.id==='pilot')h+='<button class="course atcbtn" type="button" data-atc><span class="ccode">ATC</span><span class="ctext"><span class="lbl">AIロールプレイ ・ 英語</span><b>AI管制官と交信練習</b><small>'+esc(atcFill('{0}で、管制官役のAIと無線交信',[atcApt().jp]))+'</small></span><span class="chev" aria-hidden="true">›</span></button>';
+    if(p.id==='pilot'&&!BF_APP)h+='<button class="course atcbtn" type="button" data-atc><span class="ccode">ATC</span><span class="ctext"><span class="lbl">AIロールプレイ ・ 英語</span><b>AI管制官と交信練習</b><small>'+esc(atcFill('{0}で、管制官役のAIと無線交信',[atcApt().jp]))+'</small></span><span class="chev" aria-hidden="true">›</span></button>';
   }
   var idx=0;
   secs.forEach(function(sec,si){
@@ -6474,7 +6482,7 @@ function mapMount(){
   var bx=[1e9,-1e9,1e9,-1e9];pts.forEach(function(p){bx[0]=Math.min(bx[0],p.x);bx[1]=Math.max(bx[1],p.x);bx[2]=Math.min(bx[2],p.y);bx[3]=Math.max(bx[3],p.y);});
   var pw=Math.max(bx[1]-bx[0],40),ph=Math.max(bx[3]-bx[2],40),padx=pw*0.16+8,pady=ph*0.2+14;
   var bw=pw+2*padx,bh=ph+2*pady+40;
-  var chMax=Math.max(320,Math.min(Math.round(window.innerHeight*0.52),450));
+  var chMax=Math.max(320,Math.min(Math.round(window.innerHeight*0.6),560));
   /* the map's height depends on the screen only, not on the route: a short route (職業) used to zoom in and grow the map.
      The route is fitted to that height, and a wide route pans with the plane instead. */
   var heroH=Math.round(Math.min(chMax,Math.max(330,cw*0.92)));
@@ -6523,6 +6531,8 @@ function mapMount(){
   MAP={cv:cv,ctx:cv.getContext('2d'),dpr:dpr,cw:cw,ch:heroH,s:s,L:L,R:R,ids:ids,pts:pts,tk:tk,next:nextI,dots:dots,cam:cam0,cam0:cam0,cam1:cam1,fly:fly,
        acc:cssVar('--c-'+L),plane:new Path2D(PLANE_D),t0:performance.now(),reveal:(anim==='lang'||anim==='first')&&!reduceMotion,route:(anim&&!reduceMotion)?performance.now()+(anim==='mode'?0:250):0,raf:0,cache:null};
   MAP.glide=glide;
+  /* the plane rises up into the map when it opens (not after a language switch) */
+  MAP.riseT=(!reduceMotion&&anim!=='lang')?performance.now():0;
   cv.onclick=function(ev){
     var r=cv.getBoundingClientRect(),M=MAP,x=(ev.clientX-r.left-M.cw/2)/M.s+M.cam.x-(M.panX||0)/M.s,y=(ev.clientY-r.top-M.ch/2)/M.s+M.cam.y+mapCY(M),best=-1,bd=(typeof gimmickOn==='function'&&gimmickOn('citytap')?26:18)/M.s;
     if(performance.now()-(M.dragT||0)<300)return;
@@ -6531,6 +6541,21 @@ function mapMount(){
   };
   bindParallax();
   mapFrame();
+}
+/* tapping a city shows its local time and the difference from Tokyo first (a second tap opens the lesson).
+   The offset is estimated from the longitude: 15 degrees per hour. */
+function tzTipHide(){var t=document.getElementById('tzTip');if(t)t.remove();}
+function showTzTip(L,i,p){
+  var M=MAP;if(!M||!M.cv)return;var c=cityFor(L,i);
+  tzTipHide();
+  var off=Math.round(c[3]/15),d=off-9,now=new Date(),h=(now.getUTCHours()+off+48)%24,mi=String(now.getUTCMinutes()).padStart(2,'0');
+  var diff=d>0?'東京より'+d+'時間進んでいます':d<0?'東京より'+(-d)+'時間遅れています':'東京と同じ時間です';
+  var r=M.cv.getBoundingClientRect(),x=r.left+(p.x-M.cam.x)*M.s+M.cw/2,y=r.top+(p.y-M.cam.y)*M.s+M.ch/2;
+  var t=document.createElement('div');t.id='tzTip';t.setAttribute('role','status');
+  t.textContent=c[0]+'　今 '+h+':'+mi+'（'+diff+'）';
+  t.style.cssText='position:fixed;z-index:60;transform:translate(-50%,-100%);padding:8px 12px;border-radius:12px;background:rgba(7,16,34,.92);color:#fff;font:600 12px -apple-system,BlinkMacSystemFont,sans-serif;white-space:nowrap;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.35);left:'+Math.round(clamp(x,120,window.innerWidth-120))+'px;top:'+Math.round(y-14)+'px';
+  document.body.appendChild(t);
+  clearTimeout(M.tipT2);M.tipT2=setTimeout(tzTipHide,3500);
 }
 function mapFrame(){
   var M=MAP;if(!M||!document.body.contains(M.cv)){if(M)M.raf=0;return;}
@@ -6630,6 +6655,8 @@ function bindParallax(){
 /* 試作ギミック（テスト用）: 客室マップに足す演出を、試作ルームでオン・オフしながら見比べるためのもの。
    BF_SIM が false（本番 babelflight.com）のときは何も出ず、地図の動きも変わらない。 */
 var BF_SIM=(typeof BF_SIM_FORCE!=='undefined'&&!!BF_SIM_FORCE)||/^babel-flight-sim/.test(location.hostname);
+/* 地図の新しい演出は、試作ルームとアプリ（BF_APP）でオン。🧪パネルは試作ルームだけ */
+var BF_GM=BF_SIM||(typeof BF_APP!=='undefined'&&!!BF_APP);
 var GIMMICK_DEF=[
   {k:'cloud',c:'window',t:'雲が地図の後ろをゆっくり流れる（夕方の空の感じ）'},
   {k:'instr',c:'window',t:'窓の下に高度・速度の表示（飾り）'},
@@ -6658,14 +6685,16 @@ var GIMMICK_DEF=[
 var GIMMICK=(function(){try{var raw=localStorage.getItem('bf.gimmick');if(raw===null){var all={};GIMMICK_DEF.forEach(function(d){all[d.k]=true;});return all;}return JSON.parse(raw)||{};}catch(e){return {};}})();
 var GMK={flip:'',flipT:0};
 /* 保存されていない項目は「オン」（チェックを外したものだけ false になる） */
-function gimmickOn(k){return !!(BF_SIM&&GIMMICK[k]!==false);}
+function gimmickOn(k){return !!(BF_GM&&GIMMICK[k]!==false);}
 function gimmickSave(){try{localStorage.setItem('bf.gimmick',JSON.stringify(GIMMICK));}catch(e){}}
 function gimmickCab(){return rootEl.getAttribute('data-cabin')||'';}
-function gimmickApplyRoot(){if(rootEl)rootEl.classList.toggle('gm-night',!!(BF_SIM&&GIMMICK.nightwin));document.body.classList.toggle('gm-pagemap',!!(BF_SIM&&GIMMICK.pagemap));document.body.classList.toggle('gm-maptouch',!!(gimmickOn('pan')||gimmickOn('citytap')));gimmickFade();}
+function gimmickApplyRoot(){if(rootEl)rootEl.classList.toggle('gm-night',!!(BF_GM&&GIMMICK.nightwin));document.body.classList.toggle('gm-pagemap',!!(BF_GM&&GIMMICK.pagemap));document.body.classList.toggle('gm-maptouch',!!(gimmickOn('pan')||gimmickOn('citytap')));gimmickFade();}
 /* 試作「ページ全体の地図」: スクロールするほど地図が薄くなる */
 function gimmickFade(){var h=document.querySelector('.hero');if(!h)return;if(!gimmickOn('pagemap')){h.style.opacity='';return;}/* 地図はしばらく最後まで見えたまま。画面の4分の3ほどスクロールしてから、だんだん薄くなる（左右になぞるときの邪魔を減らす） */
 var t=clamp((window.scrollY-innerHeight*0.75)/(innerHeight*0.8),0,1);h.style.opacity=(1-t*0.8).toFixed(3);}
-window.addEventListener('scroll',function(){if(BF_SIM)gimmickFade();},{passive:true});
+window.addEventListener('scroll',function(){if(BF_GM)gimmickFade();},{passive:true});
+/* アプリ: 試作ルームのパネルがないので、起動時に演出のクラスを付ける */
+if(BF_GM&&!BF_SIM){if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',gimmickApplyRoot);else gimmickApplyRoot();}
 /* 地図の一番下（描画の土台）: 雲・夜の陰 */
 function gimmickSky(g,cw,ch,now){
   var cab=gimmickCab();
@@ -8588,9 +8617,10 @@ document.addEventListener('click',function(e){
    site's own server (/api/ai/*), which asks Claude with the site's API key.
    Signed-in accounts only, with a daily limit per account (the server counts and enforces it). */
 var SAI={on:false,enabled:false,left:null,seen:'',lastView:''};
-try{SAI.on=!!ACCT.on;}catch(e){}
+try{SAI.on=!!ACCT.on&&!BF_APP;}catch(e){}  /* the iPhone/iPad app has no AI features (App Store build) */
 var aiAtcEntryHTML=null,atcNoteText=null;
 function saiPost(path,body,signal){
+  if(BF_APP)return Promise.resolve(new Response(JSON.stringify({ok:false,error:'off'}),{status:404,headers:{'content-type':'application/json'}}));
   if(BF_APP&&!aiConsented())return aiConsentAsk().then(function(ok){
     if(!ok)return new Response(JSON.stringify({ok:false,error:'consent'}),{status:403,headers:{'content-type':'application/json'}});
     return bfFetch(path,{method:'POST',cache:'no-store',headers:{'content-type':'application/json'},body:JSON.stringify(body),signal:signal});
@@ -20126,7 +20156,7 @@ function jobButtonsHTML(){
   if(save.mode!=='job')return '';
   var p=profById(save.prof);if(!p)return '';
   return '<button class="course" type="button" data-picker><span class="ccode">'+p.code+'</span><span class="ctext"><span class="lbl">職業コース</span><b>'+esc(p.jp)+'</b><small>タップして変更 ・ 13職業から選べます</small></span><span class="chev" aria-hidden="true">›</span></button>'+
-    (p.id==='pilot'?'<button class="course atcbtn" type="button" data-atc><span class="ccode">ATC</span><span class="ctext"><span class="lbl">AIロールプレイ ・ 英語</span><b>AI管制官と交信練習</b><small>'+esc(atcFill('{0}で、管制官役のAIと無線交信',[atcApt().jp]))+'</small></span><span class="chev" aria-hidden="true">›</span></button>':'');
+    (p.id==='pilot'&&!BF_APP?'<button class="course atcbtn" type="button" data-atc><span class="ccode">ATC</span><span class="ctext"><span class="lbl">AIロールプレイ ・ 英語</span><b>AI管制官と交信練習</b><small>'+esc(atcFill('{0}で、管制官役のAIと無線交信',[atcApt().jp]))+'</small></span><span class="chev" aria-hidden="true">›</span></button>':'');
 }
 function kindSize(L,uid){var k=unitKind(L,uid),z=unitSize(L,uid);return (k==='フレーズ'?'':k+(z.n?' ・ ':''))+z.n;}
 function unitSize(L,uid){
@@ -20754,6 +20784,7 @@ function billSubHTML(s,st){
   return h;
 }
 function billBodyHTML(){
+  if(BF_APP)return '';
   var st=BILL.st,h='';
   if(!ACCT.me)return '<p class="dim">ログインすると試せます。</p>';
   if(!st){
@@ -24368,6 +24399,8 @@ function fxCombo(n){
 /* ---- small things on the landing screen: the goal bar fills, the streak ticks over ---- */
 function fxLand(goalJust,streakUp){
   var m=$('main');if(!m)return;
+  /* 着陸の揺れ: the landing screen shakes once, as the wheels touch down */
+  if(!fxReduced()){m.classList.remove('quake');void m.offsetWidth;m.classList.add('quake');setTimeout(function(){m.classList.remove('quake');},700);}
   var gb=m.querySelector('.gbar i');
   if(gb&&!fxReduced()){var w=gb.style.width;gb.style.transition='none';gb.style.width=Math.max(0,parseFloat(w)-100/Math.max(1,save.goal))+'%';void gb.offsetWidth;gb.style.transition='width .7s cubic-bezier(.2,.8,.2,1) .35s';gb.style.width=w;}
   if(goalJust){var gd=m.querySelector('.goalbox');if(gd)gd.classList.add('goal-burst');}
@@ -25216,7 +25249,7 @@ function diarySheet(){
       '<textarea id="dyText" class="dy-text '+lfc(L)+'" lang="'+LG.tts.slice(0,2)+'" maxlength="'+DIARY_MAX+'" rows="5" spellcheck="false" autocapitalize="sentences" aria-label="日記">'+esc(txt)+'</textarea>'+
       '<div class="dy-row"><small class="dy-n" id="dyN">'+txt.length+' / '+DIARY_MAX+'</small>'+
       (DIARY.left!==null&&DIARY.left<99?'<small>今日はあと'+DIARY.left+'回</small>':'<small>1日2回まで(書いて直す1回 ＋ 書き直し1回)</small>')+'</div>';
-    if(!fcAi())h+='<p class="warn">'+fcAiMsg()+'</p>';
+    if(!fcAi()){if(!BF_APP)h+='<p class="warn">'+fcAiMsg()+'</p>';}
     else h+='<button class="go" type="button" data-diary-send'+(DIARY.busy?' disabled':'')+'>'+(DIARY.busy?'AIが読んでいます…':'AIに添削してもらう')+'</button>';
     if(DIARY.err)h+='<p class="warn">'+esc(DIARY.err)+'</p>';
   }
@@ -28155,6 +28188,7 @@ function dRowHTML(e){
 }
 function dCreditHTML(){return '<p class="dict-credit">英和辞書データ: ejdict-hand(くじらはんど・パブリックドメイン) ・ いまの英語: Babel Flight オリジナル</p>';}
 function dAiHTML(w,mean){
+  if(BF_APP)return '';
   return '<div class="dict-ai" data-w="'+esc(w)+'" data-m="'+esc(mean||'')+'"><button class="ghost sm" type="button" data-dict-ai>🤖 AIにくわしくきく</button>'+
     '<div class="aiout" aria-live="polite"></div></div>';
 }

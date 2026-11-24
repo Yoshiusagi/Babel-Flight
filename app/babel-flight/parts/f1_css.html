@@ -66,6 +66,8 @@ html[data-theme="dark"] body.home-map #sky::after{opacity:1}
 .cine.play .cine-plane{animation:lift 1.15s cubic-bezier(.55,0,.3,1) forwards}
 .cine.takeoff.play .cine-clouds span{animation:cloudRush .6s ease-in forwards;animation-delay:calc(.45s + var(--k) * .05s)}
 .cine.play .cine-flash{animation:flash 1.15s forwards}
+@keyframes quake{0%{transform:translateY(0)}20%{transform:translateY(-6px)}40%{transform:translateY(4px)}60%{transform:translateY(-3px)}80%{transform:translateY(1px)}100%{transform:translateY(0)}}
+.quake{animation:quake .6s ease-out}
 @keyframes flash{0%,78%{opacity:0}100%{opacity:.85}}
 .c-no{animation:fadeUp .3s .05s forwards}
 .c-city span{animation:letterUp .45s cubic-bezier(.2,.9,.2,1) forwards;animation-delay:calc(.08s + var(--d) * 30ms)}

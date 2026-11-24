@@ -96,7 +96,7 @@ function homeHTML(){
   if(typeof examHomeHTML==='function')h+=examHomeHTML(L);
   if(save.mode==='job'){
     h+='<button class="course" type="button" data-picker><span class="ccode">'+p.code+'</span><span class="ctext"><span class="lbl">職業コース</span><b>'+esc(p.jp)+'</b><small>タップして変更 ・ 13職業から選べます</small></span><span class="chev" aria-hidden="true">›</span></button>';
-    if(p.id==='pilot')h+='<button class="course atcbtn" type="button" data-atc><span class="ccode">ATC</span><span class="ctext"><span class="lbl">AIロールプレイ ・ 英語</span><b>AI管制官と交信練習</b><small>'+esc(atcFill('{0}で、管制官役のAIと無線交信',[atcApt().jp]))+'</small></span><span class="chev" aria-hidden="true">›</span></button>';
+    if(p.id==='pilot'&&!BF_APP)h+='<button class="course atcbtn" type="button" data-atc><span class="ccode">ATC</span><span class="ctext"><span class="lbl">AIロールプレイ ・ 英語</span><b>AI管制官と交信練習</b><small>'+esc(atcFill('{0}で、管制官役のAIと無線交信',[atcApt().jp]))+'</small></span><span class="chev" aria-hidden="true">›</span></button>';
   }
   var idx=0;
   secs.forEach(function(sec,si){
@@ -166,7 +166,7 @@ function mapMount(){
   var bx=[1e9,-1e9,1e9,-1e9];pts.forEach(function(p){bx[0]=Math.min(bx[0],p.x);bx[1]=Math.max(bx[1],p.x);bx[2]=Math.min(bx[2],p.y);bx[3]=Math.max(bx[3],p.y);});
   var pw=Math.max(bx[1]-bx[0],40),ph=Math.max(bx[3]-bx[2],40),padx=pw*0.16+8,pady=ph*0.2+14;
   var bw=pw+2*padx,bh=ph+2*pady+40;
-  var chMax=Math.max(320,Math.min(Math.round(window.innerHeight*0.52),450));
+  var chMax=Math.max(320,Math.min(Math.round(window.innerHeight*0.6),560));
   /* the map's height depends on the screen only, not on the route: a short route (職業) used to zoom in and grow the map.
      The route is fitted to that height, and a wide route pans with the plane instead. */
   var heroH=Math.round(Math.min(chMax,Math.max(330,cw*0.92)));
@@ -215,6 +215,8 @@ function mapMount(){
   MAP={cv:cv,ctx:cv.getContext('2d'),dpr:dpr,cw:cw,ch:heroH,s:s,L:L,R:R,ids:ids,pts:pts,tk:tk,next:nextI,dots:dots,cam:cam0,cam0:cam0,cam1:cam1,fly:fly,
        acc:cssVar('--c-'+L),plane:new Path2D(PLANE_D),t0:performance.now(),reveal:(anim==='lang'||anim==='first')&&!reduceMotion,route:(anim&&!reduceMotion)?performance.now()+(anim==='mode'?0:250):0,raf:0,cache:null};
   MAP.glide=glide;
+  /* the plane rises up into the map when it opens (not after a language switch) */
+  MAP.riseT=(!reduceMotion&&anim!=='lang')?performance.now():0;
   cv.onclick=function(ev){
     var r=cv.getBoundingClientRect(),M=MAP,x=(ev.clientX-r.left-M.cw/2)/M.s+M.cam.x-(M.panX||0)/M.s,y=(ev.clientY-r.top-M.ch/2)/M.s+M.cam.y+mapCY(M),best=-1,bd=(typeof gimmickOn==='function'&&gimmickOn('citytap')?26:18)/M.s;
     if(performance.now()-(M.dragT||0)<300)return;
@@ -223,6 +225,21 @@ function mapMount(){
   };
   bindParallax();
   mapFrame();
+}
+/* tapping a city shows its local time and the difference from Tokyo first (a second tap opens the lesson).
+   The offset is estimated from the longitude: 15 degrees per hour. */
+function tzTipHide(){var t=document.getElementById('tzTip');if(t)t.remove();}
+function showTzTip(L,i,p){
+  var M=MAP;if(!M||!M.cv)return;var c=cityFor(L,i);
+  tzTipHide();
+  var off=Math.round(c[3]/15),d=off-9,now=new Date(),h=(now.getUTCHours()+off+48)%24,mi=String(now.getUTCMinutes()).padStart(2,'0');
+  var diff=d>0?'東京より'+d+'時間進んでいます':d<0?'東京より'+(-d)+'時間遅れています':'東京と同じ時間です';
+  var r=M.cv.getBoundingClientRect(),x=r.left+(p.x-M.cam.x)*M.s+M.cw/2,y=r.top+(p.y-M.cam.y)*M.s+M.ch/2;
+  var t=document.createElement('div');t.id='tzTip';t.setAttribute('role','status');
+  t.textContent=c[0]+'　今 '+h+':'+mi+'（'+diff+'）';
+  t.style.cssText='position:fixed;z-index:60;transform:translate(-50%,-100%);padding:8px 12px;border-radius:12px;background:rgba(7,16,34,.92);color:#fff;font:600 12px -apple-system,BlinkMacSystemFont,sans-serif;white-space:nowrap;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.35);left:'+Math.round(clamp(x,120,window.innerWidth-120))+'px;top:'+Math.round(y-14)+'px';
+  document.body.appendChild(t);
+  clearTimeout(M.tipT2);M.tipT2=setTimeout(tzTipHide,3500);
 }
 function mapFrame(){
   var M=MAP;if(!M||!document.body.contains(M.cv)){if(M)M.raf=0;return;}

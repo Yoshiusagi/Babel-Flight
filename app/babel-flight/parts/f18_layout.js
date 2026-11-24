@@ -31,7 +31,7 @@ function jobButtonsHTML(){
   if(save.mode!=='job')return '';
   var p=profById(save.prof);if(!p)return '';
   return '<button class="course" type="button" data-picker><span class="ccode">'+p.code+'</span><span class="ctext"><span class="lbl">職業コース</span><b>'+esc(p.jp)+'</b><small>タップして変更 ・ 13職業から選べます</small></span><span class="chev" aria-hidden="true">›</span></button>'+
-    (p.id==='pilot'?'<button class="course atcbtn" type="button" data-atc><span class="ccode">ATC</span><span class="ctext"><span class="lbl">AIロールプレイ ・ 英語</span><b>AI管制官と交信練習</b><small>'+esc(atcFill('{0}で、管制官役のAIと無線交信',[atcApt().jp]))+'</small></span><span class="chev" aria-hidden="true">›</span></button>':'');
+    (p.id==='pilot'&&!BF_APP?'<button class="course atcbtn" type="button" data-atc><span class="ccode">ATC</span><span class="ctext"><span class="lbl">AIロールプレイ ・ 英語</span><b>AI管制官と交信練習</b><small>'+esc(atcFill('{0}で、管制官役のAIと無線交信',[atcApt().jp]))+'</small></span><span class="chev" aria-hidden="true">›</span></button>':'');
 }
 function kindSize(L,uid){var k=unitKind(L,uid),z=unitSize(L,uid);return (k==='フレーズ'?'':k+(z.n?' ・ ':''))+z.n;}
 function unitSize(L,uid){

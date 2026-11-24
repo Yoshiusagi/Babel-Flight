@@ -1,6 +1,8 @@
 /* 試作ギミック（テスト用）: 客室マップに足す演出を、試作ルームでオン・オフしながら見比べるためのもの。
    BF_SIM が false（本番 babelflight.com）のときは何も出ず、地図の動きも変わらない。 */
 var BF_SIM=(typeof BF_SIM_FORCE!=='undefined'&&!!BF_SIM_FORCE)||/^babel-flight-sim/.test(location.hostname);
+/* 地図の新しい演出は、試作ルームとアプリ（BF_APP）でオン。🧪パネルは試作ルームだけ */
+var BF_GM=BF_SIM||(typeof BF_APP!=='undefined'&&!!BF_APP);
 var GIMMICK_DEF=[
   {k:'cloud',c:'window',t:'雲が地図の後ろをゆっくり流れる（夕方の空の感じ）'},
   {k:'instr',c:'window',t:'窓の下に高度・速度の表示（飾り）'},
@@ -29,14 +31,16 @@ var GIMMICK_DEF=[
 var GIMMICK=(function(){try{var raw=localStorage.getItem('bf.gimmick');if(raw===null){var all={};GIMMICK_DEF.forEach(function(d){all[d.k]=true;});return all;}return JSON.parse(raw)||{};}catch(e){return {};}})();
 var GMK={flip:'',flipT:0};
 /* 保存されていない項目は「オン」（チェックを外したものだけ false になる） */
-function gimmickOn(k){return !!(BF_SIM&&GIMMICK[k]!==false);}
+function gimmickOn(k){return !!(BF_GM&&GIMMICK[k]!==false);}
 function gimmickSave(){try{localStorage.setItem('bf.gimmick',JSON.stringify(GIMMICK));}catch(e){}}
 function gimmickCab(){return rootEl.getAttribute('data-cabin')||'';}
-function gimmickApplyRoot(){if(rootEl)rootEl.classList.toggle('gm-night',!!(BF_SIM&&GIMMICK.nightwin));document.body.classList.toggle('gm-pagemap',!!(BF_SIM&&GIMMICK.pagemap));document.body.classList.toggle('gm-maptouch',!!(gimmickOn('pan')||gimmickOn('citytap')));gimmickFade();}
+function gimmickApplyRoot(){if(rootEl)rootEl.classList.toggle('gm-night',!!(BF_GM&&GIMMICK.nightwin));document.body.classList.toggle('gm-pagemap',!!(BF_GM&&GIMMICK.pagemap));document.body.classList.toggle('gm-maptouch',!!(gimmickOn('pan')||gimmickOn('citytap')));gimmickFade();}
 /* 試作「ページ全体の地図」: スクロールするほど地図が薄くなる */
 function gimmickFade(){var h=document.querySelector('.hero');if(!h)return;if(!gimmickOn('pagemap')){h.style.opacity='';return;}/* 地図はしばらく最後まで見えたまま。画面の4分の3ほどスクロールしてから、だんだん薄くなる（左右になぞるときの邪魔を減らす） */
 var t=clamp((window.scrollY-innerHeight*0.75)/(innerHeight*0.8),0,1);h.style.opacity=(1-t*0.8).toFixed(3);}
-window.addEventListener('scroll',function(){if(BF_SIM)gimmickFade();},{passive:true});
+window.addEventListener('scroll',function(){if(BF_GM)gimmickFade();},{passive:true});
+/* アプリ: 試作ルームのパネルがないので、起動時に演出のクラスを付ける */
+if(BF_GM&&!BF_SIM){if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',gimmickApplyRoot);else gimmickApplyRoot();}
 /* 地図の一番下（描画の土台）: 雲・夜の陰 */
 function gimmickSky(g,cw,ch,now){
   var cab=gimmickCab();

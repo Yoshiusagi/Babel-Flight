@@ -95,6 +95,8 @@ function fxCombo(n){
 /* ---- small things on the landing screen: the goal bar fills, the streak ticks over ---- */
 function fxLand(goalJust,streakUp){
   var m=$('main');if(!m)return;
+  /* 着陸の揺れ: the landing screen shakes once, as the wheels touch down */
+  if(!fxReduced()){m.classList.remove('quake');void m.offsetWidth;m.classList.add('quake');setTimeout(function(){m.classList.remove('quake');},700);}
   var gb=m.querySelector('.gbar i');
   if(gb&&!fxReduced()){var w=gb.style.width;gb.style.transition='none';gb.style.width=Math.max(0,parseFloat(w)-100/Math.max(1,save.goal))+'%';void gb.offsetWidth;gb.style.transition='width .7s cubic-bezier(.2,.8,.2,1) .35s';gb.style.width=w;}
   if(goalJust){var gd=m.querySelector('.goalbox');if(gd)gd.classList.add('goal-burst');}

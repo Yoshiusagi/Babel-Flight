@@ -12,6 +12,12 @@
 
 /* the status bar sits over the page in the app */
 html.app #app{padding-top:calc(14px + env(safe-area-inset-top,0px))}
+/* iPad (and any screen wider than an iPhone): the page used a phone-width column of 520px; use more of the screen */
+@media (min-width:700px) and (min-height:600px){
+  html.app #app{max-width:880px}
+  html.app .tabs-in,html.app .sheet-in{max-width:880px}
+  html.app .lang-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
 /* feels like an app: no text selection or long-press menus on controls, no rubber-band at the edges */
 html.app{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 html.app input,html.app textarea,html.app [contenteditable]{-webkit-user-select:text;user-select:text}

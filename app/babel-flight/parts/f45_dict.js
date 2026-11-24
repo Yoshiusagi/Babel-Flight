@@ -197,6 +197,7 @@ function dRowHTML(e){
 }
 function dCreditHTML(){return '<p class="dict-credit">英和辞書データ: ejdict-hand(くじらはんど・パブリックドメイン) ・ いまの英語: Babel Flight オリジナル</p>';}
 function dAiHTML(w,mean){
+  if(BF_APP)return '';
   return '<div class="dict-ai" data-w="'+esc(w)+'" data-m="'+esc(mean||'')+'"><button class="ghost sm" type="button" data-dict-ai>🤖 AIにくわしくきく</button>'+
     '<div class="aiout" aria-live="polite"></div></div>';
 }
