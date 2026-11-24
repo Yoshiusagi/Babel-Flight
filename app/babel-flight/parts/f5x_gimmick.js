@@ -23,7 +23,8 @@ var GIMMICK_DEF=[
   {k:'citytap',c:'all',t:'都市をタップすると、時差と今の時間を先に出す'},
   {k:'pan',c:'all',t:'地図を左右になぞって動かせる（指を離すと戻る）'},
   {k:'bigdot',c:'all',t:'空港の点を大きくして、押しやすくする'},
-  {k:'hoverpv',c:'all',t:'PCでは、空港にマウスを乗せるとレッスンの内容をプレビュー'}
+  {k:'hoverpv',c:'all',t:'PCでは、空港にマウスを乗せるとレッスンの内容をプレビュー'},
+  {k:'citynames',c:'all',t:'空港の横に都市名を出す'}
 ];
 var GIMMICK=(function(){try{var raw=localStorage.getItem('bf.gimmick');if(raw===null){var all={};GIMMICK_DEF.forEach(function(d){all[d.k]=true;});return all;}return JSON.parse(raw)||{};}catch(e){return {};}})();
 var GMK={flip:'',flipT:0};

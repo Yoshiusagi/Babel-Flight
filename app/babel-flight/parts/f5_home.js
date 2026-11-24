@@ -269,6 +269,7 @@ function mapFrame(){
   else{var ex=clamp(tx,18,cw-18),ey=clamp(ty,Math.min(110,ch/2),Math.max(ch-112,ch/2)),an=Math.atan2(ty-ey,tx-ex);g.save();g.translate(ex,ey);g.rotate(an);g.fillStyle='rgba(255,255,255,.7)';g.beginPath();g.moveTo(9,0);g.lineTo(-4,-6);g.lineTo(-4,6);g.closePath();g.fill();g.restore();g.fillStyle='rgba(255,255,255,.75)';g.textAlign=ex>cw/2?'right':'left';g.fillText('TOKYO',ex+(ex>cw/2?-14:14),ey+4);}
   /* cities */
   var pulse=reduceMotion?.5:(Math.sin(now/380)+1)/2;
+  var lbR=[];/* 都市名の場所（重なる名前は出さない） */
   for(i=0;i<pts.length;i++){
     if(i>=shown+1)break;
     var P=pts[i],x=SX(P.x),y=SY(P.y),dn=unitRec(L,ids[i]).n>0;if(x<-10||y<-10||x>cw+10||y>ch+10)continue;
@@ -276,6 +277,8 @@ function mapFrame(){
     if(i===M.next){g.strokeStyle='rgba(255,207,38,'+(0.85-0.6*pulse)+')';g.lineWidth=1.6;g.beginPath();g.arc(x,y,(5+9*pulse)*dk,0,6.283);g.stroke();g.fillStyle='#ffcf26';g.beginPath();g.arc(x,y,4.2*dk,0,6.283);g.fill();}
     else if(dn){g.fillStyle=M.acc;g.beginPath();g.arc(x,y,3.6*dk,0,6.283);g.fill();g.strokeStyle='rgba(255,255,255,.85)';g.lineWidth=1;g.stroke();}
     else{g.fillStyle='rgba(255,255,255,.55)';g.beginPath();g.arc(x,y,2.2*dk,0,6.283);g.fill();}
+    /* 試作「都市名」: 空港の横に、都市名（日本語）を小さく出す（次の目的地は黄色の大きい表示があるので出さない） */
+    if(i!==M.next&&typeof gimmickOn==='function'&&gimmickOn('citynames')){var cn=cityFor(L,i)[1],lw=cn.length*11+6,lx=x+6,ly=y-6,lr={x:lx,y:ly,w:lw,h:13},clash=lbR.some(function(q){return lr.x<q.x+q.w&&q.x<lr.x+lr.w&&lr.y<q.y+q.h&&q.y<lr.y+lr.h;});if(!clash&&!(M.next>=0&&SX(pts[M.next].x)>lx-16&&SX(pts[M.next].x)<lx+lw&&Math.abs(SY(pts[M.next].y)-y)<22)){lbR.push(lr);g.font='600 10px system-ui,sans-serif';g.textAlign='left';g.lineJoin='round';g.strokeStyle='rgba(10,14,26,.85)';g.lineWidth=3;g.strokeText(cn,lx,y+3);g.fillStyle=dn?'rgba(255,255,255,.95)':'rgba(255,255,255,.7)';g.fillText(cn,lx,y+3);}}
   }
   if(M.next>=0&&M.next<shown+1){var np=pts[M.next],nc=cityFor(L,M.next);g.fillStyle='#ffcf26';g.textAlign='center';g.font='700 11px "B612 Mono",monospace';g.fillText(nc[0],SX(np.x),SY(np.y)-14);}
   /* plane */
