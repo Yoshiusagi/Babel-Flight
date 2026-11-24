@@ -204,7 +204,7 @@ function mapMount(){
        acc:cssVar('--c-'+L),plane:new Path2D(PLANE_D),t0:performance.now(),reveal:(anim==='lang'||anim==='first')&&!reduceMotion,route:(anim&&!reduceMotion)?performance.now()+(anim==='mode'?0:250):0,raf:0,cache:null};
   MAP.glide=glide;
   cv.onclick=function(ev){
-    var r=cv.getBoundingClientRect(),M=MAP,x=(ev.clientX-r.left-M.cw/2)/M.s+M.cam.x-(M.panX||0)/M.s,y=(ev.clientY-r.top-M.ch/2)/M.s+M.cam.y,best=-1,bd=18/M.s;
+    var r=cv.getBoundingClientRect(),M=MAP,x=(ev.clientX-r.left-M.cw/2)/M.s+M.cam.x-(M.panX||0)/M.s,y=(ev.clientY-r.top-M.ch/2)/M.s+M.cam.y,best=-1,bd=(typeof gimmickOn==='function'&&gimmickOn('citytap')?26:18)/M.s;
     if(performance.now()-(M.dragT||0)<300)return;
     M.pts.forEach(function(p,i){var dd=Math.hypot(p.x-x,p.y-y);if(dd<bd){bd=dd;best=i;}});
     if(best>=0){if(typeof gimmickOn==='function'&&gimmickOn('citytap'))gimmickCityCard(cityFor(M.L,best),M.L,function(){openNodeSheet(M.ids[best]);});else openNodeSheet(M.ids[best]);}

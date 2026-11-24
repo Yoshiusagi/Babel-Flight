@@ -1106,6 +1106,9 @@ body:has(#sheetHost .sheet) #hf-watermark{bottom:calc(12px + env(safe-area-inset
 :root[data-cabin="window"].gm-night{--sky1:#0b0f2a;--sky2:#3a2f63;--s1:#0b0f2a;--s2:#3a2f63}
 /* 試作「ページ全体の地図」: 地図を背景に置き、カードはその上を流れる（試作ルームのギミック） */
 body.gm-pagemap .hero{position:sticky;top:0;z-index:-1}
+/* 試作: スイートの文字の上でも地図にさわれる（ボタンだけ押せる） */
+body.gm-maptouch .sp-next>:not(.sp-map){pointer-events:none}
+body.gm-maptouch .sp-next>:not(.sp-map) :is(button,a,[data-node],[data-suite-go]){pointer-events:auto}
 </style>
 <style>
 /* ===== スイート: the route map fills the first screen, the words sit on top of it ===== */
@@ -6347,7 +6350,7 @@ function mapMount(){
        acc:cssVar('--c-'+L),plane:new Path2D(PLANE_D),t0:performance.now(),reveal:(anim==='lang'||anim==='first')&&!reduceMotion,route:(anim&&!reduceMotion)?performance.now()+(anim==='mode'?0:250):0,raf:0,cache:null};
   MAP.glide=glide;
   cv.onclick=function(ev){
-    var r=cv.getBoundingClientRect(),M=MAP,x=(ev.clientX-r.left-M.cw/2)/M.s+M.cam.x-(M.panX||0)/M.s,y=(ev.clientY-r.top-M.ch/2)/M.s+M.cam.y,best=-1,bd=18/M.s;
+    var r=cv.getBoundingClientRect(),M=MAP,x=(ev.clientX-r.left-M.cw/2)/M.s+M.cam.x-(M.panX||0)/M.s,y=(ev.clientY-r.top-M.ch/2)/M.s+M.cam.y,best=-1,bd=(typeof gimmickOn==='function'&&gimmickOn('citytap')?26:18)/M.s;
     if(performance.now()-(M.dragT||0)<300)return;
     M.pts.forEach(function(p,i){var dd=Math.hypot(p.x-x,p.y-y);if(dd<bd){bd=dd;best=i;}});
     if(best>=0){if(typeof gimmickOn==='function'&&gimmickOn('citytap'))gimmickCityCard(cityFor(M.L,best),M.L,function(){openNodeSheet(M.ids[best]);});else openNodeSheet(M.ids[best]);}
@@ -6476,7 +6479,7 @@ var GMK={flip:'',flipT:0};
 function gimmickOn(k){return !!(BF_SIM&&GIMMICK[k]!==false);}
 function gimmickSave(){try{localStorage.setItem('bf.gimmick',JSON.stringify(GIMMICK));}catch(e){}}
 function gimmickCab(){return rootEl.getAttribute('data-cabin')||'';}
-function gimmickApplyRoot(){if(rootEl)rootEl.classList.toggle('gm-night',!!(BF_SIM&&GIMMICK.nightwin));document.body.classList.toggle('gm-pagemap',!!(BF_SIM&&GIMMICK.pagemap));gimmickFade();}
+function gimmickApplyRoot(){if(rootEl)rootEl.classList.toggle('gm-night',!!(BF_SIM&&GIMMICK.nightwin));document.body.classList.toggle('gm-pagemap',!!(BF_SIM&&GIMMICK.pagemap));document.body.classList.toggle('gm-maptouch',!!(gimmickOn('pan')||gimmickOn('citytap')));gimmickFade();}
 /* 試作「ページ全体の地図」: スクロールするほど地図が薄くなる */
 function gimmickFade(){var h=document.querySelector('.hero');if(!h)return;if(!gimmickOn('pagemap')){h.style.opacity='';return;}var t=clamp(window.scrollY/(innerHeight*1.1),0,1);h.style.opacity=(1-t*0.8).toFixed(3);}
 window.addEventListener('scroll',function(){if(BF_SIM)gimmickFade();},{passive:true});
@@ -6643,15 +6646,19 @@ function gimmickDay(){
   return ['#050914','#0b1a33'];
 }
 /* 都市の時差（経度から出す目安。日本との差） */
-function gimmickDiff(c){return Math.round(c[3]/15)-9;}
-function gimmickLocalTime(c){var h=(new Date().getUTCHours()+Math.round(c[3]/15)+24)%24,m=new Date().getUTCMinutes();return (h<10?'0':'')+h+':'+(m<10?'0':'')+m;}
+/* 時差: 言語の国がひとつなら、その国の時間帯（夏時間も込み）。それ以外は経度から目安 */
+var GM_ZONE={ko:'Asia/Seoul',zh:'Asia/Shanghai',de:'Europe/Berlin',fr:'Europe/Paris',es:'Europe/Madrid'};
+function gimmickOffMin(z){try{var d=new Date(),o={},f=new Intl.DateTimeFormat('en-US',{timeZone:z,hourCycle:'h23',year:'numeric',month:'numeric',day:'numeric',hour:'numeric',minute:'numeric',second:'numeric'}).formatToParts(d);f.forEach(function(p){o[p.type]=+p.value;});return Math.round((Date.UTC(o.year,o.month-1,o.day,o.hour,o.minute,o.second)-(d.getTime()-d.getMilliseconds()))/60000);}catch(e){return null;}}
+function gimmickCityOff(c,L){var z=GM_ZONE[L],m=z?gimmickOffMin(z):null;return m!==null?m:Math.round(c[3]/15)*60;}
+function gimmickDiff(c,L){var tk=gimmickOffMin('Asia/Tokyo');if(tk===null)tk=540;return Math.round((gimmickCityOff(c,L)-tk)/60);}
+function gimmickLocalTime(c,L){var t=new Date(Date.now()+gimmickCityOff(c,L)*60000);return (t.getUTCHours()<10?'0':'')+t.getUTCHours()+':'+(t.getUTCMinutes()<10?'0':'')+t.getUTCMinutes();}
 /* 都市をタップ: 先に小さなカードを出す（レッスンへは「見る」） */
 function gimmickCityCard(c,L,open){
   var old=document.getElementById('gmCity');if(old)old.remove();
-  var d=gimmickDiff(c),el=document.createElement('div');el.id='gmCity';
+  var d=gimmickDiff(c,L),el=document.createElement('div');el.id='gmCity';
   el.style.cssText='position:fixed;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 112px);max-width:340px;margin:0 auto;z-index:2147483550;padding:14px 16px;border-radius:16px;background:rgba(10,14,26,.96);color:#eef0f6;font:13px/1.6 system-ui,sans-serif;border:1px solid rgba(255,207,38,.45);box-shadow:0 10px 30px rgba(0,0,0,.5)';
   el.innerHTML='<div style="font:700 16px system-ui">'+esc(c[0])+' <span style="color:#9aa0b4;font-weight:400">'+esc(c[1])+'</span></div>'
-    +'<div style="color:#ffcf26;font:700 12px \'B612 Mono\',monospace">今 '+gimmickLocalTime(c)+' ・ 日本と '+(d>=0?'+':'')+d+'時間（目安）</div>'
+    +'<div style="color:#ffcf26;font:700 12px \'B612 Mono\',monospace">今 '+gimmickLocalTime(c,L)+' ・ '+(d===0?'日本と同じ時間':'日本と '+(d>0?'+':'')+d+'時間')+'（目安）</div>'
     +'<div style="color:#9aa0b4;font-size:12px">ここで学ぶ言葉：'+esc(LANGS[L]?LANGS[L].name:'')+'</div>'
     +'<div style="display:flex;gap:8px;margin-top:10px"><button type="button" id="gmCityGo" style="flex:1;padding:9px;border-radius:999px;border:0;background:#ffcf26;color:#1a1400;font:700 13px system-ui;cursor:pointer">レッスンを見る</button><button type="button" id="gmCityX" style="padding:9px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.25);background:transparent;color:#eef0f6;font:13px system-ui;cursor:pointer">とじる</button></div>';
   document.body.appendChild(el);
@@ -6665,18 +6672,23 @@ function gimmickPanSetup(M){
   M.cv.style.touchAction='pan-y';
   if(M.cv.getAttribute('data-gm-pan'))return;
   M.cv.setAttribute('data-gm-pan','1');
+  /* the handlers use the current MAP: a mode or language change makes a new MAP on the same canvas.
+     Sideways finger moves pan the map and stop the page from scrolling sideways; up/down still scroll the page. */
   var st=null;
-  M.cv.addEventListener('pointerdown',function(e){st={x:e.clientX,p:M.panX||0,mv:false};});
-  M.cv.addEventListener('pointermove',function(e){
-    if(!st)return;var dx=e.clientX-st.x;
-    if(!st.mv&&Math.abs(dx)>10){st.mv=true;M.dragT=performance.now();}
-    if(st.mv){M.panX=clamp(st.p+dx,-M.cw*0.7,M.cw*0.7);M.dragT=performance.now();}
-  });
-  var end=function(){
-    if(!st)return;var from=M.panX||0,t0=performance.now();st=null;
-    (function back(){var t=clamp((performance.now()-t0)/450,0,1),e2=1-Math.pow(1-t,3);M.panX=from*(1-e2);if(t<1&&MAP===M)requestAnimationFrame(back);})();
-  };
-  M.cv.addEventListener('pointerup',end);M.cv.addEventListener('pointercancel',end);
+  function startAt(x,y){var X=MAP;if(X)st={x:x,y:y,p:X.panX||0,lock:0};}
+  function moveTo(x,y){
+    var X=MAP;if(!st||!X)return false;var dx=x-st.x,dy=y-st.y;
+    if(!st.lock){if(Math.abs(dx)<8&&Math.abs(dy)<8)return false;st.lock=Math.abs(dx)>Math.abs(dy)?'x':'y';}
+    if(st.lock!=='x')return false;
+    X.panX=clamp(st.p+dx,-X.cw*0.7,X.cw*0.7);X.dragT=performance.now();return true;
+  }
+  M.cv.addEventListener('touchstart',function(e){if(e.touches.length===1)startAt(e.touches[0].clientX,e.touches[0].clientY);else st=null;},{passive:true});
+  M.cv.addEventListener('touchmove',function(e){if(!st||e.touches.length!==1)return;if(moveTo(e.touches[0].clientX,e.touches[0].clientY)&&e.cancelable)e.preventDefault();},{passive:false});
+  var endT=function(){st=null;};
+  M.cv.addEventListener('touchend',endT,{passive:true});M.cv.addEventListener('touchcancel',endT,{passive:true});
+  M.cv.addEventListener('pointerdown',function(e){if(e.pointerType==='mouse')startAt(e.clientX,e.clientY);});
+  M.cv.addEventListener('pointermove',function(e){if(e.pointerType==='mouse')moveTo(e.clientX,e.clientY);});
+  M.cv.addEventListener('pointerup',function(){st=null;});
 }
 /* ================= FLIGHT ENGINE ================= */
 var PRAISE=['正解！','ナイス！','その調子！','いい感じ！','完璧！'];
