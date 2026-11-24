@@ -129,6 +129,8 @@ function openNodeSheet(uid){
 }
 
 /* ---- map engine ---- */
+/* 世界一周できる言語は、地図の中身を少し上にずらす（上の空いているところに地図を寄せる） */
+function mapCY(M){return (typeof worldLang==='function'&&worldLang(M.L)&&typeof gimmickOn==='function'&&gimmickOn('pan'))?M.ch*0.14/M.s:0;}
 function landGrid(){
   if(LAND)return LAND;
   var polys=[];
@@ -180,8 +182,8 @@ function mapMount(){
      (that transition pushed every card above and below up and down on each change) */
   hero.style.transition='none';hero.style.height=heroH+'px';void hero.offsetHeight;hero.style.transition='';
   hero.style.marginBottom=(heroH>fitH)?(-(heroH-fitH))+'px':'';
-  /* 世界一周できる言語は、世界の横幅が画面に収まるまで引いて見せる（オーストラリアなどが横に出ないように） */
-  if(typeof worldLang==="function"&&worldLang(L)&&typeof gimmickOn==="function"&&gimmickOn("pan")){s=Math.min(s,cw/1000);}
+  /* 世界一周できる言語は、世界の半分ほどの横幅が見えるくらいに引いて見せる（オーストラリアなどが横に出ないように） */
+  if(typeof worldLang==="function"&&worldLang(L)&&typeof gimmickOn==="function"&&gimmickOn("pan")){s=Math.min(s,cw/1000*2);}
   var dpr=Math.min(2,window.devicePixelRatio||1);
   cv.width=Math.round(cw*dpr);cv.height=Math.round(heroH*dpr);cv.style.height=heroH+'px';
   var vw=cw/s,vh=heroH/s,follow=vw<bw*0.98;
@@ -214,7 +216,7 @@ function mapMount(){
        acc:cssVar('--c-'+L),plane:new Path2D(PLANE_D),t0:performance.now(),reveal:(anim==='lang'||anim==='first')&&!reduceMotion,route:(anim&&!reduceMotion)?performance.now()+(anim==='mode'?0:250):0,raf:0,cache:null};
   MAP.glide=glide;
   cv.onclick=function(ev){
-    var r=cv.getBoundingClientRect(),M=MAP,x=(ev.clientX-r.left-M.cw/2)/M.s+M.cam.x-(M.panX||0)/M.s,y=(ev.clientY-r.top-M.ch/2)/M.s+M.cam.y,best=-1,bd=(typeof gimmickOn==='function'&&gimmickOn('citytap')?26:18)/M.s;
+    var r=cv.getBoundingClientRect(),M=MAP,x=(ev.clientX-r.left-M.cw/2)/M.s+M.cam.x-(M.panX||0)/M.s,y=(ev.clientY-r.top-M.ch/2)/M.s+M.cam.y+mapCY(M),best=-1,bd=(typeof gimmickOn==='function'&&gimmickOn('citytap')?26:18)/M.s;
     if(performance.now()-(M.dragT||0)<300)return;
     M.pts.forEach(function(p,i){var dd=Math.hypot(p.x-x,p.y-y);if(dd<bd){bd=dd;best=i;}});
     if(best>=0){if(typeof gimmickOn==='function'&&gimmickOn('citytap'))gimmickCityCard(cityFor(M.L,best),M.L,function(){openNodeSheet(M.ids[best]);});else openNodeSheet(M.ids[best]);}
@@ -232,7 +234,7 @@ function mapFrame(){
   /* after a mode switch the camera eases from where it was to the new place (900ms, no lag) */
   var gl=M.glide,ge=1;
   if(gl){var gt=clamp((now-gl.t0)/900,0,1);ge=gt<.5?4*gt*gt*gt:1-Math.pow(-2*gt+2,3)/2;if(!F2)M.cam={x:gl.cam0.x+(M.cam0.x-gl.cam0.x)*ge,y:gl.cam0.y+(M.cam0.y-gl.cam0.y)*ge};if(gt>=1)M.glide=null;}
-  var cx=M.cam.x-(M.panX||0)/s,cy=M.cam.y;
+  var cx=M.cam.x-(M.panX||0)/s,cy=M.cam.y+mapCY(M);
   function SX(x){return (x-cx)*s+cw/2;}function SY(y){return (y-cy)*s+ch/2;}
   g.setTransform(M.dpr,0,0,M.dpr,0,0);
   var bg=g.createLinearGradient(0,0,0,ch),DT=gimmickDay();bg.addColorStop(0,DT[0]);bg.addColorStop(1,DT[1]);g.fillStyle=bg;g.fillRect(0,0,cw,ch);gimmickSky(g,cw,ch,now);
