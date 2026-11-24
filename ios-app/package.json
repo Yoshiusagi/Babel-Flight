@@ -1,6 +1,6 @@
 {
   "name": "babel-flight-ios",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Babel Flight for iPhone (Capacitor). The web page comes from app/babel-flight/parts; see README.md.",
   "scripts": {
