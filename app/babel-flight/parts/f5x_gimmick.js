@@ -1,8 +1,8 @@
 /* 試作ギミック（テスト用）: 客室マップに足す演出を、試作ルームでオン・オフしながら見比べるためのもの。
    BF_SIM が false（本番 babelflight.com）のときは何も出ず、地図の動きも変わらない。 */
 var BF_SIM=(typeof BF_SIM_FORCE!=='undefined'&&!!BF_SIM_FORCE)||/^babel-flight-sim/.test(location.hostname);
-/* 地図の新しい演出は、試作ルームとアプリ（BF_APP）でオン。🧪パネルは試作ルームだけ */
-var BF_GM=BF_SIM||(typeof BF_APP!=='undefined'&&!!BF_APP);
+/* 地図の演出は、ウェブ本番・アプリ・試作ルームすべてでオン（🧪パネルは試作ルームだけ） */
+var BF_GM=true;
 var GIMMICK_DEF=[
   {k:'cloud',c:'window',t:'雲が地図の後ろをゆっくり流れる（夕方の空の感じ）'},
   {k:'instr',c:'window',t:'窓の下に高度・速度の表示（飾り）'},
