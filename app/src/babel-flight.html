@@ -6837,6 +6837,9 @@ function gimmickCityCard(c,L,open){
   document.getElementById('gmCityX').onclick=function(){el.remove();};
 }
 /* 左右になぞって地図を動かす（指を離すと、もとの位置へ戻る）。上下は今までどおりページのスクロール */
+/* 世界中の国で公用語になっている言語だけ、地図を世界一周できる（韓国語のように1国だけの言語は動かさない） */
+var WORLD_LANG={en:1,es:1,fr:1,ar:1,pt:1};
+function worldLang(L){return !!WORLD_LANG[L];}
 function gimmickPanSetup(M){
   if(!M||!M.cv)return;
   if(!gimmickOn('pan')){M.cv.style.touchAction='';return;}
@@ -6846,7 +6849,7 @@ function gimmickPanSetup(M){
   /* the handlers use the current MAP: a mode or language change makes a new MAP on the same canvas.
      Sideways finger moves pan the map and stop the page from scrolling sideways; up/down still scroll the page. */
   var st=null;
-  function startAt(x,y){var X=MAP;if(X)st={x:x,y:y,p:X.panX||0,lock:0};}
+  function startAt(x,y){var X=MAP;if(X&&worldLang(X.L))st={x:x,y:y,p:X.panX||0,lock:0};}
   function moveTo(x,y){
     var X=MAP;if(!st||!X)return false;var dx=x-st.x,dy=y-st.y;
     if(!st.lock){if(Math.abs(dx)<8&&Math.abs(dy)<8)return false;st.lock=Math.abs(dx)>Math.abs(dy)?'x':'y';}
