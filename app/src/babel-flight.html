@@ -6438,7 +6438,7 @@ function openNodeSheet(uid){
 
 /* ---- map engine ---- */
 /* 世界一周できる言語は、地図の中身を少し上にずらす（上の空いているところに地図を寄せる） */
-function mapCY(M){return (typeof worldLang==='function'&&worldLang(M.L)&&typeof gimmickOn==='function'&&gimmickOn('pan'))?M.ch*0.14/M.s:0;}
+function mapCY(M){return (typeof worldLang==='function'&&worldLang(M.L)&&typeof gimmickOn==='function'&&gimmickOn('pan'))?M.ch*0.22/M.s:0;}
 function landGrid(){
   if(LAND)return LAND;
   var polys=[];
