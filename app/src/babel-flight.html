@@ -20478,9 +20478,16 @@ function liveState(){
   var n=F&&F.queue?F.queue.length:0,LG=F?LANGS[F.lang]:null;
   return {done:F?Math.min(F.idx,n):0,goal:Math.max(1,n),dest:LG?LG.city:'',phase:F?(MODE_TITLE[F.mode]||'レッスン'):''};
 }
+/* 確認用の表示 (テスト中のみ): ダイナミックアイランドが出たか、出なかった理由を画面の上に8秒出す */
+function liveNote(m){try{var d=document.createElement('div');d.textContent='LIVE: '+m;
+  d.style.cssText='position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 8px);z-index:99999;background:#000d;color:#fff;font:12px/1.4 monospace;padding:8px 10px;border-radius:8px;pointer-events:none';
+  document.body.appendChild(d);setTimeout(function(){if(d.parentNode)d.parentNode.removeChild(d);},8000);}catch(e){}}
 function liveStart(){
-  if(!BF_APP||!nat('LiveActivity'))return;
-  natCall('LiveActivity','start',liveState()).then(function(r){LIVE.on=!!(r&&r.started);}).catch(function(){LIVE.on=false;});
+  if(!BF_APP)return;
+  if(!nat('LiveActivity')){liveNote('plugin not found');return;}
+  natCall('LiveActivity','start',liveState()).then(function(r){
+    LIVE.on=!!(r&&r.started);liveNote(LIVE.on?'started':'not started: '+(r&&r.reason||'?'));
+  }).catch(function(e){LIVE.on=false;liveNote('error: '+((e&&e.message)||e));});
 }
 function liveUpdate(){if(LIVE.on)natCall('LiveActivity','update',liveState()).catch(function(){});}
 function liveEnd(){if(!LIVE.on)return;LIVE.on=false;natCall('LiveActivity','end',{}).catch(function(){});}

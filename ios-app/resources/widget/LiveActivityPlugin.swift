@@ -24,8 +24,8 @@ public class LiveActivityPlugin: CAPPlugin, CAPBridgedPlugin {
     }
 
     @objc func start(_ call: CAPPluginCall) {
-        guard #available(iOS 16.2, *) else { call.resolve(["started": false]); return }
-        guard ActivityAuthorizationInfo().areActivitiesEnabled else { call.resolve(["started": false]); return }
+        guard #available(iOS 16.2, *) else { call.resolve(["started": false, "reason": "needs iOS 16.2 or newer"]); return }
+        guard ActivityAuthorizationInfo().areActivitiesEnabled else { call.resolve(["started": false, "reason": "Live Activities are off for this app in Settings"]); return }
         let content = ActivityContent(state: state(call), staleDate: nil)
         Task {
             // one flight at a time: close any that is still showing
@@ -37,9 +37,9 @@ public class LiveActivityPlugin: CAPPlugin, CAPBridgedPlugin {
                     attributes: BabelFlightAttributes(title: "Babel Flight"),
                     content: content,
                     pushType: nil)
-                call.resolve(["started": true])
+                call.resolve(["started": true, "reason": "ok"])
             } catch {
-                call.resolve(["started": false])
+                call.resolve(["started": false, "reason": "request failed: \(error.localizedDescription)"])
             }
         }
     }
