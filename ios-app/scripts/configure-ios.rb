@@ -149,7 +149,7 @@ widget.build_configurations.each do |c|
   s["GENERATE_INFOPLIST_FILE"] = "NO"
   s["CODE_SIGN_ENTITLEMENTS"] = "#{WIDGET}/BabelWidget.entitlements"
   s["SWIFT_VERSION"] = "5.0"
-  s["IPHONEOS_DEPLOYMENT_TARGET"] = "15.0"
+  s["IPHONEOS_DEPLOYMENT_TARGET"] = "16.2"   # the Lock Screen widgets and the Live Activity need iOS 16
   s["TARGETED_DEVICE_FAMILY"] = "1"
   s["SKIP_INSTALL"] = "YES"
   s["PRODUCT_NAME"] = WIDGET

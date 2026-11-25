@@ -17,8 +17,11 @@ public class WidgetBridgePlugin: CAPPlugin, CAPBridgedPlugin {
             call.reject("app group unavailable")
             return
         }
-        for key in widgetLineKeys {
+        for key in widgetLineKeys + ["dest"] {
             defaults.set(call.getString(key) ?? "", forKey: key)
+        }
+        for key in ["streak", "done", "goal", "reviews"] {
+            defaults.set(call.getInt(key) ?? 0, forKey: key)
         }
         if #available(iOS 14.0, *) {
             WidgetCenter.shared.reloadAllTimelines()

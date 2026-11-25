@@ -99,10 +99,12 @@ function widgetPush(){
   if(!BF_APP)return;
   try{
     var s=streakNow(),t=todayCount(),due=dueList(save.lang).length;
+    var LGw=LANGS[save.lang]||{};
     ownCall('WidgetBridge','setSummary',{
       line1:'Babel Flight',
       line2:uiF('連続{0}日',[s]),
-      line3:uiF('今日 {0}/{1}レッスン',[t,save.goal])+(due?' ・ '+uiF('復習 {0}フレーズ',[due]):'')
+      line3:uiF('今日 {0}/{1}レッスン',[t,save.goal])+(due?' ・ '+uiF('復習 {0}フレーズ',[due]):''),
+      streak:s,done:t,goal:save.goal,reviews:due,dest:LGw.city||''
     }).catch(function(){});
   }catch(e){}
 }
@@ -112,21 +114,12 @@ function liveState(){
   var n=F&&F.queue?F.queue.length:0,LG=F?LANGS[F.lang]:null;
   return {done:F?Math.min(F.idx,n):0,goal:Math.max(1,n),dest:LG?LG.city:'',phase:F?(MODE_TITLE[F.mode]||'レッスン'):''};
 }
-/* 確認用の表示 (テスト中のみ): ダイナミックアイランドが出たか、出なかった理由を画面の上に8秒出す */
-function liveNote(m,ms){try{var d=document.createElement('div');d.textContent='LIVE: '+m;
-  d.style.cssText='position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 8px);z-index:99999;background:#000d;color:#fff;font:12px/1.4 monospace;padding:8px 10px;border-radius:8px;pointer-events:none';
-  document.body.appendChild(d);setTimeout(function(){if(d.parentNode)d.parentNode.removeChild(d);},ms||8000);}catch(e){}}
-/* 起動時の確認 (テスト中のみ): ネイティブとつながっているかを20秒表示 */
-function liveProbe(){
-  liveNote('起動 BF_APP='+BF_APP+' Capacitor='+(!!(window.Capacitor)),20000);
-  ownCall('LiveActivity','ping',{}).then(function(r){liveNote('ping '+JSON.stringify(r),20000);}).catch(function(e){liveNote('ping エラー: '+((e&&e.message)||e),20000);});
-}
 function liveStart(){
   if(!BF_APP)return;
-  ownCall('LiveActivity','start',liveState()).then(function(r){
-    LIVE.on=!!(r&&r.started);liveNote(LIVE.on?'started':'not started: '+(r&&r.reason||'?'));
-  }).catch(function(e){LIVE.on=false;liveNote('error: '+((e&&e.message)||e));});
+  ownCall('LiveActivity','start',liveState()).then(function(r){LIVE.on=!!(r&&r.started);}).catch(function(){LIVE.on=false;});
 }
+/* 起動時: 前のレッスンで出たままになっている Dynamic Island を消す */
+function liveClearLeft(){if(BF_APP)ownCall('LiveActivity','end',{}).catch(function(){});}
 function liveUpdate(){if(LIVE.on)ownCall('LiveActivity','update',liveState()).catch(function(){});}
 function liveEnd(){if(!LIVE.on)return;LIVE.on=false;ownCall('LiveActivity','end',{}).catch(function(){});}
 function remSchedule(){
@@ -309,7 +302,7 @@ if(BF_APP){
   var bootNat=function(){
     natRestore().then(function(reloading){
       if(reloading)return;
-      offlineSync();natStatusBar();remCheckPermission();remSchedule();natMirrorSoon();liveProbe();
+      offlineSync();natStatusBar();remCheckPermission();remSchedule();natMirrorSoon();liveClearLeft();
       natCall('SplashScreen','hide',{fadeOutDuration:250}).catch(function(){});
     });
   };
