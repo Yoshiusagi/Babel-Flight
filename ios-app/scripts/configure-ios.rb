@@ -105,6 +105,18 @@ end
   FileUtils.cp(File.join(WIDGET_RES, f), File.join(APP_DIR, f))
 end
 
+# Capacitor's storyboard opens a plain CAPBridgeViewController, which never calls our capacitorDidLoad,
+# so our native plugins (widget, Live Activity, tabs) were never registered. Point the first screen at ours.
+storyboard = File.join(APP_DIR, "Base.lproj/Main.storyboard")
+if File.exist?(storyboard)
+  sb = File.read(storyboard)
+  fixed = sb.gsub(/customClass="CAPBridgeViewController"( customModule="Capacitor")?/, 'customClass="ViewController" customModule="App"')
+  File.write(storyboard, fixed)
+  warn(fixed == sb ? "storyboard: first screen already ViewController? (no CAPBridgeViewController found)" : "storyboard: first screen -> ViewController")
+else
+  warn "storyboard not found: #{storyboard}"
+end
+
 # ---------- Xcode project ----------
 project = Xcodeproj::Project.open(File.join(ROOT, "ios/App/App.xcodeproj"))
 target = project.targets.find { |t| t.name == "App" } or abort "App target not found"
