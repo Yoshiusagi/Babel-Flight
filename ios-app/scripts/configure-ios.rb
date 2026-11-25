@@ -86,6 +86,7 @@ info["CFBundleLocalizations"] = ["ja"]
 info["ITSAppUsesNonExemptEncryption"] = false
 info["UISupportedInterfaceOrientations"] = ["UIInterfaceOrientationPortrait"]
 info["UIRequiresFullScreen"] = true
+info["NSSupportsLiveActivities"] = true   # Dynamic Island / ロック画面 (LiveActivity)
 schemes = (info["CFBundleURLTypes"] || []).reject { |t| (t["CFBundleURLSchemes"] || []).any? { |s| s.start_with?("com.googleusercontent.apps.") } }
 schemes << { "CFBundleURLName" => "google-sign-in", "CFBundleURLSchemes" => [google["REVERSED_CLIENT_ID"]] }
 info["CFBundleURLTypes"] = schemes
@@ -97,10 +98,10 @@ WIDGET_DIR = File.join(ROOT, "ios/App", WIDGET)
 WIDGET_RES = File.join(RES, "widget")
 widget_bid = "#{cap["appId"]}.widget"
 FileUtils.mkdir_p(WIDGET_DIR)
-%w[BabelWidget.swift WidgetShared.swift Info.plist BabelWidget.entitlements].each do |f|
+%w[BabelWidget.swift WidgetShared.swift LiveActivityShared.swift LiveActivityWidget.swift Info.plist BabelWidget.entitlements].each do |f|
   FileUtils.cp(File.join(WIDGET_RES, f), File.join(WIDGET_DIR, f))
 end
-%w[WidgetShared.swift WidgetBridgePlugin.swift NativeTabsPlugin.swift ViewController.swift].each do |f|
+%w[WidgetShared.swift WidgetBridgePlugin.swift NativeTabsPlugin.swift LiveActivityShared.swift LiveActivityPlugin.swift ViewController.swift].each do |f|
   FileUtils.cp(File.join(WIDGET_RES, f), File.join(APP_DIR, f))
 end
 
@@ -116,7 +117,7 @@ end
 group.new_reference("App.entitlements") unless group.files.any? { |f| f.path == "App.entitlements" }
 
 # the app's Swift files (the plugin is registered in ViewController.swift)
-%w[WidgetShared.swift WidgetBridgePlugin.swift NativeTabsPlugin.swift ViewController.swift].each do |name|
+%w[WidgetShared.swift WidgetBridgePlugin.swift NativeTabsPlugin.swift LiveActivityShared.swift LiveActivityPlugin.swift ViewController.swift].each do |name|
   ref = group.files.find { |f| f.path == name } || group.new_reference(name)
   target.source_build_phase.add_file_reference(ref, true) unless target.source_build_phase.files_references.include?(ref)
 end
@@ -124,7 +125,7 @@ end
 # the widget target, embedded in the app (PlugIns)
 widget = project.targets.find { |t| t.name == WIDGET } || project.new_target(:app_extension, WIDGET, :ios, "15.0")
 wgroup = project.main_group.children.find { |g| g.respond_to?(:path) && g.path == WIDGET } || project.main_group.new_group(WIDGET, WIDGET)
-%w[BabelWidget.swift WidgetShared.swift].each do |name|
+%w[BabelWidget.swift WidgetShared.swift LiveActivityShared.swift LiveActivityWidget.swift].each do |name|
   ref = wgroup.files.find { |f| f.path == name } || wgroup.new_reference(name)
   widget.source_build_phase.add_file_reference(ref, true) unless widget.source_build_phase.files_references.include?(ref)
 end

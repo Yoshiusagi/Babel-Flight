@@ -52,7 +52,6 @@ struct SummaryView: View {
     }
 }
 
-@main
 struct BabelWidget: Widget {
     let kind = "BabelWidget"
 
@@ -63,5 +62,16 @@ struct BabelWidget: Widget {
         .configurationDisplayName("Babel Flight")
         .description("Streak, today's lessons and reviews.")
         .supportedFamilies([.systemSmall, .systemMedium])
+    }
+}
+
+// The widget bundle: the home-screen widget, and (iOS 16.2+) the Dynamic Island / Lock Screen card.
+@main
+struct BabelWidgetBundle: WidgetBundle {
+    var body: some Widget {
+        BabelWidget()
+        if #available(iOS 16.2, *) {
+            BabelLiveActivity()
+        }
     }
 }

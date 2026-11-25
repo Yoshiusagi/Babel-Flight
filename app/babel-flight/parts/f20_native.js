@@ -101,6 +101,18 @@ function widgetPush(){
     }).catch(function(){});
   }catch(e){}
 }
+/* ---- Dynamic Island / ロック画面 (iOS 16.2+): レッスン中だけ表示。対応していない端末では何もしない ---- */
+var LIVE={on:false};
+function liveState(){
+  var n=F&&F.queue?F.queue.length:0,LG=F?LANGS[F.lang]:null;
+  return {done:F?Math.min(F.idx,n):0,goal:Math.max(1,n),dest:LG?LG.city:'',phase:F?(MODE_TITLE[F.mode]||'レッスン'):''};
+}
+function liveStart(){
+  if(!BF_APP||!nat('LiveActivity'))return;
+  natCall('LiveActivity','start',liveState()).then(function(r){LIVE.on=!!(r&&r.started);}).catch(function(){LIVE.on=false;});
+}
+function liveUpdate(){if(LIVE.on)natCall('LiveActivity','update',liveState()).catch(function(){});}
+function liveEnd(){if(!LIVE.on)return;LIVE.on=false;natCall('LiveActivity','end',{}).catch(function(){});}
 function remSchedule(){
   if(!BF_APP||!nat('LocalNotifications'))return Promise.resolve();
   widgetPush();

@@ -59,6 +59,7 @@ function startFlight(opts){
     shuffle(items).forEach(function(it,n){var k=kinds[n%5];q.push({k:canDo(k,it)?k:'j2t',it:it,w:1});});
   }
   q.forEach(function(x){F.wTotal+=x.w;});
+  liveStart();
   view='flight';
   var LG=LANGS[F.lang],title=opts.mode==='unit'?unitTitle(opts.uid):(opts.mode==='skip'||opts.mode==='rem')?MODE_TITLE[opts.mode]+': '+unitTitle(opts.uid):MODE_TITLE[opts.mode];
   var id=(opts.mode==='unit'||opts.mode==='skip'||opts.mode==='rem')?flightNo(F.lang,opts.uid):'BF'+(ORDER.indexOf(F.lang)+1)+'XX';
@@ -281,7 +282,7 @@ function onCheck(){
 }
 function nextStep(){
   if(!F||!F.cur||!F.answered)return;
-  F.wDone+=F.cur.w;F.idx++;closeSheet();
+  F.wDone+=F.cur.w;F.idx++;closeSheet();liveUpdate();
   if(F.idx>=F.queue.length){land();return;}
   window.scrollTo(0,0);showStep();cloudPass();
 }
@@ -302,7 +303,7 @@ function abortAsk(){
 function leaveFlight(){
   try{speechSynthesis.cancel();}catch(e){}
   var back=F&&F.back==='review'?'review':'home';
-  F=null;board=null;closeSheet();view=back;render();window.scrollTo(0,0);
+  liveEnd();F=null;board=null;closeSheet();view=back;render();window.scrollTo(0,0);
 }
 
 function startUnitFlight(uid){

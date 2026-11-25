@@ -59,6 +59,7 @@ function landAi(){
 }
 function completeLesson(o){
   if(typeof gimmickOnDone==='function')gimmickOnDone();
+  liveEnd();
   var L=o.L,LG=LANGS[L],today=dayStr(),P=save.prog[L],rankBefore=statusIdx(),unitMode=(o.mode==='unit'||o.mode==='scene');
   if(!save.daily||save.daily.d!==today)save.daily={d:today,n:0};
   save.daily.n++;
