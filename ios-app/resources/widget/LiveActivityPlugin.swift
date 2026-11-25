@@ -11,7 +11,8 @@ public class LiveActivityPlugin: CAPPlugin, CAPBridgedPlugin {
     public let pluginMethods: [CAPPluginMethod] = [
         CAPPluginMethod(name: "start", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "update", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "end", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "end", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "ping", returnType: CAPPluginReturnPromise)
     ]
 
     @available(iOS 16.2, *)
@@ -21,6 +22,13 @@ public class LiveActivityPlugin: CAPPlugin, CAPBridgedPlugin {
             goal: max(1, call.getInt("goal") ?? 1),
             dest: call.getString("dest") ?? "",
             phase: call.getString("phase") ?? "")
+    }
+
+    // 確認用: ネイティブとつながっているか、Live Activity が許可されているかを返す
+    @objc func ping(_ call: CAPPluginCall) {
+        var enabled = false
+        if #available(iOS 16.2, *) { enabled = ActivityAuthorizationInfo().areActivitiesEnabled }
+        call.resolve(["ok": true, "liveActivitiesEnabled": enabled])
     }
 
     @objc func start(_ call: CAPPluginCall) {

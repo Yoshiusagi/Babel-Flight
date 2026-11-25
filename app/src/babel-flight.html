@@ -20484,9 +20484,14 @@ function liveState(){
   return {done:F?Math.min(F.idx,n):0,goal:Math.max(1,n),dest:LG?LG.city:'',phase:F?(MODE_TITLE[F.mode]||'レッスン'):''};
 }
 /* 確認用の表示 (テスト中のみ): ダイナミックアイランドが出たか、出なかった理由を画面の上に8秒出す */
-function liveNote(m){try{var d=document.createElement('div');d.textContent='LIVE: '+m;
+function liveNote(m,ms){try{var d=document.createElement('div');d.textContent='LIVE: '+m;
   d.style.cssText='position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 8px);z-index:99999;background:#000d;color:#fff;font:12px/1.4 monospace;padding:8px 10px;border-radius:8px;pointer-events:none';
-  document.body.appendChild(d);setTimeout(function(){if(d.parentNode)d.parentNode.removeChild(d);},8000);}catch(e){}}
+  document.body.appendChild(d);setTimeout(function(){if(d.parentNode)d.parentNode.removeChild(d);},ms||8000);}catch(e){}}
+/* 起動時の確認 (テスト中のみ): ネイティブとつながっているかを20秒表示 */
+function liveProbe(){
+  liveNote('起動 BF_APP='+BF_APP+' Capacitor='+(!!(window.Capacitor)),20000);
+  ownCall('LiveActivity','ping',{}).then(function(r){liveNote('ping '+JSON.stringify(r),20000);}).catch(function(e){liveNote('ping エラー: '+((e&&e.message)||e),20000);});
+}
 function liveStart(){
   if(!BF_APP)return;
   ownCall('LiveActivity','start',liveState()).then(function(r){
@@ -20675,7 +20680,7 @@ if(BF_APP){
   var bootNat=function(){
     natRestore().then(function(reloading){
       if(reloading)return;
-      offlineSync();natStatusBar();remCheckPermission();remSchedule();natMirrorSoon();
+      offlineSync();natStatusBar();remCheckPermission();remSchedule();natMirrorSoon();liveProbe();
       natCall('SplashScreen','hide',{fadeOutDuration:250}).catch(function(){});
     });
   };
