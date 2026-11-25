@@ -7327,6 +7327,7 @@ function completeLesson(o){
   var L=o.L,LG=LANGS[L],today=dayStr(),P=save.prog[L],rankBefore=statusIdx(),unitMode=(o.mode==='unit'||o.mode==='scene');
   if(!save.daily||save.daily.d!==today)save.daily={d:today,n:0};
   save.daily.n++;
+  if(typeof widgetPush==='function')widgetPush();   /* ホーム画面のウィジェットを今日の数に合わせる */
   var goalJust=save.daily.n===save.goal;
   var base=unitMode?20:15,c3=o.corr*3,sp=o.stars*(unitMode?15:10),miles=base+c3+sp;
   var lines=[[o.mode==='scene'?'通話完了':'レッスン完了',base],[(o.corrLabel||'正解')+' × '+o.corr,c3],['着陸評価 ★'+o.stars,sp]];
