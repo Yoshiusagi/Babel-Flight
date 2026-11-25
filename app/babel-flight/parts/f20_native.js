@@ -8,6 +8,11 @@
    - asks before anything is first sent to the AI (App Store rule 5.1.2(i))
    - the class / paid-plan test screens are off (the App Store version is free for now) */
 function nat(name){try{var p=window.Capacitor&&window.Capacitor.Plugins;return (p&&p[name])||null;}catch(e){return null;}}
+/* 自作のネイティブ機能 (WidgetBridge / LiveActivity) は window.Capacitor.Plugins に載らないことがあるので、ブリッジを直接呼ぶ */
+function ownCall(name,method,arg){
+  try{var C=window.Capacitor;if(C&&typeof C.nativePromise==='function')return Promise.resolve(C.nativePromise(name,method,arg||{}));}catch(e){return Promise.reject(e);}
+  return Promise.reject(new Error('bridge missing'));
+}
 function natCall(name,method,arg){
   var p=nat(name);if(!p||typeof p[method]!=='function')return Promise.reject(new Error('unavailable'));
   try{return Promise.resolve(p[method](arg));}catch(e){return Promise.reject(e);}
@@ -91,10 +96,10 @@ var REM={busy:false,again:false,timer:0,denied:false};
 function remIds(){var a=[];for(var i=0;i<REM_DAYS;i++)a.push({id:REM_BASE+i});return a;}
 /* ---- ホーム画面のウィジェット (iOS): 3行だけ App Group に置く。表示の言葉は今の表示言語で作る ---- */
 function widgetPush(){
-  if(!BF_APP||!nat('WidgetBridge'))return;
+  if(!BF_APP)return;
   try{
     var s=streakNow(),t=todayCount(),due=dueList(save.lang).length;
-    natCall('WidgetBridge','setSummary',{
+    ownCall('WidgetBridge','setSummary',{
       line1:'Babel Flight',
       line2:uiF('連続{0}日',[s]),
       line3:uiF('今日 {0}/{1}レッスン',[t,save.goal])+(due?' ・ '+uiF('復習 {0}フレーズ',[due]):'')
@@ -113,13 +118,12 @@ function liveNote(m){try{var d=document.createElement('div');d.textContent='LIVE
   document.body.appendChild(d);setTimeout(function(){if(d.parentNode)d.parentNode.removeChild(d);},8000);}catch(e){}}
 function liveStart(){
   if(!BF_APP)return;
-  if(!nat('LiveActivity')){liveNote('plugin not found');return;}
-  natCall('LiveActivity','start',liveState()).then(function(r){
+  ownCall('LiveActivity','start',liveState()).then(function(r){
     LIVE.on=!!(r&&r.started);liveNote(LIVE.on?'started':'not started: '+(r&&r.reason||'?'));
   }).catch(function(e){LIVE.on=false;liveNote('error: '+((e&&e.message)||e));});
 }
-function liveUpdate(){if(LIVE.on)natCall('LiveActivity','update',liveState()).catch(function(){});}
-function liveEnd(){if(!LIVE.on)return;LIVE.on=false;natCall('LiveActivity','end',{}).catch(function(){});}
+function liveUpdate(){if(LIVE.on)ownCall('LiveActivity','update',liveState()).catch(function(){});}
+function liveEnd(){if(!LIVE.on)return;LIVE.on=false;ownCall('LiveActivity','end',{}).catch(function(){});}
 function remSchedule(){
   if(!BF_APP||!nat('LocalNotifications'))return Promise.resolve();
   widgetPush();
