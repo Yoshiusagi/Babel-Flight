@@ -26,7 +26,9 @@ var GIMMICK_DEF=[
   {k:'pan',c:'all',t:'地図を左右になぞって動かせる（指を離すと戻る）'},
   {k:'bigdot',c:'all',t:'空港の点を大きくして、押しやすくする'},
   {k:'hoverpv',c:'all',t:'PCでは、空港にマウスを乗せるとレッスンの内容をプレビュー'},
-  {k:'citynames',c:'all',t:'空港の横に都市名を出す'}
+  {k:'citynames',c:'all',t:'空港の横に都市名を出す'},
+  {k:'island',c:'all',t:'レッスン中も画面の上に島（アプリ・iPhone）：飛行機が吸い込まれて入り、答えるたびに数字が進む'},
+  {k:'stamp',c:'all',t:'レッスンを終えると、都市のスタンプがぺたっと押される'}
 ];
 var GIMMICK=(function(){try{var raw=localStorage.getItem('bf.gimmick');if(raw===null){var all={};GIMMICK_DEF.forEach(function(d){all[d.k]=true;});return all;}return JSON.parse(raw)||{};}catch(e){return {};}})();
 var GMK={flip:'',flipT:0};
@@ -178,14 +180,79 @@ function gimmickShake(){
   if(!h||reduceMotion||!h.animate)return;
   h.animate([{transform:'translate(0,0)'},{transform:'translate(-3px,2px)'},{transform:'translate(4px,-2px)'},{transform:'translate(-2px,1px)'},{transform:'translate(0,0)'}],{duration:480,easing:'ease-out'});
 }
+/* ---- アプリの中の島（Dynamic Island の見た目）: アプリを開いている間も出す ---- */
+var ISL={el:null,total:0,done:0};
+function gimmickIslandOK(){return gimmickOn('island')&&(BF_APP||BF_SIM)&&!reduceMotion&&!!document.body.animate;}
+function gimmickIslandStart(){
+  if(!gimmickIslandOK()||ISL.el||!F)return;
+  var n=document.createElement('div');n.setAttribute('aria-hidden','true');
+  n.style.cssText='position:fixed;left:50%;top:11px;width:126px;height:37px;margin-left:-63px;border-radius:20px;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;gap:7px;font:700 14px/1 system-ui,-apple-system,sans-serif;z-index:2147483450;pointer-events:none;opacity:0;box-shadow:0 2px 10px rgba(0,0,0,.35)';
+  n.innerHTML='<span class="isl-plane" style="font-size:15px;display:inline-block">✈️</span><span class="isl-num"></span>';
+  document.body.appendChild(n);ISL.el=n;
+  ISL.total=Math.max(1,F.queue.length);ISL.done=0;
+  n.querySelector('.isl-num').textContent='0/'+ISL.total;
+  /* 飛行機が下から飛んできて、島に吸い込まれる */
+  var r=n.getBoundingClientRect(),tx=r.left+r.width/2,ty=r.top+r.height/2;
+  var sx=innerWidth/2,sy=innerHeight*0.82,mx=sx+(tx-sx)*0.45-60,my=sy+(ty-sy)*0.45;
+  var p=document.createElement('div');p.setAttribute('aria-hidden','true');p.textContent='✈️';
+  p.style.cssText='position:fixed;left:-15px;top:-15px;font-size:30px;line-height:1;z-index:2147483460;pointer-events:none;will-change:transform';
+  document.body.appendChild(p);
+  var a=p.animate([
+    {transform:'translate('+sx+'px,'+sy+'px) rotate(-70deg) scale(1)',opacity:0},
+    {transform:'translate('+sx+'px,'+(sy-30)+'px) rotate(-70deg) scale(1.1)',opacity:1,offset:.15},
+    {transform:'translate('+mx+'px,'+my+'px) rotate(-80deg) scale(.9)',opacity:1,offset:.6},
+    {transform:'translate('+tx+'px,'+ty+'px) rotate(-90deg) scale(.2)',opacity:0}
+  ],{duration:950,easing:'ease-in'});
+  n.animate([{opacity:0,transform:'scale(.5)'},{opacity:1,transform:'scale(1)'}],{duration:260,delay:700,fill:'backwards'});
+  a.onfinish=function(){p.remove();n.animate([{transform:'scale(1)'},{transform:'scale(1.16)'},{transform:'scale(1)'}],{duration:340,easing:'ease-out'});};
+}
+/* 答えるたび: 数字がパラッと変わり、飛行機が跳ねる */
+function gimmickIslandStep(){
+  if(!ISL.el||!F)return;
+  ISL.total=Math.max(1,F.queue.length);ISL.done=Math.min(F.idx,ISL.total);
+  var num=ISL.el.querySelector('.isl-num'),pl=ISL.el.querySelector('.isl-plane');
+  if(num){num.textContent=ISL.done+'/'+ISL.total;num.animate([{transform:'translateY(-7px)',opacity:.2},{transform:'translateY(0)',opacity:1}],{duration:260,easing:'ease-out'});}
+  if(pl)pl.animate([{transform:'translateY(0) scale(1)'},{transform:'translateY(-7px) scale(1.35)'},{transform:'translateY(0) scale(1)'}],{duration:360,easing:'ease-out'});
+}
+/* 着陸: 島が広がって「着陸」と出て、消える */
+function gimmickIslandDone(){
+  var n=ISL.el;if(!n)return;ISL.el=null;
+  var num=n.querySelector('.isl-num'),pl=n.querySelector('.isl-plane');
+  if(num)num.textContent='着陸';
+  if(pl)pl.textContent='🛬';
+  n.animate([{width:'126px',marginLeft:'-63px'},{width:'220px',marginLeft:'-110px'}],{duration:420,easing:'cubic-bezier(.2,.9,.3,1.2)',fill:'forwards'});
+  setTimeout(function(){n.animate([{opacity:1},{opacity:0}],{duration:420,fill:'forwards'}).onfinish=function(){n.remove();};},1700);
+}
+/* 途中でやめたとき: 島をすぐ消す */
+function gimmickIslandRemove(){var n=ISL.el;ISL.el=null;if(!n)return;n.animate([{opacity:1},{opacity:0}],{duration:200,fill:'forwards'}).onfinish=function(){n.remove();};}
+/* スタンプ: 都市のスタンプがぺたっと押される */
+function gimmickStamp(L){
+  if(reduceMotion||!document.body.animate)return;
+  var LG=LANGS[L]||{},o=gimmickOverlay(),s=document.createElement('div');
+  s.style.cssText='position:absolute;left:50%;top:40%;width:150px;height:150px;margin:-75px 0 0 -75px;border-radius:50%;border:4px solid #e0567a;color:#e0567a;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,255,255,.08);font:800 13px/1.2 system-ui,-apple-system,sans-serif;text-align:center;box-shadow:inset 0 0 0 3px rgba(224,86,122,.25)';
+  s.innerHTML='<div style="font-size:12px;letter-spacing:.14em">'+(LG.code||'')+'</div><div style="font-size:18px;font-weight:900;margin:2px 0">'+(LG.city||'')+'</div><div style="font-size:11px">CLEARED</div>';
+  o.appendChild(s);
+  var R='rotate(-14deg)';
+  var a=s.animate([
+    {transform:R+' scale(2.2)',opacity:0},
+    {transform:R+' scale(.92)',opacity:1,offset:.35},
+    {transform:R+' scale(1.04)',opacity:1,offset:.5},
+    {transform:R+' scale(1)',opacity:1,offset:.6},
+    {transform:R+' scale(1)',opacity:0}
+  ],{duration:1900,easing:'ease-out',fill:'forwards'});
+  setTimeout(function(){try{gimmickSound('rip');}catch(e){}},650);
+  a.onfinish=function(){o.remove();};
+}
 /* レッスン開始（startFlight の最初に呼ぶ） */
 function gimmickOnStart(){
   if(gimmickOn('ticketfx')&&gimmickCab()==='lounge')gimmickTicketFx();
 }
 /* レッスン完了（completeLesson の最初に呼ぶ） */
-function gimmickOnDone(){
+function gimmickOnDone(L){
   if(gimmickOn('champagne')&&gimmickCab()==='suite')gimmickChampagne();
   if(gimmickOn('arrive'))gimmickShake();
+  gimmickIslandDone();
+  if(gimmickOn('stamp'))gimmickStamp(L);
 }
 
 /* ---- 地図をメインにする試作 ---- */

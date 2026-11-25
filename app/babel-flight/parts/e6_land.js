@@ -58,7 +58,7 @@ function landAi(){
     grade:mist===0?['全問正解！','ALL CORRECT','新しい文でも意味がわかった！']:['おつかれさま','PRACTICE DONE','新しい文で使い方をつかもう'],wrong:[],wrongTitle:'',wrongNote:''});
 }
 function completeLesson(o){
-  if(typeof gimmickOnDone==='function')gimmickOnDone();
+  if(typeof gimmickOnDone==='function')gimmickOnDone(o.L);
   liveEnd();
   var L=o.L,LG=LANGS[L],today=dayStr(),P=save.prog[L],rankBefore=statusIdx(),unitMode=(o.mode==='unit'||o.mode==='scene');
   if(!save.daily||save.daily.d!==today)save.daily={d:today,n:0};
