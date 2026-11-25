@@ -191,20 +191,27 @@ function gimmickIslandStart(){
   document.body.appendChild(n);ISL.el=n;
   ISL.total=Math.max(1,F.queue.length);ISL.done=0;
   n.querySelector('.isl-num').textContent='0/'+ISL.total;
-  /* 飛行機が下から飛んできて、島に吸い込まれる */
-  var r=n.getBoundingClientRect(),tx=r.left+r.width/2,ty=r.top+r.height/2;
-  var sx=innerWidth/2,sy=innerHeight*0.82,mx=sx+(tx-sx)*0.45-60,my=sy+(ty-sy)*0.45;
-  var p=document.createElement('div');p.setAttribute('aria-hidden','true');p.textContent='✈️';
-  p.style.cssText='position:fixed;left:-15px;top:-15px;font-size:30px;line-height:1;z-index:2147483460;pointer-events:none;will-change:transform';
-  document.body.appendChild(p);
-  var a=p.animate([
-    {transform:'translate('+sx+'px,'+sy+'px) rotate(-70deg) scale(1)',opacity:0},
-    {transform:'translate('+sx+'px,'+(sy-30)+'px) rotate(-70deg) scale(1.1)',opacity:1,offset:.15},
-    {transform:'translate('+mx+'px,'+my+'px) rotate(-80deg) scale(.9)',opacity:1,offset:.6},
-    {transform:'translate('+tx+'px,'+ty+'px) rotate(-90deg) scale(.2)',opacity:0}
-  ],{duration:950,easing:'ease-in'});
-  n.animate([{opacity:0,transform:'scale(.5)'},{opacity:1,transform:'scale(1)'}],{duration:260,delay:700,fill:'backwards'});
-  a.onfinish=function(){p.remove();n.animate([{transform:'scale(1)'},{transform:'scale(1.16)'},{transform:'scale(1)'}],{duration:340,easing:'ease-out'});};
+}
+/* 白い大きな飛行機（離陸の演出）が、島に吸い込まれる。着いたら島が現れる */
+function gimmickFlyToIsland(pl){
+  var n=ISL.el;if(!n||!pl||!pl.animate)return;
+  var r=pl.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+  var ir=n.getBoundingClientRect(),tx=ir.left+ir.width/2,ty=ir.top+ir.height/2;
+  var dx=tx-cx,dy=ty-cy;
+  pl.style.animation='none';
+  var a=pl.animate([
+    {transform:'translate(-50%,-50%) rotate(-90deg) scale(1)',opacity:1},
+    {transform:'translate(calc(-50% + '+(dx*0.55)+'px),calc(-50% + '+(dy*0.55-40)+'px)) rotate(-70deg) scale(.7)',opacity:1,offset:.6},
+    {transform:'translate(calc(-50% + '+dx+'px),calc(-50% + '+dy+'px)) rotate(-60deg) scale(.12)',opacity:0}
+  ],{duration:1000,delay:150,easing:'cubic-bezier(.5,0,.8,.5)',fill:'forwards'});
+  a.onfinish=function(){gimmickIslandArrive();};
+}
+/* 島が現れて、ぽんと弾む */
+function gimmickIslandArrive(){
+  var n=ISL.el;if(!n)return;
+  n.style.opacity='1';
+  n.animate([{transform:'scale(.6)'},{transform:'scale(1.16)'},{transform:'scale(1)'}],{duration:380,easing:'ease-out'});
+  try{tone(988,0.12,'sine',0.04,0,0);}catch(e){}
 }
 /* 答えるたび: 数字がパラッと変わり、飛行機が跳ねる */
 function gimmickIslandStep(){

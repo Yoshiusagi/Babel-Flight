@@ -26,6 +26,7 @@ function cineTakeoff(info,done){
     '<div class="cine-flash"></div>';
   c.className='cine takeoff';c.hidden=false;void c.offsetWidth;c.classList.add('play');
   engineSound();ambBoost(true);
+  if(typeof gimmickFlyToIsland==='function')gimmickFlyToIsland(c.querySelector('.cine-plane'));
   cineTimer=setTimeout(cineEnd,1150);
 }
 function cineLanding(info,done){
