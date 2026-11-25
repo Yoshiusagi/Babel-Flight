@@ -6653,7 +6653,8 @@ var GIMMICK_DEF=[
   {k:'pan',c:'all',t:'地図を左右になぞって動かせる（指を離すと戻る）'},
   {k:'bigdot',c:'all',t:'空港の点を大きくして、押しやすくする'},
   {k:'hoverpv',c:'all',t:'PCでは、空港にマウスを乗せるとレッスンの内容をプレビュー'},
-  {k:'citynames',c:'all',t:'空港の横に都市名を出す'}
+  {k:'citynames',c:'all',t:'空港の横に都市名を出す'},
+  {k:'tearticket',c:'all',t:'レッスンを始めると搭乗券が出る。右のちぎり部分を引っぱると、ビリッと切り取れる（音と振動つき）'}
 ];
 var GIMMICK=(function(){try{var raw=localStorage.getItem('bf.gimmick');if(raw===null){var all={};GIMMICK_DEF.forEach(function(d){all[d.k]=true;});return all;}return JSON.parse(raw)||{};}catch(e){return {};}})();
 var GMK={flip:'',flipT:0};
@@ -6785,6 +6786,53 @@ function gimmickTicketFx(){
   var a=t.animate([{transform:'translateY(60px) rotate(-8deg)',opacity:0},{transform:'translateY(0) rotate(-2deg)',opacity:1,offset:.45},{transform:'translateY(-10px) rotate(0deg)',opacity:1,offset:.7},{transform:'translateY(-40px)',opacity:0}],{duration:1500,easing:'cubic-bezier(.2,.8,.2,1)'});
   a.onfinish=function(){o.remove();};
 }
+/* 搭乗券の切り取り（試作）: 印刷の音と振動で出てくる。右のちぎり部分を左へ引っぱると、ビリッという音と振動で切り取れる */
+function gimmickSound(kind){
+  if(!save.sound)return;var a=audio();if(!a)return;
+  try{
+    if(kind==='rip'){
+      var n=Math.floor(a.sampleRate*0.26),buf=a.createBuffer(1,n,a.sampleRate),d=buf.getChannelData(0),i;
+      for(i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,1.5);
+      var src=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain();
+      src.buffer=buf;f.type='bandpass';f.frequency.value=2300;f.Q.value=0.7;g.gain.value=0.55;
+      src.connect(f);f.connect(g);g.connect(a.destination);src.start();
+    }else tone(1700,0.03,'square',0.03);
+  }catch(e){}
+}
+function gimmickTearFx(){
+  if(reduceMotion||!document.body.animate)return;
+  var o=gimmickOverlay(),t=document.createElement('div');
+  var w=Math.min(300,innerWidth-40),sw=Math.round(w*0.3);
+  t.style.cssText='position:absolute;left:50%;bottom:18%;width:'+w+'px;margin-left:-'+(w/2)+'px;height:112px;border-radius:14px;background:linear-gradient(135deg,#f6e7b4,#d4af37);color:#1a1400;font:700 12px/1.5 "B612 Mono",monospace;box-shadow:0 12px 30px rgba(0,0,0,.45);overflow:hidden;pointer-events:none';
+  t.innerHTML='<div style="position:absolute;left:16px;top:14px;right:'+(sw+12)+'px"><div style="font-size:10px;letter-spacing:.2em">BOARDING PASS</div><div style="font-size:18px;font-family:system-ui,sans-serif;font-weight:800">'+esc(LANGS[save.lang]?LANGS[save.lang].name:'')+'</div><div>GATE A1 ・ SEAT 1A</div></div>';
+  var st=document.createElement('div');
+  st.style.cssText='position:absolute;top:0;bottom:0;right:0;width:'+sw+'px;border-left:2px dashed rgba(26,20,0,.55);background:rgba(120,90,0,.10);display:flex;align-items:center;justify-content:center;font:700 10px "B612 Mono",monospace;letter-spacing:.15em;cursor:grab;touch-action:none;pointer-events:auto;user-select:none';
+  st.innerHTML='<span style="writing-mode:vertical-rl">STUB ◀</span>';
+  t.appendChild(st);o.appendChild(t);
+  t.animate([{transform:'translateY(60px) rotate(-8deg)',opacity:0},{transform:'translateY(0) rotate(-2deg)',opacity:1}],{duration:700,easing:'cubic-bezier(.2,.8,.2,1)',fill:'forwards'});
+  for(var k=0;k<5;k++)(function(k){setTimeout(function(){gimmickSound('print');try{if(typeof hapt==='function')hapt('light');}catch(e){}},200+k*110);})(k);
+  var torn=false,drag=false,x0=0,timer=null;
+  function fade(){t.animate([{opacity:1},{opacity:0}],{duration:600,fill:'forwards'}).onfinish=function(){o.remove();};}
+  function snap(){st.style.transition='transform .25s';st.style.transform='';setTimeout(function(){st.style.transition='';},260);}
+  function tear(){
+    if(torn)return;torn=true;drag=false;clearTimeout(timer);
+    gimmickSound('rip');
+    try{if(typeof hapt==='function')hapt('big');}catch(e){}
+    st.style.pointerEvents='none';
+    var fall=st.animate([{transform:'translate(-6px,0) rotate(-4deg)',opacity:1},{transform:'translate(-40px,130px) rotate(-22deg)',opacity:0}],{duration:650,easing:'cubic-bezier(.5,0,.8,.4)',fill:'forwards'});
+    fall.onfinish=function(){st.remove();};
+    setTimeout(fade,1200);
+  }
+  st.addEventListener('pointerdown',function(e){if(torn)return;drag=true;x0=e.clientX;try{st.setPointerCapture(e.pointerId);}catch(x){}e.preventDefault();});
+  st.addEventListener('pointermove',function(e){
+    if(!drag||torn)return;var dx=Math.max(0,x0-e.clientX),m=Math.min(dx,120);
+    st.style.transform='translateX('+(-m*0.5)+'px) rotate('+(-m*0.05)+'deg)';
+    if(dx>=70)tear();
+  });
+  function up(){if(!drag)return;drag=false;if(!torn)snap();}
+  st.addEventListener('pointerup',up);st.addEventListener('pointercancel',up);
+  timer=setTimeout(function(){if(torn)return;torn=true;fade();},9000);
+}
 /* シャンパン: 金の泡が下から上がる */
 function gimmickChampagne(){
   if(reduceMotion||!document.body.animate)return;
@@ -6805,7 +6853,8 @@ function gimmickShake(){
 }
 /* レッスン開始（startFlight の最初に呼ぶ） */
 function gimmickOnStart(){
-  if(gimmickOn('ticketfx')&&gimmickCab()==='lounge')gimmickTicketFx();
+  if(gimmickOn('tearticket'))gimmickTearFx();
+  else if(gimmickOn('ticketfx')&&gimmickCab()==='lounge')gimmickTicketFx();
 }
 /* レッスン完了（completeLesson の最初に呼ぶ） */
 function gimmickOnDone(){
