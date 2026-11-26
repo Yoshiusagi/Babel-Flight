@@ -101,7 +101,12 @@ struct BabelLiveActivity: Widget {
                     }
                 }
             } compactLeading: {
-                plane(context.state, font: .caption)
+                // a small progress ring with the plane inside
+                ZStack {
+                    ProgressRing(fraction: progress(context.state), lineWidth: 2)
+                    plane(context.state, font: .system(size: 8))
+                }
+                .frame(width: 20, height: 20)
             } compactTrailing: {
                 Text("\(context.state.done)/\(context.state.goal)")
                     .font(.caption.bold())

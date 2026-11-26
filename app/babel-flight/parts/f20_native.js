@@ -121,7 +121,7 @@ function liveStart(){
 /* 起動時: 前のレッスンで出たままになっている Dynamic Island を消す */
 function liveClearLeft(){if(BF_APP)ownCall('LiveActivity','end',{}).catch(function(){});}
 function liveUpdate(){if(LIVE.on)ownCall('LiveActivity','update',liveState()).catch(function(){});}
-function liveEnd(){if(!LIVE.on)return;LIVE.on=false;ownCall('LiveActivity','end',{}).catch(function(){});}
+function liveEnd(delay){if(!LIVE.on)return;LIVE.on=false;setTimeout(function(){ownCall('LiveActivity','end',{}).catch(function(){});},delay||0);}
 function remSchedule(){
   if(!BF_APP||!nat('LocalNotifications'))return Promise.resolve();
   widgetPush();
