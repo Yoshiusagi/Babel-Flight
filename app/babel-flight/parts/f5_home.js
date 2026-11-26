@@ -1,6 +1,14 @@
 /* ================= HOME: hero route map + itinerary ================= */
 var pendingFly=null,MAP=null,MODEPREV=null,HOME_ANIM='first',DOTC={},MAPVIEW=null; /* MAPVIEW: the camera and the plane as last drawn (map units): a mode switch glides from there */
-function cityFor(L,i){var c=CITIES[L];return c[((i%c.length)+c.length)%c.length];}
+/* 駅 i の街。CITY_UID がある言語は駅のidで決め、番号がずれても街はずれない（id がない駅は前の駅の街）。 */
+function cityFor(L,i,ids){
+  var m=CITY_UID&&CITY_UID[L],c=CITIES[L];
+  if(m){ids=ids||pathIds(L);
+    for(var k=Math.min(i,ids.length-1);k>=0;k--){if(m[ids[k]])return m[ids[k]];}
+    for(k=Math.max(i+1,0);k<ids.length;k++){if(m[ids[k]])return m[ids[k]];}
+  }
+  return c[((i%c.length)+c.length)%c.length];
+}
 function posKey(L){return L+'-'+save.mode;}
 /* where the plane is on the path (-1: Tokyo). The path can get shorter (another job, an exam goal), so a place past its end is not used */
 function curPos(L){var p=save.pos&&save.pos[posKey(L)];return typeof p==='number'&&p<pathIds(L).length?p:-1;}
@@ -153,6 +161,9 @@ function segPoint(a,b,t){
   var mx=(a.x+b.x)/2,my=(a.y+b.y)/2,dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy)||1,c={x:mx-dy*0.18,y:my+dx*0.18-len*0.08};
   var u=1-t;return {x:u*u*a.x+2*u*t*c.x+t*t*b.x,y:u*u*a.y+2*u*t*c.y+t*t*b.y,c:c,dx:2*u*(c.x-a.x)+2*t*(b.x-c.x),dy:2*u*(c.y-a.y)+2*t*(b.y-c.y)};
 }
+/* 地図を指で動かせる範囲: 路線の端から 3cm（CSSの96dpi基準で113px）まで。それ以上は動かない */
+var PAN_EXTRA_PX=3*96/2.54;
+function panRange(M){var s=M.s;return [(M.cam.x-M.panHi)*s,(M.cam.x-M.panLo)*s];}
 function mapMount(){
   var ind=document.querySelector('.modesw-ind');
   if(ind&&MODEPREV&&MODEPREV!==save.mode){requestAnimationFrame(function(){requestAnimationFrame(function(){ind.className='modesw-ind '+save.mode+' mv';clearTimeout(ind._mvT);ind._mvT=setTimeout(function(){ind.classList.remove('mv');},520);});});}
@@ -162,7 +173,7 @@ function mapMount(){
   if(MAP&&MAP.raf)cancelAnimationFrame(MAP.raf);
   if(!cv||!hero)return;
   var L=save.lang,R=REGIONS[L],ids=pathIds(L),cw=hero.clientWidth||360;
-  var pts=ids.map(function(id,i){var c=cityFor(L,i);return proj(L,c[2],c[3]);});
+  var pts=ids.map(function(id,i){var c=cityFor(L,i,ids);return proj(L,c[2],c[3]);});
   var bx=[1e9,-1e9,1e9,-1e9];pts.forEach(function(p){bx[0]=Math.min(bx[0],p.x);bx[1]=Math.max(bx[1],p.x);bx[2]=Math.min(bx[2],p.y);bx[3]=Math.max(bx[3],p.y);});
   var pw=Math.max(bx[1]-bx[0],40),ph=Math.max(bx[3]-bx[2],40),padx=pw*0.16+8,pady=ph*0.2+14;
   var bw=pw+2*padx,bh=ph+2*pady+40;
@@ -215,6 +226,8 @@ function mapMount(){
   MAP={cv:cv,ctx:cv.getContext('2d'),dpr:dpr,cw:cw,ch:heroH,s:s,L:L,R:R,ids:ids,pts:pts,tk:tk,next:nextI,dots:dots,cam:cam0,cam0:cam0,cam1:cam1,fly:fly,
        acc:cssVar('--c-'+L),plane:new Path2D(PLANE_D),t0:performance.now(),reveal:(anim==='lang'||anim==='first')&&!reduceMotion,route:(anim&&!reduceMotion)?performance.now()+(anim==='mode'?0:250):0,raf:0,cache:null};
   MAP.glide=glide;
+  /* 路線の左右の端（見えている幅の中心が動ける範囲）を、3cm ぶんだけ広げて止める */
+  (function(){var a=X0+vw/2,b=X1-vw/2,ex=PAN_EXTRA_PX/s;MAP.panLo=Math.min(a,b)-ex;MAP.panHi=Math.max(a,b)+ex;})();
   /* the plane rises up into the map when it opens (not after a language switch) */
   MAP.riseT=(!reduceMotion&&anim!=='lang')?performance.now():0;
   cv.onclick=function(ev){
@@ -230,7 +243,7 @@ function mapMount(){
    The offset is estimated from the longitude: 15 degrees per hour. */
 function tzTipHide(){var t=document.getElementById('tzTip');if(t)t.remove();}
 function showTzTip(L,i,p){
-  var M=MAP;if(!M||!M.cv)return;var c=cityFor(L,i);
+  var M=MAP;if(!M||!M.cv)return;var c=cityFor(L,i,M.ids);
   tzTipHide();
   var off=Math.round(c[3]/15),d=off-9,now=new Date(),h=(now.getUTCHours()+off+48)%24,mi=String(now.getUTCMinutes()).padStart(2,'0');
   var diff=d>0?'東京より'+d+'時間進んでいます':d<0?'東京より'+(-d)+'時間遅れています':'東京と同じ時間です';
@@ -252,6 +265,7 @@ function mapFrame(){
   /* after a mode switch the camera eases from where it was to the new place (900ms, no lag) */
   var gl=M.glide,ge=1;
   if(gl){var gt=clamp((now-gl.t0)/900,0,1);ge=gt<.5?4*gt*gt*gt:1-Math.pow(-2*gt+2,3)/2;if(!F2)M.cam={x:gl.cam0.x+(M.cam0.x-gl.cam0.x)*ge,y:gl.cam0.y+(M.cam0.y-gl.cam0.y)*ge};if(gt>=1)M.glide=null;}
+  if(M.panLo!=null){var pr=panRange(M);M.panX=clamp(M.panX||0,pr[0],pr[1]);}
   var cx=M.cam.x-(M.panX||0)/s,cy=M.cam.y+mapCY(M);
   function SX(x){return (x-cx)*s+cw/2;}function SY(y){return (y-cy)*s+ch/2;}
   g.setTransform(M.dpr,0,0,M.dpr,0,0);
@@ -295,9 +309,9 @@ function mapFrame(){
     else if(dn){g.fillStyle=M.acc;g.beginPath();g.arc(x,y,3.6*dk,0,6.283);g.fill();g.strokeStyle='rgba(255,255,255,.85)';g.lineWidth=1;g.stroke();}
     else{g.fillStyle='rgba(255,255,255,.55)';g.beginPath();g.arc(x,y,2.2*dk,0,6.283);g.fill();}
     /* 試作「都市名」: 空港の横に、都市名（日本語）を小さく出す（次の目的地は黄色の大きい表示があるので出さない） */
-    if(i!==M.next&&typeof gimmickOn==='function'&&gimmickOn('citynames')){var cn=cityFor(L,i)[1],lw=cn.length*11+6,lx=x+6,ly=y-6,lr={x:lx,y:ly,w:lw,h:13},clash=lbR.some(function(q){return lr.x<q.x+q.w&&q.x<lr.x+lr.w&&lr.y<q.y+q.h&&q.y<lr.y+lr.h;});if(!clash&&!(M.next>=0&&SX(pts[M.next].x)>lx-16&&SX(pts[M.next].x)<lx+lw&&Math.abs(SY(pts[M.next].y)-y)<22)){lbR.push(lr);g.font='600 10px system-ui,sans-serif';g.textAlign='left';g.lineJoin='round';g.strokeStyle='rgba(10,14,26,.85)';g.lineWidth=3;g.strokeText(cn,lx,y+3);g.fillStyle=dn?'rgba(255,255,255,.95)':'rgba(255,255,255,.7)';g.fillText(cn,lx,y+3);}}
+    if(i!==M.next&&typeof gimmickOn==='function'&&gimmickOn('citynames')){var cn=cityFor(L,i,M.ids)[1],lw=cn.length*11+6,lx=x+6,ly=y-6,lr={x:lx,y:ly,w:lw,h:13},clash=lbR.some(function(q){return lr.x<q.x+q.w&&q.x<lr.x+lr.w&&lr.y<q.y+q.h&&q.y<lr.y+lr.h;});if(!clash&&!(M.next>=0&&SX(pts[M.next].x)>lx-16&&SX(pts[M.next].x)<lx+lw&&Math.abs(SY(pts[M.next].y)-y)<22)){lbR.push(lr);g.font='600 10px system-ui,sans-serif';g.textAlign='left';g.lineJoin='round';g.strokeStyle='rgba(10,14,26,.85)';g.lineWidth=3;g.strokeText(cn,lx,y+3);g.fillStyle=dn?'rgba(255,255,255,.95)':'rgba(255,255,255,.7)';g.fillText(cn,lx,y+3);}}
   }
-  if(M.next>=0&&M.next<shown+1){var np=pts[M.next],nc=cityFor(L,M.next);g.fillStyle='#ffcf26';g.textAlign='center';g.font='700 11px "B612 Mono",monospace';g.fillText(nc[0],SX(np.x),SY(np.y)-14);}
+  if(M.next>=0&&M.next<shown+1){var np=pts[M.next],nc=cityFor(L,M.next,M.ids);g.fillStyle='#ffcf26';g.textAlign='center';g.font='700 11px "B612 Mono",monospace';g.fillText(nc[0],SX(np.x),SY(np.y)-14);}
   /* plane */
   var pos,ang=-0.6,curI=curPos(L);
   if(F2){

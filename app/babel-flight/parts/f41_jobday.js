@@ -215,10 +215,10 @@ if(typeof MODE_TITLE==='object')MODE_TITLE.jobday='職業の1日';
   var hh=homeHTML;
   homeHTML=function(){
     var h=hh.apply(this,arguments),add=jdHomeHTML();if(!add)return h;
-    /* the day card goes under the FIRST CLASS LOUNGE card, so the map above it keeps its place and height */
-    var fc=h.indexOf('class="card fcl"');
-    if(fc>=0){var fe=h.indexOf('</section>',fc);if(fe>=0)return h.slice(0,fe+10)+add+h.slice(fe+10);}
-    var i=h.indexOf('</header>');return i>=0?h.slice(0,i+9)+add+h.slice(i+9):add+h;
+    /* the day card sits under the mode switch and the course button, just above the route legs (like the web),
+       so the map and the 学ぶモード switch keep their place and height when the mode changes */
+    var i=h.indexOf('<section class="leg">');
+    return i>=0?h.slice(0,i)+add+h.slice(i):h+add;
   };
 })();
 document.addEventListener('click',function(e){

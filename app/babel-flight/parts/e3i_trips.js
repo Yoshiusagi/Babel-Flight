@@ -3,6 +3,15 @@
    ルートの一番うしろに付くので、今までの駅や学習の進み具合は変わらない。
    地図の点は、ルートの並びと同じ順に CITIES[L] の n0 番目から使う（n0 = 今までのルートの駅の数）。 */
 var TRIP_IDS={ko:[],en:[]};
+/* 地図の街は「駅の番号」ではなく「駅のid」で決める。
+   初心者の最初の駅・ローカル・日本語UIの追加駅などで駅の数が変わると、番号だと街がずれてしまうため。
+   CITY_IDS は基本の駅（旅行・店・日常会話）の並びと CITIES の対応。旅の駅は自分の街を持つ。 */
+var CITY_IDS={
+  en:['checkin','inflight','immigration','hotel','restaurant','city','sc-imm','sc-cafe','sc-hotel','sc-rest','sc-card','sc-wc','sc-wallet','sc-booking','greet','intro','num','time','feel','chat','usuk'],
+  ko:['checkin','inflight','immigration','hotel','restaurant','city','sc-imm','sc-cafe','sc-hotel','sc-rest','sc-card','sc-wc','sc-wallet','sc-booking','greet','intro','num','time','feel','chat']
+};
+var CITY_UID={};
+Object.keys(CITY_IDS).forEach(function(L){CITY_UID[L]={};CITY_IDS[L].forEach(function(id,k){if(CITIES[L]&&CITIES[L][k])CITY_UID[L][id]=CITIES[L][k];});});
 (function(){
   var T={
     ko:{n0:20,stops:[
@@ -95,7 +104,8 @@ var TRIP_IDS={ko:[],en:[]};
     TRIP_IDS[L]=t.stops.map(function(s){return s.id;});
     t.stops.forEach(function(s,k){
       UNITS[L][s.id]={id:s.id,items:U(s.id,s.p).items,track:'travel'};
-      if(CITIES[L])CITIES[L][t.n0+k]=s.city;
+      if(CITIES[L])CITIES[L].push(s.city);
+      if(CITY_UID[L])CITY_UID[L][s.id]=s.city;
     });
   });
 })();
