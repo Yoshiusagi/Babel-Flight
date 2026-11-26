@@ -31,6 +31,7 @@ f44_css.html
 f45_css.html
 f46_css.html
 f47_glass.html
+f48_css.html
 @HEADEND
 e2_body.html
 a0_env.js
@@ -129,5 +130,6 @@ f44_duty.js
 f45_dict.js
 f46_kkidx.js
 f46_kokugo.js
+f48_books.js
 f7_boot.js
 @END
