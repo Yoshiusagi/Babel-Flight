@@ -187,7 +187,7 @@ function gimmickIslandStart(){
   if(!gimmickIslandOK()||ISL.el||!F)return;
   var n=document.createElement('div');n.setAttribute('aria-hidden','true');
   n.style.cssText='position:fixed;left:50%;top:11px;width:126px;height:37px;margin-left:-63px;border-radius:20px;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;gap:7px;font:700 14px/1 system-ui,-apple-system,sans-serif;z-index:2147483450;pointer-events:none;opacity:0;box-shadow:0 2px 10px rgba(0,0,0,.35)';
-  n.innerHTML='<span class="isl-plane" style="font-size:15px;display:inline-block">✈️</span><span class="isl-num"></span>';
+  n.innerHTML='<span class="isl-ring-wrap" style="position:relative;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" style="position:absolute;left:0;top:0" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="2.5"/><circle class="isl-arc" cx="12" cy="12" r="10" fill="none" stroke="#ffcf26" stroke-width="2.5" stroke-linecap="round" transform="rotate(-90 12 12)" stroke-dasharray="62.83" stroke-dashoffset="62.83" style="transition:stroke-dashoffset .6s ease"/></svg><span class="isl-plane" style="font-size:12px;display:inline-block">✈️</span></span><span class="isl-num"></span>';
   document.body.appendChild(n);ISL.el=n;
   ISL.total=Math.max(1,F.queue.length);ISL.done=0;
   n.querySelector('.isl-num').textContent='0/'+ISL.total;
@@ -218,6 +218,7 @@ function gimmickIslandStep(){
   if(!ISL.el||!F)return;
   ISL.total=Math.max(1,F.queue.length);ISL.done=Math.min(F.idx,ISL.total);
   var num=ISL.el.querySelector('.isl-num'),pl=ISL.el.querySelector('.isl-plane');
+  var arc=ISL.el.querySelector('.isl-arc');if(arc)arc.style.strokeDashoffset=String(62.83*(1-ISL.done/ISL.total));
   if(num){num.textContent=ISL.done+'/'+ISL.total;num.animate([{transform:'translateY(-7px)',opacity:.2},{transform:'translateY(0)',opacity:1}],{duration:260,easing:'ease-out'});}
   if(pl)pl.animate([{transform:'translateY(0) scale(1)'},{transform:'translateY(-7px) scale(1.35)'},{transform:'translateY(0) scale(1)'}],{duration:360,easing:'ease-out'});
 }
@@ -238,6 +239,7 @@ function gimmickIslandJudge(ok){
 }
 /* マイル: 島の下から「+ マイル」がふわっと上がる（レッスン完了） */
 function gimmickIslandMiles(n){
+  vibeSeq([['tap',500],['tap',640],['tap',780]]);
   if(!gimmickOn('island')||!(BF_APP||BF_SIM)||reduceMotion||!document.body.animate||!n)return;
   var o=gimmickOverlay(),t=document.createElement('div');
   t.textContent='+'+n+' マイル';
@@ -250,6 +252,39 @@ function gimmickIslandMiles(n){
     {opacity:0,transform:'translate(-50%,-60px) scale(1)'}
   ],{duration:1600,delay:500,easing:'ease-out',fill:'forwards'});
   a.onfinish=function(){o.remove();};
+}
+/* 振動の並び: [種類, 何ms後] の列（種類は hapt の名前）。端末の「振動」設定を守る */
+function vibeSeq(steps){steps.forEach(function(st){setTimeout(function(){try{hapt(st[0]);}catch(e){}},st[1]);});}
+/* 連続正解: 飛行機の後ろに白い雲の尾が流れる */
+function gimmickIslandTrail(){
+  var n=ISL.el;if(!n||!n.animate)return;
+  var r=(n.querySelector('.isl-ring-wrap')||n).getBoundingClientRect();
+  for(var i=0;i<3;i++){(function(i){
+    var d=document.createElement('div');d.setAttribute('aria-hidden','true');
+    var sz=8+i*3;
+    d.style.cssText='position:fixed;left:'+(r.left+r.width/2-sz/2)+'px;top:'+(r.top+r.height/2-sz/2)+'px;width:'+sz+'px;height:'+sz+'px;border-radius:50%;background:#fff;z-index:2147483449;pointer-events:none;box-shadow:0 0 6px rgba(255,255,255,.6);opacity:.85';
+    document.body.appendChild(d);
+    var a=d.animate([{transform:'translate(0,0) scale(1)',opacity:.85},{transform:'translate('+(-14-i*6)+'px,'+(4+i*3)+'px) scale(1.6)',opacity:0}],{duration:700+i*120,delay:i*90,easing:'ease-out',fill:'forwards'});
+    a.onfinish=function(){d.remove();};
+  })(i);}
+}
+/* 途中でやめたとき: 白い飛行機が島から下へ戻っていく（着陸ではない） */
+function gimmickIslandReturn(){
+  var n=ISL.el;if(!n)return;ISL.el=null;
+  if(!n.animate||reduceMotion){n.remove();return;}
+  var r=n.getBoundingClientRect(),tx=r.left+r.width/2,ty=r.top+r.height/2;
+  var p=document.createElement('div');p.setAttribute('aria-hidden','true');
+  p.innerHTML='<svg viewBox="-20 -14 36 28" width="58" height="45" style="display:block;filter:drop-shadow(0 4px 10px rgba(0,0,0,.4))"><path d="'+PLANE_D+'" fill="#fff"/></svg>';
+  p.style.cssText='position:fixed;left:-29px;top:-22px;z-index:2147483460;pointer-events:none;will-change:transform';
+  document.body.appendChild(p);
+  var ex=innerWidth/2,ey=innerHeight*0.85,dx=ex-tx,dy=ey-ty;
+  var a=p.animate([
+    {transform:'translate('+tx+'px,'+ty+'px) rotate(-60deg) scale(.4)',opacity:0},
+    {transform:'translate('+(tx+dx*0.4)+'px,'+(ty+dy*0.4+20)+'px) rotate(-80deg) scale(.9)',opacity:1,offset:.35},
+    {transform:'translate('+ex+'px,'+ey+'px) rotate(-100deg) scale(.9)',opacity:0}
+  ],{duration:900,easing:'ease-in-out',fill:'forwards'});
+  a.onfinish=function(){p.remove();};
+  n.animate([{opacity:1,transform:'scale(1)'},{opacity:0,transform:'scale(.6)'}],{duration:500,delay:250,easing:'ease-in',fill:'forwards'}).onfinish=function(){n.remove();};
 }
 /* 途中でやめたとき: 島をすぐ消す */
 function gimmickIslandRemove(){var n=ISL.el;ISL.el=null;if(!n)return;n.animate([{opacity:1},{opacity:0}],{duration:200,fill:'forwards'}).onfinish=function(){n.remove();};}
@@ -268,7 +303,7 @@ function gimmickStamp(L){
     {transform:R+' scale(1)',opacity:1,offset:.6},
     {transform:R+' scale(1)',opacity:0}
   ],{duration:1900,easing:'ease-out',fill:'forwards'});
-  setTimeout(function(){try{gimmickSound('rip');}catch(e){}},650);
+  setTimeout(function(){try{gimmickSound('rip');}catch(e){}vibeSeq([['big',0]]);},650);
   a.onfinish=function(){o.remove();};
 }
 /* レッスン開始（startFlight の最初に呼ぶ） */
@@ -277,6 +312,7 @@ function gimmickOnStart(){
 }
 /* レッスン完了（completeLesson の最初に呼ぶ） */
 function gimmickOnDone(L){
+  vibeSeq([['big',0],['ok',180]]);
   if(gimmickOn('champagne')&&gimmickCab()==='suite')gimmickChampagne();
   if(gimmickOn('arrive'))gimmickShake();
   gimmickIslandDone();

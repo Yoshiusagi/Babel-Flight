@@ -27,6 +27,7 @@ function cineTakeoff(info,done){
   c.className='cine takeoff';c.hidden=false;void c.offsetWidth;c.classList.add('play');
   engineSound();ambBoost(true);
   if(typeof gimmickFlyToIsland==='function')gimmickFlyToIsland(c.querySelector('.cine-plane'));
+  if(typeof vibeSeq==='function')vibeSeq([['big',0],['tap',250],['tap',400],['tap',550]]);
   cineTimer=setTimeout(cineEnd,1150);
 }
 function cineLanding(info,done){

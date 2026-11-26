@@ -306,7 +306,7 @@ function abortAsk(){
 function leaveFlight(){
   try{speechSynthesis.cancel();}catch(e){}
   var back=F&&F.back==='review'?'review':'home';
-  liveEnd();if(typeof gimmickIslandRemove==='function')gimmickIslandRemove();F=null;board=null;closeSheet();view=back;render();window.scrollTo(0,0);
+  liveEnd();if(typeof gimmickIslandReturn==='function')gimmickIslandReturn();F=null;board=null;closeSheet();view=back;render();window.scrollTo(0,0);
 }
 
 function startUnitFlight(uid){
