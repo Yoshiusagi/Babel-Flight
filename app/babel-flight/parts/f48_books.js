@@ -56,6 +56,17 @@ function bookSheet(k){
        :'<p class="book-note">この本はまだ選んでいる途中です。リンクができたら、ここから見られるようになります。</p>')+
     '<button class="ghost" type="button" data-book-close>'+(ok?'やめておく':'とじる')+'</button></div></div>';
 }
+/* 目標を選ぶ: the book for the chosen level sits right under the meter, in the same exam card */
+function booksOn(){return save.mode==='exam'&&examModeOn()&&ACCT.on&&cabinTester()&&UI==='ja';}
+(function(){
+  var tb=trainBlockHTML;
+  trainBlockHTML=function(b){
+    var h=tb.apply(this,arguments),x=b&&bookByBank(b.key);
+    if(!x||!booksOn())return h;
+    return h+'<button class="book-row book-goal" type="button" data-book="'+esc(x.b)+'"><span class="book-tx"><b><i class="book-pr-tag">PR</i>この目標の参考書</b><small>'+esc(x.name)+'</small></span>'+
+      (bookOK(x)?'<span class="chev" aria-hidden="true">›</span>':'<i class="book-soon">準備中</i>')+'</button>';
+  };
+})();
 /* 検定 tab: the very bottom of the home screen (inside the last page in the スイート design) */
 (function(){
   var hh=homeHTML;
