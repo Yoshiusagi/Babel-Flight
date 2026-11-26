@@ -69,6 +69,7 @@ function completeLesson(o){
   var lines=[[o.mode==='scene'?'通話完了':'レッスン完了',base],[(o.corrLabel||'正解')+' × '+o.corr,c3],['着陸評価 ★'+o.stars,sp]];
   if(goalJust){miles+=20;lines.push(['今日の目標達成',20]);}
   if(o.mode==='lounge'){miles+=LOUNGE_BONUS;lines.push(['ラウンジボーナス',LOUNGE_BONUS]);}
+  if(typeof gimmickIslandMiles==='function')gimmickIslandMiles(miles);
   var rec=null,ix=-1;
   if(unitMode){
     rec=P.units[o.uid]||{n:0,stars:0,last:''};

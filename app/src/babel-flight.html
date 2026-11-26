@@ -6884,6 +6884,27 @@ function gimmickIslandDone(){
   n.animate([{width:'126px',marginLeft:'-63px'},{width:'220px',marginLeft:'-110px'}],{duration:420,easing:'cubic-bezier(.2,.9,.3,1.2)',fill:'forwards'});
   setTimeout(function(){n.animate([{opacity:1},{opacity:0}],{duration:420,fill:'forwards'}).onfinish=function(){n.remove();};},1700);
 }
+/* 正解: 島がぷくっと広がって戻る / 間違い: 島がぷるっと揺れる */
+function gimmickIslandJudge(ok){
+  var n=ISL.el;if(!n||!n.animate)return;
+  if(ok)n.animate([{transform:'scale(1)'},{transform:'scale(1.12)'},{transform:'scale(1)'}],{duration:220,easing:'ease-out'});
+  else n.animate([{transform:'translateX(0)'},{transform:'translateX(-7px)'},{transform:'translateX(6px)'},{transform:'translateX(-4px)'},{transform:'translateX(2px)'},{transform:'translateX(0)'}],{duration:380,easing:'ease-out'});
+}
+/* マイル: 島の下から「+ マイル」がふわっと上がる（レッスン完了） */
+function gimmickIslandMiles(n){
+  if(!gimmickOn('island')||!(BF_APP||BF_SIM)||reduceMotion||!document.body.animate||!n)return;
+  var o=gimmickOverlay(),t=document.createElement('div');
+  t.textContent='+'+n+' マイル';
+  t.style.cssText='position:absolute;left:50%;top:70px;font:900 22px/1 system-ui,-apple-system,sans-serif;color:#ffcf26;text-shadow:0 2px 10px rgba(0,0,0,.5);white-space:nowrap;opacity:0';
+  o.appendChild(t);
+  var a=t.animate([
+    {opacity:0,transform:'translate(-50%,0) scale(.6)'},
+    {opacity:1,transform:'translate(-50%,-10px) scale(1.1)',offset:.25},
+    {opacity:1,transform:'translate(-50%,-30px) scale(1)',offset:.7},
+    {opacity:0,transform:'translate(-50%,-60px) scale(1)'}
+  ],{duration:1600,delay:500,easing:'ease-out',fill:'forwards'});
+  a.onfinish=function(){o.remove();};
+}
 /* 途中でやめたとき: 島をすぐ消す */
 function gimmickIslandRemove(){var n=ISL.el;ISL.el=null;if(!n)return;n.animate([{opacity:1},{opacity:0}],{duration:200,fill:'forwards'}).onfinish=function(){n.remove();};}
 /* スタンプ: 都市のスタンプがぺたっと押される */
@@ -7251,6 +7272,7 @@ function judge(ok){
   var hinted=ok&&F.hl>0&&!q.retry&&pushRetry(q);
   if(ok){F.corr++;chimeOK();fxGood();if(typeof fxPaperPlane==='function')fxPaperPlane();F.combo=(F.combo||0)+1;if(typeof fxCombo==='function'&&COMBO_AT.indexOf(F.combo)>=0)fxCombo(F.combo);}
   else{F.combo=0;F.mist++;fxBad();F.wrong[key]=(F.wrong[key]||0)+1;chimeBad();buzz(40);pushRetry(q);}
+  if(typeof gimmickIslandJudge==='function')gimmickIslandJudge(ok);
   if(typeof repNote==='function')repNote(F.lang,q.k,ok,F.uid);
   /* 苦手「発音」: hear it once more, slowly */
   if(typeof hasWeak==='function'&&hasWeak('pron')){var LGp=LANGS[F.lang];setTimeout(function(){if(F&&F.cur===q&&F.answered)speak(d.t,LGp.tts,true);},450);}
@@ -7409,6 +7431,7 @@ function completeLesson(o){
   var lines=[[o.mode==='scene'?'通話完了':'レッスン完了',base],[(o.corrLabel||'正解')+' × '+o.corr,c3],['着陸評価 ★'+o.stars,sp]];
   if(goalJust){miles+=20;lines.push(['今日の目標達成',20]);}
   if(o.mode==='lounge'){miles+=LOUNGE_BONUS;lines.push(['ラウンジボーナス',LOUNGE_BONUS]);}
+  if(typeof gimmickIslandMiles==='function')gimmickIslandMiles(miles);
   var rec=null,ix=-1;
   if(unitMode){
     rec=P.units[o.uid]||{n:0,stars:0,last:''};

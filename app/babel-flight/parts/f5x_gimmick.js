@@ -230,6 +230,27 @@ function gimmickIslandDone(){
   n.animate([{width:'126px',marginLeft:'-63px'},{width:'220px',marginLeft:'-110px'}],{duration:420,easing:'cubic-bezier(.2,.9,.3,1.2)',fill:'forwards'});
   setTimeout(function(){n.animate([{opacity:1},{opacity:0}],{duration:420,fill:'forwards'}).onfinish=function(){n.remove();};},1700);
 }
+/* 正解: 島がぷくっと広がって戻る / 間違い: 島がぷるっと揺れる */
+function gimmickIslandJudge(ok){
+  var n=ISL.el;if(!n||!n.animate)return;
+  if(ok)n.animate([{transform:'scale(1)'},{transform:'scale(1.12)'},{transform:'scale(1)'}],{duration:220,easing:'ease-out'});
+  else n.animate([{transform:'translateX(0)'},{transform:'translateX(-7px)'},{transform:'translateX(6px)'},{transform:'translateX(-4px)'},{transform:'translateX(2px)'},{transform:'translateX(0)'}],{duration:380,easing:'ease-out'});
+}
+/* マイル: 島の下から「+ マイル」がふわっと上がる（レッスン完了） */
+function gimmickIslandMiles(n){
+  if(!gimmickOn('island')||!(BF_APP||BF_SIM)||reduceMotion||!document.body.animate||!n)return;
+  var o=gimmickOverlay(),t=document.createElement('div');
+  t.textContent='+'+n+' マイル';
+  t.style.cssText='position:absolute;left:50%;top:70px;font:900 22px/1 system-ui,-apple-system,sans-serif;color:#ffcf26;text-shadow:0 2px 10px rgba(0,0,0,.5);white-space:nowrap;opacity:0';
+  o.appendChild(t);
+  var a=t.animate([
+    {opacity:0,transform:'translate(-50%,0) scale(.6)'},
+    {opacity:1,transform:'translate(-50%,-10px) scale(1.1)',offset:.25},
+    {opacity:1,transform:'translate(-50%,-30px) scale(1)',offset:.7},
+    {opacity:0,transform:'translate(-50%,-60px) scale(1)'}
+  ],{duration:1600,delay:500,easing:'ease-out',fill:'forwards'});
+  a.onfinish=function(){o.remove();};
+}
 /* 途中でやめたとき: 島をすぐ消す */
 function gimmickIslandRemove(){var n=ISL.el;ISL.el=null;if(!n)return;n.animate([{opacity:1},{opacity:0}],{duration:200,fill:'forwards'}).onfinish=function(){n.remove();};}
 /* スタンプ: 都市のスタンプがぺたっと押される */
