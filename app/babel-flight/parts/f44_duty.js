@@ -247,12 +247,13 @@ dfApply();
    1級ずつ買うか、英検の全級をまとめて買う（個別の合計より約22%オフ）。買うと、その級のレッスン・模試・面接練習が開く。
    DUTY FREE と同じく、最後に確認する。今月の上限（DUTY FREE の買い物の上限）には入らない。
    The purchase is kept in save.xb (bank keys, or 'all'). Real payments are not open yet. */
-var BANK_PRICE={ek5:1200,ek4:1200,ek3:1200,ekp2:1200,ekp2p:1500,ek2:1500,ekp1:1800,ek1:2000};
+var BANK_PRICE={ek5:1200,ek4:1200,ek3:1200,ekp2:1200,ekp2p:1500,ek2:1500,ekp1:1800,ek1:2000,toeics:1500,opic:1500,cet4:1200,cet6:1500,toeicl:2000,ielts:2000,toefl:2000,icao:1500,aero:1500,ca:1200,bec:1200,oet:1200,oetph:1200,celta:1200,toles:1200,servsafe:1200};
+var EIKEN_KEYS=['ek5','ek4','ek3','ekp2','ekp2p','ek2','ekp1','ek1'];
 var BANK_ALL=9000;
 function bankOwned(){var a=save.xb;return Array.isArray(a)?a.filter(function(x){return x==='all'||BANK_PRICE[x]!=null;}):[];}
-function bankBought(k){if(!k||!(BF_APP||dfOn()))return false;var a=bankOwned();return a.indexOf('all')>=0||a.indexOf(k)>=0;}
+function bankBought(k){if(!k||!(BF_APP||dfOn()))return false;var a=bankOwned();return (a.indexOf('all')>=0&&EIKEN_KEYS.indexOf(k)>=0)||a.indexOf(k)>=0;}
 /* the App Store product IDs (non-consumable, made in App Store Connect) */
-var APP_BANK_PID={ek5:'com.babelflight.app.eiken.ek5',ek4:'com.babelflight.app.eiken.ek4',ek3:'com.babelflight.app.eiken.ek3',ekp2:'com.babelflight.app.eiken.ekp2',ekp2p:'com.babelflight.app.eiken.ekp2p',ek2:'com.babelflight.app.eiken.ek2',ekp1:'com.babelflight.app.eiken.ekp1',ek1:'com.babelflight.app.eiken.ek1',all:'com.babelflight.app.eiken.all'};
+var APP_BANK_PID={ek5:'com.babelflight.app.eiken.ek5',ek4:'com.babelflight.app.eiken.ek4',ek3:'com.babelflight.app.eiken.ek3',ekp2:'com.babelflight.app.eiken.ekp2',ekp2p:'com.babelflight.app.eiken.ekp2p',ek2:'com.babelflight.app.eiken.ek2',ekp1:'com.babelflight.app.eiken.ekp1',ek1:'com.babelflight.app.eiken.ek1',all:'com.babelflight.app.eiken.all',toeics:'com.babelflight.app.exam.toeics',opic:'com.babelflight.app.exam.opic',cet4:'com.babelflight.app.exam.cet4',cet6:'com.babelflight.app.exam.cet6',toeicl:'com.babelflight.app.exam.toeicl',ielts:'com.babelflight.app.exam.ielts',toefl:'com.babelflight.app.exam.toefl',icao:'com.babelflight.app.exam.icao',aero:'com.babelflight.app.exam.aero',ca:'com.babelflight.app.exam.ca',bec:'com.babelflight.app.exam.bec',oet:'com.babelflight.app.exam.oet',oetph:'com.babelflight.app.exam.oetph',celta:'com.babelflight.app.exam.celta',toles:'com.babelflight.app.exam.toles',servsafe:'com.babelflight.app.exam.servsafe'};
 var BANK_OF_PID={};Object.keys(APP_BANK_PID).forEach(function(k){BANK_OF_PID[APP_BANK_PID[k]]=k;});
 /* in the iPhone app the levels are sold by the App Store (bankpay switch) */
 function bankPaidApp(k){return !!(BF_APP&&k&&BANK_PRICE[k]!=null&&gimmickOn('bankpay'));}

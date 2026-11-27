@@ -190,6 +190,20 @@ XBANK.opic={L:'en',name:'OPIc',tier:2,ids:['x-opic1','x-opic2','x-opic3','x-opic
 XBANK.cet4={L:'en',name:'CET-4',tier:1,ids:['x-cet4-1','x-cet4-2','x-cet4-3','x-cet4-4','x-cet4-5']};
 XBANK.cet6={L:'en',name:'CET-6',tier:2,ids:['x-cet6-1','x-cet6-2','x-cet6-3','x-cet6-4','x-cet6-5']};
 ['toeics','opic','cet4','cet6'].forEach(function(k){XBANK[k].key=k;XBANK[k].ids.forEach(function(u){XBANK_OF[u]=k;});});
+/* 英語の検定（買い切り・1.0.2）。tier は今までの既定値(2)のまま */
+XBANK.toeicl={L:'en',name:'TOEIC L&R',tier:2,ids:['x-toeic','x-toeicb','x-toeicc','x-toeicd','x-toeice','x-toeicf','x-toeicg','x-toeich','x-toeici','x-toeicj','x-toeick','x-toeicl','x-toeicm','x-toeicn','x-toeico']};
+XBANK.ielts={L:'en',name:'IELTS',tier:2,ids:['x-ielts','x-ieltsb','x-ieltsc','x-ieltsd','x-ieltse','x-ieltsf','x-ieltsg','x-ieltsh','x-ieltsi','x-ieltsj','x-ieltsk','x-ieltsl','x-ieltsm','x-ieltsn','x-ieltso']};
+XBANK.toefl={L:'en',name:'TOEFL iBT',tier:2,ids:['x-toefl','x-toeflb','x-toeflc','x-toefld','x-toefle','x-toeflf','x-toeflg','x-toeflh','x-toefli','x-toeflj','x-toeflk','x-toefll','x-toeflm','x-toefln','x-toeflo']};
+XBANK.icao={L:'en',name:'ICAO航空英語',tier:2,ids:['x-icao','x-icao2','x-icao3','x-icao4','x-icao5']};
+XBANK.aero={L:'en',name:'航空無線通信士 英語',tier:2,ids:['x-aero1','x-aero2','x-aero3','x-aero4','x-aero5']};
+XBANK.ca={L:'en',name:'客室乗務員の英語 面接',tier:2,ids:['x-ca1','x-ca2','x-ca3','x-ca4','x-ca5']};
+XBANK.bec={L:'en',name:'ビジネス英語（BEC）',tier:2,ids:['x-bec1','x-bec2','x-bec3','x-bec4','x-bec5']};
+XBANK.oet={L:'en',name:'OET 診察の英語',tier:2,ids:['x-oet1','x-oet2','x-oet3','x-oet4','x-oet5']};
+XBANK.oetph={L:'en',name:'OET 薬剤師の英語',tier:2,ids:['x-oetph1','x-oetph2','x-oetph3','x-oetph4','x-oetph5']};
+XBANK.celta={L:'en',name:'CELTA・TEFL',tier:2,ids:['x-celta1','x-celta2','x-celta3','x-celta4','x-celta5']};
+XBANK.toles={L:'en',name:'TOLES',tier:2,ids:['x-toles1','x-toles2','x-toles3','x-toles4','x-toles5']};
+XBANK.servsafe={L:'en',name:'ServSafe 食品衛生',tier:2,ids:['x-servsafe1','x-servsafe2','x-servsafe3','x-servsafe4','x-servsafe5']};
+['toeicl','ielts','toefl','icao','aero','ca','bec','oet','oetph','celta','toles','servsafe'].forEach(function(k){XBANK[k].key=k;XBANK[k].ids.forEach(function(u){XBANK_OF[u]=k;});});
 /* what another display language shows in 検定モード: [group, goal kind] per learning language */
 var XUI_ICAO={key:'icao',title:'航空英語(ICAO)',sub:'パイロットや管制官に必要な英語',ids:['x-icao']},
     XUI_ICAO_G={key:'icao',title:'航空英語(ICAO)',pre:'ICAO ',sub:'パイロット・管制官に必要なのはレベル4以上',goals:[['レベル4','icao'],['レベル5','icao'],['レベル6','icao']]};
