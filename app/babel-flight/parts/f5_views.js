@@ -43,7 +43,7 @@ function passHTML(L,uid){
     '<div><span class="lbl">問題数</span><div class="v">'+(u.items.length*2)+'問</div></div>'+
     '<div><span class="lbl">定着度</span><div class="v">'+m+'%</div></div></div></div>'+
     '<div class="pass-stub"><div class="stub-row"><div class="barcode">'+barcodeSVG(flightNo(L,uid)+L)+'</div></div>'+
-    '<button class="go" type="button" data-go="'+esc(uid)+'">はじめる<small>約3分 ・ '+u.items.length+'フレーズ ・ 全部問題形式</small></button>'+skipBtnHTML(L,uid)+'</div></section>';
+    tearHTML(uid)+'</div></section>';
 }
 function reviewHTML(){
   var L=save.lang,LG=LANGS[L],due=dueList(L),weak=weakList(L),learned=learnedList(L),nd=nextDueIn(L),h=topBar('復習');
@@ -155,6 +155,7 @@ function recordHTML(){
      '<div class="set-row"><span class="dim" style="font-size:13px">進捗は'+(cloud.doc?'アカウントに保存されています':'この端末のブラウザに保存されます')+'</span>'+
      (confirmReset?'<span class="row2"><button class="ghost danger" type="button" data-reset-yes>消去する</button><button class="ghost" type="button" data-reset-no data-tk="やめる(取り消し)">やめる</button></span>':'<button class="ghost danger" type="button" data-reset>リセット</button>')+'</div></section>';
   h+=creditsHTML();
+  h+=skipListHTML();
   return h;
 }
 /* credits: who made the app and the services it was built with (bottom of 記録) */
@@ -267,4 +268,63 @@ function render(){
   tabIndMove();
   var n=dueList(L).length,b=$('dueBadge');b.textContent=n>99?'99+':n;b.hidden=n===0;
   if(typeof natTabsSync==='function')natTabsSync(showTabs,view);
+}
+
+/* ---- 搭乗券を破って出発（はじめる・飛び級のボタンは置かない）---- */
+function tearHTML(uid){
+  return '<div class="tear-h" role="button" tabindex="0" data-tear="'+esc(uid)+'" aria-label="搭乗券を破って、このレッスンを始める"><span>半券を左へスライドして破る</span><span class="tear-go" aria-hidden="true">✈</span></div>'+
+    '<p class="dim hint tear-hint">左へ大きくスライドすると、搭乗券が破れて出発します</p>';
+}
+(function(){
+  var st=document.createElement('style');
+  st.textContent='.tear-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px;padding:16px;border-radius:14px;background:var(--accent,#f5c400);color:#111;font-weight:800;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab;transition:transform .25s ease,opacity .3s ease}'+
+    '.tear-h:focus-visible{outline:3px solid currentColor;outline-offset:3px}'+
+    '.tear-h.torn{transform:translateX(-115%) rotate(-10deg)!important;opacity:0}'+
+    '.tear-go{font-size:20px}';
+  document.head.appendChild(st);
+})();
+var TEAR={el:null,x0:0,dx:0,w:0};
+function tearOff(h){
+  if(!h||h.classList.contains('torn'))return;
+  h.classList.add('torn');
+  if(typeof hapt==='function')hapt();
+  var uid=h.getAttribute('data-tear');
+  setTimeout(function(){closeSheet();startUnitFlight(uid);},420);
+}
+document.addEventListener('pointerdown',function(e){
+  var h=e.target&&e.target.closest&&e.target.closest('.tear-h');if(!h)return;
+  TEAR.el=h;TEAR.x0=e.clientX;TEAR.dx=0;TEAR.w=(h.parentNode&&h.parentNode.offsetWidth)||300;
+  h.style.transition='none';
+  try{h.setPointerCapture(e.pointerId);}catch(_){}
+});
+document.addEventListener('pointermove',function(e){
+  if(!TEAR.el)return;
+  TEAR.dx=Math.min(0,e.clientX-TEAR.x0);
+  TEAR.el.style.transform='translateX('+TEAR.dx+'px)';
+});
+function tearEnd(torn){
+  var h=TEAR.el;if(!h)return;
+  TEAR.el=null;h.style.transition='';
+  if(torn&&-TEAR.dx>TEAR.w*0.6){tearOff(h);}
+  else{h.style.transform='';}
+}
+document.addEventListener('pointerup',function(){tearEnd(true);});
+document.addEventListener('pointercancel',function(){tearEnd(false);});
+document.addEventListener('keydown',function(e){
+  var h=e.target&&e.target.closest&&e.target.closest('.tear-h');
+  if(h&&(e.key==='Enter'||e.key===' ')){e.preventDefault();tearOff(h);}
+});
+document.addEventListener('click',function(e){
+  /* 支援技術のダブルタップなど（detail=0）だけ、クリックで破る */
+  var h=e.target&&e.target.closest&&e.target.closest('.tear-h');
+  if(h&&e.detail===0)tearOff(h);
+});
+/* ---- 記録タブ：飛び級できるレッスン ---- */
+function skipListHTML(){
+  var L=save.lang,ids=Object.keys(UNITS[L]||{}).filter(function(uid){return skipEligible(L,uid);}).slice(0,8);
+  if(!ids.length)return '';
+  return '<section class="card mode skip-list" aria-label="飛び級"><span class="lbl">SKIP ・ 飛び級</span><h2 class="jh">飛び級できるレッスン</h2>'+
+    '<p class="dim">知っているレッスンは、飛び級テストに挑戦して飛ばせます。</p>'+
+    ids.map(function(uid){return '<div class="skip-row" style="margin-top:8px"><span style="display:block;font-weight:700;margin-bottom:4px">'+esc(unitTitle(uid))+'</span>'+skipBtnHTML(L,uid)+'</div>';}).join('')+
+    '</section>';
 }
