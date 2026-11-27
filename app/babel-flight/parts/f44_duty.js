@@ -242,3 +242,52 @@ document.addEventListener('click',function(e){
 });
 if(save.df)save.df=dfClean(save.df);
 dfApply();
+
+/* ---- 検定の級の買い切り（テスト購入・ウェブのテストアカウントだけ）----
+   1級ずつ買うか、英検の全級をまとめて買う（個別の合計より25%オフ）。買うと、その級のレッスン・模試・面接練習が開く。
+   DUTY FREE と同じブレーキ: 最後に確認し、今月の上限（既定 500円）をこえる買い物はできない（上限を上げてから）。
+   The purchase is kept in save.xb (bank keys, or 'all'). Real payments are not open yet. */
+var BANK_PRICE={ek5:700,ek4:800,ek3:900,ekp2:1000,ekp2p:1100,ek2:1200,ekp1:1300,ek1:1400};
+var BANK_ALL=6300;
+function bankOwned(){var a=save.xb;return Array.isArray(a)?a.filter(function(x){return x==='all'||BANK_PRICE[x]!=null;}):[];}
+function bankBought(k){if(!k||!dfOn())return false;var a=bankOwned();return a.indexOf('all')>=0||a.indexOf(k)>=0;}
+function bankYen(k){return k==='all'?BANK_ALL:BANK_PRICE[k];}
+function bankLabel(k){return k==='all'?'英検 全級（まとめ買い）':(XBANK[k]?XBANK[k].name:k);}
+function bankBuyHTML(k){
+  if(!dfOn()||BANK_PRICE[k]==null||bankBought(k))return '';
+  var one=BANK_PRICE[k],capL=dfCapLeft(),h='<div class="bank-buy"><span class="lbl">買い切り（テスト購入・1回だけ）</span>';
+  h+='<button class="go sm" type="button" data-bank-buy="'+k+'"'+(capL<one?' disabled':'')+'>'+esc(bankLabel(k))+' '+dfYen(one)+'円で買う<small>テスト購入 ・ お金はかかりません</small></button>';
+  if(!bankBought('all'))h+='<button class="go sm alt" type="button" data-bank-buy="all"'+(capL<BANK_ALL?' disabled':'')+'>英検 全級まとめ '+dfYen(BANK_ALL)+'円<small>個別で買うより25%オフ（全部で8,400円）</small></button>';
+  if(capL<one)h+='<p class="df-warn">'+(dfS().cap===0?'「購入しない」に設定されています。':'今月の上限('+dfYen(dfS().cap)+'円)をこえてしまうので、買えません。')+'</p><button class="link" type="button" data-df-settings>上限を確認する</button>';
+  return h+'</div>';
+}
+/* the final confirmation (what, price, when, no refund) */
+function bankConfirm(k){
+  var yen=bankYen(k);if(!dfOn()||yen==null||bankBought(k))return;
+  var capL=dfCapLeft(),h='<div class="sheet plain df-sheet bill-sheet" role="dialog" aria-label="購入の確認"><div class="sheet-in">'+
+    '<span class="lbl">最終確認</span><h3>'+dfYen(yen)+'円で購入しますか❓</h3>'+
+    '<p class="bill-test sm"><b>🧪 テスト購入</b><span>本物のお金は動きません。</span></p>'+
+    '<dl class="bill-dl"><dt>商品</dt><dd>'+esc(bankLabel(k))+'</dd>'+
+    '<dt>価格</dt><dd><b>'+dfYen(yen)+'円(税込)</b> ・ 1回だけの支払い</dd>'+
+    '<dt>今月の購入</dt><dd>'+dfYen(dfMonth())+'円 → '+dfYen(dfMonth()+yen)+'円(上限 '+(dfS().cap<0?'なし':dfYen(dfS().cap)+'円')+')</dd>'+
+    '<dt>使える時期</dt><dd>すぐ。ずっと使えます</dd>'+
+    '<dt>返品</dt><dd>デジタルの商品なので、購入後の返品・返金はできません</dd></dl>'+
+    (capL<yen?'<p class="df-warn">今月の上限をこえるので、購入できません。</p><button class="link" type="button" data-df-settings>上限を確認する</button>':'')+
+    '<button class="go sm" type="button" data-bank-do="'+k+'"'+(capL<yen?' disabled':'')+'>購入する</button>'+
+    '<button class="ghost" type="button" data-close-sheet>やめる</button></div></div>';
+  $('sheetHost').innerHTML=h;
+}
+function bankDo(k){
+  var yen=bankYen(k);if(!dfOn()||yen==null||bankBought(k))return;
+  if(dfCapLeft()<yen)return bankConfirm(k);
+  var d=dfS();d.mon[dfYM()]=dfMonth()+yen;
+  save.xb=bankOwned().concat([k]);
+  store();closeSheet();
+  if(typeof buzz==='function')buzz(12);if(typeof chimeOK==='function')chimeOK();
+  render();
+}
+document.addEventListener('click',function(e){
+  var t=e.target&&e.target.closest&&e.target.closest('[data-bank-buy],[data-bank-do]');if(!t)return;
+  if(t.hasAttribute('data-bank-buy')){bankConfirm(t.getAttribute('data-bank-buy'));return;}
+  bankDo(t.getAttribute('data-bank-do'));
+});

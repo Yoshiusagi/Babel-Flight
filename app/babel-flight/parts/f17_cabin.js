@@ -155,15 +155,16 @@ function examLockText(L,uid){
   if(save.mode!=='exam'||!examModeOn()||!examLocked(uid))return '';
   return '🔒 '+CABINS[examTier(uid)][4];
 }
-function lockSheetHTML(title,t){
+function lockSheetHTML(title,t,bk){
   return '<div class="sheet plain" role="dialog" aria-label="ロック中"><div class="sheet-in"><h3>🔒 '+esc(title)+'</h3>'+
     '<p style="font-size:14.5px">「'+CABINS[t][1]+'」から使えます。</p>'+
     '<p class="dim hint">'+(cabinTester()?'テスト用: 「記録」の「搭乗クラス」で切り替えられます。':'いまはエコノミー(無料)で搭乗中。'+CAB_SOON)+'</p>'+
+    (bk&&typeof bankBuyHTML==='function'?bankBuyHTML(bk):'')+
     '<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
 }
 function examLockSheet(L,uid){
   if(!examModeOn()||!examLocked(uid))return false;
-  $('sheetHost').innerHTML=lockSheetHTML(unitTitle(uid),examTier(uid));
+  $('sheetHost').innerHTML=lockSheetHTML(unitTitle(uid),examTier(uid),XBANK_OF[uid]);
   return true;
 }
 function examNext(L,cur){
@@ -207,7 +208,7 @@ function xgoalSheet(){
 }
 function xgoalSet(v){
   var L=save.lang,o=xgLoad();
-  if(v){var t=xgFind(L,v);if(!t)return;if(bankLocked(t.bank)){$('sheetHost').innerHTML=lockSheetHTML(t.name,t.bank.tier);return;}o[L]=v;}
+  if(v){var t=xgFind(L,v);if(!t)return;if(bankLocked(t.bank)){$('sheetHost').innerHTML=lockSheetHTML(t.name,t.bank.tier,t.bank.key);return;}o[L]=v;}
   else delete o[L];
   lsSet(XG_KEY,JSON.stringify(o));
   if(save.pos)delete save.pos[posKey(L)];

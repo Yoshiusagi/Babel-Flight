@@ -19,7 +19,7 @@ var ENT={all:false,plan:'',until:0,grants:[]};
 function entitled(){return !!(ENT&&ENT.all);}
 /* grants: single 検定 levels opened for this account by the server (bank keys, e.g. a friend's 英検3級・準2級):
    their lessons, mock tests and interview practice, while the rest stays エコノミー */
-function entGrant(k){return !!(ENT&&ENT.grants&&k&&ENT.grants.indexOf(k)>=0);}
+function entGrant(k){return !!(ENT&&ENT.grants&&k&&ENT.grants.indexOf(k)>=0)||bankBought(k);}
 function entGrants(){return (ENT&&ENT.grants)||[];}
 function entSet(e){
   var all=!!(e&&e.all),until=e&&typeof e.until==='number'?e.until:0,now=Date.now();
