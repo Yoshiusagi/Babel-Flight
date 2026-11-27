@@ -260,8 +260,8 @@ function bankYen(k){return k==='all'?BANK_ALL:BANK_PRICE[k];}
 function bankLabel(k){return k==='all'?'英検 全級（まとめ買い）':(XBANK[k]?XBANK[k].name:k);}
 function bankBuyHTML(k){
   if(!(BF_APP||dfOn())||BANK_PRICE[k]==null||bankBought(k))return '';
-  var one=BANK_PRICE[k],h='<div class="bank-buy"><span class="lbl">買い切り（テスト購入・1回だけ）</span>';
-  h+='<button class="go sm" type="button" data-bank-buy="'+k+'">'+esc(bankLabel(k))+' '+dfYen(one)+'円で買う<small>テスト購入 ・ お金はかかりません</small></button>';
+  var one=BANK_PRICE[k],h='<div class="bank-buy"><span class="lbl">'+(BF_APP?'買い切り（1回のお支払い）':'買い切り（テスト購入・1回だけ）')+'</span>';
+  h+='<button class="go sm" type="button" data-bank-buy="'+k+'">'+esc(bankLabel(k))+' '+dfYen(one)+'円で買う<small>'+(BF_APP?'1回のお支払いで、その級が開きます':'テスト購入 ・ お金はかかりません')+'</small></button>';
   if(!bankBought('all'))h+='<button class="go sm alt" type="button" data-bank-buy="all">英検 全級まとめ '+dfYen(BANK_ALL)+'円<small>個別で買うより約22%オフ（全部で11,600円）</small></button>';
   if(BF_APP)h+='<button class="ghost" type="button" data-bank-restore>購入を復元</button>';
   return h+'</div>';
