@@ -247,7 +247,7 @@ dfApply();
    1級ずつ買うか、英検の全級をまとめて買う（個別の合計より25%オフ）。買うと、その級のレッスン・模試・面接練習が開く。
    DUTY FREE と同じく、最後に確認する。今月の上限（DUTY FREE の買い物の上限）には入らない。
    The purchase is kept in save.xb (bank keys, or 'all'). Real payments are not open yet. */
-var BANK_PRICE={ek5:700,ek4:800,ek3:900,ekp2:1000,ekp2p:1100,ek2:1200,ekp1:1300,ek1:1400};
+var BANK_PRICE={ek5:1200,ek4:1200,ek3:1200,ekp2:1200,ekp2p:1500,ek2:1500,ekp1:1800,ek1:2000};
 var BANK_ALL=6300;
 function bankOwned(){var a=save.xb;return Array.isArray(a)?a.filter(function(x){return x==='all'||BANK_PRICE[x]!=null;}):[];}
 function bankBought(k){if(!k||!(BF_APP||dfOn()))return false;var a=bankOwned();return a.indexOf('all')>=0||a.indexOf(k)>=0;}
@@ -262,7 +262,7 @@ function bankBuyHTML(k){
   if(!(BF_APP||dfOn())||BANK_PRICE[k]==null||bankBought(k))return '';
   var one=BANK_PRICE[k],h='<div class="bank-buy"><span class="lbl">買い切り（テスト購入・1回だけ）</span>';
   h+='<button class="go sm" type="button" data-bank-buy="'+k+'">'+esc(bankLabel(k))+' '+dfYen(one)+'円で買う<small>テスト購入 ・ お金はかかりません</small></button>';
-  if(!bankBought('all'))h+='<button class="go sm alt" type="button" data-bank-buy="all">英検 全級まとめ '+dfYen(BANK_ALL)+'円<small>個別で買うより25%オフ（全部で8,400円）</small></button>';
+  if(!BF_APP&&!bankBought('all'))h+='<button class="go sm alt" type="button" data-bank-buy="all">英検 全級まとめ '+dfYen(BANK_ALL)+'円<small>個別で買うより25%オフ（全部で8,400円）</small></button>';
   if(BF_APP)h+='<button class="ghost" type="button" data-bank-restore>購入を復元</button>';
   return h+'</div>';
 }
