@@ -219,6 +219,8 @@ function gimmickIslandJudge(ok){
   if(!ISL.on)return;
   if(ok){
     if(F&&F.combo>=3)gimmickIslandTrail();
+    /* the plane flashes gold on the real island for a moment, then goes back */
+    if(BF_APP){ownCall('LiveActivity','update',Object.assign(liveState(),{hit:true})).catch(function(){});setTimeout(function(){if(ISL.on)liveUpdate();},650);}
   }
   if(!ok&&BF_APP){
     ownCall('LiveActivity','update',Object.assign(liveState(),{phase:'もう一回！'})).catch(function(){});

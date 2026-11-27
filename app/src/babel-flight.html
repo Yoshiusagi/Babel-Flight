@@ -6897,6 +6897,8 @@ function gimmickIslandJudge(ok){
   if(!ISL.on)return;
   if(ok){
     if(F&&F.combo>=3)gimmickIslandTrail();
+    /* the plane flashes gold on the real island for a moment, then goes back */
+    if(BF_APP){ownCall('LiveActivity','update',Object.assign(liveState(),{hit:true})).catch(function(){});setTimeout(function(){if(ISL.on)liveUpdate();},650);}
   }
   if(!ok&&BF_APP){
     ownCall('LiveActivity','update',Object.assign(liveState(),{phase:'もう一回！'})).catch(function(){});
@@ -20665,7 +20667,7 @@ function widgetPush(){
 var LIVE={on:false};
 function liveState(){
   var n=F&&F.queue?F.queue.length:0,LG=F?LANGS[F.lang]:null;
-  return {done:F?Math.min(F.idx,n):0,goal:Math.max(1,n),dest:LG?LG.city:'',phase:F?(MODE_TITLE[F.mode]||'レッスン'):''};
+  return {done:F?Math.min(F.idx,n):0,goal:Math.max(1,n),dest:LG?LG.city:'',phase:F?(MODE_TITLE[F.mode]||'レッスン'):'',hit:false,mi:Math.max(0,Math.round(+save.miles||0))};
 }
 function liveStart(){
   if(!BF_APP)return;

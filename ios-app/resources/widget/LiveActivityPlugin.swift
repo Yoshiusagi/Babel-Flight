@@ -21,7 +21,9 @@ public class LiveActivityPlugin: CAPPlugin, CAPBridgedPlugin {
             done: call.getInt("done") ?? 0,
             goal: max(1, call.getInt("goal") ?? 1),
             dest: call.getString("dest") ?? "",
-            phase: call.getString("phase") ?? "")
+            phase: call.getString("phase") ?? "",
+            hit: call.getBool("hit") ?? false,
+            mi: call.getInt("mi") ?? 0)
     }
 
     // 確認用: ネイティブとつながっているか、Live Activity が許可されているかを返す

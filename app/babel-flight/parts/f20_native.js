@@ -112,7 +112,7 @@ function widgetPush(){
 var LIVE={on:false};
 function liveState(){
   var n=F&&F.queue?F.queue.length:0,LG=F?LANGS[F.lang]:null;
-  return {done:F?Math.min(F.idx,n):0,goal:Math.max(1,n),dest:LG?LG.city:'',phase:F?(MODE_TITLE[F.mode]||'レッスン'):''};
+  return {done:F?Math.min(F.idx,n):0,goal:Math.max(1,n),dest:LG?LG.city:'',phase:F?(MODE_TITLE[F.mode]||'レッスン'):'',hit:false,mi:Math.max(0,Math.round(+save.miles||0))};
 }
 function liveStart(){
   if(!BF_APP)return;

@@ -11,22 +11,30 @@ struct BabelLiveActivity: Widget {
         min(1, Double(s.done) / Double(max(1, s.goal)))
     }
 
+    // the flash colour for a correct answer
+    private let gold = Color(red: 1.0, green: 0.84, blue: 0.28)
+
     private func destText(_ s: BabelFlightAttributes.ContentState) -> String {
         s.dest.isEmpty ? "Babel Flight" : "→ \(s.dest)"
     }
 
     // The airplane hops each time a question is answered (iOS 17 and later).
+    // and it turns gold, with a glow, for a moment after each correct answer
     @ViewBuilder
     private func plane(_ s: BabelFlightAttributes.ContentState, font: Font) -> some View {
         if #available(iOS 17.0, *) {
             Image(systemName: "airplane")
                 .font(font)
-                .foregroundColor(babelYellow)
+                .foregroundColor(s.hit ? gold : babelYellow)
+                .shadow(color: gold.opacity(s.hit ? 0.9 : 0), radius: s.hit ? 6 : 0)
+                .animation(.easeOut(duration: 0.25), value: s.hit)
                 .symbolEffect(.bounce, value: s.done)
         } else {
             Image(systemName: "airplane")
                 .font(font)
-                .foregroundColor(babelYellow)
+                .foregroundColor(s.hit ? gold : babelYellow)
+                .shadow(color: gold.opacity(s.hit ? 0.9 : 0), radius: s.hit ? 6 : 0)
+                .animation(.easeOut(duration: 0.25), value: s.hit)
         }
     }
 
@@ -78,26 +86,44 @@ struct BabelLiveActivity: Widget {
             .activitySystemActionForegroundColor(.white)
         } dynamicIsland: { context in
             DynamicIsland {
+                // long press: a bigger island with the next stop, the count left and the miles
                 DynamicIslandExpandedRegion(.leading) {
-                    plane(context.state, font: .title3)
+                    plane(context.state, font: .title)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
-                    Text("\(context.state.done)/\(context.state.goal)")
-                        .font(.headline)
-                        .foregroundColor(babelYellow)
-                        .contentTransition(.numericText())
+                    VStack(alignment: .trailing, spacing: 2) {
+                        Text("\(context.state.done)/\(context.state.goal)")
+                            .font(.title3.bold())
+                            .foregroundColor(babelYellow)
+                            .contentTransition(.numericText())
+                        Text("あと\(max(0, context.state.goal - context.state.done))問")
+                            .font(.caption2)
+                            .foregroundColor(.white.opacity(0.6))
+                    }
                 }
                 DynamicIslandExpandedRegion(.center) {
-                    Text(destText(context.state))
-                        .font(.subheadline)
-                        .lineLimit(1)
+                    VStack(spacing: 2) {
+                        Text(destText(context.state))
+                            .font(.headline.bold())
+                            .foregroundColor(.white)
+                            .lineLimit(1)
+                        Text("次の目的地")
+                            .font(.caption2)
+                            .foregroundColor(.white.opacity(0.6))
+                    }
                 }
                 DynamicIslandExpandedRegion(.bottom) {
-                    VStack(alignment: .leading, spacing: 6) {
+                    VStack(alignment: .leading, spacing: 8) {
                         route(context.state)
-                        Text(context.state.phase)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                        HStack {
+                            Text(context.state.phase)
+                                .font(.caption.bold())
+                                .foregroundColor(.white.opacity(0.8))
+                            Spacer()
+                            Text("マイル \(context.state.mi)")
+                                .font(.caption.bold())
+                                .foregroundColor(babelYellow)
+                        }
                     }
                 }
             } compactLeading: {

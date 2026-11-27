@@ -10,6 +10,10 @@ struct BabelFlightAttributes: ActivityAttributes {
         var goal: Int
         var dest: String
         var phase: String
+        // true for a moment after a correct answer (the plane flashes gold)
+        var hit: Bool
+        // total miles, shown in the expanded island
+        var mi: Int
     }
     var title: String
 }
