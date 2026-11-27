@@ -112,7 +112,8 @@ function rewardSheet(until){
 
 /* ---- 検定モード ---- */
 /* 検定モード: every display language (英検 and the job certificates only in 日本語, see f30_xui.js) */
-function examModeOn(){return cabinLv()>=0;}
+/* the 検定 mode: on for a class (website), and in the iPhone app once its 英検 levels are sold (bankpay) */
+function examModeOn(){return cabinLv()>=0||(BF_APP&&gimmickOn('bankpay'));}
 /* 目標 (one per language), kept on this device in the test version */
 var XG_KEY='babelflight.examTarget';
 function xgLoad(){try{var o=JSON.parse(lsGet(XG_KEY)||'{}');return o&&typeof o==='object'?o:{};}catch(e){return {};}}
@@ -125,7 +126,7 @@ function examTarget(L){return xgFind(L,xgLoad()[L]);}
 function bankUnits(b){return b.ids.filter(function(u){return !!UNITS[b.L][u];});}
 function bankItems(b){var out=[];bankUnits(b).forEach(function(u){UNITS[b.L][u].items.forEach(function(x,i){out.push({uid:u,i:i});});});return out;}
 function bankFull(b){return bankItems(b).length>=XBANK_FULL;}
-function bankLocked(b){var lv=cabinLv();return lv>=0&&b.tier>lv&&!entGrant(b.key);}
+function bankLocked(b){if(bankPaidApp(b.key))return !bankBought(b.key);var lv=cabinLv();return lv>=0&&b.tier>lv&&!entGrant(b.key);}
 /* levels of this language opened one by one for the account (a friend's 英検3級・準2級), for a class that has none */
 function grantBanks(L){var lv=cabinLv();return lv<0?[]:entGrants().filter(function(k){return XBANK[k]&&XBANK[k].L===L&&XBANK[k].tier>lv;});}
 /* 合格圏メーター: an estimate from how firmly each phrase of the bank is remembered.
@@ -150,15 +151,18 @@ function examSections(L){
   return (EXAMS[L]||[]).map(function(g){return {key:'x-'+g.key,title:g.title,sub:g.sub,ids:g.ids.filter(function(u){return !!UNITS[L][u];})};});
 }
 function examIsUnit(uid){return /^x-/.test(uid)&&!!UM[uid];}
-function examLocked(uid){var lv=cabinLv();return lv>=0&&examIsUnit(uid)&&examTier(uid)>lv&&!entGrant(XBANK_OF[uid]);}
+function examLocked(uid){if(examIsUnit(uid)&&bankPaidApp(XBANK_OF[uid]))return !bankBought(XBANK_OF[uid]);var lv=cabinLv();return lv>=0&&examIsUnit(uid)&&examTier(uid)>lv&&!entGrant(XBANK_OF[uid]);}
 function examLockText(L,uid){
   if(save.mode!=='exam'||!examModeOn()||!examLocked(uid))return '';
+  if(bankPaidApp(XBANK_OF[uid]))return '🔒 購入で開く';
   return '🔒 '+CABINS[examTier(uid)][4];
 }
 function lockSheetHTML(title,t,bk){
+  var paid=!!(bk&&bankPaidApp(bk));
+  var say=paid?'この級は買い切りで開きます。':'「'+CABINS[t][1]+'」から使えます。';
+  var hint=paid?'':'<p class="dim hint">'+(cabinTester()?'テスト用: 「記録」の「搭乗クラス」で切り替えられます。':'いまはエコノミー(無料)で搭乗中。'+CAB_SOON)+'</p>';
   return '<div class="sheet plain" role="dialog" aria-label="ロック中"><div class="sheet-in"><h3>🔒 '+esc(title)+'</h3>'+
-    '<p style="font-size:14.5px">「'+CABINS[t][1]+'」から使えます。</p>'+
-    '<p class="dim hint">'+(cabinTester()?'テスト用: 「記録」の「搭乗クラス」で切り替えられます。':'いまはエコノミー(無料)で搭乗中。'+CAB_SOON)+'</p>'+
+    '<p style="font-size:14.5px">'+say+'</p>'+hint+
     (bk&&typeof bankBuyHTML==='function'?bankBuyHTML(bk):'')+
     '<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
 }
@@ -181,7 +185,7 @@ function trainBlockHTML(b){
   var full=bankFull(b),m=bankMeter(b),w=bankWords(b),h='';
   if(full)h+=meterHTML(b,m,0)+'<p class="xm-note">'+(b.study?'用語':'フレーズ')+'の覚え具合から出した目安です。日にちをあけて正解すると上がります。'+(b.study?'':'本番の合否を約束するものではありません。長文・リスニング・作文の練習も続けよう。')+'</p>';
   else h+='<p class="xm-prep"><b>問題集を準備中</b>今はこの目標のフレーズが'+m.n+'個だけなので、'+w.meter+'はまだ出ません。'+XBANK_FULL+'フレーズそろったら表示します。</p>';
-  if(bankLocked(b))return h+'<p class="dim hint">🔒 この目標のレッスンは「'+CABINS[b.tier][1]+'」から</p>';
+  if(bankLocked(b))return h+'<p class="dim hint">🔒 '+(bankPaidApp(b.key)?'この目標のレッスンは購入で開きます':'この目標のレッスンは「'+CABINS[b.tier][1]+'」から')+'</p>';
   var next=null;bankUnits(b).some(function(u){if(unitRec(b.L,u).n===0){next=u;return true;}return false;});
   if(m.seen>=4)h+='<button class="go sm" type="button" data-xtrain="'+esc(b.key)+'">トレーニング(10問)<small>'+(next?'覚えたフレーズを復習 ・ 新しいフレーズは地図のステップで':'復習の時期・苦手・まだ弱いフレーズから出題。何回でも')+'</small></button>';
   else if(next)h+='<button class="go sm" type="button" data-go="'+esc(next)+'">'+esc(unitTitle(next))+'からはじめる<small>レッスンで覚えたフレーズが、トレーニングに出てきます</small></button>';
@@ -197,7 +201,7 @@ function xgoalSheet(){
       return '<div class="xg-kind"><div class="xg-kh"><b>'+esc(k.title)+'</b><small>'+esc(k.sub)+'</small></div><div class="xg-chips">'+k.goals.map(function(g){
         var b=g[1]&&XBANK[g[1]],v=k.key+'|'+g[0],on=cur===v,sub='',cls='xg-chip';
         if(!b){sub='準備中';cls+=' none';}
-        else if(bankLocked(b)){sub='🔒 '+CABINS[b.tier][4];cls+=' locked';}
+        else if(bankLocked(b)){sub=bankPaidApp(b.key)?'🔒 購入で開く':'🔒 '+CABINS[b.tier][4];cls+=' locked';}
         else if(!bankFull(b))sub='準備中';
         return '<button class="'+cls+'" type="button" '+(b?'data-xgoal-set="'+esc(v)+'"':'disabled')+' aria-pressed="'+on+'"><b>'+esc(g[0])+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</button>';
       }).join('')+'</div></div>';
@@ -218,14 +222,14 @@ function examHomeHTML(L){
   if(!examModeOn())return '';
   if(save.mode==='study')return studyMoreHTML(L);
   if(save.mode!=='exam')return '';
-  var lv=cabinLv(),t=examTarget(L),gb=grantBanks(L),h='<section class="card exam-card"><span class="lbl">EXAM COURSE ・ '+CABINS[lv][2]+'</span>';
+  var lv=cabinLv(),lvL=Math.max(0,lv),t=examTarget(L),gb=grantBanks(L),h='<section class="card exam-card"><span class="lbl">EXAM COURSE ・ '+CABINS[lvL][2]+'</span>';
   if(t){
     h+='<div class="xg-head"><h2 class="jh">'+esc(t.name)+'</h2><button class="xg-chg" type="button" data-xgoal>目標を変える</button></div>'+trainBlockHTML(t.bank);
   }else{
     h+='<h2 class="jh">検定コース</h2><p class="dim" style="font-size:13.5px;margin-top:4px">目標の級やスコアを選ぶと、その問題集が地図に並びます。'+(lv<1?'':'今は検定ごとの最初のレッスンを一覧で表示中。')+'</p>'+
        (lv<1&&!gb.length?'<button class="ghost" type="button" data-xgoal>どんな目標があるか見る<small>'+esc(XHINT[L]||XHINT.en)+'</small></button>'
             :'<button class="go sm" type="button" data-xgoal>目標を選ぶ<small>'+esc(XHINT[L]||XHINT.en)+'</small></button>');
-    if(lv<1&&!gb.length)h+='<p class="dim hint">🔒 検定コースは「プレミアムエコノミー」から</p>';
+    if(lv>=0&&lv<1&&!gb.length)h+='<p class="dim hint">🔒 検定コースは「プレミアムエコノミー」から</p>';
   }
   if(gb.length)h+='<p class="xg-gift">🎁 <span>'+esc(gb.map(function(k){return XBANK[k].name;}).join('・'))+'</span> <span>は特別に使えます(レッスン・模試・面接練習)</span></p>';
   h+=(lv>=3||gb.length?'<button class="ghost" type="button" data-mock-open>本番形式の模試に挑戦<small>時間制限つき ・ 合格ラインの目安つき</small></button>'

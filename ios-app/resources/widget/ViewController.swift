@@ -7,5 +7,6 @@ class ViewController: CAPBridgeViewController {
         bridge?.registerPluginInstance(WidgetBridgePlugin())
         bridge?.registerPluginInstance(NativeTabsPlugin())
         bridge?.registerPluginInstance(LiveActivityPlugin())
+        bridge?.registerPluginInstance(StorePlugin())
     }
 }

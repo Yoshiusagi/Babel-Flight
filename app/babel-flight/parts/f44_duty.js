@@ -250,14 +250,20 @@ dfApply();
 var BANK_PRICE={ek5:700,ek4:800,ek3:900,ekp2:1000,ekp2p:1100,ek2:1200,ekp1:1300,ek1:1400};
 var BANK_ALL=6300;
 function bankOwned(){var a=save.xb;return Array.isArray(a)?a.filter(function(x){return x==='all'||BANK_PRICE[x]!=null;}):[];}
-function bankBought(k){if(!k||!dfOn())return false;var a=bankOwned();return a.indexOf('all')>=0||a.indexOf(k)>=0;}
+function bankBought(k){if(!k||!(BF_APP||dfOn()))return false;var a=bankOwned();return a.indexOf('all')>=0||a.indexOf(k)>=0;}
+/* the App Store product IDs (non-consumable, made in App Store Connect) */
+var APP_BANK_PID={ek5:'com.babelflight.app.eiken.ek5',ek4:'com.babelflight.app.eiken.ek4',ek3:'com.babelflight.app.eiken.ek3',ekp2:'com.babelflight.app.eiken.ekp2',ekp2p:'com.babelflight.app.eiken.ekp2p',ek2:'com.babelflight.app.eiken.ek2',ekp1:'com.babelflight.app.eiken.ekp1',ek1:'com.babelflight.app.eiken.ek1',all:'com.babelflight.app.eiken.all'};
+var BANK_OF_PID={};Object.keys(APP_BANK_PID).forEach(function(k){BANK_OF_PID[APP_BANK_PID[k]]=k;});
+/* in the iPhone app the levels are sold by the App Store (bankpay switch) */
+function bankPaidApp(k){return !!(BF_APP&&k&&BANK_PRICE[k]!=null&&gimmickOn('bankpay'));}
 function bankYen(k){return k==='all'?BANK_ALL:BANK_PRICE[k];}
 function bankLabel(k){return k==='all'?'英検 全級（まとめ買い）':(XBANK[k]?XBANK[k].name:k);}
 function bankBuyHTML(k){
-  if(!dfOn()||BANK_PRICE[k]==null||bankBought(k))return '';
+  if(!(BF_APP||dfOn())||BANK_PRICE[k]==null||bankBought(k))return '';
   var one=BANK_PRICE[k],h='<div class="bank-buy"><span class="lbl">買い切り（テスト購入・1回だけ）</span>';
   h+='<button class="go sm" type="button" data-bank-buy="'+k+'">'+esc(bankLabel(k))+' '+dfYen(one)+'円で買う<small>テスト購入 ・ お金はかかりません</small></button>';
   if(!bankBought('all'))h+='<button class="go sm alt" type="button" data-bank-buy="all">英検 全級まとめ '+dfYen(BANK_ALL)+'円<small>個別で買うより25%オフ（全部で8,400円）</small></button>';
+  if(BF_APP)h+='<button class="ghost" type="button" data-bank-restore>購入を復元</button>';
   return h+'</div>';
 }
 /* the final confirmation (what, price, when, no refund) */
@@ -282,7 +288,44 @@ function bankDo(k){
   render();
 }
 document.addEventListener('click',function(e){
-  var t=e.target&&e.target.closest&&e.target.closest('[data-bank-buy],[data-bank-do]');if(!t)return;
-  if(t.hasAttribute('data-bank-buy')){bankConfirm(t.getAttribute('data-bank-buy'));return;}
+  var t=e.target&&e.target.closest&&e.target.closest('[data-bank-buy],[data-bank-do],[data-bank-restore]');if(!t)return;
+  if(t.hasAttribute('data-bank-restore')){storeRestore();return;}
+  if(t.hasAttribute('data-bank-buy')){var bk=t.getAttribute('data-bank-buy');if(BF_APP)storeBuy(bk);else bankConfirm(bk);return;}
   bankDo(t.getAttribute('data-bank-do'));
 });
+
+/* ---- the App Store purchases (iPhone app; StorePlugin.swift) ---- */
+function storeNote(msg){
+  $('sheetHost').innerHTML='<div class="sheet plain" role="dialog" aria-label="お知らせ"><div class="sheet-in"><p style="font-size:15px">'+esc(msg)+'</p><button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
+}
+/* the levels bought (by the IDs the App Store reports) are opened on this phone */
+function storeGrant(keys){
+  var cur=bankOwned(),nw=cur.slice();
+  keys.forEach(function(k){if(nw.indexOf(k)<0)nw.push(k);});
+  if(nw.length!==cur.length){save.xb=nw;store();}
+}
+function storeBuy(k){
+  var id=APP_BANK_PID[k];if(!id||!BF_APP)return;
+  ownCall('Store','purchase',{id:id}).then(function(r){
+    if(r&&r.ok){storeGrant([k]);closeSheet();if(typeof buzz==='function')buzz(12);render();}
+    else if(r&&r.reason==='pending')storeNote('承認待ちです。承認されたら、自動で開きます。');
+    else if(r&&r.reason==='notfound')storeNote('この商品は、まだ準備中です。');
+  }).catch(function(){storeNote('購入できませんでした。もう一度お試しください。');});
+}
+/* 「購入を復元」: the purchases of this Apple ID (a new phone, or after a reinstall) */
+function storeRestore(){
+  ownCall('Store','restore',{}).then(function(r){
+    var keys=[];((r&&r.ids)||[]).forEach(function(id){if(BANK_OF_PID[id])keys.push(BANK_OF_PID[id]);});
+    if(keys.length){storeGrant(keys);render();storeNote('購入を復元しました。');}
+    else storeNote('復元できる購入が見つかりませんでした。');
+  }).catch(function(){storeNote('復元できませんでした。もう一度お試しください。');});
+}
+/* at start: the purchases the App Store already knows about open their levels */
+function storeSync(){
+  if(!BF_APP)return;
+  ownCall('Store','owned',{}).then(function(r){
+    var keys=[];((r&&r.ids)||[]).forEach(function(id){if(BANK_OF_PID[id])keys.push(BANK_OF_PID[id]);});
+    var before=bankOwned().length;storeGrant(keys);if(bankOwned().length!==before)render();
+  }).catch(function(){});
+}
+if(typeof window!=='undefined')setTimeout(storeSync,1500);

@@ -101,7 +101,7 @@ FileUtils.mkdir_p(WIDGET_DIR)
 %w[BabelWidget.swift WidgetShared.swift LiveActivityShared.swift LiveActivityWidget.swift Info.plist BabelWidget.entitlements].each do |f|
   FileUtils.cp(File.join(WIDGET_RES, f), File.join(WIDGET_DIR, f))
 end
-%w[WidgetShared.swift WidgetBridgePlugin.swift NativeTabsPlugin.swift LiveActivityShared.swift LiveActivityPlugin.swift ViewController.swift].each do |f|
+%w[WidgetShared.swift WidgetBridgePlugin.swift NativeTabsPlugin.swift LiveActivityShared.swift LiveActivityPlugin.swift StorePlugin.swift ViewController.swift].each do |f|
   FileUtils.cp(File.join(WIDGET_RES, f), File.join(APP_DIR, f))
 end
 
@@ -129,7 +129,7 @@ end
 group.new_reference("App.entitlements") unless group.files.any? { |f| f.path == "App.entitlements" }
 
 # the app's Swift files (the plugin is registered in ViewController.swift)
-%w[WidgetShared.swift WidgetBridgePlugin.swift NativeTabsPlugin.swift LiveActivityShared.swift LiveActivityPlugin.swift ViewController.swift].each do |name|
+%w[WidgetShared.swift WidgetBridgePlugin.swift NativeTabsPlugin.swift LiveActivityShared.swift LiveActivityPlugin.swift StorePlugin.swift ViewController.swift].each do |name|
   ref = group.files.find { |f| f.path == name } || group.new_reference(name)
   target.source_build_phase.add_file_reference(ref, true) unless target.source_build_phase.files_references.include?(ref)
 end

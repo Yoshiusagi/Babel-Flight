@@ -28,7 +28,8 @@ var GIMMICK_DEF=[
   {k:'hoverpv',c:'all',t:'PCでは、空港にマウスを乗せるとレッスンの内容をプレビュー'},
   {k:'citynames',c:'all',t:'空港の横に都市名を出す'},
   {k:'island',c:'all',t:'レッスン中も画面の上に島（アプリ・iPhone）：飛行機が吸い込まれて入り、答えるたびに数字が進む'},
-  {k:'stamp',c:'all',t:'レッスンを終えると、都市のスタンプがぺたっと押される'}
+  {k:'stamp',c:'all',t:'レッスンを終えると、都市のスタンプがぺたっと押される'},
+  {k:'bankpay',c:'all',t:'アプリ版：英検の級は買い切りで開く（App Store の購入）。オフにすると、全部の級が開いたまま'}
 ];
 var GIMMICK=(function(){try{var raw=localStorage.getItem('bf.gimmick');if(raw===null){var all={};GIMMICK_DEF.forEach(function(d){all[d.k]=true;});return all;}return JSON.parse(raw)||{};}catch(e){return {};}})();
 var GMK={flip:'',flipT:0};
