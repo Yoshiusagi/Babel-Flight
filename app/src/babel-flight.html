@@ -6887,6 +6887,7 @@ function gimmickIslandStep(){
 /* 着陸: 本物の島に「着陸」と出す（終わりは completeLesson が少し待ってから消す） */
 function gimmickIslandDone(){
   if(!ISL.on)return;ISL.on=false;
+  gimmickIslandFire(0);gimmickIslandLanding();
   if(BF_APP)ownCall('LiveActivity','update',{done:ISL.total,goal:ISL.total,dest:ISL.dest,phase:'着陸 🛬'}).catch(function(){});
 }
 /* 正解: 連続正解は島の下に雲が流れる / 間違い: 島に「もう一回！」と出す */
@@ -6894,8 +6895,12 @@ function gimmickIslandJudge(ok){
   if(ok)vibeSeq(F&&F.combo>=3?[['tap',0],['tap',110]]:[['tap',0]]);
   else vibeSeq([['ng',0]]);
   if(!ISL.on)return;
-  if(ok){if(F&&F.combo>=3)gimmickIslandTrail();}
-  else if(BF_APP){
+  if(ok){
+    if(F&&F.combo>=3)gimmickIslandTrail();
+    gimmickIslandFire(F&&F.combo>=5?2:F&&F.combo>=3?1:0);
+  }
+  else{gimmickIslandFire(0);}
+  if(!ok&&BF_APP){
     ownCall('LiveActivity','update',Object.assign(liveState(),{phase:'もう一回！'})).catch(function(){});
     setTimeout(function(){if(ISL.on)liveUpdate();},1500);
   }
@@ -6913,9 +6918,59 @@ function gimmickIslandTrail(){
     a.onfinish=function(){d.remove();};
   })(i);}
 }
+/* 連続正解の炎（B）: 3連続で小さな炎、5連続で大きな炎。5連続になった瞬間に島がぷくっとふくらむ。
+   間違えると炎は消えて、島は元の大きさに戻る。炎は島の真下に出す（本物の島には触らない） */
+var FIRE={el:null,lv:0};
+var FIRE_TONGUE='<path d="M0,-40 C12,-22 22,-10 18,8 C15,22 -15,22 -18,8 C-22,-10 -12,-22 0,-40Z"/>';
+function gimmickIslandFire(lv){
+  if(!gimmickIslandOK()||lv===FIRE.lv)return;
+  var prev=FIRE.el,old=FIRE.lv;FIRE.lv=lv;FIRE.el=null;
+  if(prev){var fa=prev.animate([{opacity:1},{opacity:0}],{duration:380,fill:'forwards'});fa.onfinish=function(){prev.remove();};}
+  if(!lv)return;
+  var t=islandTarget(),big=lv===2,w=big?170:110,h=big?120:80;
+  var d=document.createElement('div');d.setAttribute('aria-hidden','true');
+  d.style.cssText='position:fixed;left:'+(t.x-w/2)+'px;top:'+(t.y+10)+'px;width:'+w+'px;height:'+h+'px;pointer-events:none;z-index:2147483448;';
+  var xs=big?[-44,0,44]:[-18,18];
+  var g='<svg viewBox="-60 -50 120 70" width="100%" height="100%" style="overflow:visible"><defs><linearGradient id="bfFire" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff4d2e"/><stop offset=".55" stop-color="#ff9a1f"/><stop offset="1" stop-color="#ffe066"/></linearGradient><radialGradient id="bfGlow"><stop offset="0" stop-color="#ffb347" stop-opacity=".55"/><stop offset="1" stop-color="#ffb347" stop-opacity="0"/></radialGradient></defs>'+(big?'<circle cx="0" cy="-8" r="60" fill="url(#bfGlow)"/>':'');
+  xs.forEach(function(x,i){var sc=(big?(i===1?1.25:0.95):1)*(i%2?0.9:1);
+    g+='<g transform="translate('+x+',0) scale('+sc+')"><g class="tongue" style="transform-box:fill-box;transform-origin:50% 100%"><g fill="url(#bfFire)">'+FIRE_TONGUE+'</g></g></g>';});
+  g+='</svg>';
+  d.innerHTML=g;document.body.appendChild(d);FIRE.el=d;
+  d.querySelectorAll('.tongue').forEach(function(tg,i){
+    tg.animate([{transform:'scale(1,1)'},{transform:'scale(1.08,.9)'},{transform:'scale(.94,1.07)'},{transform:'scale(1,1)'}].map(function(k){return {transform:k.transform};}),{duration:420+i*110,iterations:Infinity,easing:'ease-in-out'});
+  });
+  /* 島のふくらみ: 炎が大きくなった（5連続になった）ときだけ、一度ぷくっと広がる */
+  if(big&&old!==2&&d.animate)d.animate([{transform:'scale(.6)',opacity:0},{transform:'scale(1.12)',opacity:1,offset:.6},{transform:'scale(1)',opacity:1}],{duration:520,easing:'ease-out'});
+  else if(d.animate)d.animate([{transform:'scale(.4)',opacity:0},{transform:'scale(1)',opacity:1}],{duration:260,easing:'ease-out'});
+}
+/* 着陸（C）: 島から光の輪が広がり、光の筋が放射状に伸びて、白いダストが舞い落ちる */
+function gimmickIslandLanding(){
+  if(!document.body.animate||reduceMotion)return;
+  var t=islandTarget();
+  var ring=document.createElement('div');ring.setAttribute('aria-hidden','true');
+  ring.style.cssText='position:fixed;left:'+(t.x-30)+'px;top:'+(t.y-30)+'px;width:60px;height:60px;border-radius:50%;border:3px solid #ffcf26;box-shadow:0 0 18px rgba(255,207,38,.8);pointer-events:none;z-index:2147483449;';
+  document.body.appendChild(ring);
+  var ra=ring.animate([{transform:'scale(.3)',opacity:1},{transform:'scale(5)',opacity:0}],{duration:950,easing:'cubic-bezier(.2,.7,.3,1)',fill:'forwards'});
+  ra.onfinish=function(){ring.remove();};
+  for(var i=0;i<12;i++){(function(i){
+    var ang=i*30,ray=document.createElement('div');ray.setAttribute('aria-hidden','true');
+    ray.style.cssText='position:fixed;left:'+(t.x-1.5)+'px;top:'+(t.y-22)+'px;width:3px;height:44px;border-radius:2px;background:linear-gradient(#fff6c2,rgba(255,207,38,0));pointer-events:none;z-index:2147483449;transform-origin:50% 100%;transform:rotate('+ang+'deg) translateY(-6px);opacity:0';
+    document.body.appendChild(ray);
+    var a=ray.animate([{transform:'rotate('+ang+'deg) translateY(-6px) scaleY(.2)',opacity:1},{transform:'rotate('+ang+'deg) translateY(-30px) scaleY(1.3)',opacity:0}],{duration:820,delay:60,easing:'ease-out',fill:'forwards'});
+    a.onfinish=function(){ray.remove();};
+  })(i);}
+  for(var j=0;j<8;j++){(function(j){
+    var ang=j*45*Math.PI/180,dist=46+(j%3)*14,dx=Math.cos(ang)*dist,dy=Math.sin(ang)*dist*0.6+26,sz=5+(j%2)*3;
+    var d=document.createElement('div');d.setAttribute('aria-hidden','true');
+    d.style.cssText='position:fixed;left:'+(t.x-sz/2)+'px;top:'+(t.y-sz/2)+'px;width:'+sz+'px;height:'+sz+'px;border-radius:50%;background:#fff;box-shadow:0 0 6px rgba(255,255,255,.7);pointer-events:none;z-index:2147483449;opacity:.9';
+    document.body.appendChild(d);
+    var a=d.animate([{transform:'translate(0,0) scale(1)',opacity:.9},{transform:'translate('+dx+'px,'+dy+'px) scale(1.6)',opacity:0}],{duration:900+j*40,delay:120+j*20,easing:'ease-out',fill:'forwards'});
+    a.onfinish=function(){d.remove();};
+  })(j);}
+}
 /* 途中でやめたとき: 白い飛行機が本物の島から下へ戻っていく */
 function gimmickIslandReturn(){
-  if(!ISL.on)return;ISL.on=false;
+  if(!ISL.on)return;ISL.on=false;gimmickIslandFire(0);
   if(!document.body.animate||reduceMotion)return;
   var t=islandTarget();
   var p=document.createElement('div');p.setAttribute('aria-hidden','true');
@@ -6930,7 +6985,7 @@ function gimmickIslandReturn(){
   ],{duration:900,easing:'ease-in-out',fill:'forwards'});
   a.onfinish=function(){p.remove();};
 }
-function gimmickIslandRemove(){ISL.on=false;}
+function gimmickIslandRemove(){ISL.on=false;gimmickIslandFire(0);}
 /* 白い大きな飛行機（離陸の演出）が、島に吸い込まれる。着いたら島が現れる */
 /* 島が現れて、ぽんと弾む */
 /* 答えるたび: 数字がパラッと変わり、飛行機が跳ねる */
