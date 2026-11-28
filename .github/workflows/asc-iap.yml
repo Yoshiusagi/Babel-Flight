@@ -35,5 +35,5 @@ jobs:
           ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
           BUNDLE_ID: com.babelflight.app
           # push のコミットメッセージに [iap-create] があれば作成する（それ以外の push は dry-run）
-          MODE: ${{ inputs.mode || (contains(github.event.head_commit.message, '[iap-create]') && 'create') || (contains(github.event.head_commit.message, '[iap-points]') && 'points') || (contains(github.event.head_commit.message, '[iap-shots]') && 'shots') || 'dry-run' }}
+          MODE: ${{ inputs.mode || (contains(github.event.head_commit.message, '[iap-create]') && 'create') || (contains(github.event.head_commit.message, '[iap-points]') && 'points') || (contains(github.event.head_commit.message, '[iap-shots]') && 'shots') || (contains(github.event.head_commit.message, '[iap-status]') && 'status') || 'dry-run' }}
         run: node ios-app/scripts/asc-iap.mjs ios-app/iap/products.json

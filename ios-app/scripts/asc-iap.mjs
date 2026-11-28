@@ -108,6 +108,20 @@ async function main() {
   const byProduct = new Map(existing.map((x) => [x.attributes.productId, x]));
   say(`App Store にある課金商品: ${existing.length}件`);
 
+  if (MODE === "status") {
+    // read-only: what is missing before the app and its purchases can be submitted
+    const vers = await all(`/v1/apps/${appId}/appStoreVersions?limit=20`);
+    say("アプリのバージョン:");
+    vers.forEach((v) => say(`- ${v.attributes.versionString} | ${v.attributes.appStoreState} | ${v.attributes.platform}`));
+    const builds = await all(`/v1/builds?filter[app]=${appId}&limit=20&sort=-uploadedDate`);
+    say("ビルド（新しい順）:");
+    builds.slice(0, 8).forEach((b) => say(`- ${b.attributes.version} | ${b.attributes.processingState} | ${b.attributes.uploadedDate}`));
+    const states = {};
+    existing.forEach((x) => { const st = x.attributes.state; states[st] = (states[st] || 0) + 1; });
+    say("課金商品の状態: " + JSON.stringify(states));
+    if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, "```\n" + log.join("\n") + "\n```\n");
+    return;
+  }
   if (MODE === "points") {
     // read-only: the yen price points Apple offers for this app (for checking the price steps)
     const first = existing[0];
