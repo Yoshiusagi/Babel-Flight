@@ -303,12 +303,12 @@ function tearTeethHTML(){
     '.lesson-sheet{touch-action:none;overscroll-behavior:none}';
   document.head.appendChild(st);
 })();
-function tearCutTo(band,headX,startX){
-  /* 指が通った穴だけ切れる（戻ると元に戻る）。位置は触れ始めの場所で固定して計算 */
+function tearCutTo(band,headX){
+  /* 一度切れた穴は戻らない。左端から、いちばん遠くまで引いた所までの穴を切れたままにする */
   var l=TEAR.bl,w=TEAR.bw,ts=band.querySelectorAll('.tooth');
   for(var i=0;i<ts.length;i++){
     var ax=l+(parseFloat(ts[i].style.left)/100)*w;
-    ts[i].classList.toggle('cut',ax>=startX&&ax<=headX);
+    if(ax<=headX)ts[i].classList.add('cut');
   }
 }
 function tearCutAll(band,on){
@@ -316,11 +316,13 @@ function tearCutAll(band,on){
   var ts=band.querySelectorAll('.tooth');
   for(var i=0;i<ts.length;i++)ts[i].classList.toggle('cut',on);
 }
-var TEAR={el:null,stub:null,clone:null,x0:0,dx:0,bl:0,bw:300,sl:0,sw:300,sh:100,done:false};
+var TEAR={el:null,stub:null,clone:null,torn:null,x0:0,dx:0,bl:0,bw:300,sl:0,sw:300,sh:100,done:false};
 function tearStart(band,cx){
   var stub=band.parentNode,sr=stub.getBoundingClientRect(),br=band.getBoundingClientRect();
   TEAR.el=band;TEAR.stub=stub;TEAR.x0=cx;TEAR.dx=0;TEAR.done=false;
   TEAR.bl=br.left;TEAR.bw=br.width||300;TEAR.sl=sr.left;TEAR.sw=sr.width||300;TEAR.sh=sr.height||100;
+  /* もう破り始めていたら、その続きから。切れた紙はそのまま垂れて残っている */
+  if(stub._torn){TEAR.torn=stub._torn;TEAR.clone=stub._torn.cl;stub.classList.add('tearing');return;}
   /* 切れた左側の紙：同じ半券をもう1枚作り、そこだけ残して垂らす */
   var cl=stub.cloneNode(true),b2=cl.querySelector('.tear-line');
   if(b2&&b2.parentNode)b2.parentNode.removeChild(b2);
@@ -331,6 +333,8 @@ function tearStart(band,cx){
   cl.style.setProperty('--p','1');
   stub.parentNode.appendChild(cl);
   TEAR.clone=cl;
+  stub._torn={X:0,cl:cl};
+  TEAR.torn=stub._torn;
   stub.classList.add('tearing');
   stub.style.transition='none';
 }
@@ -355,8 +359,10 @@ function tearPolyR(a,W,H){
   return 'polygon('+q.join(',')+')';
 }
 function tearPaint(cx){
-  var st=TEAR.stub,cl=TEAR.clone,W=TEAR.sw,H=TEAR.sh;
-  var X=Math.max(0,Math.min(W,cx-TEAR.sl)),f=W?X/W:0,g=f*f;
+  var st=TEAR.stub,cl=TEAR.clone,W=TEAR.sw,H=TEAR.sh,T=TEAR.torn;
+  /* 切れた所より手前へは戻らない（指を戻しても、紙はくっつかない） */
+  T.X=Math.max(T.X,Math.min(W,Math.max(0,cx-TEAR.sl)));
+  var X=T.X,f=W?X/W:0,g=f*f;
   st.style.setProperty('--p',f.toFixed(3));
   /* 右側は残ったまま。左側（切れた分）は、切れた場所を支点に、少しずつ下に垂れていく（重力で加速） */
   var seam=tearSeam(X,W,H);
@@ -368,24 +374,8 @@ function tearPaint(cx){
   cl.style.setProperty('--x',X.toFixed(1)+'px');
   st.style.setProperty('--seam',f>0.01?'1':'0');
   cl.style.setProperty('--seam',f>0.01?'1':'0');
-  tearCutTo(TEAR.el,cx,TEAR.x0);
+  tearCutTo(TEAR.el,TEAR.sl+X);
   return f;
-}
-function tearReset(){
-  var st=TEAR.stub,cl=TEAR.clone,band=TEAR.el;
-  if(cl){
-    cl.style.transition='transform .32s cubic-bezier(.3,1.4,.5,1),clip-path .32s ease';
-    cl.style.clipPath='polygon(0px 0px,100% 0px,100% 100%,0px 100%)';cl.style.transform='translateY(0px) rotate(0deg)';cl.style.transformOrigin='0 0';
-  }
-  if(st){
-    st.style.transition='clip-path .32s ease';st.style.clipPath='polygon(0px 0px,100% 0px,100% 100%,0px 100%)';st.style.setProperty('--p','0');
-  }
-  tearCutAll(band,false);
-  setTimeout(function(){
-    if(cl&&cl.parentNode)cl.parentNode.removeChild(cl);
-    if(st){st.style.clipPath='';st.style.transition='';st.classList.remove('tearing');st.style.removeProperty('--p');}
-  },340);
-  TEAR.clone=null;TEAR.el=null;TEAR.stub=null;
 }
 function tearOff(){
   /* 最後まで引き切った：切れた半券が、重力で下へ落ちる */
@@ -426,15 +416,11 @@ document.addEventListener('touchmove',function(e){
   if(e.cancelable&&e.target&&e.target.closest&&e.target.closest('[data-lesson-scrim]'))e.preventDefault();
 },{passive:false});
 function tearRelease(){
-  if(!TEAR.el)return;
-  if(!TEAR.done)tearReset();
-  TEAR.el=null;TEAR.done=false;
+  /* 途中で離しても戻さない。切れた紙は、切れた角度のまま垂れて残る */
+  TEAR.el=null;TEAR.stub=null;TEAR.clone=null;TEAR.torn=null;TEAR.done=false;
 }
 document.addEventListener('touchend',function(){tearRelease();},{passive:true});
-document.addEventListener('touchcancel',function(){
-  if(TEAR.el&&!TEAR.done)tearReset();
-  TEAR.el=null;TEAR.done=false;
-},{passive:true});
+document.addEventListener('touchcancel',function(){tearRelease();},{passive:true});
 document.addEventListener('keydown',function(e){
   var band=e.target&&e.target.closest&&e.target.closest('.tear-line');
   if(band&&(e.key==='Enter'||e.key===' ')){e.preventDefault();closeSheet();startUnitFlight(band.getAttribute('data-tear'));}
