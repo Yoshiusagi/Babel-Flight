@@ -42,7 +42,7 @@ function passHTML(L,uid){
     '<div><span class="lbl">ゲート</span><div class="v">'+gateNo(L,uid)+'</div></div>'+
     '<div><span class="lbl">問題数</span><div class="v">'+(u.items.length*2)+'問</div></div>'+
     '<div><span class="lbl">定着度</span><div class="v">'+m+'%</div></div></div></div>'+
-    '<div class="pass-stub"><div class="stub-row"><div class="barcode">'+barcodeSVG(flightNo(L,uid)+L)+'</div></div>'+
+    '<div class="pass-stub"><div class="stub-row tear-h" role="button" tabindex="0" data-tear="'+esc(uid)+'" aria-label="半券を左へ破って、このレッスンを始める"><div class="barcode">'+barcodeSVG(flightNo(L,uid)+L)+'</div></div>'+
     tearHTML(uid)+'</div></section>';
 }
 function reviewHTML(){
@@ -272,15 +272,14 @@ function render(){
 
 /* ---- 搭乗券を破って出発（はじめる・飛び級のボタンは置かない）---- */
 function tearHTML(uid){
-  return '<div class="tear-h" role="button" tabindex="0" data-tear="'+esc(uid)+'" aria-label="搭乗券を破って、このレッスンを始める"><span>半券を左へスライドして破る</span><span class="tear-go" aria-hidden="true">✈</span></div>'+
-    '<p class="dim hint tear-hint">左へ大きくスライドすると、搭乗券が破れて出発します</p>';
+  return '<p class="dim hint tear-hint">← 半券を左へスライドして破ると出発</p>';
 }
 (function(){
   var st=document.createElement('style');
-  st.textContent='.tear-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px;padding:16px;border-radius:14px;background:var(--accent,#f5c400);color:#111;font-weight:800;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab;transition:transform .25s ease,opacity .3s ease}'+
-    '.tear-h:focus-visible{outline:3px solid currentColor;outline-offset:3px}'+
-    '.tear-h.torn{transform:translateX(-115%) rotate(-10deg)!important;opacity:0}'+
-    '.tear-go{font-size:20px}';
+  st.textContent='.tear-h{touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab;transform-origin:left center;transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .35s ease}'+
+    '.tear-h:focus-visible{outline:3px solid currentColor;outline-offset:3px;border-radius:6px}'+
+    '.tear-h.torn{transform:translateX(-130%) rotate(-16deg)!important;opacity:0}'+
+    '.tear-hint{text-align:right;margin:6px 4px 0}';
   document.head.appendChild(st);
 })();
 var TEAR={el:null,x0:0,dx:0,w:0};
@@ -300,7 +299,7 @@ document.addEventListener('pointerdown',function(e){
 document.addEventListener('pointermove',function(e){
   if(!TEAR.el)return;
   TEAR.dx=Math.min(0,e.clientX-TEAR.x0);
-  TEAR.el.style.transform='translateX('+TEAR.dx+'px)';
+  TEAR.el.style.transform='translateX('+TEAR.dx+'px) rotate('+(TEAR.dx*0.04).toFixed(2)+'deg)';
 });
 function tearEnd(torn){
   var h=TEAR.el;if(!h)return;
