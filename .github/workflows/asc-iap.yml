@@ -5,6 +5,10 @@
 name: App Store の課金商品
 
 on:
+  # このブランチに push したときは、確認だけ（dry-run）を自動で実行する（何も変えない）
+  push:
+    branches: [app-1.0.2-feat]
+    paths: [".github/workflows/asc-iap.yml", "ios-app/iap/**", "ios-app/scripts/asc-iap.mjs"]
   workflow_dispatch:
     inputs:
       mode:
@@ -30,5 +34,5 @@ jobs:
           ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
           BUNDLE_ID: com.babelflight.app
-          MODE: ${{ inputs.mode }}
+          MODE: ${{ inputs.mode || 'dry-run' }}
         run: node ios-app/scripts/asc-iap.mjs ios-app/iap/products.json
