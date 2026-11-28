@@ -277,10 +277,11 @@ function tearHTML(uid){
 (function(){
   var st=document.createElement('style');
   st.textContent='.tear-line{position:relative;height:60px;margin:-6px -20px 0;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}'+
-    '.tear-line::before{content:"";position:absolute;left:20px;right:20px;top:50%;border-top:2px dashed currentColor;opacity:.6}'+
+    '.tear-line::before{content:"";position:absolute;left:20px;right:20px;top:50%;border-top:2px dashed currentColor;opacity:.6;-webkit-mask-image:linear-gradient(to right,transparent calc(var(--p,0)*100%),#000 calc(var(--p,0)*100% + 1px));mask-image:linear-gradient(to right,transparent calc(var(--p,0)*100%),#000 calc(var(--p,0)*100% + 1px))}'+
+    '.tear-line.tearing .tear-cue{opacity:calc(1 - var(--p,0)*2)}'+
     '.tear-cue{position:relative;padding:4px 12px;border-radius:999px;background:var(--surface);font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--sc,var(--good))}'+
     '.tear-line:focus-visible{outline:3px solid currentColor;outline-offset:2px}'+
-    '.pass-stub{transition:transform .3s ease,opacity .3s ease}'+
+    '.pass-stub{transform-origin:left center;transition:transform .42s cubic-bezier(.3,1.5,.5,1),opacity .3s ease,box-shadow .3s ease}'+
     '.pass-stub.tearing{transition:none}'+
     '.pass-stub.torn{transform:translateX(140%) rotate(16deg)!important;opacity:0;transition:transform .42s cubic-bezier(.3,.7,.3,1),opacity .42s ease!important}'+
     '.tear-hint{text-align:center;margin:6px 4px 0}'+
@@ -288,13 +289,26 @@ function tearHTML(uid){
     '.lesson-sheet{touch-action:none;overscroll-behavior:none}';
   document.head.appendChild(st);
 })();
-var TEAR={el:null,x0:0,dx:0};
+var TEAR={el:null,x0:0,dx:0,p:0};
+var TEAR_LEN=150; /* ここまで引くと、半券が完全に破れる（px） */
+function tearPaint(band,dx){
+  var p=Math.min(1,dx/TEAR_LEN),stub=band.parentNode;
+  band.style.setProperty('--p',p.toFixed(3));
+  /* 少しずつ離れる：右へ動き、下へ少し落ち、ほんの少し傾く。切れ目の影も濃くなる */
+  stub.style.transform='translate('+(dx*0.55).toFixed(1)+'px,'+(p*5).toFixed(1)+'px) rotate('+(p*p*13).toFixed(2)+'deg)';
+  stub.style.boxShadow='0 '+(p*10).toFixed(1)+'px '+(p*16).toFixed(1)+'px rgba(0,0,0,'+(p*0.35).toFixed(3)+')';
+  return p;
+}
+function tearReset(band){
+  band.style.removeProperty('--p');
+  var stub=band.parentNode;stub.style.transform='';stub.style.boxShadow='';
+}
 function tearOff(band){
   var stub=band&&band.parentNode;
   if(!stub||stub.classList.contains('torn'))return;
   var uid=band.getAttribute('data-tear');
   stub.classList.remove('tearing');
-  stub.style.transform='';
+  stub.style.boxShadow='';
   stub.classList.add('torn');
   if(typeof hapt==='function')hapt();
   setTimeout(function(){closeSheet();startUnitFlight(uid);},460);
@@ -309,22 +323,23 @@ document.addEventListener('touchmove',function(e){
   if(TEAR.el&&e.touches&&e.touches[0]){
     if(e.cancelable)e.preventDefault();
     TEAR.dx=Math.max(0,e.touches[0].clientX-TEAR.x0);
-    TEAR.el.parentNode.style.transform='translateX('+TEAR.dx+'px) rotate('+(TEAR.dx*0.03).toFixed(2)+'deg)';
+    var pp=tearPaint(TEAR.el,TEAR.dx);
+    if(pp>=1&&!TEAR.done){TEAR.done=true;tearOff(TEAR.el);TEAR.el=null;}
     return;
   }
   /* 後ろの画面を触らせない（レッスン表示中の透明な部分） */
   if(e.cancelable&&e.target&&e.target.closest&&e.target.closest('[data-lesson-scrim]'))e.preventDefault();
 },{passive:false});
 function tearRelease(){
-  var band=TEAR.el;if(!band)return;
+  var band=TEAR.el;TEAR.done=false;if(!band)return;
   TEAR.el=null;
   var stub=band.parentNode;stub.classList.remove('tearing');
-  if(TEAR.dx>=110)tearOff(band);
-  else stub.style.transform='';
+  if(TEAR.dx>=TEAR_LEN)tearOff(band);
+  else tearReset(band); /* 途中で離したら、くっついた状態に戻る */
 }
 document.addEventListener('touchend',function(){tearRelease();},{passive:true});
 document.addEventListener('touchcancel',function(){
-  if(TEAR.el){var stub=TEAR.el.parentNode;stub.classList.remove('tearing');stub.style.transform='';TEAR.el=null;}
+  if(TEAR.el){TEAR.el.parentNode.classList.remove('tearing');tearReset(TEAR.el);TEAR.el=null;}
 },{passive:true});
 document.addEventListener('keydown',function(e){
   var band=e.target&&e.target.closest&&e.target.closest('.tear-line');
