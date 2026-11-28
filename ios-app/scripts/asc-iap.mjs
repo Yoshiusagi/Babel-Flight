@@ -9,7 +9,7 @@
 //   3. adds the Japanese name and description if they are missing
 // It never changes a product that already has a price and a Japanese localization.
 // Submitting for review is NOT done here.
-import { createSign } from "node:crypto";
+import { createSign, createHash } from "node:crypto";
 import { readFileSync, appendFileSync } from "node:fs";
 
 const API = "https://api.appstoreconnect.apple.com";
@@ -17,6 +17,7 @@ const MODE = process.env.MODE || "dry-run";
 const file = process.argv[2];
 const spec = JSON.parse(readFileSync(file, "utf8"));
 const TERR = spec.territory || "JPN";
+const SHOT = spec.reviewImage || "ios-app/iap/review-purchase.png";
 
 const b64url = (buf) => Buffer.from(buf).toString("base64url");
 function token() {
@@ -61,6 +62,39 @@ async function priceSet(id) {
     throw e;
   }
 }
+// the App Review screenshot of a product (needed before Apple accepts the product for review)
+async function reviewShotSet(id) {
+  try {
+    const j = await api("GET", `/v2/inAppPurchases/${id}/appStoreReviewScreenshot`);
+    return !!(j && j.data);
+  } catch (e) {
+    if (String(e.message).includes("-> 404")) return false;
+    throw e;
+  }
+}
+async function uploadReviewShot(id) {
+  const bytes = readFileSync(SHOT);
+  const made = await api("POST", "/v1/inAppPurchaseAppStoreReviewScreenshots", {
+    data: {
+      type: "inAppPurchaseAppStoreReviewScreenshots",
+      attributes: { fileName: "review-purchase.png", fileSize: bytes.length },
+      relationships: { inAppPurchaseV2: { data: { type: "inAppPurchases", id } } },
+    },
+  });
+  const sid = made.data.id;
+  for (const op of made.data.attributes.uploadOperations) {
+    const headers = {};
+    for (const h of op.requestHeaders || []) headers[h.name] = h.value;
+    const part = bytes.subarray(op.offset, op.offset + op.length);
+    const r = await fetch(op.url, { method: op.method, headers, body: part });
+    if (!r.ok) throw new Error(`upload part -> ${r.status}`);
+  }
+  const md5 = createHash("md5").update(bytes).digest("hex");
+  await api("PATCH", `/v1/inAppPurchaseAppStoreReviewScreenshots/${sid}`, {
+    data: { type: "inAppPurchaseAppStoreReviewScreenshots", id: sid, attributes: { uploaded: true, sourceFileChecksum: md5 } },
+  });
+  return sid;
+}
 const log = [];
 function say(line) { console.log(line); log.push(line); }
 
@@ -86,7 +120,7 @@ async function main() {
     if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, "```\n" + log.join("\n") + "\n```\n");
     return;
   }
-  let created = 0, priced = 0, localized = 0;
+  let created = 0, priced = 0, localized = 0, shots = 0;
   for (const p of spec.products) {
     const row = [p.key, p.productId, `${p.priceYen}円`];
     let iap = byProduct.get(p.productId);
@@ -148,10 +182,15 @@ async function main() {
         }
       }
       if (hasPrice && ja) row.push("設定済み");
+      const hasShot = await reviewShotSet(id);
+      if (!hasShot) {
+        row.push("審査用画像を追加する");
+        if (MODE === "create" || MODE === "shots") { await uploadReviewShot(id); shots++; }
+      } else row.push("審査用画像あり");
     }
     say(`- ${row.join(" | ")}`);
   }
-  say(`結果（${MODE}）: 作成 ${created} / 価格 ${priced} / 日本語 ${localized}`);
+  say(`結果（${MODE}）: 作成 ${created} / 価格 ${priced} / 日本語 ${localized} / 審査用画像 ${shots}`);
   if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, "```\n" + log.join("\n") + "\n```\n");
 }
 
