@@ -6370,11 +6370,11 @@ function tearCutAll(band,on){
   var ts=band.querySelectorAll('.tooth');
   for(var i=0;i<ts.length;i++)ts[i].classList.toggle('cut',on);
 }
-var TEAR={el:null,stub:null,clone:null,x0:0,dx:0,bl:0,bw:300,sl:0,sw:300,done:false};
+var TEAR={el:null,stub:null,clone:null,x0:0,dx:0,bl:0,bw:300,sl:0,sw:300,sh:100,done:false};
 function tearStart(band,cx){
   var stub=band.parentNode,sr=stub.getBoundingClientRect(),br=band.getBoundingClientRect();
   TEAR.el=band;TEAR.stub=stub;TEAR.x0=cx;TEAR.dx=0;TEAR.done=false;
-  TEAR.bl=br.left;TEAR.bw=br.width||300;TEAR.sl=sr.left;TEAR.sw=sr.width||300;
+  TEAR.bl=br.left;TEAR.bw=br.width||300;TEAR.sl=sr.left;TEAR.sw=sr.width||300;TEAR.sh=sr.height||100;
   /* 切れた左側の紙：同じ半券をもう1枚作り、そこだけ残して垂らす */
   var cl=stub.cloneNode(true),b2=cl.querySelector('.tear-line');
   if(b2&&b2.parentNode)b2.parentNode.removeChild(b2);
@@ -6388,13 +6388,34 @@ function tearStart(band,cx){
   stub.classList.add('tearing');
   stub.style.transition='none';
 }
+function tearSeam(X,W,H){
+  /* 切れ目はまっすぐではなく、紙の繊維のようにガタガタにする（同じ線で左右が噛み合う） */
+  var N=12,a=[];
+  for(var i=0;i<=N;i++){
+    var j=((i*73)%9-4)*0.9*((i===0||i===N)?0.3:1);
+    a.push([Math.max(0,Math.min(W,X+j)),H*i/N]);
+  }
+  return a;
+}
+function tearPolyL(a,H){
+  var q=['0px 0px'];
+  for(var i=0;i<a.length;i++)q.push(a[i][0].toFixed(1)+'px '+a[i][1].toFixed(1)+'px');
+  q.push('0px '+H.toFixed(1)+'px');
+  return 'polygon('+q.join(',')+')';
+}
+function tearPolyR(a,W,H){
+  var q=[a[0][0].toFixed(1)+'px 0px',W.toFixed(1)+'px 0px',W.toFixed(1)+'px '+H.toFixed(1)+'px'];
+  for(var i=a.length-1;i>=0;i--)q.push(a[i][0].toFixed(1)+'px '+a[i][1].toFixed(1)+'px');
+  return 'polygon('+q.join(',')+')';
+}
 function tearPaint(cx){
-  var st=TEAR.stub,cl=TEAR.clone,W=TEAR.sw;
+  var st=TEAR.stub,cl=TEAR.clone,W=TEAR.sw,H=TEAR.sh;
   var X=Math.max(0,Math.min(W,cx-TEAR.sl)),f=W?X/W:0,g=f*f;
   st.style.setProperty('--p',f.toFixed(3));
   /* 右側は残ったまま。左側（切れた分）は、切れた場所を支点に、少しずつ下に垂れていく（重力で加速） */
-  st.style.clipPath='inset(0 0 0 '+X.toFixed(1)+'px)';
-  cl.style.clipPath='inset(0 '+(W-X).toFixed(1)+'px 0 0)';
+  var seam=tearSeam(X,W,H);
+  st.style.clipPath=tearPolyR(seam,W,H);
+  cl.style.clipPath=tearPolyL(seam,H);
   cl.style.transformOrigin=X.toFixed(1)+'px 0px';
   cl.style.transform='translateY('+(g*34).toFixed(1)+'px) rotate('+(-g*16).toFixed(2)+'deg)';
   tearCutTo(TEAR.el,cx,TEAR.x0);
@@ -6404,10 +6425,10 @@ function tearReset(){
   var st=TEAR.stub,cl=TEAR.clone,band=TEAR.el;
   if(cl){
     cl.style.transition='transform .32s cubic-bezier(.3,1.4,.5,1),clip-path .32s ease';
-    cl.style.clipPath='inset(0 0 0 0)';cl.style.transform='translateY(0px) rotate(0deg)';cl.style.transformOrigin='0 0';
+    cl.style.clipPath='polygon(0px 0px,100% 0px,100% 100%,0px 100%)';cl.style.transform='translateY(0px) rotate(0deg)';cl.style.transformOrigin='0 0';
   }
   if(st){
-    st.style.transition='clip-path .32s ease';st.style.clipPath='inset(0 0 0 0)';st.style.setProperty('--p','0');
+    st.style.transition='clip-path .32s ease';st.style.clipPath='polygon(0px 0px,100% 0px,100% 100%,0px 100%)';st.style.setProperty('--p','0');
   }
   tearCutAll(band,false);
   setTimeout(function(){
@@ -6424,7 +6445,7 @@ function tearOff(){
   if(typeof hapt==='function')hapt();
   if(cl){
     cl.style.transition='transform .7s cubic-bezier(.55,0,.9,.5),opacity .7s ease .15s';
-    cl.style.clipPath='inset(0 0 0 0)';cl.style.transformOrigin='0 0';
+    cl.style.transformOrigin='0 0';
     cl.style.transform='translateY(460px) rotate(-18deg)';cl.style.opacity='0';
   }
   st.style.transition='transform .7s cubic-bezier(.55,0,.9,.5),opacity .7s ease .15s';
