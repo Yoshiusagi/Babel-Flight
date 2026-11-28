@@ -51,6 +51,16 @@ async function all(path) {
   }
   return out;
 }
+// the price schedule of a product; 404 = no price set yet
+async function priceSet(id) {
+  try {
+    const j = await api("GET", `/v2/inAppPurchases/${id}/iapPriceSchedule`);
+    return !!(j && j.data);
+  } catch (e) {
+    if (String(e.message).includes("-> 404")) return false;
+    throw e;
+  }
+}
 const log = [];
 function say(line) { console.log(line); log.push(line); }
 
@@ -84,8 +94,8 @@ async function main() {
     }
     if (iap) {
       const id = iap.id;
-      const prices = await all(`/v2/inAppPurchases/${id}/prices?limit=50`);
-      if (prices.length === 0) {
+      const hasPrice = await priceSet(id);
+      if (!hasPrice) {
         row.push("価格を設定する");
         if (MODE === "create") {
           const points = await all(`/v2/inAppPurchases/${id}/pricePoints?filter[territory]=${TERR}&limit=200`);
@@ -125,7 +135,7 @@ async function main() {
           localized++;
         }
       }
-      if (prices.length && ja) row.push("設定済み");
+      if (hasPrice && ja) row.push("設定済み");
     }
     say(`- ${row.join(" | ")}`);
   }
