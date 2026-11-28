@@ -134,6 +134,7 @@ function openNodeSheet(uid){
   if(typeof examLockSheet==='function'&&examLockSheet(L,uid))return;
   $('sheetHost').innerHTML='<div class="lesson-scrim" data-lesson-scrim></div><div class="sheet plain print lesson-sheet" role="dialog" aria-label="レッスンの詳細"><div class="sheet-in">'+(isScene(L,uid)?sceneSheetHTML(L,uid):passHTML(L,uid))+
     '<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
+  if(typeof tearRestoreAll==='function')tearRestoreAll();
 }
 
 /* ---- map engine ---- */
