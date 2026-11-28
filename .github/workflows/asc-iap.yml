@@ -1,0 +1,34 @@
+# Makes the App Store in-app purchases (英検・検定の買い切り) in App Store Connect, through the API.
+#  - mode "dry-run": only shows what would be created or set (nothing changes). Run this first.
+#  - mode "create": creates the missing products, sets the Japan price and the Japanese name/description.
+# It never submits anything for review. Needs the secrets listed in ios-app/README.md.
+name: App Store の課金商品
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "dry-run: 確認だけ / create: 商品を作る"
+        type: choice
+        options: [dry-run, create]
+        default: dry-run
+
+permissions:
+  contents: read
+
+jobs:
+  iap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: 課金商品を確認・作成する
+        env:
+          ASC_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
+          ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          BUNDLE_ID: com.babelflight.app
+          MODE: ${{ inputs.mode }}
+        run: node ios-app/scripts/asc-iap.mjs ios-app/iap/products.json

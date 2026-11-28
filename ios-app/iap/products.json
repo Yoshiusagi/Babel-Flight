@@ -1,0 +1,213 @@
+{
+ "territory": "JPN",
+ "products": [
+  {
+   "key": "ek5",
+   "productId": "com.babelflight.app.eiken.ek5",
+   "referenceName": "英検5級",
+   "priceYen": 1200,
+   "nameJa": "英検5級",
+   "descriptionJa": "英検5級のレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "ek4",
+   "productId": "com.babelflight.app.eiken.ek4",
+   "referenceName": "英検4級",
+   "priceYen": 1200,
+   "nameJa": "英検4級",
+   "descriptionJa": "英検4級のレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "ek3",
+   "productId": "com.babelflight.app.eiken.ek3",
+   "referenceName": "英検3級",
+   "priceYen": 1200,
+   "nameJa": "英検3級",
+   "descriptionJa": "英検3級のレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "ekp2",
+   "productId": "com.babelflight.app.eiken.ekp2",
+   "referenceName": "英検準2級",
+   "priceYen": 1200,
+   "nameJa": "英検準2級",
+   "descriptionJa": "英検準2級のレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "ekp2p",
+   "productId": "com.babelflight.app.eiken.ekp2p",
+   "referenceName": "英検準2級プラス",
+   "priceYen": 1500,
+   "nameJa": "英検準2級プラス",
+   "descriptionJa": "英検準2級プラスのレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "ek2",
+   "productId": "com.babelflight.app.eiken.ek2",
+   "referenceName": "英検2級",
+   "priceYen": 1500,
+   "nameJa": "英検2級",
+   "descriptionJa": "英検2級のレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "ekp1",
+   "productId": "com.babelflight.app.eiken.ekp1",
+   "referenceName": "英検準1級",
+   "priceYen": 1800,
+   "nameJa": "英検準1級",
+   "descriptionJa": "英検準1級のレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "ek1",
+   "productId": "com.babelflight.app.eiken.ek1",
+   "referenceName": "英検1級",
+   "priceYen": 2000,
+   "nameJa": "英検1級",
+   "descriptionJa": "英検1級のレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "all",
+   "productId": "com.babelflight.app.eiken.all",
+   "referenceName": "Eiken all levels bundle",
+   "priceYen": 9000,
+   "nameJa": "英検 全級まとめ",
+   "descriptionJa": "英検の全級（5級〜1級）が開きます。個別より約22%オフ"
+  },
+  {
+   "key": "toeics",
+   "productId": "com.babelflight.app.exam.toeics",
+   "referenceName": "TOEIC Speaking",
+   "priceYen": 1500,
+   "nameJa": "TOEIC Speaking",
+   "descriptionJa": "TOEIC Speakingのレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "opic",
+   "productId": "com.babelflight.app.exam.opic",
+   "referenceName": "OPIc",
+   "priceYen": 1500,
+   "nameJa": "OPIc",
+   "descriptionJa": "OPIcのレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "cet4",
+   "productId": "com.babelflight.app.exam.cet4",
+   "referenceName": "CET-4",
+   "priceYen": 1200,
+   "nameJa": "CET-4",
+   "descriptionJa": "CET-4のレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "cet6",
+   "productId": "com.babelflight.app.exam.cet6",
+   "referenceName": "CET-6",
+   "priceYen": 1500,
+   "nameJa": "CET-6",
+   "descriptionJa": "CET-6のレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "toeicl",
+   "productId": "com.babelflight.app.exam.toeicl",
+   "referenceName": "TOEIC L&R",
+   "priceYen": 2000,
+   "nameJa": "TOEIC L&R",
+   "descriptionJa": "TOEIC L&Rのレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "ielts",
+   "productId": "com.babelflight.app.exam.ielts",
+   "referenceName": "IELTS",
+   "priceYen": 2000,
+   "nameJa": "IELTS",
+   "descriptionJa": "IELTSのレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "toefl",
+   "productId": "com.babelflight.app.exam.toefl",
+   "referenceName": "TOEFL iBT",
+   "priceYen": 2000,
+   "nameJa": "TOEFL iBT",
+   "descriptionJa": "TOEFL iBTのレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "icao",
+   "productId": "com.babelflight.app.exam.icao",
+   "referenceName": "ICAO航空英語",
+   "priceYen": 1500,
+   "nameJa": "ICAO航空英語",
+   "descriptionJa": "ICAO航空英語のレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "aero",
+   "productId": "com.babelflight.app.exam.aero",
+   "referenceName": "航空無線通信士 英語",
+   "priceYen": 1500,
+   "nameJa": "航空無線通信士 英語",
+   "descriptionJa": "航空無線通信士 英語のレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "ca",
+   "productId": "com.babelflight.app.exam.ca",
+   "referenceName": "客室乗務員の英語 面接",
+   "priceYen": 1200,
+   "nameJa": "客室乗務員の英語 面接",
+   "descriptionJa": "客室乗務員の英語 面接のレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "bec",
+   "productId": "com.babelflight.app.exam.bec",
+   "referenceName": "ビジネス英語（BEC）",
+   "priceYen": 1200,
+   "nameJa": "ビジネス英語（BEC）",
+   "descriptionJa": "ビジネス英語（BEC）のレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "oet",
+   "productId": "com.babelflight.app.exam.oet",
+   "referenceName": "OET 診察の英語",
+   "priceYen": 1200,
+   "nameJa": "OET 診察の英語",
+   "descriptionJa": "OET 診察の英語のレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "oetph",
+   "productId": "com.babelflight.app.exam.oetph",
+   "referenceName": "OET 薬剤師の英語",
+   "priceYen": 1200,
+   "nameJa": "OET 薬剤師の英語",
+   "descriptionJa": "OET 薬剤師の英語のレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "celta",
+   "productId": "com.babelflight.app.exam.celta",
+   "referenceName": "CELTA・TEFL",
+   "priceYen": 1200,
+   "nameJa": "CELTA・TEFL",
+   "descriptionJa": "CELTA・TEFLのレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "toles",
+   "productId": "com.babelflight.app.exam.toles",
+   "referenceName": "TOLES",
+   "priceYen": 1200,
+   "nameJa": "TOLES",
+   "descriptionJa": "TOLESのレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "servsafe",
+   "productId": "com.babelflight.app.exam.servsafe",
+   "referenceName": "ServSafe 食品衛生",
+   "priceYen": 1200,
+   "nameJa": "ServSafe 食品衛生",
+   "descriptionJa": "ServSafe 食品衛生のレッスン・模試・面接練習が開きます"
+  },
+  {
+   "key": "others",
+   "productId": "com.babelflight.app.exam.others",
+   "referenceName": "Other exams bundle",
+   "priceYen": 18000,
+   "nameJa": "英検以外 全部まとめ",
+   "descriptionJa": "英検以外の16検定が全部開きます。個別より約22%オフ"
+  }
+ ]
+}
