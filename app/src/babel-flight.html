@@ -6098,7 +6098,7 @@ function passHTML(L,uid){
     '<div><span class="lbl">ゲート</span><div class="v">'+gateNo(L,uid)+'</div></div>'+
     '<div><span class="lbl">問題数</span><div class="v">'+(u.items.length*2)+'問</div></div>'+
     '<div><span class="lbl">定着度</span><div class="v">'+m+'%</div></div></div></div>'+
-    '<div class="pass-stub"><div class="tear-line tear-h" role="button" tabindex="0" data-tear="'+esc(uid)+'" aria-label="ミシン目を右へスライドして、このレッスンを始める"><span class="tear-cue">ミシン目を右へ引っ張る ▶</span></div><div class="stub-row"><div class="barcode">'+barcodeSVG(flightNo(L,uid)+L)+'</div></div>'+
+    '<div class="pass-stub"><div class="tear-line tear-h" role="button" tabindex="0" data-tear="'+esc(uid)+'" aria-label="ミシン目を右へスライドして、このレッスンを始める">'+tearTeethHTML()+'<span class="tear-cue">ミシン目を右へ引っ張る ▶</span></div><div class="stub-row"><div class="barcode">'+barcodeSVG(flightNo(L,uid)+L)+'</div></div>'+
     tearHTML(uid)+'</div></section>';
 }
 function reviewHTML(){
@@ -6337,6 +6337,8 @@ function tearHTML(uid){
     '.tear-line.tearing .tear-cue{opacity:calc(1 - var(--p,0)*2)}'+
     '.tear-cue{position:relative;padding:4px 12px;border-radius:999px;background:var(--surface);font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--sc,var(--good))}'+
     '.tear-line:focus-visible{outline:3px solid currentColor;outline-offset:2px}'+
+    '.tear-line .tooth{position:absolute;top:50%;width:7px;height:7px;margin-left:-3.5px;margin-top:-3.5px;border-radius:50%;background:var(--sc,var(--good));opacity:.55;transition:transform .2s ease,opacity .2s ease}'+
+    '.tear-line .tooth.cut{transform:translateY(4px) rotate(24deg) scale(.55);opacity:0}'+
     '.pass-stub{transform-origin:left center;transition:transform .42s cubic-bezier(.3,1.5,.5,1),opacity .3s ease,box-shadow .3s ease}'+
     '.pass-stub.tearing{transition:none}'+
     '.pass-stub.torn{transform:translateX(140%) rotate(16deg)!important;opacity:0;transition:transform .42s cubic-bezier(.3,.7,.3,1),opacity .42s ease!important}'+
@@ -6345,11 +6347,32 @@ function tearHTML(uid){
     '.lesson-sheet{touch-action:none;overscroll-behavior:none}';
   document.head.appendChild(st);
 })();
+var TEAR_TEETH=18;
+function tearTeethHTML(){
+  /* ミシン目の小さな穴。引くと、左から1つずつちぎれていく（位置は少しずつ不規則にずらす） */
+  var h='';
+  for(var i=0;i<TEAR_TEETH;i++){
+    var x=(4+i*(92/(TEAR_TEETH-1))).toFixed(2),y=((i*37)%5-2)*0.6;
+    h+='<i class="tooth" style="left:'+x+'%;margin-top:'+y.toFixed(1)+'px" data-i="'+i+'"></i>';
+  }
+  return h;
+}
+function tearCut(band,n){
+  if(band.getAttribute('data-cut')===String(n))return;
+  band.setAttribute('data-cut',String(n));
+  var ts=band.querySelectorAll('.tooth');
+  for(var i=0;i<ts.length;i++){
+    var on=i<n;
+    if(on&&!ts[i].classList.contains('cut')){ts[i].classList.add('cut');}
+    else if(!on&&ts[i].classList.contains('cut')){ts[i].classList.remove('cut');}
+  }
+}
 var TEAR={el:null,x0:0,dx:0,p:0,w:300,done:false};
 function tearPaint(band,dx){
   /* 進み具合は、ミシン目の右端近くまで引いたとき100%になる */
   var p=Math.min(1,dx/(TEAR.w*0.85)),stub=band.parentNode;
   band.style.setProperty('--p',p.toFixed(3));
+  tearCut(band,Math.floor(p*TEAR_TEETH));
   /* 少しずつ離れる：まだ主券にくっついたまま、ほんの少し右へ、少し傾く。影も少しずつ濃くなる */
   stub.style.transform='translate('+(dx*0.18).toFixed(1)+'px,'+(p*3).toFixed(1)+'px) rotate('+(p*5).toFixed(2)+'deg)';
   stub.style.boxShadow='0 '+(p*6).toFixed(1)+'px '+(p*10).toFixed(1)+'px rgba(0,0,0,'+(p*0.3).toFixed(3)+')';
@@ -6357,6 +6380,7 @@ function tearPaint(band,dx){
 }
 function tearReset(band){
   band.style.removeProperty('--p');
+  tearCut(band,0);
   var stub=band.parentNode;stub.style.transform='';stub.style.boxShadow='';
 }
 function tearOff(band){
