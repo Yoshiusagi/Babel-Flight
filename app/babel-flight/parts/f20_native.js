@@ -176,7 +176,7 @@ function appCardHTML(){
 var SWB={x:0,y:0,on:false,el:null};
 function swbTarget(){
   var sh=document.querySelector('#sheetHost .sheet');
-  if(sh)return sh.querySelector('[data-close-sheet],[data-abort-no],[data-aic="no"]');
+  if(sh){if(sh.classList.contains('lesson-sheet'))return null;return sh.querySelector('[data-close-sheet],[data-abort-no],[data-aic="no"]');}
   var sel=['[data-abort]','[data-sc-end]','[data-atc-back]','[data-role-back]','[data-ai-drill-close]','[data-picker-close]','[data-ob-back]'];
   for(var i=0;i<sel.length;i++){
     var b=document.querySelector('#main '+sel[i]);

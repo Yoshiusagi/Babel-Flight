@@ -276,13 +276,13 @@ function tearHTML(uid){
 }
 (function(){
   var st=document.createElement('style');
-  st.textContent='.tear-h{touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab;transform-origin:left center;transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .35s ease}'+
+  st.textContent='.tear-h{touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;transform-origin:left center;transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .35s ease}'+
     '.tear-h:focus-visible{outline:3px solid currentColor;outline-offset:3px;border-radius:6px}'+
     '.tear-h.torn{transform:translateX(-130%) rotate(-16deg)!important;opacity:0}'+
-    '.tear-hint{text-align:right;margin:6px 4px 0}';
+    '.tear-hint{text-align:right;margin:6px 4px 0}'+'.lesson-scrim{position:fixed;inset:0;z-index:29;touch-action:none;background:transparent}';
   document.head.appendChild(st);
 })();
-var TEAR={el:null,x0:0,dx:0,w:0};
+var TEAR={el:null,x0:0,dx:0};
 function tearOff(h){
   if(!h||h.classList.contains('torn'))return;
   h.classList.add('torn');
@@ -290,25 +290,45 @@ function tearOff(h){
   var uid=h.getAttribute('data-tear');
   setTimeout(function(){closeSheet();startUnitFlight(uid);},420);
 }
-document.addEventListener('pointerdown',function(e){
-  var h=e.target&&e.target.closest&&e.target.closest('.tear-h');if(!h)return;
-  TEAR.el=h;TEAR.x0=e.clientX;TEAR.dx=0;TEAR.w=(h.parentNode&&h.parentNode.offsetWidth)||300;
-  h.style.transition='none';
-  try{h.setPointerCapture(e.pointerId);}catch(_){}
-});
-document.addEventListener('pointermove',function(e){
+function tearMoveTo(x){
   if(!TEAR.el)return;
-  TEAR.dx=Math.min(0,e.clientX-TEAR.x0);
+  TEAR.dx=Math.min(0,x-TEAR.x0);
   TEAR.el.style.transform='translateX('+TEAR.dx+'px) rotate('+(TEAR.dx*0.04).toFixed(2)+'deg)';
-});
-function tearEnd(torn){
+}
+function tearRelease(){
   var h=TEAR.el;if(!h)return;
   TEAR.el=null;h.style.transition='';
-  if(torn&&-TEAR.dx>TEAR.w*0.6){tearOff(h);}
-  else{h.style.transform='';}
+  if(-TEAR.dx>=110)tearOff(h);else h.style.transform='';
 }
-document.addEventListener('pointerup',function(){tearEnd(true);});
-document.addEventListener('pointercancel',function(){tearEnd(false);});
+document.addEventListener('touchstart',function(e){
+  var h=e.target&&e.target.closest&&e.target.closest('.tear-h');
+  if(!h||!e.touches||e.touches.length!==1)return;
+  TEAR.el=h;TEAR.x0=e.touches[0].clientX;TEAR.dx=0;h.style.transition='none';
+},{passive:true});
+document.addEventListener('touchmove',function(e){
+  if(TEAR.el&&e.touches&&e.touches[0]){
+    if(e.cancelable)e.preventDefault();
+    tearMoveTo(e.touches[0].clientX);return;
+  }
+  /* 後ろの画面を触らせない（レッスン表示中の透明な部分） */
+  if(e.cancelable&&e.target&&e.target.closest&&e.target.closest('[data-lesson-scrim]'))e.preventDefault();
+},{passive:false});
+document.addEventListener('touchend',function(){tearRelease();},{passive:true});
+document.addEventListener('touchcancel',function(){
+  if(TEAR.el){TEAR.el.style.transition='';TEAR.el.style.transform='';TEAR.el=null;}
+},{passive:true});
+document.addEventListener('keydown',function(e){
+  var h=e.target&&e.target.closest&&e.target.closest('.tear-h');
+  if(h&&(e.key==='Enter'||e.key===' ')){e.preventDefault();tearOff(h);}
+});
+document.addEventListener('click',function(e){
+  var t=e.target&&e.target.closest?e.target:null;if(!t)return;
+  /* 支援技術のダブルタップなど（detail=0）だけ、クリックで破る */
+  var h=t.closest('.tear-h');
+  if(h&&e.detail===0){tearOff(h);return;}
+  /* 上の、重なっていない部分を押すと、前の画面に戻る */
+  if(t.closest('[data-lesson-scrim]'))closeSheet();
+});
 document.addEventListener('keydown',function(e){
   var h=e.target&&e.target.closest&&e.target.closest('.tear-h');
   if(h&&(e.key==='Enter'||e.key===' ')){e.preventDefault();tearOff(h);}

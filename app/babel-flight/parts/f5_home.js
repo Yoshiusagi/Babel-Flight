@@ -132,7 +132,7 @@ function sceneSheetHTML(L,uid){
 function openNodeSheet(uid){
   var L=save.lang;
   if(typeof examLockSheet==='function'&&examLockSheet(L,uid))return;
-  $('sheetHost').innerHTML='<div class="sheet plain print" role="dialog" aria-label="レッスンの詳細"><div class="sheet-in">'+(isScene(L,uid)?sceneSheetHTML(L,uid):passHTML(L,uid))+
+  $('sheetHost').innerHTML='<div class="lesson-scrim" data-lesson-scrim></div><div class="sheet plain print lesson-sheet" role="dialog" aria-label="レッスンの詳細"><div class="sheet-in">'+(isScene(L,uid)?sceneSheetHTML(L,uid):passHTML(L,uid))+
     '<button class="ghost" type="button" data-close-sheet>閉じる</button></div></div>';
 }
 
