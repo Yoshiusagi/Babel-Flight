@@ -6345,14 +6345,14 @@ function tearHTML(uid){
     '.lesson-sheet{touch-action:none;overscroll-behavior:none}';
   document.head.appendChild(st);
 })();
-var TEAR={el:null,x0:0,dx:0,p:0};
-var TEAR_LEN=150; /* ここまで引くと、半券が完全に破れる（px） */
+var TEAR={el:null,x0:0,dx:0,p:0,w:300,done:false};
 function tearPaint(band,dx){
-  var p=Math.min(1,dx/TEAR_LEN),stub=band.parentNode;
+  /* 進み具合は、ミシン目の右端近くまで引いたとき100%になる */
+  var p=Math.min(1,dx/(TEAR.w*0.85)),stub=band.parentNode;
   band.style.setProperty('--p',p.toFixed(3));
-  /* 少しずつ離れる：右へ動き、下へ少し落ち、ほんの少し傾く。切れ目の影も濃くなる */
-  stub.style.transform='translate('+(dx*0.55).toFixed(1)+'px,'+(p*5).toFixed(1)+'px) rotate('+(p*p*13).toFixed(2)+'deg)';
-  stub.style.boxShadow='0 '+(p*10).toFixed(1)+'px '+(p*16).toFixed(1)+'px rgba(0,0,0,'+(p*0.35).toFixed(3)+')';
+  /* 少しずつ離れる：まだ主券にくっついたまま、ほんの少し右へ、少し傾く。影も少しずつ濃くなる */
+  stub.style.transform='translate('+(dx*0.18).toFixed(1)+'px,'+(p*3).toFixed(1)+'px) rotate('+(p*5).toFixed(2)+'deg)';
+  stub.style.boxShadow='0 '+(p*6).toFixed(1)+'px '+(p*10).toFixed(1)+'px rgba(0,0,0,'+(p*0.3).toFixed(3)+')';
   return p;
 }
 function tearReset(band){
@@ -6372,7 +6372,7 @@ function tearOff(band){
 document.addEventListener('touchstart',function(e){
   var band=e.target&&e.target.closest&&e.target.closest('.tear-line');
   if(!band||!e.touches||e.touches.length!==1)return;
-  TEAR.el=band;TEAR.x0=e.touches[0].clientX;TEAR.dx=0;
+  TEAR.el=band;TEAR.x0=e.touches[0].clientX;TEAR.dx=0;TEAR.done=false;TEAR.w=band.offsetWidth||300;
   band.parentNode.classList.add('tearing');
 },{passive:true});
 document.addEventListener('touchmove',function(e){
@@ -6390,8 +6390,9 @@ function tearRelease(){
   var band=TEAR.el;TEAR.done=false;if(!band)return;
   TEAR.el=null;
   var stub=band.parentNode;stub.classList.remove('tearing');
-  if(TEAR.dx>=TEAR_LEN)tearOff(band);
-  else tearReset(band); /* 途中で離したら、くっついた状態に戻る */
+  var p=parseFloat(band.style.getPropertyValue('--p'))||0;
+  if(p>=1)tearOff(band);
+  else tearReset(band); /* 最後まで引き切らずに離したら、くっついた状態に戻る */
 }
 document.addEventListener('touchend',function(){tearRelease();},{passive:true});
 document.addEventListener('touchcancel',function(){
