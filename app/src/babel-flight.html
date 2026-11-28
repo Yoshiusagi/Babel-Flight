@@ -6335,7 +6335,7 @@ function tearHTML(uid){
   st.textContent='.tear-h{touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;transform-origin:left center;transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .35s ease}'+
     '.tear-h:focus-visible{outline:3px solid currentColor;outline-offset:3px;border-radius:6px}'+
     '.tear-h.torn{transform:translateX(-130%) rotate(-16deg)!important;opacity:0}'+
-    '.tear-hint{text-align:right;margin:6px 4px 0}'+'.lesson-scrim{position:fixed;inset:0;z-index:29;touch-action:none;background:transparent}';
+    '.tear-hint{text-align:right;margin:6px 4px 0}'+'.lesson-scrim{position:fixed;inset:0;z-index:29;touch-action:none;background:transparent}'+'.lesson-sheet{touch-action:none;overscroll-behavior:none}';
   document.head.appendChild(st);
 })();
 var TEAR={el:null,x0:0,dx:0};
