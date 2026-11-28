@@ -6339,6 +6339,7 @@ function tearHTML(uid){
     '.tear-line:focus-visible{outline:3px solid currentColor;outline-offset:2px}'+
     '.tear-line .tooth{position:absolute;top:50%;width:7px;height:7px;margin-left:-3.5px;margin-top:-3.5px;border-radius:50%;background:var(--sc,var(--good));opacity:.55;transition:transform .2s ease,opacity .2s ease}'+
     '.tear-line .tooth.cut{transform:translateY(4px) rotate(24deg) scale(.55);opacity:0}'+
+    '.pass-stub.tearing .tooth{transition:none}'+
     '.pass-stub{transform-origin:left center;transition:transform .42s cubic-bezier(.3,1.5,.5,1),opacity .3s ease,box-shadow .3s ease}'+
     '.pass-stub.tearing{transition:none}'+
     '.pass-stub.torn{transform:translateX(140%) rotate(16deg)!important;opacity:0;transition:transform .42s cubic-bezier(.3,.7,.3,1),opacity .42s ease!important}'+
@@ -6357,30 +6358,33 @@ function tearTeethHTML(){
   }
   return h;
 }
-function tearCut(band,n){
-  if(band.getAttribute('data-cut')===String(n))return;
-  band.setAttribute('data-cut',String(n));
-  var ts=band.querySelectorAll('.tooth');
+function tearCutTo(band,headX,startX){
+  /* 指が通った穴だけ切れる（指の位置と一緒に、戻ると元に戻る）。位置は触れ始めの場所で固定して計算 */
+  var l=TEAR.bl,w=TEAR.bw,ts=band.querySelectorAll('.tooth');
   for(var i=0;i<ts.length;i++){
-    var on=i<n;
-    if(on&&!ts[i].classList.contains('cut')){ts[i].classList.add('cut');}
-    else if(!on&&ts[i].classList.contains('cut')){ts[i].classList.remove('cut');}
+    var ax=l+(parseFloat(ts[i].style.left)/100)*w;
+    ts[i].classList.toggle('cut',ax>=startX&&ax<=headX);
   }
 }
-var TEAR={el:null,x0:0,dx:0,p:0,w:300,done:false};
-function tearPaint(band,dx){
-  /* 進み具合は、ミシン目の右端近くまで引いたとき100%になる */
+function tearCutAll(band,on){
+  var ts=band.querySelectorAll('.tooth');
+  for(var i=0;i<ts.length;i++)ts[i].classList.toggle('cut',on);
+}
+var TEAR={el:null,x0:0,dx:0,p:0,w:300,done:false,bl:0,bw:300};
+function tearPaint(band,cx,dx){
+  /* 指の位置がそのまま切れ目の先端になる（ミシン目の、指の左側だけ消える） */
+  var head=Math.max(0,Math.min(1,(cx-TEAR.bl)/TEAR.bw));
+  band.style.setProperty('--p',head.toFixed(3));
+  tearCutTo(band,cx,TEAR.x0);
+  /* 半券の動き・影は、ミシン目の右端近くまで引いたときに最大になる */
   var p=Math.min(1,dx/(TEAR.w*0.85)),stub=band.parentNode;
-  band.style.setProperty('--p',p.toFixed(3));
-  tearCut(band,Math.floor(p*TEAR_TEETH));
-  /* 少しずつ離れる：まだ主券にくっついたまま、ほんの少し右へ、少し傾く。影も少しずつ濃くなる */
   stub.style.transform='translate('+(dx*0.18).toFixed(1)+'px,'+(p*3).toFixed(1)+'px) rotate('+(p*5).toFixed(2)+'deg)';
   stub.style.boxShadow='0 '+(p*6).toFixed(1)+'px '+(p*10).toFixed(1)+'px rgba(0,0,0,'+(p*0.3).toFixed(3)+')';
   return p;
 }
 function tearReset(band){
   band.style.removeProperty('--p');
-  tearCut(band,0);
+  tearCutAll(band,false);
   var stub=band.parentNode;stub.style.transform='';stub.style.boxShadow='';
 }
 function tearOff(band){
@@ -6396,14 +6400,17 @@ function tearOff(band){
 document.addEventListener('touchstart',function(e){
   var band=e.target&&e.target.closest&&e.target.closest('.tear-line');
   if(!band||!e.touches||e.touches.length!==1)return;
+  var br=band.getBoundingClientRect();
   TEAR.el=band;TEAR.x0=e.touches[0].clientX;TEAR.dx=0;TEAR.done=false;TEAR.w=band.offsetWidth||300;
+  TEAR.bl=br.left;TEAR.bw=br.width||300;
   band.parentNode.classList.add('tearing');
 },{passive:true});
 document.addEventListener('touchmove',function(e){
   if(TEAR.el&&e.touches&&e.touches[0]){
     if(e.cancelable)e.preventDefault();
-    TEAR.dx=Math.max(0,e.touches[0].clientX-TEAR.x0);
-    var pp=tearPaint(TEAR.el,TEAR.dx);
+    var cx=e.touches[0].clientX;
+    TEAR.dx=Math.max(0,cx-TEAR.x0);
+    var pp=tearPaint(TEAR.el,cx,TEAR.dx);
     if(pp>=1&&!TEAR.done){TEAR.done=true;tearOff(TEAR.el);TEAR.el=null;}
     return;
   }
