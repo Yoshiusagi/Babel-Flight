@@ -6352,6 +6352,8 @@ function tearTeethHTML(){
     /* ミシン目（上の点線）は、指の左側から消えていく */
     '.pass-stub::before{-webkit-mask-image:linear-gradient(to right,transparent calc(var(--p,0)*100%),#000 calc(var(--p,0)*100% + 1px));mask-image:linear-gradient(to right,transparent calc(var(--p,0)*100%),#000 calc(var(--p,0)*100% + 1px))}'+
     '.tear-fall{pointer-events:none;will-change:transform,clip-path}'+
+    '.pass-stub::after{content:"";position:absolute;top:0;bottom:0;left:var(--x,0px);width:7px;pointer-events:none;background:linear-gradient(to right,rgba(0,0,0,.22),rgba(0,0,0,0));opacity:var(--seam,0)}'+
+    '.pass-stub.tear-fall::after{left:calc(var(--x,0px) - 7px);background:linear-gradient(to left,rgba(0,0,0,.22),rgba(0,0,0,0))}'+
     '.tear-hint{text-align:center;margin:6px 4px 0}'+
     '.lesson-scrim{position:fixed;inset:0;z-index:29;touch-action:none;background:transparent}'+
     '.lesson-sheet{touch-action:none;overscroll-behavior:none}';
@@ -6417,7 +6419,11 @@ function tearPaint(cx){
   st.style.clipPath=tearPolyR(seam,W,H);
   cl.style.clipPath=tearPolyL(seam,H);
   cl.style.transformOrigin=X.toFixed(1)+'px 0px';
-  cl.style.transform='translateY('+(g*34).toFixed(1)+'px) rotate('+(-g*16).toFixed(2)+'deg)';
+  cl.style.transform='translateY('+(g*58).toFixed(1)+'px) rotate('+(-g*20).toFixed(2)+'deg)';
+  st.style.setProperty('--x',X.toFixed(1)+'px');
+  cl.style.setProperty('--x',X.toFixed(1)+'px');
+  st.style.setProperty('--seam',f>0.01?'1':'0');
+  cl.style.setProperty('--seam',f>0.01?'1':'0');
   tearCutTo(TEAR.el,cx,TEAR.x0);
   return f;
 }
@@ -6443,18 +6449,19 @@ function tearOff(){
   if(!st||!band)return;
   var uid=band.getAttribute('data-tear');
   if(typeof hapt==='function')hapt();
+  /* 落ちる時間は、重力で加速する曲線（ゆっくり離れて、だんだん速く）。消え切ってから次の画面へ */
   if(cl){
-    cl.style.transition='transform .7s cubic-bezier(.55,0,.9,.5),opacity .7s ease .15s';
+    cl.style.transition='transform .8s cubic-bezier(.5,0,.85,.35),opacity .45s ease .45s';
     cl.style.transformOrigin='0 0';
-    cl.style.transform='translateY(460px) rotate(-18deg)';cl.style.opacity='0';
+    cl.style.transform='translateY(520px) rotate(-24deg)';cl.style.opacity='0';
   }
-  st.style.transition='transform .7s cubic-bezier(.55,0,.9,.5),opacity .7s ease .15s';
+  st.style.transition='transform .8s cubic-bezier(.5,0,.85,.35),opacity .45s ease .45s';
   st.style.transformOrigin='50% 0';
-  st.style.transform='translateY(460px) rotate(12deg)';st.style.opacity='0';
+  st.style.transform='translateY(520px) rotate(14deg)';st.style.opacity='0';
   setTimeout(function(){
     if(cl&&cl.parentNode)cl.parentNode.removeChild(cl);
     closeSheet();startUnitFlight(uid);
-  },760);
+  },1000);
 }
 document.addEventListener('touchstart',function(e){
   var band=e.target&&e.target.closest&&e.target.closest('.tear-line');
