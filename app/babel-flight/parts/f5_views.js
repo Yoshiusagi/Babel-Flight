@@ -397,19 +397,19 @@ function tearOff(){
   setTimeout(function(){
     if(cl&&cl.parentNode)cl.parentNode.removeChild(cl);
     closeSheet();startUnitFlight(uid);
-  },1000);
+  },1300);
 }
 function tearFall(el,from,pose){
-  /* 0〜14%：最後の繊維が切れて、ほんの少し沈む（ease-outで最初から動く）。14〜80%：重力で加速して落ちる。80〜100%：消える */
+  /* 0〜14%：最後の繊維が切れて、ほんの少し沈む（ease-outで最初から動く）。14〜85%：重力で加速して落ちる（ゆっくり目）。85〜100%：消える */
   if(!el)return;
   var gravity='cubic-bezier(.55,0,1,.45)';
   if(!el.animate){el.style.transition='transform .8s '+gravity;el.style.transform=pose[1];el.style.opacity='0';return;}
   el.animate([
     {transform:from||'none',opacity:1,easing:'ease-out'},
     {transform:pose[0],opacity:1,offset:.14,easing:gravity},
-    {transform:pose[1],opacity:1,offset:.8},
+    {transform:pose[1],opacity:1,offset:.85},
     {transform:pose[1],opacity:0}
-  ],{duration:900,fill:'forwards'});
+  ],{duration:1300,fill:'forwards'});
 }
 document.addEventListener('touchstart',function(e){
   var band=e.target&&e.target.closest&&e.target.closest('.tear-line');
