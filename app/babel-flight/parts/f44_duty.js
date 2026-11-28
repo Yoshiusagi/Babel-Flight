@@ -272,7 +272,7 @@ function bankBuyHTML(k){
   h+='<button class="go sm" type="button" data-bank-buy="'+k+'">'+esc(bankLabel(k))+' '+esc(bankPriceText(k))+'で買う<small>'+(BF_APP?'1回のお支払いで、その級が開きます':'テスト購入 ・ お金はかかりません')+'</small></button>';
   if(EIKEN_KEYS.indexOf(k)>=0&&!bankBought('all'))h+='<button class="go sm alt" type="button" data-bank-buy="all">英検 全級まとめ '+esc(bankPriceText('all'))+'<small>個別で買うより約22%オフ（全部で11,600円）</small></button>';
   if(OTHER_KEYS.indexOf(k)>=0&&!bankBought('others'))h+='<button class="go sm alt" type="button" data-bank-buy="others">英検以外 全部まとめ '+esc(bankPriceText('others'))+'<small>個別で買うより約22%オフ（全部で23,100円）</small></button>';
-  if(BF_APP)h+='<button class="ghost" type="button" data-bank-restore>購入を復元</button>';
+  if(BF_APP)h+='<button class="ghost" type="button" data-bank-restore style="width:100%;margin-top:8px">購入を復元</button>';
   return h+'</div>';
 }
 /* the final confirmation (what, price, when, no refund) */
