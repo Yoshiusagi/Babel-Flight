@@ -11,7 +11,8 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
     public let pluginMethods: [CAPPluginMethod] = [
         CAPPluginMethod(name: "purchase", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "restore", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "owned", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "owned", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "prices", returnType: CAPPluginReturnPromise)
     ]
 
     // the IDs that are already bought (verified by the App Store)
@@ -30,6 +31,22 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
         Task {
             let ids = await self.ownedIDs()
             call.resolve(["ids": ids])
+        }
+    }
+
+    // the prices as the App Store shows them (localized, with the currency), by product ID
+    @objc func prices(_ call: CAPPluginCall) {
+        guard #available(iOS 15.0, *) else { call.resolve(["prices": [:]]); return }
+        let ids = call.getArray("ids", String.self) ?? []
+        Task {
+            do {
+                let products = try await Product.products(for: ids)
+                var out: [String: String] = [:]
+                for p in products { out[p.id] = p.displayPrice }
+                call.resolve(["prices": out])
+            } catch {
+                call.resolve(["prices": [:]])
+            }
         }
     }
 

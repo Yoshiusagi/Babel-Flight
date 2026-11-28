@@ -249,21 +249,29 @@ dfApply();
    The purchase is kept in save.xb (bank keys, or 'all'). Real payments are not open yet. */
 var BANK_PRICE={ek5:1200,ek4:1200,ek3:1200,ekp2:1200,ekp2p:1500,ek2:1500,ekp1:1800,ek1:2000,toeics:1500,opic:1500,cet4:1200,cet6:1500,toeicl:2000,ielts:2000,toefl:2000,icao:1500,aero:1500,ca:1200,bec:1200,oet:1200,oetph:1200,celta:1200,toles:1200,servsafe:1200};
 var EIKEN_KEYS=['ek5','ek4','ek3','ekp2','ekp2p','ek2','ekp1','ek1'];
-var BANK_ALL=9000;
-function bankOwned(){var a=save.xb;return Array.isArray(a)?a.filter(function(x){return x==='all'||BANK_PRICE[x]!=null;}):[];}
-function bankBought(k){if(!k||!(BF_APP||dfOn()))return false;var a=bankOwned();return (a.indexOf('all')>=0&&EIKEN_KEYS.indexOf(k)>=0)||a.indexOf(k)>=0;}
+var OTHER_KEYS=Object.keys(BANK_PRICE).filter(function(k){return EIKEN_KEYS.indexOf(k)<0;});
+/* まとめ買い: 英検の全級は9,000円（個別の合計11,600円より約22%オフ）、英検以外の全部は18,000円（個別の合計23,100円より約22%オフ） */
+var BANK_ALL=9000,BANK_OTHERS=18000;
+/* App Store の表示価格（ストアの値段そのもの。取れない時は下の値段） */
+var STORE_PRICE={};
+function bankOwned(){var a=save.xb;return Array.isArray(a)?a.filter(function(x){return x==='all'||x==='others'||BANK_PRICE[x]!=null;}):[];}
+function bankBought(k){if(!k||!(BF_APP||dfOn()))return false;var a=bankOwned();return (a.indexOf('all')>=0&&EIKEN_KEYS.indexOf(k)>=0)||(a.indexOf('others')>=0&&OTHER_KEYS.indexOf(k)>=0)||a.indexOf(k)>=0;}
 /* the App Store product IDs (non-consumable, made in App Store Connect) */
-var APP_BANK_PID={ek5:'com.babelflight.app.eiken.ek5',ek4:'com.babelflight.app.eiken.ek4',ek3:'com.babelflight.app.eiken.ek3',ekp2:'com.babelflight.app.eiken.ekp2',ekp2p:'com.babelflight.app.eiken.ekp2p',ek2:'com.babelflight.app.eiken.ek2',ekp1:'com.babelflight.app.eiken.ekp1',ek1:'com.babelflight.app.eiken.ek1',all:'com.babelflight.app.eiken.all',toeics:'com.babelflight.app.exam.toeics',opic:'com.babelflight.app.exam.opic',cet4:'com.babelflight.app.exam.cet4',cet6:'com.babelflight.app.exam.cet6',toeicl:'com.babelflight.app.exam.toeicl',ielts:'com.babelflight.app.exam.ielts',toefl:'com.babelflight.app.exam.toefl',icao:'com.babelflight.app.exam.icao',aero:'com.babelflight.app.exam.aero',ca:'com.babelflight.app.exam.ca',bec:'com.babelflight.app.exam.bec',oet:'com.babelflight.app.exam.oet',oetph:'com.babelflight.app.exam.oetph',celta:'com.babelflight.app.exam.celta',toles:'com.babelflight.app.exam.toles',servsafe:'com.babelflight.app.exam.servsafe'};
+var APP_BANK_PID={ek5:'com.babelflight.app.eiken.ek5',ek4:'com.babelflight.app.eiken.ek4',ek3:'com.babelflight.app.eiken.ek3',ekp2:'com.babelflight.app.eiken.ekp2',ekp2p:'com.babelflight.app.eiken.ekp2p',ek2:'com.babelflight.app.eiken.ek2',ekp1:'com.babelflight.app.eiken.ekp1',ek1:'com.babelflight.app.eiken.ek1',all:'com.babelflight.app.eiken.all',toeics:'com.babelflight.app.exam.toeics',opic:'com.babelflight.app.exam.opic',cet4:'com.babelflight.app.exam.cet4',cet6:'com.babelflight.app.exam.cet6',toeicl:'com.babelflight.app.exam.toeicl',ielts:'com.babelflight.app.exam.ielts',toefl:'com.babelflight.app.exam.toefl',icao:'com.babelflight.app.exam.icao',aero:'com.babelflight.app.exam.aero',ca:'com.babelflight.app.exam.ca',bec:'com.babelflight.app.exam.bec',oet:'com.babelflight.app.exam.oet',oetph:'com.babelflight.app.exam.oetph',celta:'com.babelflight.app.exam.celta',toles:'com.babelflight.app.exam.toles',servsafe:'com.babelflight.app.exam.servsafe',others:'com.babelflight.app.exam.others'}
 var BANK_OF_PID={};Object.keys(APP_BANK_PID).forEach(function(k){BANK_OF_PID[APP_BANK_PID[k]]=k;});
 /* in the iPhone app the levels are sold by the App Store (bankpay switch) */
 function bankPaidApp(k){return !!(BF_APP&&k&&BANK_PRICE[k]!=null&&gimmickOn('bankpay'));}
-function bankYen(k){return k==='all'?BANK_ALL:BANK_PRICE[k];}
-function bankLabel(k){return k==='all'?'英検 全級（まとめ買い）':(XBANK[k]?XBANK[k].name:k);}
+function bankYen(k){return k==='all'?BANK_ALL:(k==='others'?BANK_OTHERS:BANK_PRICE[k]);}
+function bankLabel(k){return k==='all'?'英検 全級（まとめ買い）':(k==='others'?'英検以外の検定 全部（まとめ買い）':(XBANK[k]?XBANK[k].name:k));}
+function bankPriceText(k){
+  var pr=BF_APP&&STORE_PRICE[k];return pr?pr:dfYen(bankYen(k))+'円';
+}
 function bankBuyHTML(k){
   if(!(BF_APP||dfOn())||BANK_PRICE[k]==null||bankBought(k))return '';
-  var one=BANK_PRICE[k],h='<div class="bank-buy"><span class="lbl">'+(BF_APP?'買い切り（1回のお支払い）':'買い切り（テスト購入・1回だけ）')+'</span>';
-  h+='<button class="go sm" type="button" data-bank-buy="'+k+'">'+esc(bankLabel(k))+' '+dfYen(one)+'円で買う<small>'+(BF_APP?'1回のお支払いで、その級が開きます':'テスト購入 ・ お金はかかりません')+'</small></button>';
-  if(!bankBought('all'))h+='<button class="go sm alt" type="button" data-bank-buy="all">英検 全級まとめ '+dfYen(BANK_ALL)+'円<small>個別で買うより約22%オフ（全部で11,600円）</small></button>';
+  var h='<div class="bank-buy"><span class="lbl">'+(BF_APP?'買い切り（1回のお支払い）':'買い切り（テスト購入・1回だけ）')+'</span>';
+  h+='<button class="go sm" type="button" data-bank-buy="'+k+'">'+esc(bankLabel(k))+' '+esc(bankPriceText(k))+'で買う<small>'+(BF_APP?'1回のお支払いで、その級が開きます':'テスト購入 ・ お金はかかりません')+'</small></button>';
+  if(EIKEN_KEYS.indexOf(k)>=0&&!bankBought('all'))h+='<button class="go sm alt" type="button" data-bank-buy="all">英検 全級まとめ '+esc(bankPriceText('all'))+'<small>個別で買うより約22%オフ（全部で11,600円）</small></button>';
+  if(OTHER_KEYS.indexOf(k)>=0&&!bankBought('others'))h+='<button class="go sm alt" type="button" data-bank-buy="others">英検以外 全部まとめ '+esc(bankPriceText('others'))+'<small>個別で買うより約22%オフ（全部で23,100円）</small></button>';
   if(BF_APP)h+='<button class="ghost" type="button" data-bank-restore>購入を復元</button>';
   return h+'</div>';
 }
@@ -322,8 +330,17 @@ function storeRestore(){
   }).catch(function(){storeNote('復元できませんでした。もう一度お試しください。');});
 }
 /* at start: the purchases the App Store already knows about open their levels */
+function storeLoadPrices(){
+  var ids=Object.keys(BANK_OF_PID);
+  ownCall('Store','prices',{ids:ids}).then(function(r){
+    var got=false;
+    Object.keys((r&&r.prices)||{}).forEach(function(id){var k=BANK_OF_PID[id];if(k&&STORE_PRICE[k]!==r.prices[id]){STORE_PRICE[k]=r.prices[id];got=true;}});
+    if(got)render();
+  }).catch(function(){});
+}
 function storeSync(){
   if(!BF_APP)return;
+  storeLoadPrices();
   ownCall('Store','owned',{}).then(function(r){
     var keys=[];((r&&r.ids)||[]).forEach(function(id){if(BANK_OF_PID[id])keys.push(BANK_OF_PID[id]);});
     var before=bankOwned().length;storeGrant(keys);if(bankOwned().length!==before)render();
