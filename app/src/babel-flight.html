@@ -6344,6 +6344,8 @@ function tearTeethHTML(){
   var st=document.createElement('style');
   st.textContent='.tear-line{position:absolute;left:0;right:0;top:0;height:30px;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}'+
     '.tear-line::before{display:none}'+
+    /* 触れる範囲を広げる（上下に余白）。見た目のミシン目はそのまま */
+    '.tear-line::after{content:"";position:absolute;left:0;right:0;top:-12px;bottom:-24px}'+
     '.tear-line .tooth{position:absolute;top:0;width:7px;height:7px;margin-left:-3.5px;margin-top:-3.5px;border-radius:50%;background:var(--sc,var(--good));opacity:.6;transition:transform .2s ease,opacity .2s ease}'+
     '.tear-line .tooth.cut{transform:translateY(4px) rotate(24deg) scale(.55);opacity:0}'+
     '.pass-stub.tearing .tooth{transition:none}'+
