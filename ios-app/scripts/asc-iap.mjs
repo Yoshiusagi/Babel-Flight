@@ -74,6 +74,18 @@ async function main() {
   const byProduct = new Map(existing.map((x) => [x.attributes.productId, x]));
   say(`App Store にある課金商品: ${existing.length}件`);
 
+  if (MODE === "points") {
+    // read-only: the yen price points Apple offers for this app (for checking the price steps)
+    const first = existing[0];
+    const pts = await all(`/v2/inAppPurchases/${first.id}/pricePoints?filter[territory]=${TERR}&limit=200`);
+    const vals = [...new Set(pts.map((x) => Number(x.attributes.customerPrice)))].sort((a, b) => a - b);
+    say(`${TERR} の価格ポイント: ${vals.length}件（全部）`);
+    say("0〜3000円: " + vals.filter((v) => v <= 3000).join(", "));
+    const steps = vals.slice(1).map((v, i) => v - vals[i]);
+    say("隣り合う価格の差（重複なし）: " + [...new Set(steps)].sort((a, b) => a - b).join(", "));
+    if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, "```\n" + log.join("\n") + "\n```\n");
+    return;
+  }
   let created = 0, priced = 0, localized = 0;
   for (const p of spec.products) {
     const row = [p.key, p.productId, `${p.priceYen}円`];
