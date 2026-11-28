@@ -6418,8 +6418,9 @@ function tearPolyR(a,W,H){
 }
 /* 垂れ具合：引いた量の二乗で重力っぽく下がる。離した後は少しだけ余計に垂れて、そこで止まる */
 function tearPose(f,sag){
+  /* 引いている間は紙が一枚のまま。切れた側は数pxだけ開いて、ほとんど元の位置にいる */
   var g=f*f,k=sag?1:0;
-  return 'translateY('+(g*58+k*6*f).toFixed(1)+'px) rotate('+(-(g*20+k*3*f)).toFixed(2)+'deg)';
+  return 'translateY('+(g*8+k*4*f).toFixed(1)+'px) rotate('+(-(g*4+k*2*f)).toFixed(2)+'deg)';
 }
 function tearPaintX(X){
   var st=TEAR.stub,cl=TEAR.clone,W=TEAR.sw,H=TEAR.sh,T=TEAR.torn;
@@ -6478,7 +6479,7 @@ document.addEventListener('touchmove',function(e){
     var cx=e.touches[0].clientX;
     TEAR.dx=Math.max(0,cx-TEAR.x0);
     var f=tearPaint(cx);
-    if(f>=0.92){TEAR.done=true;tearOff();}
+    if(f>=0.985){TEAR.done=true;tearOff();}
     return;
   }
   /* 後ろの画面を触らせない（レッスン表示中の透明な部分） */
