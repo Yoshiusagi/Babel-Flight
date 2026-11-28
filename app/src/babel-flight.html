@@ -6098,7 +6098,7 @@ function passHTML(L,uid){
     '<div><span class="lbl">ゲート</span><div class="v">'+gateNo(L,uid)+'</div></div>'+
     '<div><span class="lbl">問題数</span><div class="v">'+(u.items.length*2)+'問</div></div>'+
     '<div><span class="lbl">定着度</span><div class="v">'+m+'%</div></div></div></div>'+
-    '<div class="pass-stub"><div class="stub-row tear-h" role="button" tabindex="0" data-tear="'+esc(uid)+'" aria-label="半券を左へ破って、このレッスンを始める"><div class="barcode">'+barcodeSVG(flightNo(L,uid)+L)+'</div></div>'+
+    '<div class="pass-stub"><div class="tear-line tear-h" role="button" tabindex="0" data-tear="'+esc(uid)+'" aria-label="ミシン目を右へスライドして、このレッスンを始める"><span class="tear-cue">ミシン目を右へ引っ張る ▶</span></div><div class="stub-row"><div class="barcode">'+barcodeSVG(flightNo(L,uid)+L)+'</div></div>'+
     tearHTML(uid)+'</div></section>';
 }
 function reviewHTML(){
@@ -6326,73 +6326,73 @@ function render(){
   if(typeof natTabsSync==='function')natTabsSync(showTabs,view);
 }
 
-/* ---- 搭乗券を破って出発（はじめる・飛び級のボタンは置かない）---- */
+/* ---- 搭乗券を破って出発（ミシン目を右へ引っ張る）---- */
 function tearHTML(uid){
-  return '<p class="dim hint tear-hint">← 半券を左へスライドして破ると出発</p>';
+  return '<p class="dim hint tear-hint">ミシン目を右へ引っ張ると、半券が破れて出発</p>';
 }
 (function(){
   var st=document.createElement('style');
-  st.textContent='.tear-h{touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;transform-origin:left center;transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .35s ease}'+
-    '.tear-h:focus-visible{outline:3px solid currentColor;outline-offset:3px;border-radius:6px}'+
-    '.tear-h.torn{transform:translateX(-130%) rotate(-16deg)!important;opacity:0}'+
-    '.tear-hint{text-align:right;margin:6px 4px 0}'+'.lesson-scrim{position:fixed;inset:0;z-index:29;touch-action:none;background:transparent}'+'.lesson-sheet{touch-action:none;overscroll-behavior:none}';
+  st.textContent='.tear-line{position:relative;height:60px;margin:-6px -20px 0;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}'+
+    '.tear-line::before{content:"";position:absolute;left:20px;right:20px;top:50%;border-top:2px dashed currentColor;opacity:.6}'+
+    '.tear-cue{position:relative;padding:4px 12px;border-radius:999px;background:var(--surface);font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--sc,var(--good))}'+
+    '.tear-line:focus-visible{outline:3px solid currentColor;outline-offset:2px}'+
+    '.pass-stub{transition:transform .3s ease,opacity .3s ease}'+
+    '.pass-stub.tearing{transition:none}'+
+    '.pass-stub.torn{transform:translateX(140%) rotate(16deg)!important;opacity:0;transition:transform .42s cubic-bezier(.3,.7,.3,1),opacity .42s ease!important}'+
+    '.tear-hint{text-align:center;margin:6px 4px 0}'+
+    '.lesson-scrim{position:fixed;inset:0;z-index:29;touch-action:none;background:transparent}'+
+    '.lesson-sheet{touch-action:none;overscroll-behavior:none}';
   document.head.appendChild(st);
 })();
 var TEAR={el:null,x0:0,dx:0};
-function tearOff(h){
-  if(!h||h.classList.contains('torn'))return;
-  h.classList.add('torn');
+function tearOff(band){
+  var stub=band&&band.parentNode;
+  if(!stub||stub.classList.contains('torn'))return;
+  var uid=band.getAttribute('data-tear');
+  stub.classList.remove('tearing');
+  stub.style.transform='';
+  stub.classList.add('torn');
   if(typeof hapt==='function')hapt();
-  var uid=h.getAttribute('data-tear');
-  setTimeout(function(){closeSheet();startUnitFlight(uid);},420);
-}
-function tearMoveTo(x){
-  if(!TEAR.el)return;
-  TEAR.dx=Math.min(0,x-TEAR.x0);
-  TEAR.el.style.transform='translateX('+TEAR.dx+'px) rotate('+(TEAR.dx*0.04).toFixed(2)+'deg)';
-}
-function tearRelease(){
-  var h=TEAR.el;if(!h)return;
-  TEAR.el=null;h.style.transition='';
-  if(-TEAR.dx>=110)tearOff(h);else h.style.transform='';
+  setTimeout(function(){closeSheet();startUnitFlight(uid);},460);
 }
 document.addEventListener('touchstart',function(e){
-  var h=e.target&&e.target.closest&&e.target.closest('.tear-h');
-  if(!h||!e.touches||e.touches.length!==1)return;
-  TEAR.el=h;TEAR.x0=e.touches[0].clientX;TEAR.dx=0;h.style.transition='none';
+  var band=e.target&&e.target.closest&&e.target.closest('.tear-line');
+  if(!band||!e.touches||e.touches.length!==1)return;
+  TEAR.el=band;TEAR.x0=e.touches[0].clientX;TEAR.dx=0;
+  band.parentNode.classList.add('tearing');
 },{passive:true});
 document.addEventListener('touchmove',function(e){
   if(TEAR.el&&e.touches&&e.touches[0]){
     if(e.cancelable)e.preventDefault();
-    tearMoveTo(e.touches[0].clientX);return;
+    TEAR.dx=Math.max(0,e.touches[0].clientX-TEAR.x0);
+    TEAR.el.parentNode.style.transform='translateX('+TEAR.dx+'px) rotate('+(TEAR.dx*0.03).toFixed(2)+'deg)';
+    return;
   }
   /* 後ろの画面を触らせない（レッスン表示中の透明な部分） */
   if(e.cancelable&&e.target&&e.target.closest&&e.target.closest('[data-lesson-scrim]'))e.preventDefault();
 },{passive:false});
+function tearRelease(){
+  var band=TEAR.el;if(!band)return;
+  TEAR.el=null;
+  var stub=band.parentNode;stub.classList.remove('tearing');
+  if(TEAR.dx>=110)tearOff(band);
+  else stub.style.transform='';
+}
 document.addEventListener('touchend',function(){tearRelease();},{passive:true});
 document.addEventListener('touchcancel',function(){
-  if(TEAR.el){TEAR.el.style.transition='';TEAR.el.style.transform='';TEAR.el=null;}
+  if(TEAR.el){var stub=TEAR.el.parentNode;stub.classList.remove('tearing');stub.style.transform='';TEAR.el=null;}
 },{passive:true});
 document.addEventListener('keydown',function(e){
-  var h=e.target&&e.target.closest&&e.target.closest('.tear-h');
-  if(h&&(e.key==='Enter'||e.key===' ')){e.preventDefault();tearOff(h);}
+  var band=e.target&&e.target.closest&&e.target.closest('.tear-line');
+  if(band&&(e.key==='Enter'||e.key===' ')){e.preventDefault();tearOff(band);}
 });
 document.addEventListener('click',function(e){
   var t=e.target&&e.target.closest?e.target:null;if(!t)return;
   /* 支援技術のダブルタップなど（detail=0）だけ、クリックで破る */
-  var h=t.closest('.tear-h');
-  if(h&&e.detail===0){tearOff(h);return;}
+  var band=t.closest('.tear-line');
+  if(band&&e.detail===0){tearOff(band);return;}
   /* 上の、重なっていない部分を押すと、前の画面に戻る */
   if(t.closest('[data-lesson-scrim]'))closeSheet();
-});
-document.addEventListener('keydown',function(e){
-  var h=e.target&&e.target.closest&&e.target.closest('.tear-h');
-  if(h&&(e.key==='Enter'||e.key===' ')){e.preventDefault();tearOff(h);}
-});
-document.addEventListener('click',function(e){
-  /* 支援技術のダブルタップなど（detail=0）だけ、クリックで破る */
-  var h=e.target&&e.target.closest&&e.target.closest('.tear-h');
-  if(h&&e.detail===0)tearOff(h);
 });
 /* ---- 記録タブ：飛び級できるレッスン ---- */
 function skipListHTML(){
